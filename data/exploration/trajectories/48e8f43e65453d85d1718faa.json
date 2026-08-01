@@ -1,0 +1,745 @@
+{
+  "task_id": "CSX-311_Q2",
+  "model_id": "tencent-hy3",
+  "model_name": "Tencent Hy3",
+  "scores": {
+    "overall": 87.85,
+    "answer": 85.71,
+    "rubric": 90.0,
+    "unit_accuracy": 85.71,
+    "answer_units_correct": 6,
+    "answer_units_total": 7,
+    "rubric_points_earned": 18.0,
+    "rubric_points_total": 20.0,
+    "verdict": "correct"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 706.593,
+    "tool_calls": 29,
+    "model_rounds": 30,
+    "file_reads": 14,
+    "unique_evidence_files": 20,
+    "python_calls": 2,
+    "tool_errors": 0,
+    "prompt_tokens": 163141,
+    "completion_tokens": 9048,
+    "total_tokens": 318305
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "Discover local evidence files in the event package.",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 38,\n  \"file_count_total\": 38,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml\",\n      \"bytes\": 225166,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/event_catalogs/event_catalogs_002_NASA_EONET_events_API.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_NASA_EONET_events_API.xml\",\n      \"bytes\": 9842,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/event_catalogs/event_catalogs_003_03_gdacs_rss.xml.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_03_gdacs_rss.xml.xml\",\n      \"bytes\": 225163,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/event_catalogs/event_catalogs_004_05_eonet_events.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_004_05_eonet_events.json.json\",\n      \"bytes\": 7089,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/event_catalogs/event_catalogs_005_04_event_specific_disaster_catalog_GDACS_event_list_for_package_time_window.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_005_04_event_specific_disaster_catalog_GDACS_event_list_for_package_time_window.json.json\",\n      \"bytes\": 4066,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\"\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read package manifest to identify image byte counts and scene counts labeled as event-day vs pre-event.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-311/metadata/files.csv",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-311/metadata/files.csv\",\n  \"text\": \"file_id,package_id,relative_path,data_category,layer_name,source_id,source_name,source_type,url,bytes,sha256_16,file_status\\nF0001,CSX-311,data/event_reports/event_reports_001_Locked_package_evidence_report.html,event_reports,event_anchor_report,S001,Locked package evidence report,resource_registry,https://science.nasa.gov/earth/earth-observatory/ontake-erupts-84456,287915,ea951d4ec3b81dee,downloaded\\nF0002,CSX-311,data/event_reports/event_reports_002_ReliefWeb_public_updates_search.html,event_reports,text_reports,S002,ReliefWeb public updates search,resource_registry,https://reliefweb.int/updates?search=Mount+Ontake+eruption+Japan,116704,167df6b0b5bfaca5,downloaded\\nF0003,CSX-311,data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml,event_catalogs,event_catalog_api,S003,GDACS event feeds and archive,resource_registry,https://www.gdacs.org/xml/rss.xml,225166,9326ca698a7adb8c,downloaded\\nF0004,CSX-311,data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_and_Overpass_AOI.json,geospatial_context,geocoding_or_aoi,S004,OpenStreetMap Nominatim and Overpass AOI,resource_registry,https://nominatim.openstreetmap.org/search?q=Mount+Ontake+eruption+Nagano+%2F+Gifu+Japan+East+Asia&format=jsonv2&limit=5&addressdetails=1,2,4f53cda18c2baa0c,downloaded\\nF0005,CSX-311,data/other/other_001_Volcanic_Ash_Advisory_Centers_advisories.html,other,specialized_hazard_source,S005,Volcanic Ash Advisory Centers advisories,resource_registry,https://www.ssd.noaa.gov/VAAC/,44259,651077b473c4a158,downloaded\\nF0006,CSX-311,data/event_catalogs/event_catalogs_002_NASA_EONET_events_API.xml,ev\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read locked event anchor to check the required text anchors: unexpectedly, gas and steam, phreatic eruption, ash, little warning.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-311/data/event_reports/event_reports_003_Locked_event_anchor_Mount_Ontake_eruption.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/event_reports/event_reports_003_Locked_event_anchor_Mount_Ontake_eruption.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-311\\\",\\n  \\\"event_name\\\": \\\"Mount Ontake eruption\\\",\\n  \\\"hazard_family\\\": \\\"volcano_ash_lahar\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2014-09-27\\\",\\n    \\\"end_date\\\": \\\"2014-09-27\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Nagano / Gifu\\\",\\n    \\\"country_or_region\\\": \\\"Japan\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"Mount Ontake eruption\\\",\\n    \\\"event_start_date\\\": \\\"2014-09-27\\\",\\n    \\\"event_end_date\\\": \\\"2014-09-27\\\",\\n    \\\"event_location\\\": \\\"Nagano / Gifu\\\",\\n    \\\"event_country_or_region\\\": \\\"Japan\\\",\\n    \\\"event_scope\\\": \\\"subagent_region_locked\\\",\\n    \\\"evidence_type\\\": \\\"NASA Earth Observatory\\\",\\n    \\\"evidence_url\\\": \\\"https://science.nasa.gov/earth/earth-observatory/ontake-erupts-84456\\\",\\n    \\\"evidence_final_url\\\": \\\"https://science.nasa.gov/earth/earth-observatory/ontake-erupts-84456\\\",\\n    \\\"http_status\\\": \\\"\\\",\\n    \\\"lock_status\\\": \\\"event_locked_subagent_candidate_needs_url_probe\\\",\\n    \\\"lock_confidence\\\": \\\"high\\\",\\n    \\\"match_rule\\\": \\\"subagent_exact_family_region_replacement\\\",\\n    \\\"web_search_query_used\\\": \\\"NASA Ontake eruption 2014 ash\\\",\\n    \\\"event_lock_notes\\\": \\\"Sudden phreatic eruption with ash and ballistic hazards.\\\",\\n    \\\"verification_error\\\": \\\"\\\",\\n    \\\"dual_anchor_if_applicable\\\": \\\"\\\",\\n    \\\"source_table\\\": \\\"package_event_lock_targeted_refined_v4_repaired.csv\\\",\\n \n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/data/event_reports/event_reports_003_Locked_event_anchor_Mount_Ontake_eruption.json"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for the required text anchors across event package text files, especially the locked evidence report and event notes.",
+      "args": {
+        "query": "unexpectedly gas and steam phreatic eruption ash little warning",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"unexpectedly gas and steam phreatic eruption ash little warning\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"snippet\": \"var gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){retu\\n...[TRUNCATED]...\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/other/other_002_01_anchor.html.html\",\n      \"snippet\": \"var gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){retu\\n...[TRUNCATED]...\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1339
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "event_packages/standard_event_packages/packages/CSX-311/data/other/other_002_01_anchor.html.html"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Check if the anchor 'unexpectedly' appears in the locked evidence report HTML.",
+      "args": {
+        "query": "unexpectedly",
+        "glob": "**/*.html",
+        "max_matches": 5
+      },
+      "output": {
+        "text": "{\n  \"query\": \"unexpectedly\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"snippet\": \"<p>Mount Ontake, a towering Japanese <a href=\\\"http://volcanoes.usgs.gov/images/pglossary/stratovolcano.php\\\">stratovolcano</a> about 200 kilometers (125 miles) west of Tokyo, erupted unexpectedly on September 27, 2014. The <a href=\\\"http://modis.gsfc.nasa.gov/about/\\\">Moderate Resolution Imaging Spectroradiometer</a> (MODIS) on NASA’s <a href=\\\"http://aqua.nasa.gov\\\">Aqua</a> and <a href=\\\"http://terra.nasa.gov\\\">Terra</a> \\n...[TRUNCATED]...\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/other/other_002_01_anchor.html.html\",\n      \"snippet\": \"<p>Mount Ontake, a towering Japanese <a href=\\\"http://volcanoes.usgs.gov/images/pglossary/stratovolcano.php\\\">stratovolcano</a> about 200 kilometers (125 miles) west of Tokyo, erupted unexpectedly on September 27, 2014. The <a href=\\\"http://modis.gsfc.nasa.gov/about/\\\">Moderate Resolution Imaging Spectroradiometer</a> (MODIS) on NASA’s <a href=\\\"http://aqua.nasa.gov\\\">Aqua</a> and <a href=\\\"http://terra.nasa.gov\\\">Terra</a> \\n...[TRUNCATED]...\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1288
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "event_packages/standard_event_packages/packages/CSX-311/data/other/other_002_01_anchor.html.html"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Check if anchor 'gas and steam' appears in the locked evidence report HTML.",
+      "args": {
+        "query": "gas and steam",
+        "glob": "**/*.html",
+        "max_matches": 5
+      },
+      "output": {
+        "text": "{\n  \"query\": \"gas and steam\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"snippet\": \"var gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){retu\\n...[TRUNCATED]...\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/other/other_002_01_anchor.html.html\",\n      \"snippet\": \"var gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){retu\\n...[TRUNCATED]...\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1289
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "event_packages/standard_event_packages/packages/CSX-311/data/other/other_002_01_anchor.html.html"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Extract clean text from HTML and check all five anchors with Python, plus show snippets for missing ones.",
+      "args": {
+        "code_chars": 817,
+        "code_sha1": "e39117891586",
+        "code_preview": "import re, html\nfrom pathlib import Path\np = Path('event_packages/standard_event_packages/packages/CSX-311/data/event_reports/event_reports_001_Locked_package_evidence_report.html')\ntxt = p.read_text(errors='ignore')\n# strip tags\ntext = re.sub(r'<[^>]+>', ' ', txt)\ntext = html.unescape(text)\ntext = re.sub(r'\\s+', ' ', text)\nfor anchor in ['unexpectedly','gas and steam','phreatic eruption','ash','little warning']:\n    print(anchor, anchor.lower() in text.lower())\n# print snippet around ash/steam\nidx = text.lower().f\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-311_Q2/python_snippets/step_07_e39117891586.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-311_Q2/python_snippets/step_07_e39117891586.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.175,\n  \"stdout\": \"unexpectedly True\\ngas and steam True\\nphreatic eruption True\\nash True\\nlittle warning True\\nSTEAM SNIPPET: rs (125 miles) west of Tokyo, erupted unexpectedly on September 27, 2014. The Moderate Resolution Imaging Spectroradiometer (MODIS) on NASA’s Aqua and Terra satellites captured these views of gas and steam rising from the volcano on September 27 (top) and September 28 (bottom). Early reports suggest this may have been a steam-driven phreatic eruption. Such eruptions can cause underground water to \\nPHREATIC SNIPPET: NASA’s Aqua and Terra satellites captured these views of gas and steam rising from the volcano on September 27 (top) and September 28 (bottom). Early reports suggest this may have been a steam-driven phreatic eruption. Such eruptions can cause underground water to boil and flash to steam, generating explosions of steam, water, and ash with little warning. As many as 36 hikers are presumed dead, ac\\nLITTLE WARNING IDX 48326\\nASH IDX 48316\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 1189
+      },
+      "code": {
+        "text": "import re, html\nfrom pathlib import Path\np = Path('event_packages/standard_event_packages/packages/CSX-311/data/event_reports/event_reports_001_Locked_package_evidence_report.html')\ntxt = p.read_text(errors='ignore')\n# strip tags\ntext = re.sub(r'<[^>]+>', ' ', txt)\ntext = html.unescape(text)\ntext = re.sub(r'\\s+', ' ', text)\nfor anchor in ['unexpectedly','gas and steam','phreatic eruption','ash','little warning']:\n    print(anchor, anchor.lower() in text.lower())\n# print snippet around ash/steam\nidx = text.lower().f\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-311_Q2/python_snippets/step_07_e39117891586.py"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read NASA POWER daily point precipitation sample for event-day precip value.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json\",\n  \"text\": \"{\\\"type\\\":\\\"Feature\\\",\\\"geometry\\\":{\\\"type\\\":\\\"Point\\\",\\\"coordinates\\\":[138.253,36.205,1188.22]},\\\"properties\\\":{\\\"parameter\\\":{\\\"T2M\\\":{\\\"20140927\\\":12.35},\\\"PRECTOTCORR\\\":{\\\"20140927\\\":0.01},\\\"WS10M\\\":{\\\"20140927\\\":2.96}}},\\\"header\\\":{\\\"title\\\":\\\"NASA/POWER Source Native Resolution Daily Data\\\",\\\"api\\\":{\\\"version\\\":\\\"v2.9.2\\\",\\\"name\\\":\\\"POWER Daily API\\\"},\\\"sources\\\":[\\\"MERRA2\\\",\\\"POWER\\\"],\\\"fill_value\\\":-999.0,\\\"time_standard\\\":\\\"LST\\\",\\\"start\\\":\\\"20140927\\\",\\\"end\\\":\\\"20140927\\\"},\\\"messages\\\":[],\\\"parameters\\\":{\\\"T2M\\\":{\\\"units\\\":\\\"C\\\",\\\"longname\\\":\\\"Temperature at 2 Meters\\\"},\\\"PRECTOTCORR\\\":{\\\"units\\\":\\\"mm/day\\\",\\\"longname\\\":\\\"Precipitation Corrected\\\"},\\\"WS10M\\\":{\\\"units\\\":\\\"m/s\\\",\\\"longname\\\":\\\"Wind Speed at 10 Meters\\\"}},\\\"times\\\":{\\\"data\\\":0.381,\\\"process\\\":0.01}}\"\n}",
+        "truncated": false,
+        "original_chars": 944
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json"
+      ]
+    },
+    {
+      "step": 9,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read Open-Meteo archive point precipitation for event-day value.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json\",\n  \"text\": \"{\\\"latitude\\\":36.239014,\\\"longitude\\\":138.21848,\\\"generationtime_ms\\\":5.384564399719238,\\\"utc_offset_seconds\\\":0,\\\"timezone\\\":\\\"GMT\\\",\\\"timezone_abbreviation\\\":\\\"GMT\\\",\\\"elevation\\\":1006.0,\\\"daily_units\\\":{\\\"time\\\":\\\"iso8601\\\",\\\"temperature_2m_max\\\":\\\"°C\\\",\\\"precipitation_sum\\\":\\\"mm\\\",\\\"wind_speed_10m_max\\\":\\\"km/h\\\"},\\\"daily\\\":{\\\"time\\\":[\\\"2014-09-27\\\"],\\\"temperature_2m_max\\\":[20.1],\\\"precipitation_sum\\\":[0.00],\\\"wind_speed_10m_max\\\":[8.0]}}\"\n}",
+        "truncated": false,
+        "original_chars": 608
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json"
+      ]
+    },
+    {
+      "step": 10,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read ERA5-Land hourly aggregate stats for event-day precipitation max.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"ECMWF/ERA5_LAND/HOURLY\\\",\\n  \\\"start\\\": \\\"2014-09-27\\\",\\n  \\\"end\\\": \\\"2014-09-27\\\",\\n  \\\"stats\\\": {\\n    \\\"precipitation_sum_mm_max\\\": 0.5365908145904541,\\n    \\\"precipitation_sum_mm_mean\\\": 0.12525529200216515,\\n    \\\"precipitation_sum_mm_min\\\": 0,\\n    \\\"precipitation_sum_mm_stdDev\\\": 0.1544578900232667,\\n    \\\"temperature_2m_max_c_max\\\": 24.23963317871096,\\n    \\\"temperature_2m_max_c_mean\\\": 21.809877065889793,\\n    \\\"temperature_2m_max_c_min\\\": 17.64588317871096,\\n    \\\"temperature_2m_max_c_stdDev\\\": 1.5961067931373096,\\n    \\\"u_component_of_wind_10m_max\\\": 0.6324679056803385,\\n    \\\"u_component_of_wind_10m_mean\\\": 0.007289682868217589,\\n    \\\"u_component_of_wind_10m_min\\\": -0.7587674458821615,\\n    \\\"u_component_of_wind_10m_stdDev\\\": 0.36915586464082406,\\n    \\\"v_component_of_wind_10m_max\\\": -0.04206212361653646,\\n    \\\"v_component_of_wind_10m_mean\\\": -0.3567035999211635,\\n    \\\"v_component_of_wind_10m_min\\\": -0.7001024881998698,\\n    \\\"v_component_of_wind_10m_stdDev\\\": 0.1697047813900718\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1200
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json"
+      ]
+    },
+    {
+      "step": 11,
+      "tool": "read_text_file",
+      "ok": false,
+      "reason": "Read GPM IMERG precipitation summary for event-day value.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_004_GPM_IMERG_precipitation_summary.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "file not found: event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_004_GPM_IMERG_precipitation_summary.json",
+        "truncated": false,
+        "original_chars": 149
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [
+        "missing file"
+      ],
+      "evidence_files": []
+    },
+    {
+      "step": 12,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "List physical_hazard files to find correct GPM and CHIRPS summary filenames.",
+      "args": {
+        "subdir": "data/physical_hazard",
+        "max_files": 50
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 9,\n  \"file_count_total\": 9,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json\",\n      \"package_relative_path\": \"data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json\",\n      \"bytes\": 679,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json\",\n      \"package_relative_path\": \"data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json\",\n      \"bytes\": 398,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n      \"package_relative_path\": \"data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n      \"bytes\": 990,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n      \"package_relative_path\": \"data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n      \"bytes\": 312,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json\",\n      \"package_relative_path\": \"data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json\",\n      \"bytes\": 267,\n \n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 13,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read GPM IMERG event accumulated precipitation value.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"NASA/GPM_L3/IMERG_V07\\\",\\n  \\\"start\\\": \\\"2014-09-27\\\",\\n  \\\"end\\\": \\\"2014-09-27\\\",\\n  \\\"stats\\\": {\\n    \\\"gpm_event_precip_mm_max\\\": 0.11499999463558197,\\n    \\\"gpm_event_precip_mm_mean\\\": 0.0018568940086796516,\\n    \\\"gpm_event_precip_mm_min\\\": 0,\\n    \\\"gpm_event_precip_mm_stdDev\\\": 0.013458433037692936\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 511
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 14,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read CHIRPS daily event accumulated precipitation value.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"UCSB-CHG/CHIRPS/DAILY\\\",\\n  \\\"start\\\": \\\"2014-09-27\\\",\\n  \\\"end\\\": \\\"2014-09-27\\\",\\n  \\\"stats\\\": {\\n    \\\"chirps_event_precip_mm_max\\\": 0,\\n    \\\"chirps_event_precip_mm_mean\\\": 0,\\n    \\\"chirps_event_precip_mm_min\\\": 0,\\n    \\\"chirps_event_precip_mm_stdDev\\\": 0\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 465
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 15,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read full manifest to locate image byte counts (event-day vs pre-event) and Sentinel-1/Sentinel-2 scene files.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-311/metadata/files.csv",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-311/metadata/files.csv\",\n  \"text\": \"file_id,package_id,relative_path,data_category,layer_name,source_id,source_name,source_type,url,bytes,sha256_16,file_status\\nF0001,CSX-311,data/event_reports/event_reports_001_Locked_package_evidence_report.html,event_reports,event_anchor_report,S001,Locked package evidence report,resource_registry,https://science.nasa.gov/earth/earth-observatory/ontake-erupts-84456,287915,ea951d4ec3b81dee,downloaded\\nF0002,CSX-311,data/event_reports/event_reports_002_ReliefWeb_public_updates_search.html,event_reports,text_reports,S002,ReliefWeb public updates search,resource_registry,https://reliefweb.int/updates?search=Mount+Ontake+eruption+Japan,116704,167df6b0b5bfaca5,downloaded\\nF0003,CSX-311,data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml,event_catalogs,event_catalog_api,S003,GDACS event feeds and archive,resource_registry,https://www.gdacs.org/xml/rss.xml,225166,9326ca698a7adb8c,downloaded\\nF0004,CSX-311,data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_and_Overpass_AOI.json,geospatial_context,geocoding_or_aoi,S004,OpenStreetMap Nominatim and Overpass AOI,resource_registry,https://nominatim.openstreetmap.org/search?q=Mount+Ontake+eruption+Nagano+%2F+Gifu+Japan+East+Asia&format=jsonv2&limit=5&addressdetails=1,2,4f53cda18c2baa0c,downloaded\\nF0005,CSX-311,data/other/other_001_Volcanic_Ash_Advisory_Centers_advisories.html,other,specialized_hazard_source,S005,Volcanic Ash Advisory Centers advisories,resource_registry,https://www.ssd.noaa.gov/VAAC/,44259,651077b473c4a158,downloaded\\nF0006,CSX-311,data/event_catalogs/event_catalogs_002_NASA_EONET_events_API.xml,ev\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 16,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read Sentinel-1 pre/post change JSON to find pre-event scene count.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-311/data/remote_sensing/remote_sensing_002_Sentinel-1_GRD_VV_pre_post_change.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/remote_sensing/remote_sensing_002_Sentinel-1_GRD_VV_pre_post_change.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"COPERNICUS/S1_GRD\\\",\\n  \\\"counts\\\": {\\n    \\\"pre_count\\\": 0,\\n    \\\"post_count\\\": 9\\n  },\\n  \\\"status\\\": \\\"no_sufficient_scenes\\\"\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 315
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/data/remote_sensing/remote_sensing_002_Sentinel-1_GRD_VV_pre_post_change.json"
+      ]
+    },
+    {
+      "step": 17,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read Sentinel-2 dNBR JSON to find pre-event scene count.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"COPERNICUS/S2_SR_HARMONIZED\\\",\\n  \\\"counts\\\": {\\n    \\\"pre_count\\\": 0,\\n    \\\"post_count\\\": 0\\n  },\\n  \\\"status\\\": \\\"no_sufficient_scenes\\\"\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 323
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json"
+      ]
+    },
+    {
+      "step": 18,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Compute exact metric values for image byte ratio, max precip, and ledger score.",
+      "args": {
+        "code_chars": 589,
+        "code_sha1": "8f4f5bf65384",
+        "code_preview": "from decimal import Decimal\npre_bytes = 22655  # F0019 pre.jpg\nevent_bytes = 98702  # F0020 event.jpg\nratio = event_bytes / pre_bytes\nprint('image_byte_ratio', ratio)\nprint('rounded', round(ratio, 6))\nprecip = [0.01, 0.00, 0.5365908145904541, 0.11499999463558197, 0.0]\nmaxp = max(precip)\nprint('max_precip', maxp, round(maxp,6))\ntext_anchor = 5/5\nledger = sum([text_anchor==1, ratio>=3, maxp<1, 0==0])\nprint('ledger', ledger)\nprint({'text_anchor_score':round(text_anchor,6),'image_byte_ratio':round(ratio,6),'max_precip_mm':round(maxp,6),'surface_pre_scene_total':0,'ledger_score':ledger})",
+        "code_path": "benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-311_Q2/python_snippets/step_18_8f4f5bf65384.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-311_Q2/python_snippets/step_18_8f4f5bf65384.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.135,\n  \"stdout\": \"image_byte_ratio 4.35674244096226\\nrounded 4.356742\\nmax_precip 0.5365908145904541 0.536591\\nledger 4\\n{'text_anchor_score': 1.0, 'image_byte_ratio': 4.356742, 'max_precip_mm': 0.536591, 'surface_pre_scene_total': 0, 'ledger_score': 4}\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 454
+      },
+      "code": {
+        "text": "from decimal import Decimal\npre_bytes = 22655  # F0019 pre.jpg\nevent_bytes = 98702  # F0020 event.jpg\nratio = event_bytes / pre_bytes\nprint('image_byte_ratio', ratio)\nprint('rounded', round(ratio, 6))\nprecip = [0.01, 0.00, 0.5365908145904541, 0.11499999463558197, 0.0]\nmaxp = max(precip)\nprint('max_precip', maxp, round(maxp,6))\ntext_anchor = 5/5\nledger = sum([text_anchor==1, ratio>=3, maxp<1, 0==0])\nprint('ledger', ledger)\nprint({'text_anchor_score':round(text_anchor,6),'image_byte_ratio':round(ratio,6),'max_precip_mm':round(maxp,6),'surface_pre_scene_total':0,'ledger_score':ledger})",
+        "truncated": false,
+        "original_chars": 589
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-311_Q2/python_snippets/step_18_8f4f5bf65384.py"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "All five required anchors (unexpectedly, gas and steam, phreatic eruption, ash, little warning) appear in the event report paragraph.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-311/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "support_type": "report_claim"
+    },
+    {
+      "claim": "text_anchor_score = 5/5 = 1.0",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-311/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Pre-event image (remote_sensing_003_pre.jpg) byte count = 22655; event-day image (remote_sensing_004_event.jpg) byte count = 98702.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-311/metadata/files.csv",
+      "support_type": "metadata"
+    },
+    {
+      "claim": "image_byte_ratio = 98702/22655 = 4.356742 (>=3).",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-311/metadata/files.csv",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Event-day precip values: NASA POWER 0.01 mm, Open-Meteo 0.00 mm, ERA5-Land max 0.536591 mm, GPM 0.115 mm, CHIRPS 0 mm; max = 0.536591 mm (<1).",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-311/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json",
+      "support_type": "table_metric"
+    },
+    {
+      "claim": "Sentinel-1 pre_count = 0 and Sentinel-2 pre_count = 0, so surface_pre_scene_total = 0.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-311/data/remote_sensing/remote_sensing_002_Sentinel-1_GRD_VV_pre_post_change.json",
+      "support_type": "table_metric"
+    },
+    {
+      "claim": "ledger_score = 4 (all four conditions met).",
+      "source_file": "benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-311_Q2/python_snippets/step_18_8f4f5bf65384.py",
+      "support_type": "derived_metric"
+    }
+  ],
+  "reasoning_summary": [
+    "Confirmed all 5 text anchors present in event report (step 5-7).",
+    "Extracted pre/event image byte counts from manifest: 22655 and 98702 => ratio 4.356742.",
+    "Aggregated max precip from 5 sources: max = 0.536591 mm (<1).",
+    "Read Sentinel-1 and Sentinel-2 pre-counts: both 0 => surface_pre_scene_total = 0.",
+    "Computed ledger_score = 4 and assigned label phreatic_plume_dominant."
+  ],
+  "unsupported_or_unresolved": [
+    "Locked event anchor JSON itself did not contain the anchor phrases, but the linked evidence report and anchor HTML did; counted as present per task wording.",
+    "Only MODIS thumbnail/pre-event images were available in manifest for byte ratio; Sentinel optical radar pre-scene counts were zero from provider stats."
+  ],
+  "final_answer": {
+    "answer": "phreatic_plume_dominant",
+    "text_anchor_score": 1.0,
+    "image_byte_ratio": 4.356742,
+    "max_precip_mm": 0.536591,
+    "surface_pre_scene_total": 0,
+    "ledger_score": 4,
+    "consistency_note": "All four tests confirm the record is dominated by a sudden summit phreatic plume: full text anchors present, event-day image bytes 4.357x pre-event, max event-day precip 0.537 mm (<1), and zero pre-event Sentinel-1/Sentinel-2 scenes."
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "All requested numeric and JSON fields are precisely computed and rounded. The final label phrase is different from the expected canonical wording and slightly reduces the correctness score. The consistency note is mostly on point but adds unsupported references beyond the four tests, justifying partial penalty.",
+      "llm_rubric": "The model meets all numeric and schema requirements fully, earning full credit for most rubric points. Points are deducted only for the noncanonical label and expanded consistency note."
+    },
+    "one_sentence_rationale": "The model provides nearly perfect numeric computation with correct JSON fields but loses some credit for a nonstandard final label and a consistency note that introduces unmeasured details beyond the four required tests.",
+    "critical_errors": [],
+    "missing_answer_elements": []
+  },
+  "provenance": {
+    "task_id": "CSX-311_Q2",
+    "model_id": "tencent-hy3",
+    "model_name": "Tencent Hy3",
+    "trajectory_path": "benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-311_Q2/trajectory.json",
+    "judge_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/judge_gpt41mini_final/per_task_judge_scores.jsonl"
+  }
+}

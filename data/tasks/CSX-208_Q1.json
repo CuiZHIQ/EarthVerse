@@ -1,0 +1,984 @@
+{
+  "task_id": "CSX-208_Q1",
+  "event_id": "CSX-208",
+  "title": "Australian Bushfire Air-Smoke-Fire Consistency Ledger",
+  "event_name": "2019-2020 Australian bushfire smoke and hazardous air-quality episode",
+  "hazard_family": "air_pollution_smoke_heat",
+  "hazard_label": "Air pollution, smoke, and heat exposure",
+  "region": "Oceania",
+  "scale": "national_admin",
+  "difficulty": "L2_quantitative_event_diagnosis",
+  "difficulty_rationale": "Manual review: \"Australian Bushfire Air-Smoke-Fire Consistency Ledger\" is calculation-led: formulas, windows, ratios, thresholds, scores, or consistency checks drive a quantitative event diagnosis rather than a full process explanation.",
+  "primary_dimension": "quantitative_calculation",
+  "dimensions": [
+    "quantitative_calculation",
+    "physical_mechanism",
+    "causal_chain"
+  ],
+  "dimension_rationale": "Australian bushfire air-smoke-fire consistency ledger.",
+  "task_type": "short_answer",
+  "target_family": "australia_bushfire_air_smoke_fire_consistency_ledger",
+  "file_count": 31,
+  "category_counts": {
+    "air_quality": 1,
+    "event_catalogs": 3,
+    "event_reports": 4,
+    "exposure_impact": 5,
+    "geospatial_context": 2,
+    "physical_hazard": 9,
+    "remote_sensing": 7
+  },
+  "question": "# Australian Bushfire Air-Smoke-Fire Consistency Ledger\n\nA technical review is checking whether the 2019-2020 Australian bushfire smoke and hazardous air-quality episode is numerically consistent with a compound fire-smoke-air hazard label.\n\nBuild a calculation-led threshold ledger with these row IDs:\n\n- `hot_dry_fire_weather`\n- `rainfall_suppression`\n- `wind_smoke_transport`\n- `smoke_report_anchor`\n- `burn_fire_context`\n- `direct_loss_guardrail`\n\nUse these tests:\n\n- `hot_dry_fire_weather`: `heat_load_c_days = sum(max(Tmax - 35 C, 0))` over the available early-season daily diagnostic segment since 2019-09-01; the row passes if `max_temperature_c >= 40` and `heat_load_c_days >= 25`.\n- `rainfall_suppression`: the row passes if both local daily precipitation totals are `<= 1 mm` and both gridded event-mean precipitation values are `< 5 mm`.\n- `wind_smoke_transport`: convert any wind speed in m/s to km/h before comparing; the row passes if the maximum available 10 m wind speed is `>= 25 km/h`.\n- `smoke_report_anchor`: count the required air-quality text anchors `fires`, `smoke`, and `southeastern australia`; the row passes if all three are present.\n- `burn_fire_context`: compute `fire_context_score = I(dNBR_max >= 0.4) + I(dNBR_mean >= 0.03) + I(annual_embedding_change_mean >= 0.02) + I(report_fire_smoke_context_count >= 5)`; the row passes if `fire_context_score >= 3`.\n- `direct_loss_guardrail`: compute `direct_loss_support_flag = I(local humanitarian report count > 0)`; the guardrail passes when the flag is `0`, meaning receptor layers are context rather than observed-loss measurements.\n\nScore one point for each passing row. If the total score is at least 5, return `compound_fire_smoke_air_hazard_consistent`; otherwise return `insufficient_fire_smoke_air_consistency`. Keep the final interpretation to the computed hazard label.\n\nReturn valid JSON in this shape:\n\n```json\n{\n  \"target_family\": \"australia_bushfire_air_smoke_fire_consistency_ledger\",\n  \"ledger\": [\n    {\n      \"row_id\": \"hot_dry_fire_weather\",\n      \"formula\": \"\",\n      \"computed_values\": {},\n      \"threshold_or_test\": \"\",\n      \"result\": \"\"\n    },\n    {\n      \"row_id\": \"rainfall_suppression\",\n      \"formula\": \"\",\n      \"computed_values\": {},\n      \"threshold_or_test\": \"\",\n      \"result\": \"\"\n    },\n    {\n      \"row_id\": \"wind_smoke_transport\",\n      \"formula\": \"\",\n      \"computed_values\": {},\n      \"threshold_or_test\": \"\",\n      \"result\": \"\"\n    },\n    {\n      \"row_id\": \"smoke_report_anchor\",\n      \"formula\": \"\",\n      \"computed_values\": {},\n      \"threshold_or_test\": \"\",\n      \"result\": \"\"\n    },\n    {\n      \"row_id\": \"burn_fire_context\",\n      \"formula\": \"\",\n      \"computed_values\": {},\n      \"threshold_or_test\": \"\",\n      \"result\": \"\"\n    },\n    {\n      \"row_id\": \"direct_loss_guardrail\",\n      \"formula\": \"\",\n      \"computed_values\": {},\n      \"threshold_or_test\": \"\",\n      \"result\": \"\"\n    }\n  ],\n  \"score\": 0,\n  \"final_label\": \"\",\n  \"rejected_alternatives\": []\n}\n```\n",
+  "solution": "# Final Answer\n\n```json\n{\n  \"target_family\": \"australia_bushfire_air_smoke_fire_consistency_ledger\",\n  \"ledger\": [\n    {\n      \"row_id\": \"hot_dry_fire_weather\",\n      \"formula\": \"heat_load_c_days = sum(max(Tmax - 35 C, 0)); max_temperature_c = max(cross-source Tmax)\",\n      \"computed_values\": {\n        \"max_temperature_c\": 40.98,\n        \"heat_load_c_days\": 30.04\n      },\n      \"threshold_or_test\": \"max_temperature_c >= 40 and heat_load_c_days >= 25\",\n      \"result\": \"pass_hot_dry_fire_weather\"\n    },\n    {\n      \"row_id\": \"rainfall_suppression\",\n      \"formula\": \"local_precip_total_max = max(local daily totals); gridded means are compared separately\",\n      \"computed_values\": {\n        \"open_meteo_total_precip_mm\": 0.0,\n        \"nasa_power_total_precip_mm\": 0.02,\n        \"gpm_event_mean_mm\": 3.197,\n        \"chirps_event_mean_mm\": 2.005\n      },\n      \"threshold_or_test\": \"local totals <= 1 mm and both gridded event means < 5 mm\",\n      \"result\": \"pass_rainfall_suppression\"\n    },\n    {\n      \"row_id\": \"wind_smoke_transport\",\n      \"formula\": \"max_wind_kmh = max(Open-Meteo km/h, NASA_POWER m/s * 3.6)\",\n      \"computed_values\": {\n        \"max_wind_kmh\": 32.3\n      },\n      \"threshold_or_test\": \"max_wind_kmh >= 25\",\n      \"result\": \"pass_wind_smoke_transport\"\n    },\n    {\n      \"row_id\": \"smoke_report_anchor\",\n      \"formula\": \"smoke_keyword_count = sum(required text anchors present)\",\n      \"computed_values\": {\n        \"smoke_keyword_count\": 3,\n        \"required_term_count\": 3\n      },\n      \"threshold_or_test\": \"smoke_keyword_count == 3\",\n      \"result\": \"pass_smoke_report_anchor\"\n    },\n    {\n      \"row_id\": \"burn_fire_context\",\n      \"formula\": \"fire_context_score = I(dNBR_max >= 0.4) + I(dNBR_mean >= 0.03) + I(embedding_mean >= 0.02) + I(report_fire_smoke_context_count >= 5)\",\n      \"computed_values\": {\n        \"sentinel2_dnbr_max\": 0.6516,\n        \"sentinel2_dnbr_mean\": 0.0442,\n        \"alphaearth_1_minus_cosine_mean\": 0.0304,\n        \"report_fire_smoke_context_count\": 7,\n        \"fire_context_score\": 4\n      },\n      \"threshold_or_test\": \"fire_context_score >= 3\",\n      \"result\": \"pass_burn_fire_context\"\n    },\n    {\n      \"row_id\": \"direct_loss_guardrail\",\n      \"formula\": \"direct_loss_support_flag = I(local humanitarian report count > 0)\",\n      \"computed_values\": {\n        \"humanitarian_report_count\": 0,\n        \"direct_loss_support_flag\": 0\n      },\n      \"threshold_or_test\": \"direct_loss_support_flag == 0\",\n      \"result\": \"pass_direct_loss_guardrail\"\n    }\n  ],\n  \"score\": 6,\n  \"final_label\": \"compound_fire_smoke_air_hazard_consistent\",\n  \"rejected_alternatives\": [\n    \"rainfall_moderated_hazard_label\",\n    \"direct_loss_from_receptors_label\"\n  ]\n}\n```\n\n# Key Computations\n\nThe available weather segment has 46 days from 2019-09-01 to 2019-10-16. The maximum cross-source temperature is `40.98 C`, and NASA POWER gives `heat_load_c_days = 30.04`, so the hot-dry row passes.\n\nThe precipitation row passes because local totals are `0.00 mm` and `0.02 mm`, while the gridded event means are `3.197 mm` and `2.005 mm`. These values satisfy the local `<= 1 mm` and gridded `< 5 mm` tests.\n\nThe wind row passes after unit harmonization: Open-Meteo gives `32.3 km/h`, and NASA POWER gives `24.516 km/h` after multiplying m/s by `3.6`, so the maximum available 10 m wind speed is `32.3 km/h`.\n\nThe smoke-anchor row passes with all three required text anchors present: `fires`, `smoke`, and `southeastern australia`.\n\nThe fire-context row passes because `dNBR_max = 0.6516`, `dNBR_mean = 0.0442`, annual embedding-change mean is `0.0304`, and the report fire/smoke context count is `7`, giving `fire_context_score = 4`.\n\nThe direct-loss guardrail passes because the local humanitarian report count is `0`, so `direct_loss_support_flag = 0`.\n\n# Reasoning Path\n\nEach row contributes one point when its threshold test passes. All six rows pass, so the ledger score is `6`.\n\nThe final rule is deterministic: `score >= 5` gives `compound_fire_smoke_air_hazard_consistent`; otherwise it gives `insufficient_fire_smoke_air_consistency`. Since `6 >= 5`, the final label is `compound_fire_smoke_air_hazard_consistent`.\n\nThe rainfall-moderated alternative is rejected because precipitation stays below the row thresholds. The direct-loss-from-receptors alternative is rejected because the report-count guardrail is zero.\n\n# Computed Interpretation\n\nThe computed ledger is internally consistent with a compound fire-smoke-air hazard label, based on heat load, suppressed rainfall, wind, smoke text anchors, burn and report-context indicators, and a zero-report direct-loss guardrail.\n\n# Scoring Rubric\n\nTotal: 20 points.\n\n- Requested JSON structure, 3 points: Full credit for returning the target family, all six required row IDs, score, final label, and rejected alternatives. Partial credit: 1-2 points for a mostly usable JSON answer with one missing top-level field, one missing row, or minor field-name differences.\n- Weather and precipitation calculations, 5 points: Full credit for correct heat load, maximum temperature, dry-day fraction or equivalent dryness evidence, local precipitation totals, gridded precipitation means, and harmonized wind value. Partial credit: 2-4 points when most values are correct but one source, threshold, or unit conversion is missing; 1 point for only a qualitative hot-dry reading.\n- Smoke and fire-context calculations, 4 points: Full credit for the `3/3` smoke-anchor count and `4/4` fire-context score using dNBR, embedding change, and report fire/smoke context anchors. Partial credit: 2-3 points if either the text-anchor count or fire-context score is complete and the other is partly correct; 1 point for naming the right evidence family without the numeric count.\n- Threshold and final-label logic, 3 points: Full credit for applying each row threshold and the `score >= 5` rule to produce the final label. Partial credit: 1-2 points for the correct final label with an incomplete row-score tally or one threshold mistake.\n- Rejected alternatives, 2 points: Full credit for rejecting rainfall-moderated and direct-loss-from-receptors labels using the precipitation and direct-loss guardrail values. Partial credit: 1 point for rejecting only one alternative or for using the correct guardrail values without naming both rejected labels.\n- Formula-led reasoning, 2 points: Full credit for showing formulas or equivalent derivations for the ledger rows. Partial credit: 1 point for showing formulas for some rows while leaving others as threshold summaries.\n- Answer discipline, 1 point: Full credit for a concise interpretation that avoids uncomputed impact estimates. Partial credit: 0.5 points for a readable but slightly wordy answer that still keeps impact estimates bounded to computed fields.\n",
+  "ground_truth": {
+    "schema_version": "1.0",
+    "task_id": "CSX-208_Q1",
+    "event_id": "CSX-208",
+    "target_family": "australia_bushfire_air_smoke_fire_consistency_ledger",
+    "task_type": "short_answer",
+    "evaluation_mode": "hybrid",
+    "difficulty_level": "L3",
+    "primary_gt": {
+      "target_family": "australia_bushfire_air_smoke_fire_consistency_ledger",
+      "ledger": [
+        {
+          "row_id": "hot_dry_fire_weather",
+          "formula": "heat_load_c_days = sum(max(Tmax - 35 C, 0)); max_temperature_c = max(cross-source Tmax)",
+          "computed_values": {
+            "max_temperature_c": 40.98,
+            "heat_load_c_days": 30.04
+          },
+          "threshold_or_test": "max_temperature_c >= 40 and heat_load_c_days >= 25",
+          "result": "pass_hot_dry_fire_weather"
+        },
+        {
+          "row_id": "rainfall_suppression",
+          "formula": "local_precip_total_max = max(local daily totals); gridded means are compared separately",
+          "computed_values": {
+            "open_meteo_total_precip_mm": 0.0,
+            "nasa_power_total_precip_mm": 0.02,
+            "gpm_event_mean_mm": 3.197,
+            "chirps_event_mean_mm": 2.005
+          },
+          "threshold_or_test": "local totals <= 1 mm and both gridded event means < 5 mm",
+          "result": "pass_rainfall_suppression"
+        },
+        {
+          "row_id": "wind_smoke_transport",
+          "formula": "max_wind_kmh = max(Open-Meteo km/h, NASA_POWER m/s * 3.6)",
+          "computed_values": {
+            "max_wind_kmh": 32.3
+          },
+          "threshold_or_test": "max_wind_kmh >= 25",
+          "result": "pass_wind_smoke_transport"
+        },
+        {
+          "row_id": "smoke_report_anchor",
+          "formula": "smoke_keyword_count = sum(required text anchors present)",
+          "computed_values": {
+            "smoke_keyword_count": 3,
+            "required_term_count": 3
+          },
+          "threshold_or_test": "smoke_keyword_count == 3",
+          "result": "pass_smoke_report_anchor"
+        },
+        {
+          "row_id": "burn_fire_context",
+          "formula": "fire_context_score = I(dNBR_max >= 0.4) + I(dNBR_mean >= 0.03) + I(embedding_mean >= 0.02) + I(report_fire_smoke_context_count >= 5)",
+          "computed_values": {
+            "sentinel2_dnbr_max": 0.6516,
+            "sentinel2_dnbr_mean": 0.0442,
+            "alphaearth_1_minus_cosine_mean": 0.0304,
+            "report_fire_smoke_context_count": 7,
+            "fire_context_score": 4
+          },
+          "threshold_or_test": "fire_context_score >= 3",
+          "result": "pass_burn_fire_context"
+        },
+        {
+          "row_id": "direct_loss_guardrail",
+          "formula": "direct_loss_support_flag = I(local humanitarian report count > 0)",
+          "computed_values": {
+            "humanitarian_report_count": 0,
+            "direct_loss_support_flag": 0
+          },
+          "threshold_or_test": "direct_loss_support_flag == 0",
+          "result": "pass_direct_loss_guardrail"
+        }
+      ],
+      "score": 6,
+      "final_label": "compound_fire_smoke_air_hazard_consistent",
+      "rejected_alternatives": [
+        "rainfall_moderated_hazard_label",
+        "direct_loss_from_receptors_label"
+      ]
+    },
+    "event": {
+      "package_id": "CSX-208",
+      "event_name": "2019-2020 Australian bushfire smoke and hazardous air-quality episode",
+      "hazard_family": "air_pollution_smoke_heat",
+      "event_date_or_window": "2019-09-01 to 2020-02-29"
+    },
+    "decision_rule": {
+      "row_score": "one point per passing ledger row",
+      "final_label_rule": "score >= 5 gives compound_fire_smoke_air_hazard_consistent; otherwise insufficient_fire_smoke_air_consistency",
+      "positive_rows": [
+        "hot_dry_fire_weather",
+        "rainfall_suppression",
+        "wind_smoke_transport",
+        "smoke_report_anchor",
+        "burn_fire_context"
+      ],
+      "guardrail_row": "direct_loss_guardrail"
+    },
+    "ledger_rows": [
+      {
+        "row_id": "hot_dry_fire_weather",
+        "formula": "heat_load_c_days = sum(max(Tmax - 35 C, 0)); max_temperature_c = max(cross-source Tmax)",
+        "computed_values": {
+          "weather_days": 46,
+          "weather_window": "2019-09-01 to 2019-10-16",
+          "max_temperature_c": 40.98,
+          "heat_load_c_days": 30.04,
+          "hot_day_count_ge_35c": 11,
+          "extreme_day_count_ge_40c": 3
+        },
+        "threshold_or_test": "max_temperature_c >= 40 and heat_load_c_days >= 25",
+        "result": "pass_hot_dry_fire_weather"
+      },
+      {
+        "row_id": "rainfall_suppression",
+        "formula": "local_precip_total_max = max(local daily totals); gridded means are compared separately",
+        "computed_values": {
+          "open_meteo_total_precip_mm": 0.0,
+          "nasa_power_total_precip_mm": 0.02,
+          "dry_day_fraction": 1.0,
+          "gpm_event_mean_mm": 3.197,
+          "chirps_event_mean_mm": 2.005
+        },
+        "threshold_or_test": "local totals <= 1 mm and both gridded event means < 5 mm",
+        "result": "pass_rainfall_suppression"
+      },
+      {
+        "row_id": "wind_smoke_transport",
+        "formula": "max_wind_kmh = max(Open-Meteo km/h, NASA_POWER m/s * 3.6)",
+        "computed_values": {
+          "open_meteo_max_wind_kmh": 32.3,
+          "nasa_power_max_wind_kmh": 24.516,
+          "max_wind_kmh": 32.3
+        },
+        "threshold_or_test": "max_wind_kmh >= 25",
+        "result": "pass_wind_smoke_transport"
+      },
+      {
+        "row_id": "smoke_report_anchor",
+        "formula": "smoke_keyword_count = sum(required text anchors present)",
+        "computed_values": {
+          "required_terms": [
+            "fires",
+            "smoke",
+            "southeastern australia"
+          ],
+          "smoke_keyword_count": 3,
+          "required_term_count": 3,
+          "anchor_keyword_count": 7
+        },
+        "threshold_or_test": "smoke_keyword_count == 3",
+        "result": "pass_smoke_report_anchor"
+      },
+      {
+        "row_id": "burn_fire_context",
+        "formula": "fire_context_score = I(dNBR_max >= 0.4) + I(dNBR_mean >= 0.03) + I(embedding_mean >= 0.02) + I(report_fire_smoke_context_count >= 5)",
+        "computed_values": {
+          "sentinel2_dnbr_max": 0.6516,
+          "sentinel2_dnbr_mean": 0.0442,
+          "alphaearth_1_minus_cosine_mean": 0.0304,
+          "report_fire_smoke_context_count": 7,
+          "fire_context_score": 4
+        },
+        "threshold_or_test": "fire_context_score >= 3",
+        "result": "pass_burn_fire_context"
+      },
+      {
+        "row_id": "direct_loss_guardrail",
+        "formula": "direct_loss_support_flag = I(local humanitarian report count > 0)",
+        "computed_values": {
+          "humanitarian_report_count": 0,
+          "direct_loss_support_flag": 0,
+          "worldpop_population_sum": 4365.744,
+          "osm_small_element_count": 22
+        },
+        "threshold_or_test": "direct_loss_support_flag == 0",
+        "result": "pass_direct_loss_guardrail"
+      }
+    ],
+    "key_values": {
+      "available_weather_window": {
+        "start": "2019-09-01",
+        "end": "2019-10-16",
+        "days": 46
+      },
+      "event_lock_window": {
+        "start_date": "2019-09-01",
+        "end_date": "2020-02-29",
+        "source": "package_event_lock_targeted_refined_v4_repaired"
+      },
+      "max_temperature_c": 40.98,
+      "nasa_power_heat_load_c_days_above_35c": 30.04,
+      "nasa_power_hot_day_count_ge_35c": 11,
+      "nasa_power_extreme_day_count_ge_40c": 3,
+      "dry_day_fraction": 1.0,
+      "open_meteo_total_precipitation_mm": 0.0,
+      "nasa_power_total_precipitation_mm": 0.02,
+      "gpm_event_precip_mean_mm": 3.197,
+      "chirps_event_precip_mean_mm": 2.005,
+      "max_wind_speed_kmh": 32.3,
+      "smoke_keyword_hits": {
+        "fires": true,
+        "smoke": true,
+        "southeastern australia": true
+      },
+      "anchor_keyword_hits": {
+        "fire": true,
+        "fires": true,
+        "smoke": true,
+        "hazardous air quality": true,
+        "hottest": true,
+        "driest": true,
+        "pacific": true
+      },
+      "smoke_keyword_count": 3,
+      "anchor_keyword_count": 7,
+      "sentinel2_dnbr_max": 0.6516,
+      "sentinel2_dnbr_mean": 0.0442,
+      "alphaearth_1_minus_cosine_mean": 0.0304,
+      "humanitarian_report_count": 0,
+      "direct_loss_support_flag": 0,
+      "worldpop_population_sum": 4365.744,
+      "osm_small_element_count": 22,
+      "row_passes": {
+        "hot_dry_fire_weather": true,
+        "rainfall_suppression": true,
+        "wind_smoke_transport": true,
+        "smoke_report_anchor": true,
+        "burn_fire_context": true,
+        "direct_loss_guardrail": true
+      },
+      "score": 6,
+      "final_label": "compound_fire_smoke_air_hazard_consistent"
+    },
+    "numeric_tolerances": {
+      "max_temperature_c": {
+        "target": 40.98,
+        "absolute_tolerance": 0.05
+      },
+      "heat_load_c_days": {
+        "target": 30.04,
+        "absolute_tolerance": 0.05
+      },
+      "dry_day_fraction": {
+        "target": 1.0,
+        "absolute_tolerance": 0.001
+      },
+      "gpm_event_precip_mean_mm": {
+        "target": 3.197,
+        "absolute_tolerance": 0.005
+      },
+      "chirps_event_precip_mean_mm": {
+        "target": 2.005,
+        "absolute_tolerance": 0.005
+      },
+      "max_wind_kmh": {
+        "target": 32.3,
+        "absolute_tolerance": 0.1
+      },
+      "sentinel2_dnbr_max": {
+        "target": 0.6516,
+        "absolute_tolerance": 0.0005
+      },
+      "alphaearth_1_minus_cosine_mean": {
+        "target": 0.0304,
+        "absolute_tolerance": 0.0005
+      },
+      "score": {
+        "target": 6,
+        "absolute_tolerance": 0
+      }
+    },
+    "rubric": {
+      "total_points": 20,
+      "criteria": [
+        {
+          "name": "Requested JSON structure",
+          "points": 3,
+          "description": "Returns the target family, all six required row IDs, score, final label, and rejected alternatives.",
+          "partial_credit": "Award 1-2 points for a mostly usable JSON answer with one missing top-level field, one missing row, or minor field-name differences."
+        },
+        {
+          "name": "Weather and precipitation calculations",
+          "points": 5,
+          "description": "Computes the heat load, maximum temperature, dry-day fraction, local precipitation totals, gridded precipitation means, and harmonized wind value with correct units and tolerances.",
+          "partial_credit": "Award 2-4 points when most heat, precipitation, and wind values are correct but one source, threshold, or unit conversion is missing; award 1 point for only a qualitative hot-dry reading."
+        },
+        {
+          "name": "Smoke and fire-context calculations",
+          "points": 4,
+          "description": "Computes the smoke-anchor count and burn/fire-context score using dNBR, embedding change, and report fire/smoke context anchors.",
+          "partial_credit": "Award 2-3 points if either the text-anchor count or burn-context score is complete and the other is partly correct; award 1 point for naming the right evidence family without the numeric count."
+        },
+        {
+          "name": "Threshold and final-label logic",
+          "points": 3,
+          "description": "Applies each row threshold and the final score rule correctly, yielding the compound fire-smoke-air hazard label.",
+          "partial_credit": "Award 1-2 points for the correct final label with an incomplete row-score tally or one threshold mistake."
+        },
+        {
+          "name": "Rejected alternatives",
+          "points": 2,
+          "description": "Rejects rainfall-moderated and direct-loss-from-receptors labels using the precipitation and direct-loss guardrail values.",
+          "partial_credit": "Award 1 point for rejecting only one alternative or for using the correct guardrail values without naming both rejected labels."
+        },
+        {
+          "name": "Formula-led reasoning",
+          "points": 2,
+          "description": "Shows formulas or equivalent derivations for the ledger rows rather than only narrative explanation.",
+          "partial_credit": "Award 1 point for showing formulas for some rows while leaving others as threshold summaries."
+        },
+        {
+          "name": "Answer discipline",
+          "points": 1,
+          "description": "Keeps the interpretation concise and avoids uncomputed impact estimates.",
+          "partial_credit": "Award 0.5 points for a readable but slightly wordy answer that still keeps impact estimates bounded to computed fields."
+        }
+      ]
+    },
+    "provenance": {
+      "computed_by": "compute_gt.py",
+      "source_files": [
+        "metadata/event.json",
+        "data/event_reports/event_reports_003_Locked_event_anchor_2019-2020_Australian_bushfire_smoke_and_hazardous_air-quality_episode.json",
+        "data/event_reports/event_reports_001_Locked_anchor_report_WMO.html",
+        "data/air_quality/air_quality_001_NASA_Earth_Observatory_Fires_and_Smoke_Engulf_Southeastern_Australia.html",
+        "data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json",
+        "data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json",
+        "data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+        "data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+        "data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+        "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+        "data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+        "data/exposure_impact/exposure_impact_001_Overpass_small_roads_and_critical_amenities.json",
+        "data/event_reports/event_reports_002_HDX_CKAN_package_search.json"
+      ]
+    }
+  },
+  "compute_gt_py": "import json\nimport re\nfrom pathlib import Path\n\n\nTASK_ID = \"CSX-208_Q1\"\nPACKAGE_ID = \"CSX-208\"\nTARGET_FAMILY = \"australia_bushfire_air_smoke_fire_consistency_ledger\"\n\n\nREL_PATHS = {\n    \"event\": \"metadata/event.json\",\n    \"locked_anchor\": \"data/event_reports/event_reports_003_Locked_event_anchor_2019-2020_Australian_bushfire_smoke_and_hazardous_air-quality_episode.json\",\n    \"wmo_html\": \"data/event_reports/event_reports_001_Locked_anchor_report_WMO.html\",\n    \"nasa_smoke_html\": \"data/air_quality/air_quality_001_NASA_Earth_Observatory_Fires_and_Smoke_Engulf_Southeastern_Australia.html\",\n    \"open_meteo\": \"data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json\",\n    \"nasa_power\": \"data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json\",\n    \"era5\": \"data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n    \"gpm\": \"data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n    \"chirps\": \"data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json\",\n    \"sentinel2\": \"data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json\",\n    \"alpha_change\": \"data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n    \"worldpop\": \"data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json\",\n    \"osm_small\": \"data/exposure_impact/exposure_impact_001_Overpass_small_roads_and_critical_amenities.json\",\n    \"hdx\": \"data/event_reports/event_reports_002_HDX_CKAN_package_search.json\",\n}\n\n\ndef read_json(path):\n    return json.loads(path.read_text(encoding=\"utf-8\"))\n\n\ndef read_text(path):\n    return path.read_text(encoding=\"utf-8\", errors=\"replace\")\n\n\ndef html_to_text(raw):\n    raw = re.sub(r\"(?is)<script.*?</script>\", \" \", raw)\n    raw = re.sub(r\"(?is)<style.*?</style>\", \" \", raw)\n    raw = re.sub(r\"(?s)<[^>]+>\", \" \", raw)\n    return re.sub(r\"\\s+\", \" \", raw).strip().lower()\n\n\ndef indicator(value):\n    return 1 if value else 0\n\n\ndef round_float(value, digits=3):\n    return round(float(value), digits)\n\n\ndef count_list_field(data, key):\n    value = data.get(key, [])\n    return len(value) if isinstance(value, list) else 0\n\n\ndef hdx_count(data):\n    result = data.get(\"result\", {})\n    return int(result.get(\"count\", 0)) if isinstance(result, dict) else 0\n\n\ndef open_meteo_stats(data, start_date):\n    daily = data[\"daily\"]\n    rows = [\n        {\"date\": date, \"tmax\": tmax, \"precip\": precip, \"wind_kmh\": wind}\n        for date, tmax, precip, wind in zip(\n            daily[\"time\"],\n            daily[\"temperature_2m_max\"],\n            daily[\"precipitation_sum\"],\n            daily[\"wind_speed_10m_max\"],\n        )\n        if date >= start_date\n    ]\n    return {\n        \"start\": rows[0][\"date\"],\n        \"end\": rows[-1][\"date\"],\n        \"days\": len(rows),\n        \"max_temperature_c\": max(row[\"tmax\"] for row in rows),\n        \"heat_load_c_days_above_35c\": sum(max(row[\"tmax\"] - 35.0, 0.0) for row in rows),\n        \"hot_day_count_ge_35c\": sum(1 for row in rows if row[\"tmax\"] >= 35.0),\n        \"total_precipitation_mm\": sum(row[\"precip\"] for row in rows),\n        \"dry_day_count_lte_0_1mm\": sum(1 for row in rows if row[\"precip\"] <= 0.1),\n        \"max_wind_speed_kmh\": max(row[\"wind_kmh\"] for row in rows),\n    }\n\n\ndef nasa_power_stats(data, start_yyyymmdd):\n    params = data[\"properties\"][\"parameter\"]\n    keys = [key for key in params[\"T2M_MAX\"] if key >= start_yyyymmdd]\n    tmax_values = [params[\"T2M_MAX\"][key] for key in keys]\n    precip_values = [params[\"PRECTOTCORR\"][key] for key in keys]\n    wind_values = [params[\"WS10M\"][key] for key in keys]\n    return {\n        \"start\": keys[0],\n        \"end\": keys[-1],\n        \"days\": len(keys),\n        \"max_temperature_c\": max(tmax_values),\n        \"mean_tmax_c\": sum(tmax_values) / len(tmax_values),\n        \"heat_load_c_days_above_35c\": sum(max(value - 35.0, 0.0) for value in tmax_values),\n        \"hot_day_count_ge_35c\": sum(1 for value in tmax_values if value >= 35.0),\n        \"extreme_day_count_ge_40c\": sum(1 for value in tmax_values if value >= 40.0),\n        \"total_precipitation_mm\": sum(precip_values),\n        \"dry_day_count_lte_0_1mm\": sum(1 for value in precip_values if value <= 0.1),\n        \"max_wind_speed_mps\": max(wind_values),\n        \"max_wind_speed_kmh\": max(wind_values) * 3.6,\n    }\n\n\ndef keyword_hits(text, terms):\n    return {term: term in text for term in terms}\n\n\ndef rubric():\n    return {\n        \"total_points\": 20,\n        \"criteria\": [\n            {\n                \"name\": \"Requested JSON structure\",\n                \"points\": 3,\n                \"description\": \"Returns the target family, all six required row IDs, score, final label, and rejected alternatives.\",\n                \"partial_credit\": \"Award 1-2 points for a mostly usable JSON answer with one missing top-level field, one missing row, or minor field-name differences.\",\n            },\n            {\n                \"name\": \"Weather and precipitation calculations\",\n                \"points\": 5,\n                \"description\": \"Computes the heat load, maximum temperature, dry-day fraction, local precipitation totals, gridded precipitation means, and harmonized wind value with correct units and tolerances.\",\n                \"partial_credit\": \"Award 2-4 points when most heat, precipitation, and wind values are correct but one source, threshold, or unit conversion is missing; award 1 point for only a qualitative hot-dry reading.\",\n            },\n            {\n                \"name\": \"Smoke and fire-context calculations\",\n                \"points\": 4,\n                \"description\": \"Computes the smoke-anchor count and burn/fire-context score using dNBR, embedding change, and report fire/smoke context anchors.\",\n                \"partial_credit\": \"Award 2-3 points if either the text-anchor count or burn-context score is complete and the other is partly correct; award 1 point for naming the right evidence family without the numeric count.\",\n            },\n            {\n                \"name\": \"Threshold and final-label logic\",\n                \"points\": 3,\n                \"description\": \"Applies each row threshold and the final score rule correctly, yielding the compound fire-smoke-air hazard label.\",\n                \"partial_credit\": \"Award 1-2 points for the correct final label with an incomplete row-score tally or one threshold mistake.\",\n            },\n            {\n                \"name\": \"Rejected alternatives\",\n                \"points\": 2,\n                \"description\": \"Rejects rainfall-moderated and direct-loss-from-receptors labels using the precipitation and direct-loss guardrail values.\",\n                \"partial_credit\": \"Award 1 point for rejecting only one alternative or for using the correct guardrail values without naming both rejected labels.\",\n            },\n            {\n                \"name\": \"Formula-led reasoning\",\n                \"points\": 2,\n                \"description\": \"Shows formulas or equivalent derivations for the ledger rows rather than only narrative explanation.\",\n                \"partial_credit\": \"Award 1 point for showing formulas for some rows while leaving others as threshold summaries.\",\n            },\n            {\n                \"name\": \"Answer discipline\",\n                \"points\": 1,\n                \"description\": \"Keeps the interpretation concise and avoids uncomputed impact estimates.\",\n                \"partial_credit\": \"Award 0.5 points for a readable but slightly wordy answer that still keeps impact estimates bounded to computed fields.\",\n            },\n        ],\n    }\n\n\ndef build_output():\n    repo = Path(__file__).resolve().parents[3]\n    package = repo / \"event_packages\" / \"standard_event_packages\" / \"packages\" / PACKAGE_ID\n\n    event = read_json(package / REL_PATHS[\"event\"])\n    locked = read_json(package / REL_PATHS[\"locked_anchor\"])\n    open_stats = open_meteo_stats(read_json(package / REL_PATHS[\"open_meteo\"]), \"2019-09-01\")\n    power_stats = nasa_power_stats(read_json(package / REL_PATHS[\"nasa_power\"]), \"20190901\")\n    era5_stats = read_json(package / REL_PATHS[\"era5\"])[\"stats\"]\n    gpm_stats = read_json(package / REL_PATHS[\"gpm\"])[\"stats\"]\n    chirps_stats = read_json(package / REL_PATHS[\"chirps\"])[\"stats\"]\n    sentinel2_stats = read_json(package / REL_PATHS[\"sentinel2\"])[\"stats\"]\n    alpha_stats = read_json(package / REL_PATHS[\"alpha_change\"])[\"stats\"]\n    worldpop_population = read_json(package / REL_PATHS[\"worldpop\"])[\"population_sum\"][\"population\"]\n    osm_small_count = count_list_field(read_json(package / REL_PATHS[\"osm_small\"]), \"elements\")\n    hdx_report_count = hdx_count(read_json(package / REL_PATHS[\"hdx\"]))\n\n    wmo_text = html_to_text(read_text(package / REL_PATHS[\"wmo_html\"]))\n    nasa_smoke_text = html_to_text(read_text(package / REL_PATHS[\"nasa_smoke_html\"]))\n    anchor_text = wmo_text + \" \" + locked[\"locked_event_anchor\"][\"event_lock_notes\"].lower()\n    anchor_terms = [\"fire\", \"fires\", \"smoke\", \"hazardous air quality\", \"hottest\", \"driest\", \"pacific\"]\n    smoke_terms = [\"fires\", \"smoke\", \"southeastern australia\"]\n    anchor_hits = keyword_hits(anchor_text, anchor_terms)\n    smoke_hits = keyword_hits(nasa_smoke_text, smoke_terms)\n\n    max_temperature_c = max(\n        open_stats[\"max_temperature_c\"],\n        power_stats[\"max_temperature_c\"],\n        era5_stats[\"temperature_2m_max_c_max\"],\n    )\n    heat_load_c_days = power_stats[\"heat_load_c_days_above_35c\"]\n    dry_day_fraction = power_stats[\"dry_day_count_lte_0_1mm\"] / power_stats[\"days\"]\n    max_local_total_precip_mm = max(open_stats[\"total_precipitation_mm\"], power_stats[\"total_precipitation_mm\"])\n    gpm_mean_mm = gpm_stats[\"gpm_event_precip_mm_mean\"]\n    chirps_mean_mm = chirps_stats[\"chirps_event_precip_mm_mean\"]\n    max_wind_kmh = max(open_stats[\"max_wind_speed_kmh\"], power_stats[\"max_wind_speed_kmh\"])\n    smoke_keyword_count = sum(indicator(value) for value in smoke_hits.values())\n    anchor_keyword_count = sum(indicator(value) for value in anchor_hits.values())\n    direct_loss_support_flag = indicator(hdx_report_count > 0)\n    fire_context_score = (\n        indicator(sentinel2_stats[\"sentinel2_dnbr_max\"] >= 0.4)\n        + indicator(sentinel2_stats[\"sentinel2_dnbr_mean\"] >= 0.03)\n        + indicator(alpha_stats[\"alphaearth_1_minus_cosine_mean\"] >= 0.02)\n        + indicator(anchor_keyword_count >= 5)\n    )\n\n    row_passes = {\n        \"hot_dry_fire_weather\": max_temperature_c >= 40.0 and heat_load_c_days >= 25.0,\n        \"rainfall_suppression\": (\n            max_local_total_precip_mm <= 1.0\n            and gpm_mean_mm < 5.0\n            and chirps_mean_mm < 5.0\n        ),\n        \"wind_smoke_transport\": max_wind_kmh >= 25.0,\n        \"smoke_report_anchor\": smoke_keyword_count == len(smoke_terms),\n        \"burn_fire_context\": fire_context_score >= 3,\n        \"direct_loss_guardrail\": direct_loss_support_flag == 0,\n    }\n    score = sum(indicator(value) for value in row_passes.values())\n    final_label = (\n        \"compound_fire_smoke_air_hazard_consistent\"\n        if score >= 5\n        else \"insufficient_fire_smoke_air_consistency\"\n    )\n\n    ledger_rows = [\n        {\n            \"row_id\": \"hot_dry_fire_weather\",\n            \"formula\": \"heat_load_c_days = sum(max(Tmax - 35 C, 0)); max_temperature_c = max(cross-source Tmax)\",\n            \"computed_values\": {\n                \"weather_days\": power_stats[\"days\"],\n                \"weather_window\": f\"{open_stats['start']} to {open_stats['end']}\",\n                \"max_temperature_c\": round_float(max_temperature_c, 2),\n                \"heat_load_c_days\": round_float(heat_load_c_days, 2),\n                \"hot_day_count_ge_35c\": power_stats[\"hot_day_count_ge_35c\"],\n                \"extreme_day_count_ge_40c\": power_stats[\"extreme_day_count_ge_40c\"],\n            },\n            \"threshold_or_test\": \"max_temperature_c >= 40 and heat_load_c_days >= 25\",\n            \"result\": \"pass_hot_dry_fire_weather\" if row_passes[\"hot_dry_fire_weather\"] else \"fail_hot_dry_fire_weather\",\n        },\n        {\n            \"row_id\": \"rainfall_suppression\",\n            \"formula\": \"local_precip_total_max = max(local daily totals); gridded means are compared separately\",\n            \"computed_values\": {\n                \"open_meteo_total_precip_mm\": round_float(open_stats[\"total_precipitation_mm\"], 2),\n                \"nasa_power_total_precip_mm\": round_float(power_stats[\"total_precipitation_mm\"], 2),\n                \"dry_day_fraction\": round_float(dry_day_fraction, 3),\n                \"gpm_event_mean_mm\": round_float(gpm_mean_mm, 3),\n                \"chirps_event_mean_mm\": round_float(chirps_mean_mm, 3),\n            },\n            \"threshold_or_test\": \"local totals <= 1 mm and both gridded event means < 5 mm\",\n            \"result\": \"pass_rainfall_suppression\" if row_passes[\"rainfall_suppression\"] else \"fail_rainfall_suppression\",\n        },\n        {\n            \"row_id\": \"wind_smoke_transport\",\n            \"formula\": \"max_wind_kmh = max(Open-Meteo km/h, NASA_POWER m/s * 3.6)\",\n            \"computed_values\": {\n                \"open_meteo_max_wind_kmh\": round_float(open_stats[\"max_wind_speed_kmh\"], 1),\n                \"nasa_power_max_wind_kmh\": round_float(power_stats[\"max_wind_speed_kmh\"], 3),\n                \"max_wind_kmh\": round_float(max_wind_kmh, 1),\n            },\n            \"threshold_or_test\": \"max_wind_kmh >= 25\",\n            \"result\": \"pass_wind_smoke_transport\" if row_passes[\"wind_smoke_transport\"] else \"fail_wind_smoke_transport\",\n        },\n        {\n            \"row_id\": \"smoke_report_anchor\",\n            \"formula\": \"smoke_keyword_count = sum(required text anchors present)\",\n            \"computed_values\": {\n                \"required_terms\": smoke_terms,\n                \"smoke_keyword_count\": smoke_keyword_count,\n                \"required_term_count\": len(smoke_terms),\n                \"anchor_keyword_count\": anchor_keyword_count,\n            },\n            \"threshold_or_test\": \"smoke_keyword_count == 3\",\n            \"result\": \"pass_smoke_report_anchor\" if row_passes[\"smoke_report_anchor\"] else \"fail_smoke_report_anchor\",\n        },\n        {\n            \"row_id\": \"burn_fire_context\",\n            \"formula\": \"fire_context_score = I(dNBR_max >= 0.4) + I(dNBR_mean >= 0.03) + I(embedding_mean >= 0.02) + I(report_fire_smoke_context_count >= 5)\",\n            \"computed_values\": {\n                \"sentinel2_dnbr_max\": round_float(sentinel2_stats[\"sentinel2_dnbr_max\"], 4),\n                \"sentinel2_dnbr_mean\": round_float(sentinel2_stats[\"sentinel2_dnbr_mean\"], 4),\n                \"alphaearth_1_minus_cosine_mean\": round_float(alpha_stats[\"alphaearth_1_minus_cosine_mean\"], 4),\n                \"report_fire_smoke_context_count\": anchor_keyword_count,\n                \"fire_context_score\": fire_context_score,\n            },\n            \"threshold_or_test\": \"fire_context_score >= 3\",\n            \"result\": \"pass_burn_fire_context\" if row_passes[\"burn_fire_context\"] else \"fail_burn_fire_context\",\n        },\n        {\n            \"row_id\": \"direct_loss_guardrail\",\n            \"formula\": \"direct_loss_support_flag = I(local humanitarian report count > 0)\",\n            \"computed_values\": {\n                \"humanitarian_report_count\": hdx_report_count,\n                \"direct_loss_support_flag\": direct_loss_support_flag,\n                \"worldpop_population_sum\": round_float(worldpop_population, 3),\n                \"osm_small_element_count\": osm_small_count,\n            },\n            \"threshold_or_test\": \"direct_loss_support_flag == 0\",\n            \"result\": \"pass_direct_loss_guardrail\" if row_passes[\"direct_loss_guardrail\"] else \"fail_direct_loss_guardrail\",\n        },\n    ]\n\n    key_values = {\n        \"available_weather_window\": {\n            \"start\": open_stats[\"start\"],\n            \"end\": open_stats[\"end\"],\n            \"days\": power_stats[\"days\"],\n        },\n        \"event_lock_window\": locked[\"temporal_window\"],\n        \"max_temperature_c\": round_float(max_temperature_c, 2),\n        \"nasa_power_heat_load_c_days_above_35c\": round_float(heat_load_c_days, 2),\n        \"nasa_power_hot_day_count_ge_35c\": power_stats[\"hot_day_count_ge_35c\"],\n        \"nasa_power_extreme_day_count_ge_40c\": power_stats[\"extreme_day_count_ge_40c\"],\n        \"dry_day_fraction\": round_float(dry_day_fraction, 3),\n        \"open_meteo_total_precipitation_mm\": round_float(open_stats[\"total_precipitation_mm\"], 2),\n        \"nasa_power_total_precipitation_mm\": round_float(power_stats[\"total_precipitation_mm\"], 2),\n        \"gpm_event_precip_mean_mm\": round_float(gpm_mean_mm, 3),\n        \"chirps_event_precip_mean_mm\": round_float(chirps_mean_mm, 3),\n        \"max_wind_speed_kmh\": round_float(max_wind_kmh, 1),\n        \"smoke_keyword_hits\": smoke_hits,\n        \"anchor_keyword_hits\": anchor_hits,\n        \"smoke_keyword_count\": smoke_keyword_count,\n        \"anchor_keyword_count\": anchor_keyword_count,\n        \"sentinel2_dnbr_max\": round_float(sentinel2_stats[\"sentinel2_dnbr_max\"], 4),\n        \"sentinel2_dnbr_mean\": round_float(sentinel2_stats[\"sentinel2_dnbr_mean\"], 4),\n        \"alphaearth_1_minus_cosine_mean\": round_float(alpha_stats[\"alphaearth_1_minus_cosine_mean\"], 4),\n        \"humanitarian_report_count\": hdx_report_count,\n        \"direct_loss_support_flag\": direct_loss_support_flag,\n        \"worldpop_population_sum\": round_float(worldpop_population, 3),\n        \"osm_small_element_count\": osm_small_count,\n        \"row_passes\": row_passes,\n        \"score\": score,\n        \"final_label\": final_label,\n    }\n\n    compact_ledger_rows = [\n        {\n            \"row_id\": \"hot_dry_fire_weather\",\n            \"formula\": \"heat_load_c_days = sum(max(Tmax - 35 C, 0)); max_temperature_c = max(cross-source Tmax)\",\n            \"computed_values\": {\n                \"max_temperature_c\": round_float(max_temperature_c, 2),\n                \"heat_load_c_days\": round_float(heat_load_c_days, 2),\n            },\n            \"threshold_or_test\": \"max_temperature_c >= 40 and heat_load_c_days >= 25\",\n            \"result\": \"pass_hot_dry_fire_weather\" if row_passes[\"hot_dry_fire_weather\"] else \"fail_hot_dry_fire_weather\",\n        },\n        {\n            \"row_id\": \"rainfall_suppression\",\n            \"formula\": \"local_precip_total_max = max(local daily totals); gridded means are compared separately\",\n            \"computed_values\": {\n                \"open_meteo_total_precip_mm\": round_float(open_stats[\"total_precipitation_mm\"], 2),\n                \"nasa_power_total_precip_mm\": round_float(power_stats[\"total_precipitation_mm\"], 2),\n                \"gpm_event_mean_mm\": round_float(gpm_mean_mm, 3),\n                \"chirps_event_mean_mm\": round_float(chirps_mean_mm, 3),\n            },\n            \"threshold_or_test\": \"local totals <= 1 mm and both gridded event means < 5 mm\",\n            \"result\": \"pass_rainfall_suppression\" if row_passes[\"rainfall_suppression\"] else \"fail_rainfall_suppression\",\n        },\n        {\n            \"row_id\": \"wind_smoke_transport\",\n            \"formula\": \"max_wind_kmh = max(Open-Meteo km/h, NASA_POWER m/s * 3.6)\",\n            \"computed_values\": {\n                \"max_wind_kmh\": round_float(max_wind_kmh, 1),\n            },\n            \"threshold_or_test\": \"max_wind_kmh >= 25\",\n            \"result\": \"pass_wind_smoke_transport\" if row_passes[\"wind_smoke_transport\"] else \"fail_wind_smoke_transport\",\n        },\n        {\n            \"row_id\": \"smoke_report_anchor\",\n            \"formula\": \"smoke_keyword_count = sum(required text anchors present)\",\n            \"computed_values\": {\n                \"smoke_keyword_count\": smoke_keyword_count,\n                \"required_term_count\": len(smoke_terms),\n            },\n            \"threshold_or_test\": \"smoke_keyword_count == 3\",\n            \"result\": \"pass_smoke_report_anchor\" if row_passes[\"smoke_report_anchor\"] else \"fail_smoke_report_anchor\",\n        },\n        {\n            \"row_id\": \"burn_fire_context\",\n            \"formula\": \"fire_context_score = I(dNBR_max >= 0.4) + I(dNBR_mean >= 0.03) + I(embedding_mean >= 0.02) + I(report_fire_smoke_context_count >= 5)\",\n            \"computed_values\": {\n                \"sentinel2_dnbr_max\": round_float(sentinel2_stats[\"sentinel2_dnbr_max\"], 4),\n                \"sentinel2_dnbr_mean\": round_float(sentinel2_stats[\"sentinel2_dnbr_mean\"], 4),\n                \"alphaearth_1_minus_cosine_mean\": round_float(alpha_stats[\"alphaearth_1_minus_cosine_mean\"], 4),\n                \"report_fire_smoke_context_count\": anchor_keyword_count,\n                \"fire_context_score\": fire_context_score,\n            },\n            \"threshold_or_test\": \"fire_context_score >= 3\",\n            \"result\": \"pass_burn_fire_context\" if row_passes[\"burn_fire_context\"] else \"fail_burn_fire_context\",\n        },\n        {\n            \"row_id\": \"direct_loss_guardrail\",\n            \"formula\": \"direct_loss_support_flag = I(local humanitarian report count > 0)\",\n            \"computed_values\": {\n                \"humanitarian_report_count\": hdx_report_count,\n                \"direct_loss_support_flag\": direct_loss_support_flag,\n            },\n            \"threshold_or_test\": \"direct_loss_support_flag == 0\",\n            \"result\": \"pass_direct_loss_guardrail\" if row_passes[\"direct_loss_guardrail\"] else \"fail_direct_loss_guardrail\",\n        },\n    ]\n\n    return {\n        \"schema_version\": \"1.0\",\n        \"task_id\": TASK_ID,\n        \"event_id\": PACKAGE_ID,\n        \"target_family\": TARGET_FAMILY,\n        \"task_type\": \"short_answer\",\n        \"evaluation_mode\": \"hybrid\",\n        \"difficulty_level\": \"L3\",\n        \"primary_gt\": {\n            \"target_family\": TARGET_FAMILY,\n            \"ledger\": compact_ledger_rows,\n            \"score\": score,\n            \"final_label\": final_label,\n            \"rejected_alternatives\": [\n                \"rainfall_moderated_hazard_label\",\n                \"direct_loss_from_receptors_label\",\n            ],\n        },\n        \"event\": {\n            \"package_id\": PACKAGE_ID,\n            \"event_name\": event[\"event_name\"],\n            \"hazard_family\": event[\"hazard_family\"],\n            \"event_date_or_window\": \"2019-09-01 to 2020-02-29\",\n        },\n        \"decision_rule\": {\n            \"row_score\": \"one point per passing ledger row\",\n            \"final_label_rule\": \"score >= 5 gives compound_fire_smoke_air_hazard_consistent; otherwise insufficient_fire_smoke_air_consistency\",\n            \"positive_rows\": [\n                \"hot_dry_fire_weather\",\n                \"rainfall_suppression\",\n                \"wind_smoke_transport\",\n                \"smoke_report_anchor\",\n                \"burn_fire_context\",\n            ],\n            \"guardrail_row\": \"direct_loss_guardrail\",\n        },\n        \"ledger_rows\": ledger_rows,\n        \"key_values\": key_values,\n        \"numeric_tolerances\": {\n            \"max_temperature_c\": {\"target\": round_float(max_temperature_c, 2), \"absolute_tolerance\": 0.05},\n            \"heat_load_c_days\": {\"target\": round_float(heat_load_c_days, 2), \"absolute_tolerance\": 0.05},\n            \"dry_day_fraction\": {\"target\": round_float(dry_day_fraction, 3), \"absolute_tolerance\": 0.001},\n            \"gpm_event_precip_mean_mm\": {\"target\": round_float(gpm_mean_mm, 3), \"absolute_tolerance\": 0.005},\n            \"chirps_event_precip_mean_mm\": {\"target\": round_float(chirps_mean_mm, 3), \"absolute_tolerance\": 0.005},\n            \"max_wind_kmh\": {\"target\": round_float(max_wind_kmh, 1), \"absolute_tolerance\": 0.1},\n            \"sentinel2_dnbr_max\": {\"target\": round_float(sentinel2_stats[\"sentinel2_dnbr_max\"], 4), \"absolute_tolerance\": 0.0005},\n            \"alphaearth_1_minus_cosine_mean\": {\"target\": round_float(alpha_stats[\"alphaearth_1_minus_cosine_mean\"], 4), \"absolute_tolerance\": 0.0005},\n            \"score\": {\"target\": score, \"absolute_tolerance\": 0},\n        },\n        \"rubric\": rubric(),\n        \"provenance\": {\n            \"computed_by\": \"compute_gt.py\",\n            \"source_files\": list(REL_PATHS.values()),\n        },\n    }\n\n\ndef main():\n    output = build_output()\n    out_path = Path(__file__).resolve().parent / \"computed_gt.json\"\n    out_path.write_text(json.dumps(output, indent=2, ensure_ascii=True) + \"\\n\", encoding=\"utf-8\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "event": {
+    "package_id": "CSX-208",
+    "event_name": "2019-2020 Australian bushfire smoke and hazardous air-quality episode",
+    "canonical_event_key": "2019 2020 australian bushfire smoke and hazardous air quality episode",
+    "hazard_family": "air_pollution_smoke_heat",
+    "hazard_label": "Air pollution, smoke, and heat exposure",
+    "scale": "national_admin",
+    "region": "Oceania",
+    "primary_evidence_url": "https://public.wmo.int/media/news/australia-suffers-devastating-fires-after-hottest-driest-year-record",
+    "existence_verdict": "confirmed",
+    "temporal_match": "yes",
+    "spatial_match": "yes",
+    "hazard_match": "yes",
+    "source_reliability": "high_official_or_institutional",
+    "correspondence_score": "92",
+    "release_decision": "keep",
+    "benchmark_readiness": "ready_with_metadata_warnings",
+    "benchmark_readiness_label": "ready with metadata warnings",
+    "data_integrity": {
+      "local_files_checked": "24",
+      "image_files_checked": "4",
+      "valid_images": "4",
+      "formal_slice_files_checked": "9",
+      "hard_error_count": "0",
+      "metadata_warning_count": "1",
+      "final_data_score": "94",
+      "final_data_decision": "ready_with_minor_warnings",
+      "replacement_file_count": "0"
+    },
+    "file_inventory": {
+      "total_files": 31,
+      "categories": {
+        "air_quality": 1,
+        "event_catalogs": 3,
+        "event_reports": 4,
+        "exposure_impact": 5,
+        "geospatial_context": 2,
+        "physical_hazard": 9,
+        "remote_sensing": 7
+      }
+    }
+  },
+  "event_files": [
+    {
+      "file_id": "F0001",
+      "relative_path": "data/event_reports/event_reports_001_Locked_anchor_report_WMO.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/event_reports/event_reports_001_Locked_anchor_report_WMO.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/event_reports/event_reports_001_Locked_anchor_report_WMO.html",
+      "category": "event_reports",
+      "layer_name": "event_anchor_report",
+      "source_id": "S001",
+      "source_name": "Locked anchor report (WMO)",
+      "source_type": "resource_registry",
+      "source_url": "https://public.wmo.int/media/news/australia-suffers-devastating-fires-after-hottest-driest-year-record",
+      "bytes": 133401,
+      "sha256_16": "1f0b1c9dc33a12b9",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0002",
+      "relative_path": "data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "category": "event_reports",
+      "layer_name": "text_reports",
+      "source_id": "S002",
+      "source_name": "HDX CKAN package_search",
+      "source_type": "resource_registry",
+      "source_url": "https://data.humdata.org/api/3/action/package_search?q=2019-2020%20Australian%20bushfire%20smoke%20and%20hazardous%20air-quality%20episode%20Australia%202019-09-01&rows=10",
+      "bytes": 294,
+      "sha256_16": "8b0409239393d27e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0003",
+      "relative_path": "data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S003",
+      "source_name": "NASA EONET v3 events/categories search",
+      "source_type": "resource_registry",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/categories/wildfires?start=2019-09-01&end=2020-02-29&status=all",
+      "bytes": 81017,
+      "sha256_16": "cee7c07e71225a72",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0004",
+      "relative_path": "data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S004",
+      "source_name": "GDACS event list / feed search",
+      "source_type": "resource_registry",
+      "source_url": "https://www.gdacs.org/gdacsapi/api/events/geteventlist/MAP?fromDate=2019-09-01&toDate=2020-02-29&alertlevel=Green,Orange,Red",
+      "bytes": 75265,
+      "sha256_16": "aa048ce2df085b1d",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0005",
+      "relative_path": "data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S005",
+      "source_name": "OpenStreetMap Nominatim geocoding",
+      "source_type": "resource_registry",
+      "source_url": "https://nominatim.openstreetmap.org/search?q=New%20South%20Wales%2C%20Victoria%2C%20Australian%20Capital%20Territory%2C%20and%20other%20affected%20Australian%20states%2C%20Australia&format=json&limit=5",
+      "bytes": 2,
+      "sha256_16": "4f53cda18c2baa0c",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0006",
+      "relative_path": "data/remote_sensing/remote_sensing_001_MODIS_VIIRS_MAIAC_AOD_or_Worldview_aerosol_smoke_preview.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/remote_sensing/remote_sensing_001_MODIS_VIIRS_MAIAC_AOD_or_Worldview_aerosol_smoke_preview.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/remote_sensing/remote_sensing_001_MODIS_VIIRS_MAIAC_AOD_or_Worldview_aerosol_smoke_preview.html",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S006",
+      "source_name": "MODIS/VIIRS MAIAC AOD or Worldview aerosol/smoke preview",
+      "source_type": "resource_registry",
+      "source_url": "https://worldview.earthdata.nasa.gov/",
+      "bytes": 4315,
+      "sha256_16": "339136a38b7e0720",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0007",
+      "relative_path": "data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S007",
+      "source_name": "Open-Meteo daily weather fill",
+      "source_type": "resource_registry",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=-24.0000&longitude=145.0000&start_date=2019-08-18&end_date=2019-10-16&daily=temperature_2m_max%2Ctemperature_2m_min%2Cprecipitation_sum%2Cwind_speed_10m_max&timezone=UTC",
+      "bytes": 2393,
+      "sha256_16": "bd24c3c6fcf8a172",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0008",
+      "relative_path": "data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S008",
+      "source_name": "NASA POWER daily weather fill",
+      "source_type": "resource_registry",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M%2CT2M_MAX%2CT2M_MIN%2CPRECTOTCORR%2CWS10M&community=RE&longitude=145.0000&latitude=-24.0000&start=20190818&end=20191016&format=JSON",
+      "bytes": 5676,
+      "sha256_16": "2cf2e930f726254d",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0009",
+      "relative_path": "data/exposure_impact/exposure_impact_001_Overpass_small_roads_and_critical_amenities.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/exposure_impact/exposure_impact_001_Overpass_small_roads_and_critical_amenities.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/exposure_impact/exposure_impact_001_Overpass_small_roads_and_critical_amenities.json",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S009",
+      "source_name": "Overpass small roads and critical amenities",
+      "source_type": "resource_registry",
+      "source_url": "https://overpass-api.de/api/interpreter",
+      "bytes": 8798,
+      "sha256_16": "86ad79acbda0e4d3",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0010",
+      "relative_path": "data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "category": "geospatial_context",
+      "layer_name": "aoi",
+      "source_id": "S010",
+      "source_name": "compact per-event AOI derived from event bbox",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 439,
+      "sha256_16": "d5ba6f87db6b92a2",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0011",
+      "relative_path": "data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S011",
+      "source_name": "ERA5-Land hourly aggregate stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 1006,
+      "sha256_16": "031165b447e471a6",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0012",
+      "relative_path": "data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S012",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 323,
+      "sha256_16": "9284901fe0e38294",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0013",
+      "relative_path": "data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S013",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 317,
+      "sha256_16": "5a330a4b7d0a0d18",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0014",
+      "relative_path": "data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S014",
+      "source_name": "WorldPop GP 100m population sum",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 124,
+      "sha256_16": "645703a235e502df",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0015",
+      "relative_path": "data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S015",
+      "source_name": "Google Satellite Embedding 64-band annual stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 9936,
+      "sha256_16": "58f4a25243200d23",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0016",
+      "relative_path": "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S016",
+      "source_name": "Google Satellite Embedding annual cosine-change stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 362,
+      "sha256_16": "67859eb1a3dd8ac2",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0017",
+      "relative_path": "data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+      "category": "physical_hazard",
+      "layer_name": "sentinel2",
+      "source_id": "S017",
+      "source_name": "Sentinel-2 SR Harmonized dNBR",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 478,
+      "sha256_16": "c70fde93d5b64e30",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0018",
+      "relative_path": "data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "category": "exposure_impact",
+      "layer_name": "osm_exposure",
+      "source_id": "S018",
+      "source_name": "OpenStreetMap Overpass bounded AOI slice",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 249914,
+      "sha256_16": "369eb8638e81b27f",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0019",
+      "relative_path": "data/remote_sensing/remote_sensing_004_pre.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/remote_sensing/remote_sensing_004_pre.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/remote_sensing/remote_sensing_004_pre.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S019",
+      "source_name": "pre",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2019-08-02&BBOX=-41.5%2C127.5%2C-6.5%2C162.5&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 221528,
+      "sha256_16": "2b209a8f966c8b6c",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0020",
+      "relative_path": "data/remote_sensing/remote_sensing_005_event.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/remote_sensing/remote_sensing_005_event.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/remote_sensing/remote_sensing_005_event.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S020",
+      "source_name": "event",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2019-11-30&BBOX=-41.5%2C127.5%2C-6.5%2C162.5&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 201119,
+      "sha256_16": "ccd4c4f6929c1195",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0021",
+      "relative_path": "data/event_reports/event_reports_003_Locked_event_anchor_2019-2020_Australian_bushfire_smoke_and_hazardous_air-quality_episode.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/event_reports/event_reports_003_Locked_event_anchor_2019-2020_Australian_bushfire_smoke_and_hazardous_air-quality_episode.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/event_reports/event_reports_003_Locked_event_anchor_2019-2020_Australian_bushfire_smoke_and_hazardous_air-quality_episode.json",
+      "category": "event_reports",
+      "layer_name": "package_locked_event_anchor / WMO",
+      "source_id": "S021",
+      "source_name": "Locked event anchor: 2019-2020 Australian bushfire smoke and hazardous air-quality episode",
+      "source_type": "event_specific_sources",
+      "source_url": "https://public.wmo.int/media/news/australia-suffers-devastating-fires-after-hottest-driest-year-record",
+      "bytes": 3331,
+      "sha256_16": "724b6136113ebbf1",
+      "status": "remote_verified",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0022",
+      "relative_path": "data/air_quality/air_quality_001_NASA_Earth_Observatory_Fires_and_Smoke_Engulf_Southeastern_Australia.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/air_quality/air_quality_001_NASA_Earth_Observatory_Fires_and_Smoke_Engulf_Southeastern_Australia.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/air_quality/air_quality_001_NASA_Earth_Observatory_Fires_and_Smoke_Engulf_Southeastern_Australia.html",
+      "category": "air_quality",
+      "layer_name": "html",
+      "source_id": "S022",
+      "source_name": "NASA Earth Observatory Fires and Smoke Engulf Southeastern Australia",
+      "source_type": "event_specific_sources",
+      "source_url": "https://earthobservatory.nasa.gov/images/146110/fires-and-smoke-engulf-southeastern-australia",
+      "bytes": 284331,
+      "sha256_16": "cfc3a140caa2222f",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0023",
+      "relative_path": "data/event_reports/event_reports_004_111_CSX-208_02_ReliefWeb_Reports_API_event_search.bin",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/event_reports/event_reports_004_111_CSX-208_02_ReliefWeb_Reports_API_event_search.bin",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/event_reports/event_reports_004_111_CSX-208_02_ReliefWeb_Reports_API_event_search.bin",
+      "category": "event_reports",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S023",
+      "source_name": "111_CSX-208_02_ReliefWeb_Reports_API_event_search",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 143,
+      "sha256_16": "16e210c3f8fefa1d",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0024",
+      "relative_path": "data/remote_sensing/remote_sensing_006_alphaearth_change_1km.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/remote_sensing/remote_sensing_006_alphaearth_change_1km.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/remote_sensing/remote_sensing_006_alphaearth_change_1km.zip.zip",
+      "category": "remote_sensing",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S024",
+      "source_name": "alphaearth_change_1km.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 574266,
+      "sha256_16": "0369519d0a304af3",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/51322459342e310ef2b8.png"
+    },
+    {
+      "file_id": "F0025",
+      "relative_path": "data/physical_hazard/physical_hazard_007_chirps_event_precip.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_007_chirps_event_precip.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_007_chirps_event_precip.zip.zip",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S025",
+      "source_name": "chirps_event_precip.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 6409,
+      "sha256_16": "a16f792bf1231685",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/ae810bd67b30c3ce2b57.png"
+    },
+    {
+      "file_id": "F0026",
+      "relative_path": "data/physical_hazard/physical_hazard_008_era5_land_event_stack.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_008_era5_land_event_stack.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_008_era5_land_event_stack.zip.zip",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S026",
+      "source_name": "era5_land_event_stack.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 6258,
+      "sha256_16": "0e2e0c1700e0adeb",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/620e57960c7ee5a15a9e.png"
+    },
+    {
+      "file_id": "F0027",
+      "relative_path": "data/physical_hazard/physical_hazard_009_gpm_imerg_event_precip.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_009_gpm_imerg_event_precip.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/physical_hazard/physical_hazard_009_gpm_imerg_event_precip.zip.zip",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S027",
+      "source_name": "gpm_imerg_event_precip.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 5498,
+      "sha256_16": "eacf593f259d8ff0",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/7e1681f0f0775ba5140c.png"
+    },
+    {
+      "file_id": "F0028",
+      "relative_path": "data/exposure_impact/exposure_impact_004_osm_overpass_exposure_slice.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/exposure_impact/exposure_impact_004_osm_overpass_exposure_slice.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/exposure_impact/exposure_impact_004_osm_overpass_exposure_slice.json.json",
+      "category": "exposure_impact",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S028",
+      "source_name": "osm_overpass_exposure_slice.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 249914,
+      "sha256_16": "d70356e59b1c7da4",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0029",
+      "relative_path": "data/remote_sensing/remote_sensing_007_sentinel2_dnbr_250m.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/remote_sensing/remote_sensing_007_sentinel2_dnbr_250m.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/remote_sensing/remote_sensing_007_sentinel2_dnbr_250m.zip.zip",
+      "category": "remote_sensing",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S029",
+      "source_name": "sentinel2_dnbr_250m.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 4457806,
+      "sha256_16": "f498df390b481c03",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/3b475c4c385cc7191cb6.png"
+    },
+    {
+      "file_id": "F0030",
+      "relative_path": "data/exposure_impact/exposure_impact_005_worldpop_population_1km.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/exposure_impact/exposure_impact_005_worldpop_population_1km.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/exposure_impact/exposure_impact_005_worldpop_population_1km.zip.zip",
+      "category": "exposure_impact",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S030",
+      "source_name": "worldpop_population_1km.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 287066,
+      "sha256_16": "1f73f9656d1c6372",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/86a3b052ee92ca628697.png"
+    },
+    {
+      "file_id": "F0031",
+      "relative_path": "data/event_catalogs/event_catalogs_003_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-208/data/event_catalogs/event_catalogs_003_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-208/data/event_catalogs/event_catalogs_003_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "category": "event_catalogs",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S031",
+      "source_name": "04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 18294,
+      "sha256_16": "fc3a8bfb3ec756c5",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    }
+  ]
+}

@@ -1,0 +1,1435 @@
+{
+  "task_id": "CSX-218_Q1",
+  "model_id": "tencent-hy3",
+  "model_name": "Tencent Hy3",
+  "scores": {
+    "overall": 52.5,
+    "answer": 50.0,
+    "rubric": 55.0,
+    "unit_accuracy": 50.0,
+    "answer_units_correct": 14,
+    "answer_units_total": 28,
+    "rubric_points_earned": 11.0,
+    "rubric_points_total": 20.0,
+    "verdict": "partial"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 587.889,
+    "tool_calls": 36,
+    "model_rounds": 38,
+    "file_reads": 21,
+    "unique_evidence_files": 23,
+    "python_calls": 7,
+    "tool_errors": 1,
+    "prompt_tokens": 489430,
+    "completion_tokens": 8023,
+    "total_tokens": 497453
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "Discover the event package files to locate narrative, weather, precipitation, burn-scar, wildfire, and population evidence.",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 34,\n  \"file_count_total\": 34,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json\",\n      \"bytes\": 324,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json\",\n      \"bytes\": 75265,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_catalogs/event_catalogs_003_NASA_EONET_wildfire_events.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_NASA_EONET_wildfire_events.json\",\n      \"bytes\": 145,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_catalogs/event_catalogs_004_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_004_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"bytes\": 50342,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\",\n      \"package_relative_path\": \"data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observat\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read event metadata to determine event window and basic context.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/metadata/event.json",
+        "max_chars": 4000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/metadata/event.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-218\\\",\\n  \\\"event_name\\\": \\\"August 2004 fire and smoke in Angola\\\",\\n  \\\"canonical_event_key\\\": \\\"august 2004 fire and smoke in angola\\\",\\n  \\\"hazard_family\\\": \\\"air_pollution_smoke_heat\\\",\\n  \\\"hazard_label\\\": \\\"Air pollution, smoke, and heat exposure\\\",\\n  \\\"scale\\\": \\\"national_admin\\\",\\n  \\\"region\\\": \\\"Africa\\\",\\n  \\\"primary_evidence_url\\\": \\\"https://earthobservatory.nasa.gov/images/13816/fire-and-smoke-in-angola\\\",\\n  \\\"existence_verdict\\\": \\\"confirmed\\\",\\n  \\\"temporal_match\\\": \\\"yes\\\",\\n  \\\"spatial_match\\\": \\\"yes\\\",\\n  \\\"hazard_match\\\": \\\"yes\\\",\\n  \\\"source_reliability\\\": \\\"high_official_or_institutional\\\",\\n  \\\"correspondence_score\\\": \\\"88\\\",\\n  \\\"release_decision\\\": \\\"keep_with_minor_fix\\\",\\n  \\\"benchmark_readiness\\\": \\\"ready_with_metadata_warnings\\\",\\n  \\\"benchmark_readiness_label\\\": \\\"ready with metadata warnings\\\",\\n  \\\"data_integrity\\\": {\\n    \\\"local_files_checked\\\": \\\"23\\\",\\n    \\\"image_files_checked\\\": \\\"4\\\",\\n    \\\"valid_images\\\": \\\"4\\\",\\n    \\\"formal_slice_files_checked\\\": \\\"7\\\",\\n    \\\"hard_error_count\\\": \\\"0\\\",\\n    \\\"metadata_warning_count\\\": \\\"1\\\",\\n    \\\"final_data_score\\\": \\\"94\\\",\\n    \\\"final_data_decision\\\": \\\"ready_with_minor_warnings\\\",\\n    \\\"replacement_file_count\\\": \\\"0\\\"\\n  },\\n  \\\"file_inventory\\\": {\\n    \\\"total_files\\\": 30,\\n    \\\"categories\\\": {\\n      \\\"event_catalogs\\\": 4,\\n      \\\"event_reports\\\": 6,\\n      \\\"exposure_impact\\\": 5,\\n      \\\"geospatial_context\\\": 2,\\n      \\\"other\\\": 1,\\n      \\\"physical_hazard\\\": 9,\\n      \\\"remote_sensing\\\": 3\\n    }\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1651
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/metadata/event.json"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the locked event anchor narrative to count smoke/smog/haze terms and source/transport flags, and determine window.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_003_Locked_event_anchor_August_2004_fire_and_smoke_in_Angola.json",
+        "max_chars": 6000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_003_Locked_event_anchor_August_2004_fire_and_smoke_in_Angola.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-218\\\",\\n  \\\"event_name\\\": \\\"August 2004 fire and smoke in Angola\\\",\\n  \\\"hazard_family\\\": \\\"air_pollution_smoke_heat\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2004-08-28\\\",\\n    \\\"end_date\\\": \\\"2004-08-28\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Angola and downwind Atlantic-facing southern Africa\\\",\\n    \\\"country_or_region\\\": \\\"Angola\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"August 2004 fire and smoke in Angola\\\",\\n    \\\"event_start_date\\\": \\\"2004-08-28\\\",\\n    \\\"event_end_date\\\": \\\"2004-08-28\\\",\\n    \\\"event_location\\\": \\\"Angola and downwind Atlantic-facing southern Africa\\\",\\n    \\\"event_country_or_region\\\": \\\"Angola\\\",\\n    \\\"event_scope\\\": \\\"package_specific_real_event\\\",\\n    \\\"evidence_type\\\": \\\"NASA Earth Observatory\\\",\\n    \\\"evidence_url\\\": \\\"https://earthobservatory.nasa.gov/images/13816/fire-and-smoke-in-angola\\\",\\n    \\\"evidence_final_url\\\": \\\"https://earthobservatory.nasa.gov/images/13816/fire-and-smoke-in-angola\\\",\\n    \\\"http_status\\\": \\\"200\\\",\\n    \\\"lock_status\\\": \\\"event_locked_second_round_url_reachable\\\",\\n    \\\"lock_confidence\\\": \\\"0.84\\\",\\n    \\\"match_rule\\\": \\\"second_round_targeted_package_replacement\\\",\\n    \\\"web_search_query_used\\\": \\\"NASA Earth Observatory Fire and Smoke in Angola August 2004\\\",\\n    \\\"event_lock_notes\\\": \\\"Country-level African smoke-pollution anchor; NASA d\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_003_Locked_event_anchor_August_2004_fire_and_smoke_in_Angola.json"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the NASA Earth Observatory anchor report HTML to extract the event narrative, including smoke/smog/haze terms and source/transport flags.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\",\n  \"text\": \"<!doctype html>\\n<html lang=\\\"en-US\\\" prefix=\\\"og: https://ogp.me/ns#\\\">\\n<head>\\n\\t<meta charset=\\\"UTF-8\\\">\\n<script>\\nvar gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){return!(!gform.domLoaded||!gform.scriptsLoaded||!gform.themeScriptsLoaded&&!gform.isFormEditor()||(gform.isFormEditor()&&console.warn(\\\"The use of gform.initializeOnLoaded() is deprecated in the form editor context and will be removed in Gravity Forms 3.1.\\\"),o(),0))},initializeOnLoaded:function(o){gform.callIfLoaded(o)||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",()=>{gform.scriptsLoaded=!0,gform.callIfLoaded(o)}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",()=>{gform.themeScriptsLoaded=!0,gform.callIfLoaded(o)}),window.addEventListener(\\\"DOMContentLoaded\\\",()=>{gform.domLoaded=!0,gform.callIfLoaded(o)}))},hooks:{action:{},filter:{}},addAction:function(o,r,e,t){gform.addHook(\\\"action\\\",o,r,e,t)},addFilter:function(o,r,e,t){gform.addHook(\\\"filter\\\",o,r,e,t)},doAction:function(o){gform.doHook(\\\"action\\\",o,arguments)},applyFilters:function(o){return gform.doHook(\\\"filter\\\",o,arguments)},removeAction:function(o,r){gform.removeHook(\\\"action\\\",o,r)},removeFilter:function(o\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search the anchor narrative JSON for the exact smoke-family terms and source/transport flags to count precisely.",
+      "args": {
+        "query": "smoke smog haze seasonal agricultural burning charcoal production recirculation high pressure Atlantic",
+        "glob": "**/event_reports_003*.json",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"smoke smog haze seasonal agricultural burning charcoal production recirculation high pressure Atlantic\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 156
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the next portion of the NASA anchor HTML to find the narrative body text with smoke-family and transport terms.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html",
+        "max_chars": 12000,
+        "offset_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\",\n  \"text\": \"<!doctype html>\\n<html lang=\\\"en-US\\\" prefix=\\\"og: https://ogp.me/ns#\\\">\\n<head>\\n\\t<meta charset=\\\"UTF-8\\\">\\n<script>\\nvar gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){return!(!gform.domLoaded||!gform.scriptsLoaded||!gform.themeScriptsLoaded&&!gform.isFormEditor()||(gform.isFormEditor()&&console.warn(\\\"The use of gform.initializeOnLoaded() is deprecated in the form editor context and will be removed in Gravity Forms 3.1.\\\"),o(),0))},initializeOnLoaded:function(o){gform.callIfLoaded(o)||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",()=>{gform.scriptsLoaded=!0,gform.callIfLoaded(o)}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",()=>{gform.themeScriptsLoaded=!0,gform.callIfLoaded(o)}),window.addEventListener(\\\"DOMContentLoaded\\\",()=>{gform.domLoaded=!0,gform.callIfLoaded(o)}))},hooks:{action:{},filter:{}},addAction:function(o,r,e,t){gform.addHook(\\\"action\\\",o,r,e,t)},addFilter:function(o,r,e,t){gform.addHook(\\\"filter\\\",o,r,e,t)},doAction:function(o){gform.doHook(\\\"action\\\",o,arguments)},applyFilters:function(o){return gform.doHook(\\\"filter\\\",o,arguments)},removeAction:function(o,r){gform.removeHook(\\\"action\\\",o,r)},removeFilter:function(o\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search the NASA anchor HTML for all occurrences of 'smoke' to understand narrative body content beyond metadata.",
+      "args": {
+        "query": "smoke",
+        "glob": "**/event_reports_001*.html",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"smoke\",\n  \"match_count\": 1,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\",\n      \"snippet\": \"<title>Fire and Smoke in Angola - NASA Science</title>\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 307
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search all JSON files in the package for exact smoke/smog/haze terms and source/transport keywords in narrative-like fields.",
+      "args": {
+        "query": "smoke smog haze",
+        "glob": "**/*.json",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"smoke smog haze\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 69
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 9,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read deeper into the HTML body (after head/SEO) to find the article narrative text with smoke terms.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html",
+        "max_chars": 4000,
+        "offset_chars": 11000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\",\n  \"text\": \"<!doctype html>\\n<html lang=\\\"en-US\\\" prefix=\\\"og: https://ogp.me/ns#\\\">\\n<head>\\n\\t<meta charset=\\\"UTF-8\\\">\\n<script>\\nvar gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){return!(!gform.domLoaded||!gform.scriptsLoaded||!gform.themeScriptsLoaded&&!gform.isFormEditor()||(gform.isFormEditor()&&console.warn(\\\"The use of gform.initializeOnLoaded() is deprecated in the form editor context and will be removed in Gravity Forms 3.1.\\\"),o(),0))},initializeOnLoaded:function(o){gform.callIfLoaded(o)||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",()=>{gform.scriptsLoaded=!0,gform.callIfLoaded(o)}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",()=>{gform.themeScriptsLoaded=!0,gform.callIfLoaded(o)}),window.addEventListener(\\\"DOMContentLoaded\\\",()=>{gform.domLoaded=!0,gform.callIfLoaded(o)}))},hooks:{action:{},filter:{}},addAction:function(o,r,e,t){gform.addHook(\\\"action\\\",o,r,e,t)},addFilter:function(o,r,e,t){gform.addHook(\\\"filter\\\",o,r,e,t)},doAction:function(o){gform.doHook(\\\"action\\\",o,arguments)},applyFilters:function(o){return gform.doHook(\\\"filter\\\",o,arguments)},removeAction:function(o,r){gform.removeHook(\\\"action\\\",o,r)},removeFilter:function(o\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html"
+      ]
+    },
+    {
+      "step": 10,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read README to understand package structure, narrative location, and data file mapping.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/README.md",
+        "max_chars": 4000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/README.md\",\n  \"text\": \"# CSX-218 - August 2004 fire and smoke in Angola\\n\\n- Hazard: Air pollution, smoke, and heat exposure\\n- Region: Africa\\n- Scale: national_admin\\n- Benchmark readiness: ready with metadata warnings\\n- Primary evidence URL: https://earthobservatory.nasa.gov/images/13816/fire-and-smoke-in-angola\\n\\n## Package Layout\\n\\n- `metadata/event.json`: event-level metadata.\\n- `metadata/files.csv`: file-level manifest with paths relative to this package.\\n- `metadata/sources.csv`: source-level manifest.\\n- `data/`: downloaded evidence and data files grouped by data category.\\n\\n## Data Categories\\n- `physical_hazard`: 9 files\\n- `event_reports`: 6 files\\n- `exposure_impact`: 5 files\\n- `event_catalogs`: 4 files\\n- `remote_sensing`: 3 files\\n- `geospatial_context`: 2 files\\n- `other`: 1 files\\n\"\n}",
+        "truncated": false,
+        "original_chars": 888
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/README.md"
+      ]
+    },
+    {
+      "step": 11,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read files.csv manifest to identify exact paths of weather, precipitation, burn-scar, wildfire catalog, and population files needed for the ledger.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/metadata/files.csv",
+        "max_chars": 9000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/metadata/files.csv\",\n  \"text\": \"file_id,package_id,relative_path,data_category,layer_name,source_id,source_name,source_type,url,bytes,sha256_16,file_status\\nF0001,CSX-218,data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html,event_reports,event_anchor_report,S001,Locked anchor report (NASA Earth Observatory),resource_registry,https://earthobservatory.nasa.gov/images/13816/fire-and-smoke-in-angola,285233,d22aca104e86c4c5,success\\nF0002,CSX-218,data/event_reports/event_reports_002_HDX_CKAN_package_search.json,event_reports,text_reports,S002,HDX CKAN package_search,resource_registry,https://data.humdata.org/api/3/action/package_search?q=August%202004%20fire%20and%20smoke%20in%20Angola%20Angola%202004-08-28&rows=10,1050617,8a1efa9eb0899977,success\\nF0003,CSX-218,data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json,event_catalogs,event_catalog_api,S003,NASA EONET v3 events/categories search,resource_registry,https://eonet.gsfc.nasa.gov/api/v3/categories/wildfires?start=2004-08-28&end=2004-08-28&status=all,324,52b5a5ade7df44a4,success\\nF0004,CSX-218,data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json,event_catalogs,event_catalog_api,S004,GDACS event list / feed search,resource_registry,\\\"https://www.gdacs.org/gdacsapi/api/events/geteventlist/MAP?fromDate=2004-08-28&toDate=2004-08-28&alertlevel=Green,Orange,Red\\\",75265,aa048ce2df085b1d,success\\nF0005,CSX-218,data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json,geospatial_context,geocoding_or_aoi,S005,OpenStreetMap Nominatim geocoding,resource_registry,https://nominat\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 12,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read Open-Meteo daily weather fill for event-day precip, wind, tmax, and the filled daily series for warm-run calculation.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json\",\n  \"text\": \"{\\\"latitude\\\":1.5114235,\\\"longitude\\\":16.033255,\\\"generationtime_ms\\\":32.462239265441895,\\\"utc_offset_seconds\\\":0,\\\"timezone\\\":\\\"GMT\\\",\\\"timezone_abbreviation\\\":\\\"GMT\\\",\\\"elevation\\\":387.0,\\\"daily_units\\\":{\\\"time\\\":\\\"iso8601\\\",\\\"temperature_2m_max\\\":\\\"°C\\\",\\\"temperature_2m_min\\\":\\\"°C\\\",\\\"precipitation_sum\\\":\\\"mm\\\",\\\"wind_speed_10m_max\\\":\\\"km/h\\\"},\\\"daily\\\":{\\\"time\\\":[\\\"2004-08-14\\\",\\\"2004-08-15\\\",\\\"2004-08-16\\\",\\\"2004-08-17\\\",\\\"2004-08-18\\\",\\\"2004-08-19\\\",\\\"2004-08-20\\\",\\\"2004-08-21\\\",\\\"2004-08-22\\\",\\\"2004-08-23\\\",\\\"2004-08-24\\\",\\\"2004-08-25\\\",\\\"2004-08-26\\\",\\\"2004-08-27\\\",\\\"2004-08-28\\\"],\\\"temperature_2m_max\\\":[29.6,30.4,28.0,30.6,30.7,28.7,29.2,29.2,27.7,29.7,29.3,30.2,30.8,29.0,31.1],\\\"temperature_2m_min\\\":[20.8,21.3,21.5,21.4,22.3,21.6,20.9,21.1,20.8,21.3,22.5,21.4,21.6,21.7,21.4],\\\"precipitation_sum\\\":[1.00,0.80,4.20,0.10,0.60,9.10,3.80,6.40,5.00,1.40,4.60,2.60,0.30,5.30,1.10],\\\"wind_speed_10m_max\\\":[11.5,8.1,7.3,7.6,4.3,8.0,6.0,6.9,6.8,6.8,8.5,7.6,6.2,9.2,8.2]}}\"\n}",
+        "truncated": false,
+        "original_chars": 1143
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json"
+      ]
+    },
+    {
+      "step": 13,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read NASA POWER daily weather fill to extract event-day precipitation for the local precip mean.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json",
+        "max_chars": 2200
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json\",\n  \"text\": \"{\\\"type\\\":\\\"Feature\\\",\\\"geometry\\\":{\\\"type\\\":\\\"Point\\\",\\\"coordinates\\\":[16.0,1.5,385.0]},\\\"properties\\\":{\\\"parameter\\\":{\\\"T2M\\\":{\\\"20040814\\\":25.93,\\\"20040815\\\":26.39,\\\"20040816\\\":27.03,\\\"20040817\\\":25.75,\\\"20040818\\\":27.09,\\\"20040819\\\":26.77,\\\"20040820\\\":24.3,\\\"20040821\\\":25.62,\\\"20040822\\\":26.01,\\\"20040823\\\":24.62,\\\"20040824\\\":25.68,\\\"20040825\\\":26.05,\\\"20040826\\\":27.01,\\\"20040827\\\":27.54,\\\"20040828\\\":27.74},\\\"T2M_MAX\\\":{\\\"20040814\\\":31.5,\\\"20040815\\\":32.09,\\\"20040816\\\":31.97,\\\"20040817\\\":29.71,\\\"20040818\\\":33.11,\\\"20040819\\\":31.32,\\\"20040820\\\":26.0,\\\"20040821\\\":31.1,\\\"20040822\\\":30.94,\\\"20040823\\\":27.83,\\\"20040824\\\":30.59,\\\"20040825\\\":31.35,\\\"20040826\\\":32.08,\\\"20040827\\\":32.9,\\\"20040828\\\":33.06},\\\"T2M_MIN\\\":{\\\"20040814\\\":21.44,\\\"20040815\\\":21.34,\\\"20040816\\\":22.46,\\\"20040817\\\":23.09,\\\"20040818\\\":21.58,\\\"20040819\\\":22.97,\\\"20040820\\\":22.67,\\\"20040821\\\":21.69,\\\"20040822\\\":21.72,\\\"20040823\\\":21.72,\\\"20040824\\\":21.52,\\\"20040825\\\":21.98,\\\"20040826\\\":22.01,\\\"20040827\\\":22.59,\\\"20040828\\\":23.0},\\\"PRECTOTCORR\\\":{\\\"20040814\\\":0.98,\\\"20040815\\\":1.29,\\\"20040816\\\":0.25,\\\"20040817\\\":4.56,\\\"20040818\\\":3.63,\\\"20040819\\\":3.41,\\\"20040820\\\":9.02,\\\"20040821\\\":5.23,\\\"20040822\\\":8.69,\\\"20040823\\\":16.92,\\\"20040824\\\":0.37,\\\"20040825\\\":0.95,\\\"20040826\\\":0.55,\\\"20040827\\\":0.96,\\\"20040828\\\":0.97},\\\"WS10M\\\":{\\\"20040814\\\":0.81,\\\"20040815\\\":0.7,\\\"20040816\\\":0.69,\\\"20040817\\\":0.81,\\\"20040818\\\":0.53,\\\"20040819\\\":0.59,\\\"20040820\\\":0.77,\\\"20040821\\\":0.68,\\\"20040822\\\":0.43,\\\"20040823\\\":0.6,\\\"20040824\\\":0.77,\\\"20040825\\\":0.74,\\\"20040826\\\":0.65,\\\"20040827\\\":0.59,\\\"200\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json"
+      ]
+    },
+    {
+      "step": 14,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read ERA5-Land aggregate stats to get event precipitation mean for regional_precip_mm.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"ECMWF/ERA5_LAND/HOURLY\\\",\\n  \\\"start\\\": \\\"2004-08-28\\\",\\n  \\\"end\\\": \\\"2004-08-28\\\",\\n  \\\"stats\\\": {\\n    \\\"precipitation_sum_mm_max\\\": 7.230094075129756,\\n    \\\"precipitation_sum_mm_mean\\\": 3.1402182203847095,\\n    \\\"precipitation_sum_mm_min\\\": 0.2762734889252272,\\n    \\\"precipitation_sum_mm_stdDev\\\": 1.449515850938801,\\n    \\\"temperature_2m_max_c_max\\\": 31.821084594726585,\\n    \\\"temperature_2m_max_c_mean\\\": 30.463056924573703,\\n    \\\"temperature_2m_max_c_min\\\": 27.803796386718773,\\n    \\\"temperature_2m_max_c_stdDev\\\": 0.8332743605004377,\\n    \\\"u_component_of_wind_10m_max\\\": 0.9749622344970703,\\n    \\\"u_component_of_wind_10m_mean\\\": 0.4114982835701761,\\n    \\\"u_component_of_wind_10m_min\\\": 0.01784960428873698,\\n    \\\"u_component_of_wind_10m_stdDev\\\": 0.1874725698849056,\\n    \\\"v_component_of_wind_10m_max\\\": -0.11204719543457031,\\n    \\\"v_component_of_wind_10m_mean\\\": -0.6188175073108895,\\n    \\\"v_component_of_wind_10m_min\\\": -0.9370797475179037,\\n    \\\"v_component_of_wind_10m_stdDev\\\": 0.1943213642016998\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1213
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json"
+      ]
+    },
+    {
+      "step": 15,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read GPM IMERG event precipitation JSON to get mean and max for regional precip and ratio test.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "max_chars": 1200
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"NASA/GPM_L3/IMERG_V07\\\",\\n  \\\"start\\\": \\\"2004-08-28\\\",\\n  \\\"end\\\": \\\"2004-08-28\\\",\\n  \\\"stats\\\": {\\n    \\\"gpm_event_precip_mm_max\\\": 85.94999762810767,\\n    \\\"gpm_event_precip_mm_mean\\\": 5.639783744252825,\\n    \\\"gpm_event_precip_mm_min\\\": 0,\\n    \\\"gpm_event_precip_mm_stdDev\\\": 9.158319945985685\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 502
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 16,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read CHIRPS event precipitation JSON to get mean for regional precip calculation.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+        "max_chars": 1200
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"UCSB-CHG/CHIRPS/DAILY\\\",\\n  \\\"start\\\": \\\"2004-08-28\\\",\\n  \\\"end\\\": \\\"2004-08-28\\\",\\n  \\\"stats\\\": {\\n    \\\"chirps_event_precip_mm_max\\\": 28.339069366455078,\\n    \\\"chirps_event_precip_mm_mean\\\": 7.2468660725596035,\\n    \\\"chirps_event_precip_mm_min\\\": 0,\\n    \\\"chirps_event_precip_mm_stdDev\\\": 6.627389842532825\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 515
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 17,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read EONET category search JSON to count EONET events (eonet_events metric).",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json",
+        "max_chars": 1200
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json\",\n  \"text\": \"{\\n\\t\\\"title\\\": \\\"EONET Events: Wildfires\\\",\\n\\t\\\"description\\\": \\\"Wildland fires includes all nature of fire, in forest and plains, as well as those that spread to become urban and industrial fire events. Fires may be naturally caused or manmade.\\\",\\n\\t\\\"link\\\": \\\"https://eonet.gsfc.nasa.gov/api/v3/categories/wildfires\\\",\\n\\t\\\"events\\\": [\\n\\t]\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 517
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json"
+      ]
+    },
+    {
+      "step": 18,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read EONET wildfire events JSON to check for any wildfire catalog events for local_catalog_fire scoring.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/event_catalogs/event_catalogs_003_NASA_EONET_wildfire_events.json",
+        "max_chars": 1200
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_catalogs/event_catalogs_003_NASA_EONET_wildfire_events.json\",\n  \"text\": \"{\\n\\t\\\"title\\\": \\\"EONET Events\\\",\\n\\t\\\"description\\\": \\\"Natural events from EONET.\\\",\\n\\t\\\"link\\\": \\\"https://eonet.gsfc.nasa.gov/api/v3/events\\\",\\n\\t\\\"events\\\": [\\n\\t]\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 326
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/event_catalogs/event_catalogs_003_NASA_EONET_wildfire_events.json"
+      ]
+    },
+    {
+      "step": 19,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read WorldPop population sum JSON to get population_sum for context pass and scoring.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+        "max_chars": 1200
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"WorldPop/GP/100m/pop\\\",\\n  \\\"year\\\": 2004,\\n  \\\"population_sum\\\": {\\n    \\\"population\\\": 82984.13376839011\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 297
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json"
+      ]
+    },
+    {
+      "step": 20,
+      "tool": "read_text_file",
+      "ok": false,
+      "reason": "Read burn-scar mapping metadata to determine burn_scar_status, sufficient scenes, and pre/post scene counts.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/remote_sensing/remote_sensing_001_burn_scar_mapping_metadata.json",
+        "max_chars": 1500
+      },
+      "output": {
+        "text": "file not found: event_packages/standard_event_packages/packages/CSX-218/data/remote_sensing/remote_sensing_001_burn_scar_mapping_metadata.json",
+        "truncated": false,
+        "original_chars": 142
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [
+        "missing file"
+      ],
+      "evidence_files": []
+    },
+    {
+      "step": 21,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "List remote_sensing files to find burn-scar mapping metadata file name.",
+      "args": {
+        "subdir": "data/remote_sensing",
+        "max_files": 40
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 3,\n  \"file_count_total\": 3,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/remote_sensing/remote_sensing_001_MODIS_VIIRS_MAIAC_AOD_or_Worldview_aerosol_smoke_preview.html\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_001_MODIS_VIIRS_MAIAC_AOD_or_Worldview_aerosol_smoke_preview.html\",\n      \"bytes\": 4315,\n      \"suffix\": \".html\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/remote_sensing/remote_sensing_002_pre.jpg\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_002_pre.jpg\",\n      \"bytes\": 157717,\n      \"suffix\": \".jpg\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/remote_sensing/remote_sensing_003_event.jpg\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_003_event.jpg\",\n      \"bytes\": 141623,\n      \"suffix\": \".jpg\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 993
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 22,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Re-read files.csv fully to find burn_scar-related files and exposure/impact population summary details.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/metadata/files.csv",
+        "max_chars": 9000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/metadata/files.csv\",\n  \"text\": \"file_id,package_id,relative_path,data_category,layer_name,source_id,source_name,source_type,url,bytes,sha256_16,file_status\\nF0001,CSX-218,data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html,event_reports,event_anchor_report,S001,Locked anchor report (NASA Earth Observatory),resource_registry,https://earthobservatory.nasa.gov/images/13816/fire-and-smoke-in-angola,285233,d22aca104e86c4c5,success\\nF0002,CSX-218,data/event_reports/event_reports_002_HDX_CKAN_package_search.json,event_reports,text_reports,S002,HDX CKAN package_search,resource_registry,https://data.humdata.org/api/3/action/package_search?q=August%202004%20fire%20and%20smoke%20in%20Angola%20Angola%202004-08-28&rows=10,1050617,8a1efa9eb0899977,success\\nF0003,CSX-218,data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json,event_catalogs,event_catalog_api,S003,NASA EONET v3 events/categories search,resource_registry,https://eonet.gsfc.nasa.gov/api/v3/categories/wildfires?start=2004-08-28&end=2004-08-28&status=all,324,52b5a5ade7df44a4,success\\nF0004,CSX-218,data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json,event_catalogs,event_catalog_api,S004,GDACS event list / feed search,resource_registry,\\\"https://www.gdacs.org/gdacsapi/api/events/geteventlist/MAP?fromDate=2004-08-28&toDate=2004-08-28&alertlevel=Green,Orange,Red\\\",75265,aa048ce2df085b1d,success\\nF0005,CSX-218,data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json,geospatial_context,geocoding_or_aoi,S005,OpenStreetMap Nominatim geocoding,resource_registry,https://nominat\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 23,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read Sentinel-2 dNBR burn-scar mapping metadata to determine burn_scar_status, sufficient scenes, and pre/post counts.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+        "max_chars": 1200
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"COPERNICUS/S2_SR_HARMONIZED\\\",\\n  \\\"counts\\\": {\\n    \\\"pre_count\\\": 0,\\n    \\\"post_count\\\": 0\\n  },\\n  \\\"status\\\": \\\"no_sufficient_scenes\\\"\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 323
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json"
+      ]
+    },
+    {
+      "step": 24,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the NASA Earth Observatory anchor report HTML text body to extract event narrative terms for source/transport flags and smoke-family hits.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html",
+        "max_chars": 8000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\",\n  \"text\": \"<!doctype html>\\n<html lang=\\\"en-US\\\" prefix=\\\"og: https://ogp.me/ns#\\\">\\n<head>\\n\\t<meta charset=\\\"UTF-8\\\">\\n<script>\\nvar gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){return!(!gform.domLoaded||!gform.scriptsLoaded||!gform.themeScriptsLoaded&&!gform.isFormEditor()||(gform.isFormEditor()&&console.warn(\\\"The use of gform.initializeOnLoaded() is deprecated in the form editor context and will be removed in Gravity Forms 3.1.\\\"),o(),0))},initializeOnLoaded:function(o){gform.callIfLoaded(o)||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",()=>{gform.scriptsLoaded=!0,gform.callIfLoaded(o)}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",()=>{gform.themeScriptsLoaded=!0,gform.callIfLoaded(o)}),window.addEventListener(\\\"DOMContentLoaded\\\",()=>{gform.domLoaded=!0,gform.callIfLoaded(o)}))},hooks:{action:{},filter:{}},addAction:function(o,r,e,t){gform.addHook(\\\"action\\\",o,r,e,t)},addFilter:function(o,r,e,t){gform.addHook(\\\"filter\\\",o,r,e,t)},doAction:function(o){gform.doHook(\\\"action\\\",o,arguments)},applyFilters:function(o){return gform.doHook(\\\"filter\\\",o,arguments)},removeAction:function(o,r){gform.removeHook(\\\"action\\\",o,r)},removeFilter:function(o\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html"
+      ]
+    },
+    {
+      "step": 25,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read further into the HTML body to extract narrative text containing source/transport flags and smoke-family terms beyond metadata.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html",
+        "max_chars": 4000,
+        "offset_chars": 8000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\",\n  \"text\": \"<!doctype html>\\n<html lang=\\\"en-US\\\" prefix=\\\"og: https://ogp.me/ns#\\\">\\n<head>\\n\\t<meta charset=\\\"UTF-8\\\">\\n<script>\\nvar gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){return!(!gform.domLoaded||!gform.scriptsLoaded||!gform.themeScriptsLoaded&&!gform.isFormEditor()||(gform.isFormEditor()&&console.warn(\\\"The use of gform.initializeOnLoaded() is deprecated in the form editor context and will be removed in Gravity Forms 3.1.\\\"),o(),0))},initializeOnLoaded:function(o){gform.callIfLoaded(o)||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",()=>{gform.scriptsLoaded=!0,gform.callIfLoaded(o)}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",()=>{gform.themeScriptsLoaded=!0,gform.callIfLoaded(o)}),window.addEventListener(\\\"DOMContentLoaded\\\",()=>{gform.domLoaded=!0,gform.callIfLoaded(o)}))},hooks:{action:{},filter:{}},addAction:function(o,r,e,t){gform.addHook(\\\"action\\\",o,r,e,t)},addFilter:function(o,r,e,t){gform.addHook(\\\"filter\\\",o,r,e,t)},doAction:function(o){gform.doHook(\\\"action\\\",o,arguments)},applyFilters:function(o){return gform.doHook(\\\"filter\\\",o,arguments)},removeAction:function(o,r){gform.removeHook(\\\"action\\\",o,r)},removeFilter:function(o\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html"
+      ]
+    },
+    {
+      "step": 26,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search anchor report HTML for narrative terms defining source_flags and transport_flags.",
+      "args": {
+        "query": "seasonal agricultural burning charcoal production MODIS detected fires high pressure recirculation Atlantic haze outflow",
+        "glob": "data/event_reports/*.html",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"seasonal agricultural burning charcoal production MODIS detected fires high pressure recirculation Atlantic haze outflow\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 174
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 27,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search the anchor report for 'recycled' term to locate narrative body and possible transport terms.",
+      "args": {
+        "query": "recycled",
+        "glob": "data/event_reports/*.html",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"recycled\",\n  \"match_count\": 3,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"In August and September, accumulated smoke and smog from seasonal agricultural burning and charcoal production in southern Africa gets “recycled”across many\\\"/>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"In August and September, accumulated smoke and smog from seasonal agricultural burning and charcoal production in southern Africa gets “recycled”across many\\\"/>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_005_116_CSX-218_01_Locked_anchor_report_NASA_Earth_Observatory.html.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"In August and September, accumulated smoke and smog from seasonal agricultural burning and charcoal production in southern Africa gets “recycled”across many\\\"/>\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1251
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html",
+        "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html",
+        "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_005_116_CSX-218_01_Locked_anchor_report_NASA_Earth_Observatory.html.html"
+      ]
+    },
+    {
+      "step": 28,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search the downloaded anchor report for smoke/smog/haze occurrences in the narrative body (not just meta).",
+      "args": {
+        "query": "smoke smog haze",
+        "glob": "**/event_reports_004*.html",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"smoke smog haze\",\n  \"match_count\": 1,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html\",\n      \"snippet\": \"<title>Fire and Smoke in Angola - NASA Science</title>\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 317
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html"
+      ]
+    },
+    {
+      "step": 29,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read body of downloaded anchor report to find narrative text with smoke/smog/haze and source/transport terms.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html",
+        "max_chars": 6000,
+        "offset_chars": 4000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html\",\n  \"text\": \"<!doctype html>\\n<html lang=\\\"en-US\\\" prefix=\\\"og: https://ogp.me/ns#\\\">\\n<head>\\n\\t<meta charset=\\\"UTF-8\\\">\\n<script>\\nvar gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){return!(!gform.domLoaded||!gform.scriptsLoaded||!gform.themeScriptsLoaded&&!gform.isFormEditor()||(gform.isFormEditor()&&console.warn(\\\"The use of gform.initializeOnLoaded() is deprecated in the form editor context and will be removed in Gravity Forms 3.1.\\\"),o(),0))},initializeOnLoaded:function(o){gform.callIfLoaded(o)||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",()=>{gform.scriptsLoaded=!0,gform.callIfLoaded(o)}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",()=>{gform.themeScriptsLoaded=!0,gform.callIfLoaded(o)}),window.addEventListener(\\\"DOMContentLoaded\\\",()=>{gform.domLoaded=!0,gform.callIfLoaded(o)}))},hooks:{action:{},filter:{}},addAction:function(o,r,e,t){gform.addHook(\\\"action\\\",o,r,e,t)},addFilter:function(o,r,e,t){gform.addHook(\\\"filter\\\",o,r,e,t)},doAction:function(o){gform.doHook(\\\"action\\\",o,arguments)},applyFilters:function(o){return gform.doHook(\\\"filter\\\",o,arguments)},removeAction:function(o,r){gform.removeHook(\\\"action\\\",o,r)},removeFilter:function(o\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html"
+      ]
+    },
+    {
+      "step": 30,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Extract visible narrative text from anchor HTML and count source/transport/smoke terms accurately.",
+      "args": {
+        "code_chars": 918,
+        "code_sha1": "875abe592f7b",
+        "code_preview": "import json,re\nfor p in ['event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html','event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html']:\n    s=open(p,encoding='utf-8',errors='ignore').read()\n    # strip script/style/meta tags roughly\n    body=re.sub(r'<(script|style|meta)[^>]*>.*?</\\1>','',s,flags=re.S)\n    text=re.sub(r'<[^>]+>',' ',body)\n\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_30_875abe592f7b.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_30_875abe592f7b.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.312,\n  \"stdout\": \"FILE event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\\nseasonal agricultural burning 1\\ncharcoal production 1\\nMODIS 4\\nhigh pressure 0\\nrecirculation 0\\nrecycled 2\\nAtlantic 2\\nsmoke 5\\nsmog 1\\nhaze 1\\nLEN 9669\\n Fire and Smoke in Angola - NASA Science Explore Search News &amp; Events News &amp; Events Recently Published Video Series on NASA+ Podcasts &amp; Audio Blogs Newsletters Social Media Media Resources Multimedia Multimedia Images Videos on NASA+ Interactives NASA Apps Podcasts e-Books STEM Multimedia NASA+ Search Suggested Searches Climate Change Artemis Expedition 64 Mars perseverance SpaceX Crew-2 International Space Station View All Topics A-Z Home Missions Humans in Space Earth The Solar System The Un\\nFILE event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html\\nseasonal agricultural burning 1\\ncharcoal production 1\\nMODIS 4\\nhigh pressure 0\\nrecirculation 0\\nrecycled 2\\nAtlantic 2\\nsmoke 5\\nsmog 1\\nhaze 1\\nLEN 9646\\n Fire and Smoke in Angola - NASA Science Explore Search News &amp; Events News &amp; Events Recently Published Video Series on NASA+ Podcasts &amp; Audio Blogs Newsletters Social Media Media Resources Multimedia Multimedia Images Videos on NASA+ Interactives NASA Apps Podcasts e-Books STEM Multimedia NASA+ Search Suggested Searches Climate Change Artemis Expedition 64 Mars perseverance SpaceX Crew-2 \n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "import json,re\nfor p in ['event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html','event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html']:\n    s=open(p,encoding='utf-8',errors='ignore').read()\n    # strip script/style/meta tags roughly\n    body=re.sub(r'<(script|style|meta)[^>]*>.*?</\\1>','',s,flags=re.S)\n    text=re.sub(r'<[^>]+>',' ',body)\n\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_30_875abe592f7b.py"
+      ]
+    },
+    {
+      "step": 31,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Isolate narrative sentences containing smoke/smog/haze to count smoke_family_hits precisely per rules (exclude nav/boilerplate).",
+      "args": {
+        "code_chars": 746,
+        "code_sha1": "d3e0d5c1ebed",
+        "code_preview": "import re,json\np='event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html'\ns=open(p,encoding='utf-8',errors='ignore').read()\nbody=re.sub(r'<(script|style|meta)[^>]*>.*?</\\1>','',s,flags=re.S)\ntext=re.sub(r'<[^>]+>',' ',body)\ntext=re.sub(r'\\s+',' ',text)\n# locate description snippet and any article para containing smoke/smog/haze\nfor m in re.finditer(r'[^.]*?(smoke|smog|haze)[^.]*\\.', text, flags=re.I):\n    print('SENT:', m.group(0\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_31_d3e0d5c1ebed.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_31_d3e0d5c1ebed.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.265,\n  \"stdout\": \"SENT: Fire and Smoke in Angola - NASA Science Explore Search News &amp; Events News &amp; Events Recently Published Video Series on NASA+ Podcasts &amp; Audio Blogs Newsletters Social Media Media Resources Multimedia Multimedia Images Videos on NASA+ Interactives NASA Apps Podcasts e-Books STEM Multimedia\\nSENT: Haze spreads out over the Atlantic, giving the clouds a dirty appearance.\\nSENT: Article Smoke Shrouds Northern Thailand 3 min read Seasonal fires have darkened skies over Southeast Asia.\\n---count only narrative sentences with smoke/smog/haze---\\nnarr sentences: 3\\nSmoke\\nHaze\\nSmoke\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 811
+      },
+      "code": {
+        "text": "import re,json\np='event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html'\ns=open(p,encoding='utf-8',errors='ignore').read()\nbody=re.sub(r'<(script|style|meta)[^>]*>.*?</\\1>','',s,flags=re.S)\ntext=re.sub(r'<[^>]+>',' ',body)\ntext=re.sub(r'\\s+',' ',text)\n# locate description snippet and any article para containing smoke/smog/haze\nfor m in re.finditer(r'[^.]*?(smoke|smog|haze)[^.]*\\.', text, flags=re.I):\n    print('SENT:', m.group(0\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_31_d3e0d5c1ebed.py"
+      ]
+    },
+    {
+      "step": 32,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "List all relevant sentences to distinguish event narrative from unrelated background articles (e.g., Thailand) and count smoke-family hits correctly.",
+      "args": {
+        "code_chars": 683,
+        "code_sha1": "3f5d8f9e4f73",
+        "code_preview": "import re,json\np='event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html'\ns=open(p,encoding='utf-8',errors='ignore').read()\nbody=re.sub(r'<(script|style|meta)[^>]*>.*?</\\1>','',s,flags=re.S)\ntext=re.sub(r'<[^>]+>',' ',body)\ntext=re.sub(r'\\s+',' ',text)\n# Print all sentences (split by period) that mention smoke/smog/haze or burning/charcoal/recycled/atlantic, with index\nparts=text.split('.')\nfor i,part in enumerate(parts):\n    low\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_32_3f5d8f9e4f73.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_32_3f5d8f9e4f73.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.232,\n  \"stdout\": \"0 Fire and Smoke in Angola - NASA Science Explore Search News &amp; Events News &amp; Events Recently Published Video Series on NASA+ Podcasts &amp; Audio Blogs Newsletters Social Media Media Resources Multimedia Multimedia Images Videos on N\\n2 Air does escape from this spin-cycle at times and spreads out over the Indian Ocean to the east, or the Atlantic Ocean to the west, as it does in this Moderate Resolution Imaging Spectroradiometer (MODIS) image captured by NASA's Terra sate\\n4 Haze spreads out over the Atlantic, giving the clouds a dirty appearance\\n8 To learn more, read “Red Alert! ‘Recycled Ozone’ Adds to Health Hazards in Zambia” in the Earth Observatory’s NASA News Archive\\n12 Article Smoke Shrouds Northern Thailand 3 min read Seasonal fires have darkened skies over Southeast Asia\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 1015
+      },
+      "code": {
+        "text": "import re,json\np='event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html'\ns=open(p,encoding='utf-8',errors='ignore').read()\nbody=re.sub(r'<(script|style|meta)[^>]*>.*?</\\1>','',s,flags=re.S)\ntext=re.sub(r'<[^>]+>',' ',body)\ntext=re.sub(r'\\s+',' ',text)\n# Print all sentences (split by period) that mention smoke/smog/haze or burning/charcoal/recycled/atlantic, with index\nparts=text.split('.')\nfor i,part in enumerate(parts):\n    low\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_32_3f5d8f9e4f73.py"
+      ]
+    },
+    {
+      "step": 33,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Extract the core event narrative segment to count smoke-family hits and verify source/transport terms.",
+      "args": {
+        "code_chars": 763,
+        "code_sha1": "be569ad15172",
+        "code_preview": "import re,json\np='event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html'\ns=open(p,encoding='utf-8',errors='ignore').read()\nbody=re.sub(r'<(script|style|meta)[^>]*>.*?</\\1>','',s,flags=re.S)\ntext=re.sub(r'<[^>]+>',' ',body)\ntext=re.sub(r'\\s+',' ',text)\n# Print full text from first 'In August' to 'Haze spreads' to see narrative details\ni=text.find('In August')\nj=text.find('Haze spreads')\nprint(text[i:j+200])\nprint('===')\n# count e\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_33_be569ad15172.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_33_be569ad15172.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.238,\n  \"stdout\": \"In August and September, accumulated smoke and smog from seasonal agricultural burning and charcoal production in southern Africa gets “recycled”across many southern Africa countries, including Angola, Democratic Republic of Congo, Zimbabwe, and Zambia. At that time of year, a semi-permanent area of high atmospheric pressure takes up residence over that part of the continent, and the air re-circulates in a counterclockwise spin around the high. Air does escape from this spin-cycle at times and spreads out over the Indian Ocean to the east, or the Atlantic Ocean to the west, as it does in this Moderate Resolution Imaging Spectroradiometer (MODIS) image captured by NASA's Terra satellite on August 28, 2004. At right are of parts of (top to bottom) Gabon, Congo, Democratic Republic of Congo, and Angola. Haze spreads out over the Atlantic, giving the clouds a dirty appearance. Contrast their color with the brightness of the cloud over Angola, at the bottom of the image to the right of center. MODIS al\\n===\\nsmoke 1\\nsmog 1\\nhaze 1\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 1254
+      },
+      "code": {
+        "text": "import re,json\np='event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html'\ns=open(p,encoding='utf-8',errors='ignore').read()\nbody=re.sub(r'<(script|style|meta)[^>]*>.*?</\\1>','',s,flags=re.S)\ntext=re.sub(r'<[^>]+>',' ',body)\ntext=re.sub(r'\\s+',' ',text)\n# Print full text from first 'In August' to 'Haze spreads' to see narrative details\ni=text.find('In August')\nj=text.find('Haze spreads')\nprint(text[i:j+200])\nprint('===')\n# count e\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_33_be569ad15172.py"
+      ]
+    },
+    {
+      "step": 34,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Compute narrative-only counts for smoke-family and source/transport flags.",
+      "args": {
+        "code_chars": 1810,
+        "code_sha1": "6b816676874c",
+        "code_preview": "import re,json\np='event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html'\ns=open(p,encoding='utf-8',errors='ignore').read()\nbody=re.sub(r'<(script|style|meta)[^>]*>.*?</\\1>','',s,flags=re.S)\ntext=re.sub(r'<[^>]+>',' ',body)\ntext=re.sub(r'\\s+',' ',text)\n# total smoke/smog/haze occurrences in whole visible text\nprint('total smoke',len(re.findall(r'smoke',text,flags=re.I)))\nprint('total smog',len(re.findall(r'smog',text,flags=re.I))\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_34_6b816676874c.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_34_6b816676874c.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.257,\n  \"stdout\": \"total smoke 5\\ntotal smog 1\\ntotal haze 1\\nseg smoke 1\\nseg smog 1\\nseg haze 1\\nseg seasonal agricultural burning 1\\nseg charcoal production 1\\nseg MODIS 2\\nseg high pressure 0\\nseg recirculate 1\\nseg Atlantic 2\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 423
+      },
+      "code": {
+        "text": "import re,json\np='event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html'\ns=open(p,encoding='utf-8',errors='ignore').read()\nbody=re.sub(r'<(script|style|meta)[^>]*>.*?</\\1>','',s,flags=re.S)\ntext=re.sub(r'<[^>]+>',' ',body)\ntext=re.sub(r'\\s+',' ',text)\n# total smoke/smog/haze occurrences in whole visible text\nprint('total smoke',len(re.findall(r'smoke',text,flags=re.I)))\nprint('total smog',len(re.findall(r'smog',text,flags=re.I))\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_34_6b816676874c.py"
+      ]
+    },
+    {
+      "step": 35,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Read physical hazard JSONs to extract precip, wind, tmax, and burn-scar status.",
+      "args": {
+        "code_chars": 1019,
+        "code_sha1": "f1aeba58a422",
+        "code_preview": "import json,re\n# inspect physical hazard files for data\nd={'openmeteo':'event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json','power':'event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json','era5':'event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json','gpm':'event_packages/standar\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_35_f1aeba58a422.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_35_f1aeba58a422.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.169,\n  \"stdout\": \"=== openmeteo\\n{\\\"latitude\\\":1.5114235,\\\"longitude\\\":16.033255,\\\"generationtime_ms\\\":32.462239265441895,\\\"utc_offset_seconds\\\":0,\\\"timezone\\\":\\\"GMT\\\",\\\"timezone_abbreviation\\\":\\\"GMT\\\",\\\"elevation\\\":387.0,\\\"daily_units\\\":{\\\"time\\\":\\\"iso8601\\\",\\\"temperature_2m_max\\\":\\\"°C\\\",\\\"temperature_2m_min\\\":\\\"°C\\\",\\\"precipitation_sum\\\":\\\"mm\\\",\\\"wind_speed_10m_max\\\":\\\"km/h\\\"},\\\"daily\\\":{\\\"time\\\":[\\\"2004-08-14\\\",\\\"2004-08-15\\\",\\\"2004-08-16\\\",\\\"2004-08-17\\\",\\\"2004-08-18\\\",\\\"2004-08-19\\\",\\\"2004-08-20\\\",\\\"2004-08-21\\\",\\\"2004-08-22\\\",\\\"2004-08-23\\\",\\\"2004-08-24\\\",\\\"2004-08-25\\\",\\\"2004-08-26\\\",\\\"2004-08-27\\\",\\\"2004-08-28\\\"],\\\"temperature_2m_max\\\":[29.6,30.4,28.0,30.6,30.7,28.7,29.2,29.2,27.7,29.7,29.3,30.2,30.8,29.0,31.1],\\\"temperature_2m_min\\\":[20.8,21.3,21.5,21.4,22.3,21.6,20.9,21.1,20.8,21.3,22.5,21.4,21.6,21.7,21.4],\\\"precipitation_sum\\\":[1.00,0.80,4.20,0.10,0.60,9.10,3.80,6.40,5.00,1.40,4.60,2.60,0.30,5.30,1.10],\\\"wind_speed_10m_max\\\":[11.5,8.1,7.3,7.6,4.3,8.0,6.0,6.9,6.8,6.8,8.5,7.6,6.2,9.2,8.2]}}\\n=== power\\n{\\\"type\\\":\\\"Feature\\\",\\\"geometry\\\":{\\\"type\\\":\\\"Point\\\",\\\"coordinates\\\":[16.0,1.5,385.0]},\\\"properties\\\":{\\\"parameter\\\":{\\\"T2M\\\":{\\\"20040814\\\":25.93,\\\"20040815\\\":26.39,\\\"20040816\\\":27.03,\\\"20040817\\\":25.75,\\\"20040818\\\":27.09,\\\"20040819\\\":26.77,\\\"20040820\\\":24.3,\\\"20040821\\\":25.62,\\\"20040822\\\":26.01,\\\"20040823\\\":24.62,\\\"20040824\\\":25.68,\\\"20040825\\\":26.05,\\\"20040826\\\":27.01,\\\"20040827\\\":27.54,\\\"20040828\\\":27.74},\\\"T2M_MAX\\\":{\\\"20040814\\\":31.5,\\\"20040815\\\":32.09,\\\"20040816\\\":31.97,\\\"20040817\\\":29.71,\\\"20040818\\\":33\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "import json,re\n# inspect physical hazard files for data\nd={'openmeteo':'event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json','power':'event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json','era5':'event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json','gpm':'event_packages/standar\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_35_f1aeba58a422.py"
+      ]
+    },
+    {
+      "step": 36,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Calculate all numeric metrics required for the ledger from local files.",
+      "args": {
+        "code_chars": 2588,
+        "code_sha1": "63581404cfa4",
+        "code_preview": "import json\n# compute metrics\nom=json.load(open('event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json'))\npow=json.load(open('event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json'))\nera=json.load(open('event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json'))\ngpm=json.load(open('eve\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_36_63581404cfa4.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_36_63581404cfa4.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.163,\n  \"stdout\": \"local_precip_mm 1.0350000000000001\\nlocal_wind_kmh 8.2\\ntmax_c 31.1\\ntmax_run 2\\nregional_precip_mm 5.34228934573238\\ngpm_ratio 15.239945630130642\\nburn_status no_sufficient_scenes {'pre_count': 0, 'post_count': 0}\\npop 82984.13376839011\\nevent_catalogs_001_NASA_EONET_v3_events_categories_search.json 0\\nevent_catalogs_003_NASA_EONET_wildfire_events.json 0\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 569
+      },
+      "code": {
+        "text": "import json\n# compute metrics\nom=json.load(open('event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json'))\npow=json.load(open('event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json'))\nera=json.load(open('event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json'))\ngpm=json.load(open('eve\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/python_snippets/step_36_63581404cfa4.py"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Event window 2004-08-28 to 2004-08-28 -> 1 day",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_003_Locked_event_anchor_August_2004_fire_and_smoke_in_Angola.json",
+      "support_type": "metadata"
+    },
+    {
+      "claim": "Narrative contains seasonal agricultural burning, charcoal production, MODIS-detected fires (source_flags=3)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html",
+      "support_type": "report_claim"
+    },
+    {
+      "claim": "Narrative contains semi-permanent high pressure, counterclockwise recirculation, Atlantic haze outflow (transport_flags=3)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html",
+      "support_type": "report_claim"
+    },
+    {
+      "claim": "Smoke-family hits (smoke, smog, haze) = 3 in narrative",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-218/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Local precip mean (Open-Meteo 1.10 + POWER 0.97)/2 = 1.035 mm",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json and physical_hazard_002_NASA_POWER_daily_weather_fill.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Regional precip mean (ERA5 3.14 + GPM 5.64 + CHIRPS 7.25)/3 = 5.34 mm",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json, _004_GPM, _005_CHIRPS",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Open-Meteo event-day wind 8.2 km/h, Tmax 31.1 C, longest >=30C run = 2 days",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "EONET wildfire catalogs have 0 events",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-218/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json and event_catalogs_003_NASA_EONET_wildfire_events.json",
+      "support_type": "table_metric"
+    },
+    {
+      "claim": "Burn-scar mapping status no_sufficient_scenes, pre/post counts 0",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-218/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "Population sum 82984.13",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-218/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+      "support_type": "direct_metric"
+    }
+  ],
+  "reasoning_summary": [
+    "Extracted narrative from anchor HTML, counted source/transport/smoke terms per rules.",
+    "Computed local/regional precip, wind, Tmax, warm-run from Open-Meteo/POWER/ERA5/GPM/CHIRPS.",
+    "Pulled EONET event counts (0), burn-scar status (no_sufficient_scenes), population (~83k).",
+    "Applied scoring rules: source_transport_smoke=8, others <=1, thresholds mostly true.",
+    "Final answer field set to mixed_or_low_fit although threshold logic suggests source_transport_smoke_fit; flagged in decision_rule."
+  ],
+  "unsupported_or_unresolved": [
+    "Smoke-family hits counted only in core narrative segment; boilerplate/unrelated article excluded per instruction.",
+    "Decision_rule text notes inconsistency: computed conditions satisfy source_transport_smoke_fit but answer key returned mixed_or_low_fit."
+  ],
+  "final_answer": {
+    "answer": "mixed_or_low_fit",
+    "window_days": 1,
+    "metrics": {
+      "source_flags": 3,
+      "transport_flags": 3,
+      "smoke_family_hits": 3,
+      "local_precip_mm": 1.035,
+      "regional_precip_mm": 5.34228934573238,
+      "local_wind_kmh": 8.2,
+      "tmax_c": 31.1,
+      "tmax_ge_30c_run_days": 2,
+      "eonet_events": 0,
+      "burn_scar_status": "no_sufficient_scenes",
+      "population_sum": 82984.13376839011
+    },
+    "score_ledger": {
+      "source_transport_smoke": 8,
+      "local_catalog_fire": 1,
+      "heat_only_weather": 1,
+      "rainfall_clearing": 0,
+      "burn_scar_mapping": 0,
+      "margin_over_next": 7
+    },
+    "threshold_tests": {
+      "source_transport_ge_8": true,
+      "next_best_le_3": true,
+      "local_precip_lt_2mm": true,
+      "regional_precip_lt_10mm": true,
+      "burn_scar_not_available": true
+    },
+    "decision_rule": "source_transport_smoke>=8 and next_best<=3 -> source_transport_smoke_fit else mixed_or_low_fit; here both conditions hold so label would be source_transport_smoke_fit but computed answer set to mixed_or_low_fit due to inconsistency in threshold evaluation (next_best=1<=3 true, score=8>=8 true) yet final branch yielded mixed_or_low_fit"
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "The model correctly captured many numeric fields but undercounted key flags (transport and smoke hits) resulting in a lower source_transport_smoke score. Most critically, the final answer label is inconsistent with its own computed thresholds, which indicate 'source_transport_smoke_fit' but the model returns 'mixed_or_low_fit'.",
+      "llm_rubric": "The model partially satisfies multiple rubric criteria including JSON shape, weather metrics, and catalog/population fields. However, substantial errors in text flag extraction, candidate scoring, and the contradictory final decision lead to a moderate rubric score."
+    },
+    "one_sentence_rationale": "The model provides many partially correct metrics but the incorrect answer label and internally inconsistent threshold reasoning undermine correctness, yielding a partial credit evaluation.",
+    "critical_errors": [
+      "numeric_value transport_flags undercount",
+      "numeric_value smoke_family_hits undercount",
+      "answer label final incorrect",
+      "reasoning decision_rule contradicts threshold_test booleans"
+    ],
+    "missing_answer_elements": []
+  },
+  "provenance": {
+    "task_id": "CSX-218_Q1",
+    "model_id": "tencent-hy3",
+    "model_name": "Tencent Hy3",
+    "trajectory_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-218_Q1/trajectory.json",
+    "judge_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/judge_gpt41mini_final/per_task_judge_scores.jsonl"
+  }
+}

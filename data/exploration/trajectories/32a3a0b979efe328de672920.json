@@ -1,0 +1,461 @@
+{
+  "task_id": "CSX-058_Q2",
+  "model_id": "qwen-3-7-plus",
+  "model_name": "Qwen 3.7 Plus",
+  "scores": {
+    "overall": 0.0,
+    "answer": 0.0,
+    "rubric": 0.0,
+    "unit_accuracy": 0.0,
+    "answer_units_correct": 0,
+    "answer_units_total": 8,
+    "rubric_points_earned": 0.0,
+    "rubric_points_total": 20.0,
+    "verdict": "incorrect"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 132.759,
+    "tool_calls": 11,
+    "model_rounds": 13,
+    "file_reads": 3,
+    "unique_evidence_files": 5,
+    "python_calls": 0,
+    "tool_errors": 0,
+    "prompt_tokens": 82043,
+    "completion_tokens": 1852,
+    "total_tokens": 83895
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "Discover local evidence files in the CSX-058 event package",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 40,\n  \"file_count_total\": 40,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-058/data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json\",\n      \"bytes\": 5333,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-058/data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml\",\n      \"bytes\": 225166,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-058/data/event_catalogs/event_catalogs_003_NASA_EONET_severe_storms_flood_search.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_NASA_EONET_severe_storms_flood_search.json\",\n      \"bytes\": 2064,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-058/data/event_catalogs/event_catalogs_004_04_NASA_EONET_v3_events.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_004_04_NASA_EONET_v3_events.json.json\",\n      \"bytes\": 14084,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-058/data/event_catalogs/event_catalogs_005_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_005_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-058/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the question for full context",
+      "args": {
+        "path": "benchmark_build/individual_event_tasks/CSX-058_Q2/question_en.md",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"benchmark_build/individual_event_tasks/CSX-058_Q2/question_en.md\",\n  \"text\": \"# UAE Rainfall Load Diagnostic\\n\\nA hydrometeorology team is checking an index-based diagnosis for the April 15-17, 2024 UAE and Dubai record rainfall flood. The proposed conclusion is that the event passes an annual-scale, short-duration rainfall-overload test: an eastern UAE sub-24-hour total exceeded the midpoint of the country's typical annual rainfall range, the Dubai airport daily total was still at least half of that annual midpoint, and the gridded event maxima are much smaller than the report-scale totals.\\n\\nUsing the technical record, compute a compact proof diagnostic. Infer the event duration, the annual rainfall midpoint, the two report-to-annual ratios, the Dubai airport typical annual rainfall implied by its reported multiplier, the largest gridded accumulated precipitation total, and the airport/eastern report-to-grid ratios. Apply these pass conditions:\\n\\n- `duration_days == 3`\\n- `eastern_annual_ratio >= 1.0`\\n- `airport_annual_ratio >= 0.5`\\n- `airport_to_grid_ratio >= 5.0`\\n- `eastern_to_grid_ratio >= 10.0`\\n\\nReturn only JSON:\\n\\n```json\\n{\\n  \\\"duration_days\\\": \\\"<integer>\\\",\\n  \\\"annual_midpoint_mm\\\": \\\"<number>\\\",\\n  \\\"eastern_annual_ratio\\\": \\\"<number>\\\",\\n  \\\"airport_annual_ratio\\\": \\\"<number>\\\",\\n  \\\"airport_typical_annual_mm\\\": \\\"<number>\\\",\\n  \\\"max_gridded_precip_mm\\\": \\\"<number>\\\",\\n  \\\"report_to_grid_ratios\\\": {\\n    \\\"airport\\\": \\\"<number>\\\",\\n    \\\"eastern\\\": \\\"<number>\\\"\\n  },\\n  \\\"final_label\\\": \\\"<short_label>\\\"\\n}\\n```\\n\"\n}",
+        "truncated": false,
+        "original_chars": 1578
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/individual_event_tasks/CSX-058_Q2/question_en.md"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for key rainfall statistics mentioned in the question",
+      "args": {
+        "query": "annual rainfall Dubai airport eastern UAE precipitation",
+        "glob": "**/*.json",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"annual rainfall Dubai airport eastern UAE precipitation\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 109
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-058/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Broader search for rainfall statistics",
+      "args": {
+        "query": "rainfall annual mm precipitation",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"rainfall annual mm precipitation\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 86
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-058/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the locked event anchor report which likely contains key statistics about the UAE flood event",
+      "args": {
+        "path": "data/event_reports/event_reports_003_Locked_event_anchor_April_2024_UAE_and_Dubai_record_rainfall_flood.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-058/data/event_reports/event_reports_003_Locked_event_anchor_April_2024_UAE_and_Dubai_record_rainfall_flood.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-058\\\",\\n  \\\"event_name\\\": \\\"April 2024 UAE and Dubai record rainfall flood\\\",\\n  \\\"hazard_family\\\": \\\"extreme_precip_pluvial_flood\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2024-04-15\\\",\\n    \\\"end_date\\\": \\\"2024-04-17\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Dubai, Abu Dhabi and Al Ain\\\",\\n    \\\"country_or_region\\\": \\\"United Arab Emirates\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"April 2024 UAE and Dubai record rainfall flood\\\",\\n    \\\"event_start_date\\\": \\\"2024-04-15\\\",\\n    \\\"event_end_date\\\": \\\"2024-04-17\\\",\\n    \\\"event_location\\\": \\\"Dubai, Abu Dhabi and Al Ain\\\",\\n    \\\"event_country_or_region\\\": \\\"United Arab Emirates\\\",\\n    \\\"event_scope\\\": \\\"subagent_region_locked\\\",\\n    \\\"evidence_type\\\": \\\"NASA Earth Observatory\\\",\\n    \\\"evidence_url\\\": \\\"https://earthobservatory.nasa.gov/images/152703/deluge-in-the-united-arab-emirates\\\",\\n    \\\"evidence_final_url\\\": \\\"https://earthobservatory.nasa.gov/images/152703/deluge-in-the-united-arab-emirates\\\",\\n    \\\"http_status\\\": \\\"\\\",\\n    \\\"lock_status\\\": \\\"event_locked_subagent_candidate_needs_url_probe\\\",\\n    \\\"lock_confidence\\\": \\\"high\\\",\\n    \\\"match_rule\\\": \\\"subagent_exact_family_region_replacement\\\",\\n    \\\"web_search_query_used\\\": \\\"NASA Earth Observatory Dubai floods April 2024 extreme rainfall\\\",\\n    \\\"event_lock_notes\\\": \\\"Desert urban \n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-058/data/event_reports/event_reports_003_Locked_event_anchor_April_2024_UAE_and_Dubai_record_rainfall_flood.json"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for specific rainfall values related to Dubai airport and eastern UAE",
+      "args": {
+        "query": "airport 254 142 annual typical range midpoint",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"airport 254 142 annual typical range midpoint\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 99
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-058/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search the NASA Earth Observatory HTML report for rainfall data",
+      "args": {
+        "query": "Deluge United Arab Emirates rainfall",
+        "glob": "**/*.html*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"Deluge United Arab Emirates rainfall\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-058/data/event_reports/event_reports_004_01_Locked_package_evidence_report.html.html\",\n      \"snippet\": \"<title>Deluge in the United Arab Emirates - NASA Science</title>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-058/data/other/other_003_01_NASA_Earth_Observatory_-_Deluge_in_the_United_Arab_Emirates.html.html\",\n      \"snippet\": \"<title>Deluge in the United Arab Emirates - NASA Science</title>\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 607
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-058/data/event_reports/event_reports_004_01_Locked_package_evidence_report.html.html",
+        "event_packages/standard_event_packages/packages/CSX-058/data/other/other_003_01_NASA_Earth_Observatory_-_Deluge_in_the_United_Arab_Emirates.html.html"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search NASA Earth Observatory HTML for specific rainfall amounts",
+      "args": {
+        "query": "millimeters inches rain airport",
+        "glob": "data/other/other_003*.html",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"millimeters inches rain airport\",\n  \"match_count\": 1,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-058/data/other/other_003_01_NASA_Earth_Observatory_-_Deluge_in_the_United_Arab_Emirates.html.html\",\n      \"snippet\": \"<p>A slow-moving storm system pummeled the United Arab Emirates and dropped more than a year’s worth of rain on some cities in April 2024. Heavy rain triggered flash flooding across eastern parts of the country, inundating roads and disrupting transportation.</p>\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 550
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-058/data/other/other_003_01_NASA_Earth_Observatory_-_Deluge_in_the_United_Arab_Emirates.html.html"
+      ]
+    },
+    {
+      "step": 9,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the NASA Earth Observatory HTML report to extract specific rainfall amounts",
+      "args": {
+        "path": "data/other/other_003_01_NASA_Earth_Observatory_-_Deluge_in_the_United_Arab_Emirates.html.html",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-058/data/other/other_003_01_NASA_Earth_Observatory_-_Deluge_in_the_United_Arab_Emirates.html.html\",\n  \"text\": \"<!doctype html>\\n<html lang=\\\"en-US\\\" prefix=\\\"og: https://ogp.me/ns#\\\">\\n<head>\\n\\t<meta charset=\\\"UTF-8\\\">\\n<script>\\nvar gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){return!(!gform.domLoaded||!gform.scriptsLoaded||!gform.themeScriptsLoaded&&!gform.isFormEditor()||(gform.isFormEditor()&&console.warn(\\\"The use of gform.initializeOnLoaded() is deprecated in the form editor context and will be removed in Gravity Forms 3.1.\\\"),o(),0))},initializeOnLoaded:function(o){gform.callIfLoaded(o)||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",()=>{gform.scriptsLoaded=!0,gform.callIfLoaded(o)}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",()=>{gform.themeScriptsLoaded=!0,gform.callIfLoaded(o)}),window.addEventListener(\\\"DOMContentLoaded\\\",()=>{gform.domLoaded=!0,gform.callIfLoaded(o)}))},hooks:{action:{},filter:{}},addAction:function(o,r,e,t){gform.addHook(\\\"action\\\",o,r,e,t)},addFilter:function(o,r,e,t){gform.addHook(\\\"filter\\\",o,r,e,t)},doAction:function(o){gform.doHook(\\\"action\\\",o,arguments)},applyFilters:function(o){return gform.doHook(\\\"filter\\\",o,arguments)},removeAction:function(o,r){gform.removeHook(\\\"action\\\",o,r)},removeFilter:fu\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-058/data/other/other_003_01_NASA_Earth_Observatory_-_Deluge_in_the_United_Arab_Emirates.html.html"
+      ]
+    },
+    {
+      "step": 10,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for specific rainfall values within the NASA HTML page",
+      "args": {
+        "query": "254 142 200 250 airport",
+        "glob": "data/other/other_003*.html",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"254 142 200 250 airport\",\n  \"match_count\": 1,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-058/data/other/other_003_01_NASA_Earth_Observatory_-_Deluge_in_the_United_Arab_Emirates.html.html\",\n      \"snippet\": \"<meta property=\\\"og:image\\\" content=\\\"https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/152000/152703/dubaiflooding_oli2_20240403.jpg/jcr:content/renditions/cq5dam.web.1280.1280.jpeg\\\" />\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 495
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-058/data/other/other_003_01_NASA_Earth_Observatory_-_Deluge_in_the_United_Arab_Emirates.html.html"
+      ]
+    },
+    {
+      "step": 11,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for specific rainfall descriptions mentioning year's worth of rain and eastern UAE",
+      "args": {
+        "query": "year's worth rain eastern Al Ain",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"year's worth rain eastern Al Ain\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 86
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-058/metadata/files.csv"
+      ]
+    }
+  ],
+  "evidence": [],
+  "reasoning_summary": [],
+  "unsupported_or_unresolved": [],
+  "final_answer": {
+    "code": "\nimport re\n\n# Read the NASA Earth Observatory HTML file and extract article text\npath = \"event_packages/standard_event_packages/packages/CSX-058/data/other/other_003_01_NASA_Earth_Observatory_-_Deluge_in_the_United_Arab_Emirates.html.html\"\nwith open(path, 'r', encoding='utf-8') as f:\n    html = f.read()\n\n# Remove script and style tags\nhtml_clean = re.sub(r'<script[^>]*>.*?</script>', '', html, flags=re.DOTALL|re.IGNORECASE)\nhtml_clean = re.sub(r'<style[^>]*>.*?</style>', '', html_clean, flags=re.DOTALL|re.IGNORECASE)\n\n# Extract text between <p> tags\nparagraphs = re.findall(r'<p[^>]*>(.*?)</p>', html_clean, flags=re.DOTALL|re.IGNORECASE)\nfor i, p in enumerate(paragraphs):\n    # Remove HTML tags within paragraph\n    text = re.sub(r'<[^>]+>', ' ', p).strip()\n    text = re.sub(r'\\s+', ' ', text)\n    if len(text) > 30:\n        print(f\"P{i}: {text[:300]}\")\n",
+    "reason": "Parse the NASA HTML to extract the article body text for rainfall values"
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "The final answer does not include any of the required JSON fields or values. Instead, the model returns only a Python code snippet unrelated to the final diagnostic JSON, so zero correctness points are earned.",
+      "llm_rubric": "No facet of the rubric is fulfilled due to missing computations, answer fields, reasoning, or conclusions."
+    },
+    "one_sentence_rationale": "The model failed to produce any part of the required JSON answer, returning irrelevant code instead, leading to zero correctness and rubric scores.",
+    "critical_errors": [
+      "missing_field: required JSON answer units completely absent",
+      "missing_field: final_label missing",
+      "missing_field: numeric values and ratios missing"
+    ],
+    "missing_answer_elements": [
+      "duration_days",
+      "annual_midpoint_mm",
+      "eastern_annual_ratio",
+      "airport_annual_ratio",
+      "airport_typical_annual_mm",
+      "max_gridded_precip_mm",
+      "report_to_grid_ratios",
+      "final_label"
+    ]
+  },
+  "provenance": {
+    "task_id": "CSX-058_Q2",
+    "model_id": "qwen-3-7-plus",
+    "model_name": "Qwen 3.7 Plus",
+    "trajectory_path": "benchmark_build/model_runs/openrouter_selected_full405/qwen__qwen3.7-plus/CSX-058_Q2/trajectory.json",
+    "judge_path": "benchmark_build/model_runs/openrouter_selected_full405/qwen__qwen3.7-plus/judge_gpt41mini_final/per_task_judge_scores.jsonl"
+  }
+}

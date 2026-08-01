@@ -1,0 +1,1056 @@
+{
+  "task_id": "CSX-129_Q1",
+  "event_id": "CSX-129",
+  "title": "Hurricane Ian Point-and-Box Consistency Ledger",
+  "event_name": "Hurricane Ian",
+  "hazard_family": "tropical_cyclone",
+  "hazard_label": "Tropical cyclone",
+  "region": "North America",
+  "scale": "neighborhood_asset",
+  "difficulty": "L2_quantitative_event_diagnosis",
+  "difficulty_rationale": "Manual review: \"Hurricane Ian Point-and-Box Consistency Ledger\" is calculation-led: formulas, windows, ratios, thresholds, scores, or consistency checks drive a quantitative event diagnosis rather than a full process explanation.",
+  "primary_dimension": "multi_source_evidence",
+  "dimensions": [
+    "multi_source_evidence",
+    "quantitative_calculation",
+    "remote_sensing_geospatial"
+  ],
+  "dimension_rationale": "Ian point-and-box consistency ledger comparing point signals and remote/box evidence.",
+  "task_type": "short_answer",
+  "target_family": "ian_landfall_point_signal_remote_box_consistency_ledger",
+  "file_count": 33,
+  "category_counts": {
+    "air_quality": 1,
+    "event_catalogs": 2,
+    "event_reports": 4,
+    "exposure_impact": 5,
+    "geospatial_context": 3,
+    "other": 2,
+    "physical_hazard": 8,
+    "remote_sensing": 8
+  },
+  "question": "# Hurricane Ian Point-and-Box Consistency Ledger\n\nDuring Hurricane Ian's September 23-30, 2022 Florida landfall period, a tropical-cyclone analytics team is checking whether a severe point weather signal can be reconciled with a compact mapped box that is far from Florida. Compute a five-row proof ledger that keeps the Florida point intensity calculation separate from the remote mapped context.\n\nReturn only JSON. Each ledger row must include a formula or boolean test, computed values with units or unit-implied field names, the threshold or test used, a pass or reject result, and a compact interpretation. The answer must not convert remote-box population, feature, image, or surge-layer checks into Ian-wide loss counts or observed surge impacts.\n\n```json\n{\n  \"target_family\": \"ian_landfall_point_signal_remote_box_consistency_ledger\",\n  \"consistency_ledger\": [\n    {\"row_id\": \"florida_point_landfall_signal\", \"formula\": \"\", \"computed_values\": {}, \"threshold_or_test\": \"\", \"result\": \"\", \"interpretation\": \"\"},\n    {\"row_id\": \"daily_power_crosscheck\", \"formula\": \"\", \"computed_values\": {}, \"threshold_or_test\": \"\", \"result\": \"\", \"interpretation\": \"\"},\n    {\"row_id\": \"mapped_box_distance_check\", \"formula\": \"\", \"computed_values\": {}, \"threshold_or_test\": \"\", \"result\": \"\", \"interpretation\": \"\"},\n    {\"row_id\": \"bounded_precip_ratio_check\", \"formula\": \"\", \"computed_values\": {}, \"threshold_or_test\": \"\", \"result\": \"\", \"interpretation\": \"\"},\n    {\"row_id\": \"image_exposure_transfer_check\", \"formula\": \"\", \"computed_values\": {}, \"threshold_or_test\": \"\", \"result\": \"\", \"interpretation\": \"\"}\n  ],\n  \"failed_transfers\": [\n    {\"transfer_id\": \"\", \"calculation_or_test\": \"\", \"decision\": \"\"}\n  ],\n  \"final_consistency_label\": \"\"\n}\n```\n",
+  "solution": "# Final Answer\n\nCorrect answer: return the target family `ian_landfall_point_signal_remote_box_consistency_ledger` with five ledger rows. The Florida point passes the severe landfall signal tests, the daily product cross-checks rainfall without replacing the peak gust, and the remote mapped box fails transfer tests for point intensity, bounded precipitation, exposure counts, image summaries, and surge inference.\n\n# Key Computations\n\nThe Florida point is `[-81.85431, 26.608084]`. Its local storm-window signal passes the severe landfall tests: maximum gust `185.4 km/h >= 150 km/h`, total precipitation `211.5 mm >= 150 mm`, and minimum pressure `966.9 hPa <= 980 hPa`.\n\nThe daily POWER cross-check gives `157.7 mm` total precipitation, so the daily-to-point precipitation ratio is `157.7 / 211.5 = 0.746`. Its maximum wind is `14.05 m/s`, or `50.58 km/h`, and the point gust is `185.4 / 50.58 = 3.665` times larger, so the daily product is a rainfall cross-check rather than a substitute gust estimate.\n\nThe compact mapped box is `[-110.225, 43.275, -109.775, 43.725]` with centroid `[-110.0, 43.5]`. The Florida point is outside the box, and the point-to-centroid distance is `sqrt((-81.85431 + 110.0)^2 + (26.608084 - 43.5)^2) = 32.825549 degrees`.\n\nThe bounded precipitation context is far below the Florida point total: ERA5-Land max/mean are `30.204164/22.209683 mm`, GPM max/mean are `23.579999/14.884846 mm`, and CHIRPS max/mean are `69.322785/44.000844 mm`. Their maxima are only `0.143`, `0.111`, and `0.328` of the `211.5 mm` point total.\n\nThe image and exposure transfer row uses Sentinel-1 counts `16` pre and `18` post, VV mean change `-0.744729 dB`, WorldPop `175.658766`, OSM element count `431`, Wyoming county examples, and `surge_named_layer_present = false`.\n\n# Reasoning Path\n\n1. Establish the local cyclone signal from the Florida point: wind gust, rainfall, and pressure all clear the severe-landfall thresholds.\n2. Cross-check precipitation with the daily product while keeping daily 10 m wind separate from the peak gust metric.\n3. Test the compact mapped box against the Florida point; the point is outside the box and more than 32 degrees from its centroid.\n4. Compare bounded grid precipitation maxima and means with the Florida point total; all bounded maxima are less than 35 percent of the point total.\n5. Treat image, population, and mapped-feature summaries as non-transferable remote-box context because the county examples point to Wyoming and no named surge layer is present.\n\n# Computed Interpretation\n\nThe defensible compact label is `severe_florida_point_signal_remote_box_rejected`: the Florida point supports severe Hurricane Ian landfall intensity, while the remote mapped box and its attached counts stay out of the Ian landfall calculation.\n\n# Scoring Rubric\n\n- 2 points: Requested JSON ledger. Full credit requires the target family, exactly the five ledger rows, failed transfers, and final consistency label. Partial credit: award 1 point for valid JSON with missing or renamed rows.\n- 4 points: Florida point landfall signal. Full credit computes `185.4 km/h`, `211.5 mm`, and `966.9 hPa` with the stated thresholds and passes the row. Partial credit: award 2-3 points for two correct metrics or minor unit errors.\n- 3 points: Daily POWER cross-check. Full credit computes `157.7 mm`, precipitation ratio `0.746`, `14.05 m/s = 50.58 km/h`, and gust-to-POWER-wind ratio `3.665`. Partial credit: award 1-2 points for a partial precipitation-only or wind-only cross-check.\n- 4 points: Mapped-box distance proof. Full credit gives the point, bbox, centroid, outside-box result, conflict flag, and `32.825549 degrees`. Partial credit: award 2-3 points for the correct mismatch conclusion with an incomplete calculation.\n- 3 points: Bounded precipitation ratio check. Full credit compares ERA5, GPM, and CHIRPS mean/max values against `211.5 mm` and rejects substituting the bounded context for the Florida point. Partial credit: award 1-2 points for using only one or two products.\n- 3 points: Image and exposure transfer check. Full credit uses Sentinel counts/change, WorldPop, OSM count, Wyoming county examples, and absent surge layer to reject loss-count or surge transfer. Partial credit: award 1-2 points for a correct transfer decision missing several anchors.\n- 1 point: Final proof discipline. Full credit provides a concise final label and avoids Ian-wide loss, direct damage, or surge claims not established by the calculations. Partial credit: no credit if the answer adds external planning text or escalates beyond the ledger.\n",
+  "ground_truth": {
+    "schema_version": "1.0",
+    "task_id": "CSX-129_Q1",
+    "event_id": "CSX-129",
+    "task_type": "short_answer",
+    "target_family": "ian_landfall_point_signal_remote_box_consistency_ledger",
+    "evaluation_mode": "hybrid",
+    "difficulty_level": "L3",
+    "primary_gt": {
+      "answer_type": "ledger",
+      "target_family": "ian_landfall_point_signal_remote_box_consistency_ledger",
+      "final_consistency_label": "severe_florida_point_signal_remote_box_rejected",
+      "row_results": "florida_point_landfall_signal:pass;daily_power_crosscheck:pass;mapped_box_distance_check:reject;bounded_precip_ratio_check:reject;image_exposure_transfer_check:reject",
+      "core_values": "point=185.4kmh,211.5mm,966.9hPa; power=157.7mm,14.05mps,pr=0.746,gr=3.665; box_inside=false,dist=32.825549deg; precip_max_ratios=0.143,0.111,0.328; img_exp=pop175.658766,osm431,s116/18,vv-0.744729,surgefalse",
+      "tol": "weather=0.1;wind_mps=0.01;distance=0.000001;ratio=0.005;count=0",
+      "blocked": "loss_count;observed_surge;remote_rainfall;weaken_point_signal"
+    },
+    "event": {
+      "event_id": "CSX-129",
+      "package_id": "CSX-129",
+      "event_name": "Hurricane Ian",
+      "hazard_family": "tropical_cyclone",
+      "event_date_or_window": "2022-09-23 to 2022-09-30"
+    },
+    "decision_rule": {
+      "summary": "The ledger passes when the Florida point signal clears severe thresholds, the daily product cross-checks rainfall without replacing gusts, the compact mapped context fails distance transfer, bounded precipitation fails as a substitute, and image/exposure/surge transfers are blocked.",
+      "required_rows": [
+        "florida_point_landfall_signal",
+        "daily_power_crosscheck",
+        "mapped_box_distance_check",
+        "bounded_precip_ratio_check",
+        "image_exposure_transfer_check"
+      ],
+      "required_results": [
+        "pass_severe_florida_point_landfall_signal",
+        "pass_daily_precip_crosscheck_reject_daily_wind_as_gust",
+        "reject_remote_box_transfer_distance_mismatch",
+        "reject_bounded_precip_as_florida_point_replacement",
+        "reject_image_exposure_loss_and_surge_transfer"
+      ]
+    },
+    "key_values": {
+      "event_location": "Florida and southeastern United States",
+      "event_window": "2022-09-23 to 2022-09-30",
+      "hazard_label": "Tropical cyclone",
+      "point_weather_location": [
+        -81.85431,
+        26.608084
+      ],
+      "point_max_gust_kmh": 185.4,
+      "point_total_precip_mm": 211.5,
+      "point_min_pressure_hpa": 966.9,
+      "mapped_box": {
+        "bbox": [
+          -110.225,
+          43.275,
+          -109.775,
+          43.725
+        ],
+        "centroid": [
+          -110.0,
+          43.5
+        ]
+      },
+      "point_inside_mapped_box": false,
+      "mapped_box_conflicts_with_event_location": true,
+      "point_to_mapped_box_distance_degrees": 32.825549,
+      "worldpop_population_sum": 175.658766,
+      "osm_element_count": 431,
+      "osm_county_examples": [
+        "Fremont, WY",
+        "Fremont, WY:Teton, WY",
+        "Fremont, WY;Fremont, WY:Teton, WY",
+        "Sublette, WY",
+        "Teton, WY"
+      ],
+      "bounded_precipitation_stats": {
+        "ECMWF/ERA5_LAND/HOURLY": {
+          "precipitation_sum_mm_max": 30.204164,
+          "precipitation_sum_mm_mean": 22.209683,
+          "precipitation_sum_mm_min": 11.296632,
+          "precipitation_sum_mm_stdDev": 5.059395
+        },
+        "NASA/GPM_L3/IMERG_V07": {
+          "gpm_event_precip_mm_max": 23.579999,
+          "gpm_event_precip_mm_mean": 14.884846,
+          "gpm_event_precip_mm_min": 5.395,
+          "gpm_event_precip_mm_stdDev": 4.103571
+        },
+        "UCSB-CHG/CHIRPS/DAILY": {
+          "chirps_event_precip_mm_max": 69.322785,
+          "chirps_event_precip_mm_mean": 44.000844,
+          "chirps_event_precip_mm_min": 17.107626,
+          "chirps_event_precip_mm_stdDev": 13.567298
+        }
+      },
+      "sentinel1_pre_count": 16,
+      "sentinel1_post_count": 18,
+      "sentinel1_post_minus_pre_count": 2,
+      "sentinel1_vv_post_minus_pre_db_mean": -0.744729,
+      "surge_named_layer_present": false,
+      "point_daily_power_precip_total_mm": 157.7,
+      "point_daily_power_max_wind_mps": 14.05,
+      "point_daily_power_max_wind_kmh": 50.58,
+      "power_to_point_precip_ratio": 0.746,
+      "point_minus_power_precip_mm": 53.8,
+      "gust_to_power_wind_ratio": 3.665
+    },
+    "expected_ledger": [
+      {
+        "row_id": "florida_point_landfall_signal",
+        "formula": "max_gust_kmh>=150 AND total_precip_mm>=150 AND min_pressure_hpa<=980",
+        "computed_values": {
+          "point_weather_location": [
+            -81.85431,
+            26.608084
+          ],
+          "point_max_gust_kmh": 185.4,
+          "point_total_precip_mm": 211.5,
+          "point_min_pressure_hpa": 966.9
+        },
+        "threshold_or_test": "pass if gust>=150 km/h, precipitation>=150 mm, and pressure<=980 hPa",
+        "result": "pass_severe_florida_point_landfall_signal",
+        "interpretation": "The Florida point has a severe wind-rain-pressure landfall signal."
+      },
+      {
+        "row_id": "daily_power_crosscheck",
+        "formula": "power_precip_ratio=POWER_total_mm/point_total_mm; POWER_wind_kmh=POWER_wind_mps*3.6; gust_ratio=point_gust_kmh/POWER_wind_kmh",
+        "computed_values": {
+          "point_daily_power_precip_total_mm": 157.7,
+          "power_to_point_precip_ratio": 0.746,
+          "point_minus_power_precip_mm": 53.8,
+          "point_daily_power_max_wind_mps": 14.05,
+          "point_daily_power_max_wind_kmh": 50.58,
+          "gust_to_power_wind_ratio": 3.665
+        },
+        "threshold_or_test": "rainfall cross-check passes if POWER/point precipitation is 0.60-0.90; do not replace gust with 10 m daily wind",
+        "result": "pass_daily_precip_crosscheck_reject_daily_wind_as_gust",
+        "interpretation": "Daily precipitation agrees with the point rainfall range, but daily wind is not the peak gust signal."
+      },
+      {
+        "row_id": "mapped_box_distance_check",
+        "formula": "distance_degrees=hypot(point_lon-box_centroid_lon, point_lat-box_centroid_lat); point_inside_box",
+        "computed_values": {
+          "mapped_box_bbox": [
+            -110.225,
+            43.275,
+            -109.775,
+            43.725
+          ],
+          "mapped_box_centroid": [
+            -110.0,
+            43.5
+          ],
+          "point_weather_location": [
+            -81.85431,
+            26.608084
+          ],
+          "point_inside_mapped_box": false,
+          "point_to_mapped_box_distance_degrees": 32.825549,
+          "mapped_box_conflicts_with_event_location": true
+        },
+        "threshold_or_test": "reject transfer if point is outside box, conflict flag is true, or distance>20 degrees",
+        "result": "reject_remote_box_transfer_distance_mismatch",
+        "interpretation": "The compact mapped box is far from the Florida point and cannot represent the Ian landfall point."
+      },
+      {
+        "row_id": "bounded_precip_ratio_check",
+        "formula": "bounded_product_max_or_mean_mm / point_total_precip_mm",
+        "computed_values": {
+          "point_total_precip_mm": 211.5,
+          "bounded_precipitation_stats": {
+            "ECMWF/ERA5_LAND/HOURLY": {
+              "precipitation_sum_mm_max": 30.204164,
+              "precipitation_sum_mm_mean": 22.209683,
+              "precipitation_sum_mm_min": 11.296632,
+              "precipitation_sum_mm_stdDev": 5.059395
+            },
+            "NASA/GPM_L3/IMERG_V07": {
+              "gpm_event_precip_mm_max": 23.579999,
+              "gpm_event_precip_mm_mean": 14.884846,
+              "gpm_event_precip_mm_min": 5.395,
+              "gpm_event_precip_mm_stdDev": 4.103571
+            },
+            "UCSB-CHG/CHIRPS/DAILY": {
+              "chirps_event_precip_mm_max": 69.322785,
+              "chirps_event_precip_mm_mean": 44.000844,
+              "chirps_event_precip_mm_min": 17.107626,
+              "chirps_event_precip_mm_stdDev": 13.567298
+            }
+          },
+          "bounded_to_point_ratios": {
+            "ERA5_Land": {
+              "max_to_point_ratio": 0.143,
+              "mean_to_point_ratio": 0.105
+            },
+            "GPM_IMERG": {
+              "max_to_point_ratio": 0.111,
+              "mean_to_point_ratio": 0.07
+            },
+            "CHIRPS": {
+              "max_to_point_ratio": 0.328,
+              "mean_to_point_ratio": 0.208
+            }
+          }
+        },
+        "threshold_or_test": "reject replacement if bounded maxima are all <0.35 of the Florida point total and the mapped context is remote",
+        "result": "reject_bounded_precip_as_florida_point_replacement",
+        "interpretation": "The bounded grid precipitation is lower and geographically remote from the Florida point signal."
+      },
+      {
+        "row_id": "image_exposure_transfer_check",
+        "formula": "context_counts_only AND Wyoming_counties_present AND surge_named_layer_present=false",
+        "computed_values": {
+          "sentinel1_pre_count": 16,
+          "sentinel1_post_count": 18,
+          "sentinel1_post_minus_pre_count": 2,
+          "sentinel1_vv_post_minus_pre_db_mean": -0.744729,
+          "worldpop_population_sum": 175.658766,
+          "osm_element_count": 431,
+          "osm_county_examples": [
+            "Fremont, WY",
+            "Fremont, WY:Teton, WY",
+            "Fremont, WY;Fremont, WY:Teton, WY",
+            "Sublette, WY",
+            "Teton, WY"
+          ],
+          "surge_named_layer_present": false
+        },
+        "threshold_or_test": "reject loss or surge transfer when image/exposure context is remote and no named surge layer is present",
+        "result": "reject_image_exposure_loss_and_surge_transfer",
+        "interpretation": "Imagery, population, and mapped features are context only; they do not count Ian-wide losses or surge impacts."
+      }
+    ],
+    "failed_transfers": [
+      {
+        "transfer_id": "ian_wide_loss_count",
+        "calculation_or_test": "WorldPop 175.658766 and OSM 431 come from the remote mapped context",
+        "decision": "do not convert context counts into Ian-wide impacts"
+      },
+      {
+        "transfer_id": "bounded_precip_replaces_point",
+        "calculation_or_test": "bounded maxima ratios are 0.143, 0.111, and 0.328 of the Florida point rainfall",
+        "decision": "do not replace the Florida point rainfall with the remote bounded grid context"
+      },
+      {
+        "transfer_id": "surge_inference",
+        "calculation_or_test": "surge_named_layer_present=false",
+        "decision": "do not infer observed surge or inundation from this ledger"
+      },
+      {
+        "transfer_id": "image_damage_count",
+        "calculation_or_test": "Sentinel-1 pre/post counts 16/18 and VV mean change -0.744729 dB are contextual statistics",
+        "decision": "do not count direct damage from the image summary"
+      }
+    ],
+    "tolerances": {
+      "location_abs": 1e-06,
+      "weather_abs": 0.1,
+      "wind_mps_abs": 0.01,
+      "distance_degrees_abs": 1e-06,
+      "ratio_abs": 0.005,
+      "population_abs": 1e-06,
+      "vv_db_abs": 1e-06,
+      "count_abs": 0
+    },
+    "rubric": {
+      "total_points": 20,
+      "criteria": [
+        {
+          "name": "Requested JSON ledger",
+          "points": 2,
+          "description": "Returns the target family, exactly the five required ledger rows, failed transfers, and final consistency label.",
+          "partial_credit": "Award 1 point for valid JSON with missing or renamed rows."
+        },
+        {
+          "name": "Florida point landfall signal",
+          "points": 4,
+          "description": "Computes the point location, 185.4 km/h gust, 211.5 mm precipitation, and 966.9 hPa pressure, then passes the severe-threshold test.",
+          "partial_credit": "Award 2-3 points for two correct metrics or a mostly correct threshold test with minor unit errors."
+        },
+        {
+          "name": "Daily POWER cross-check",
+          "points": 3,
+          "description": "Computes 157.7 mm, POWER/point precipitation ratio 0.746, 14.05 m/s = 50.58 km/h, and gust-to-POWER-wind ratio 3.665.",
+          "partial_credit": "Award 1-2 points for a partial precipitation-only or wind-only cross-check."
+        },
+        {
+          "name": "Mapped-box distance proof",
+          "points": 4,
+          "description": "Uses bbox [-110.225,43.275,-109.775,43.725], centroid [-110.0,43.5], point outside-box result, conflict flag, and 32.825549 degree distance.",
+          "partial_credit": "Award 2-3 points for the correct mismatch conclusion with an incomplete distance or containment calculation."
+        },
+        {
+          "name": "Bounded precipitation ratio check",
+          "points": 3,
+          "description": "Compares ERA5, GPM, and CHIRPS bounded mean/max precipitation values with 211.5 mm and rejects using them as the Florida point rainfall.",
+          "partial_credit": "Award 1-2 points for using only one or two bounded products or omitting ratios."
+        },
+        {
+          "name": "Image and exposure transfer check",
+          "points": 3,
+          "description": "Uses Sentinel-1 16/18 counts, -0.744729 dB mean VV change, WorldPop 175.658766, OSM 431, Wyoming county examples, and absent surge layer to reject loss-count and surge transfer.",
+          "partial_credit": "Award 1-2 points for the correct transfer decision with missing anchors."
+        },
+        {
+          "name": "Final proof discipline",
+          "points": 1,
+          "description": "Gives the final consistency label and avoids Ian-wide loss, direct damage, or surge claims not established by the calculations.",
+          "partial_credit": "No credit if the answer adds external planning text or escalates beyond the ledger."
+        }
+      ]
+    },
+    "provenance": {
+      "computed_by": "compute_gt.py",
+      "notes": "All values are computed or extracted from local CSX-129 package data; no network access is used.",
+      "source_files": [
+        "metadata/event.json",
+        "metadata/files.csv",
+        "data/event_reports/event_reports_004_Locked_event_anchor_Hurricane_Ian.json",
+        "data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json",
+        "data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json",
+        "data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+        "data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+        "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+        "data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+        "data/geospatial_context/geospatial_context_003_compact_per-event_AOI_derived_from_event_bbox.json",
+        "data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json"
+      ]
+    }
+  },
+  "compute_gt_py": "#!/usr/bin/env python3\n\"\"\"Compute ground truth for CSX-129_Q1 from local CSX-129 package files.\"\"\"\n\nfrom __future__ import annotations\n\nimport csv\nimport json\nimport math\nfrom pathlib import Path\nfrom typing import Any\n\n\nTASK_ID = \"CSX-129_Q1\"\nEVENT_ID = \"CSX-129\"\nPACKAGE_ID = EVENT_ID\nTARGET_FAMILY = \"ian_landfall_point_signal_remote_box_consistency_ledger\"\n\nBOX_PATTERN = \"data/geospatial_context/geospatial_context_003_compact_per-event_*_derived_from_event_bbox.json\"\nOSM_PATTERN = \"data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_*_slice.json\"\n\nPROVENANCE_FILES = [\n    \"metadata/event.json\",\n    \"metadata/files.csv\",\n    \"data/event_reports/event_reports_004_Locked_event_anchor_Hurricane_Ian.json\",\n    \"data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json\",\n    \"data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json\",\n    \"data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json\",\n    \"data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n    \"data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json\",\n    \"data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json\",\n    \"data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json\",\n    \"data/geospatial_context/geospatial_context_003_compact_per-event_AOI_derived_from_event_bbox.json\",\n    \"data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json\",\n]\n\n\ndef repo_root() -> Path:\n    return Path(__file__).resolve().parents[3]\n\n\ndef package_root() -> Path:\n    return repo_root() / \"event_packages\" / \"standard_event_packages\" / \"packages\" / PACKAGE_ID\n\n\ndef package_file(rel_path_or_pattern: str) -> Path:\n    if \"*\" not in rel_path_or_pattern:\n        return package_root() / rel_path_or_pattern\n    matches = sorted(package_root().glob(rel_path_or_pattern))\n    if not matches:\n        raise FileNotFoundError(rel_path_or_pattern)\n    return matches[0]\n\n\ndef load_json(rel_path_or_pattern: str) -> Any:\n    return json.loads(package_file(rel_path_or_pattern).read_text(encoding=\"utf-8-sig\"))\n\n\ndef rounded(value: float, digits: int = 6) -> float:\n    return round(float(value), digits)\n\n\ndef boxed_context_summary(feature: dict[str, Any]) -> dict[str, list[float]]:\n    ring = feature[\"geometry\"][\"coordinates\"][0]\n    points = ring[:-1] if ring and ring[0] == ring[-1] else ring\n    xs = [point[0] for point in points]\n    ys = [point[1] for point in points]\n    return {\n        \"bbox\": [rounded(min(xs)), rounded(min(ys)), rounded(max(xs)), rounded(max(ys))],\n        \"centroid\": [rounded(sum(xs) / len(xs)), rounded(sum(ys) / len(ys))],\n    }\n\n\ndef files_manifest_rows() -> list[dict[str, str]]:\n    with (package_root() / \"metadata/files.csv\").open(\"r\", encoding=\"utf-8-sig\", newline=\"\") as handle:\n        return list(csv.DictReader(handle))\n\n\ndef has_named_surge_layer(rows: list[dict[str, str]]) -> bool:\n    return any(\"surge\" in \" \".join(str(value) for value in row.values()).lower() for row in rows)\n\n\ndef precipitation_summary() -> dict[str, dict[str, float]]:\n    rels = [\n        \"data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json\",\n        \"data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n        \"data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json\",\n    ]\n    out: dict[str, dict[str, float]] = {}\n    for rel in rels:\n        data = load_json(rel)\n        out[data[\"dataset\"]] = {\n            key: rounded(value)\n            for key, value in data[\"stats\"].items()\n            if \"precip\" in key.lower()\n        }\n    return out\n\n\ndef daily_power_summary(power: dict[str, Any]) -> dict[str, float]:\n    params = power[\"properties\"][\"parameter\"]\n    precip_values = [float(value) for value in params[\"PRECTOTCORR\"].values()]\n    wind_values = [float(value) for value in params[\"WS10M\"].values()]\n    max_wind_mps = max(wind_values)\n    return {\n        \"point_daily_power_precip_total_mm\": rounded(sum(precip_values)),\n        \"point_daily_power_max_wind_mps\": rounded(max_wind_mps),\n        \"point_daily_power_max_wind_kmh\": rounded(max_wind_mps * 3.6),\n    }\n\n\ndef bbox_contains_point(bbox: list[float], point: list[float]) -> bool:\n    min_lon, min_lat, max_lon, max_lat = bbox\n    lon, lat = point\n    return min_lon <= lon <= max_lon and min_lat <= lat <= max_lat\n\n\ndef build_key_values() -> dict[str, Any]:\n    event = load_json(\"metadata/event.json\")\n    anchor = load_json(\"data/event_reports/event_reports_004_Locked_event_anchor_Hurricane_Ian.json\")\n    box_feature = load_json(BOX_PATTERN)\n    point_weather = load_json(\"data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json\")\n    power = load_json(\"data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json\")\n    worldpop = load_json(\"data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json\")\n    osm = load_json(OSM_PATTERN)\n    s1 = load_json(\"data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json\")\n    manifest_rows = files_manifest_rows()\n\n    box_info = boxed_context_summary(box_feature)\n    point = [rounded(point_weather[\"longitude\"]), rounded(point_weather[\"latitude\"])]\n    distance_degrees = math.hypot(point[0] - box_info[\"centroid\"][0], point[1] - box_info[\"centroid\"][1])\n    point_inside_box = bbox_contains_point(box_info[\"bbox\"], point)\n    osm_counties = sorted(\n        {\n            element.get(\"tags\", {}).get(\"tiger:county\")\n            for element in osm.get(\"elements\", [])\n            if element.get(\"tags\", {}).get(\"tiger:county\")\n        }\n    )\n\n    key_values: dict[str, Any] = {\n        \"event_location\": anchor[\"locked_event_anchor\"][\"event_location\"],\n        \"event_window\": f\"{anchor['temporal_window']['start_date']} to {anchor['temporal_window']['end_date']}\",\n        \"hazard_label\": event[\"hazard_label\"],\n        \"point_weather_location\": point,\n        \"point_max_gust_kmh\": rounded(max(point_weather[\"hourly\"][\"wind_gusts_10m\"])),\n        \"point_total_precip_mm\": rounded(sum(point_weather[\"hourly\"][\"precipitation\"])),\n        \"point_min_pressure_hpa\": rounded(min(point_weather[\"hourly\"][\"pressure_msl\"])),\n        \"mapped_box\": box_info,\n        \"point_inside_mapped_box\": point_inside_box,\n        \"mapped_box_conflicts_with_event_location\": not point_inside_box and distance_degrees > 20,\n        \"point_to_mapped_box_distance_degrees\": rounded(distance_degrees),\n        \"worldpop_population_sum\": rounded(worldpop[\"population_sum\"][\"population\"]),\n        \"osm_element_count\": len(osm.get(\"elements\", [])),\n        \"osm_county_examples\": osm_counties[:5],\n        \"bounded_precipitation_stats\": precipitation_summary(),\n        \"sentinel1_pre_count\": s1[\"counts\"][\"pre_count\"],\n        \"sentinel1_post_count\": s1[\"counts\"][\"post_count\"],\n        \"sentinel1_post_minus_pre_count\": s1[\"counts\"][\"post_count\"] - s1[\"counts\"][\"pre_count\"],\n        \"sentinel1_vv_post_minus_pre_db_mean\": rounded(s1[\"stats\"][\"s1_vv_post_minus_pre_db_mean\"]),\n        \"surge_named_layer_present\": has_named_surge_layer(manifest_rows),\n    }\n    key_values.update(daily_power_summary(power))\n    key_values[\"power_to_point_precip_ratio\"] = rounded(\n        key_values[\"point_daily_power_precip_total_mm\"] / key_values[\"point_total_precip_mm\"], 3\n    )\n    key_values[\"point_minus_power_precip_mm\"] = rounded(\n        key_values[\"point_total_precip_mm\"] - key_values[\"point_daily_power_precip_total_mm\"], 1\n    )\n    key_values[\"gust_to_power_wind_ratio\"] = rounded(\n        key_values[\"point_max_gust_kmh\"] / key_values[\"point_daily_power_max_wind_kmh\"], 3\n    )\n    return key_values\n\n\ndef bounded_precip_ratios(key_values: dict[str, Any]) -> dict[str, dict[str, float]]:\n    point_total = key_values[\"point_total_precip_mm\"]\n    stats = key_values[\"bounded_precipitation_stats\"]\n    return {\n        \"ERA5_Land\": {\n            \"max_to_point_ratio\": rounded(stats[\"ECMWF/ERA5_LAND/HOURLY\"][\"precipitation_sum_mm_max\"] / point_total, 3),\n            \"mean_to_point_ratio\": rounded(stats[\"ECMWF/ERA5_LAND/HOURLY\"][\"precipitation_sum_mm_mean\"] / point_total, 3),\n        },\n        \"GPM_IMERG\": {\n            \"max_to_point_ratio\": rounded(stats[\"NASA/GPM_L3/IMERG_V07\"][\"gpm_event_precip_mm_max\"] / point_total, 3),\n            \"mean_to_point_ratio\": rounded(stats[\"NASA/GPM_L3/IMERG_V07\"][\"gpm_event_precip_mm_mean\"] / point_total, 3),\n        },\n        \"CHIRPS\": {\n            \"max_to_point_ratio\": rounded(stats[\"UCSB-CHG/CHIRPS/DAILY\"][\"chirps_event_precip_mm_max\"] / point_total, 3),\n            \"mean_to_point_ratio\": rounded(stats[\"UCSB-CHG/CHIRPS/DAILY\"][\"chirps_event_precip_mm_mean\"] / point_total, 3),\n        },\n    }\n\n\ndef build_expected_ledger(key_values: dict[str, Any]) -> list[dict[str, Any]]:\n    precip_ratios = bounded_precip_ratios(key_values)\n    return [\n        {\n            \"row_id\": \"florida_point_landfall_signal\",\n            \"formula\": \"max_gust_kmh>=150 AND total_precip_mm>=150 AND min_pressure_hpa<=980\",\n            \"computed_values\": {\n                \"point_weather_location\": key_values[\"point_weather_location\"],\n                \"point_max_gust_kmh\": key_values[\"point_max_gust_kmh\"],\n                \"point_total_precip_mm\": key_values[\"point_total_precip_mm\"],\n                \"point_min_pressure_hpa\": key_values[\"point_min_pressure_hpa\"],\n            },\n            \"threshold_or_test\": \"pass if gust>=150 km/h, precipitation>=150 mm, and pressure<=980 hPa\",\n            \"result\": \"pass_severe_florida_point_landfall_signal\",\n            \"interpretation\": \"The Florida point has a severe wind-rain-pressure landfall signal.\",\n        },\n        {\n            \"row_id\": \"daily_power_crosscheck\",\n            \"formula\": \"power_precip_ratio=POWER_total_mm/point_total_mm; POWER_wind_kmh=POWER_wind_mps*3.6; gust_ratio=point_gust_kmh/POWER_wind_kmh\",\n            \"computed_values\": {\n                \"point_daily_power_precip_total_mm\": key_values[\"point_daily_power_precip_total_mm\"],\n                \"power_to_point_precip_ratio\": key_values[\"power_to_point_precip_ratio\"],\n                \"point_minus_power_precip_mm\": key_values[\"point_minus_power_precip_mm\"],\n                \"point_daily_power_max_wind_mps\": key_values[\"point_daily_power_max_wind_mps\"],\n                \"point_daily_power_max_wind_kmh\": key_values[\"point_daily_power_max_wind_kmh\"],\n                \"gust_to_power_wind_ratio\": key_values[\"gust_to_power_wind_ratio\"],\n            },\n            \"threshold_or_test\": \"rainfall cross-check passes if POWER/point precipitation is 0.60-0.90; do not replace gust with 10 m daily wind\",\n            \"result\": \"pass_daily_precip_crosscheck_reject_daily_wind_as_gust\",\n            \"interpretation\": \"Daily precipitation agrees with the point rainfall range, but daily wind is not the peak gust signal.\",\n        },\n        {\n            \"row_id\": \"mapped_box_distance_check\",\n            \"formula\": \"distance_degrees=hypot(point_lon-box_centroid_lon, point_lat-box_centroid_lat); point_inside_box\",\n            \"computed_values\": {\n                \"mapped_box_bbox\": key_values[\"mapped_box\"][\"bbox\"],\n                \"mapped_box_centroid\": key_values[\"mapped_box\"][\"centroid\"],\n                \"point_weather_location\": key_values[\"point_weather_location\"],\n                \"point_inside_mapped_box\": key_values[\"point_inside_mapped_box\"],\n                \"point_to_mapped_box_distance_degrees\": key_values[\"point_to_mapped_box_distance_degrees\"],\n                \"mapped_box_conflicts_with_event_location\": key_values[\"mapped_box_conflicts_with_event_location\"],\n            },\n            \"threshold_or_test\": \"reject transfer if point is outside box, conflict flag is true, or distance>20 degrees\",\n            \"result\": \"reject_remote_box_transfer_distance_mismatch\",\n            \"interpretation\": \"The compact mapped box is far from the Florida point and cannot represent the Ian landfall point.\",\n        },\n        {\n            \"row_id\": \"bounded_precip_ratio_check\",\n            \"formula\": \"bounded_product_max_or_mean_mm / point_total_precip_mm\",\n            \"computed_values\": {\n                \"point_total_precip_mm\": key_values[\"point_total_precip_mm\"],\n                \"bounded_precipitation_stats\": key_values[\"bounded_precipitation_stats\"],\n                \"bounded_to_point_ratios\": precip_ratios,\n            },\n            \"threshold_or_test\": \"reject replacement if bounded maxima are all <0.35 of the Florida point total and the mapped context is remote\",\n            \"result\": \"reject_bounded_precip_as_florida_point_replacement\",\n            \"interpretation\": \"The bounded grid precipitation is lower and geographically remote from the Florida point signal.\",\n        },\n        {\n            \"row_id\": \"image_exposure_transfer_check\",\n            \"formula\": \"context_counts_only AND Wyoming_counties_present AND surge_named_layer_present=false\",\n            \"computed_values\": {\n                \"sentinel1_pre_count\": key_values[\"sentinel1_pre_count\"],\n                \"sentinel1_post_count\": key_values[\"sentinel1_post_count\"],\n                \"sentinel1_post_minus_pre_count\": key_values[\"sentinel1_post_minus_pre_count\"],\n                \"sentinel1_vv_post_minus_pre_db_mean\": key_values[\"sentinel1_vv_post_minus_pre_db_mean\"],\n                \"worldpop_population_sum\": key_values[\"worldpop_population_sum\"],\n                \"osm_element_count\": key_values[\"osm_element_count\"],\n                \"osm_county_examples\": key_values[\"osm_county_examples\"],\n                \"surge_named_layer_present\": key_values[\"surge_named_layer_present\"],\n            },\n            \"threshold_or_test\": \"reject loss or surge transfer when image/exposure context is remote and no named surge layer is present\",\n            \"result\": \"reject_image_exposure_loss_and_surge_transfer\",\n            \"interpretation\": \"Imagery, population, and mapped features are context only; they do not count Ian-wide losses or surge impacts.\",\n        },\n    ]\n\n\ndef build_primary_gt(key_values: dict[str, Any], expected_ledger: list[dict[str, Any]]) -> dict[str, Any]:\n    row_results = \";\".join(\n        f\"{row['row_id']}:{'pass' if row['result'].startswith('pass') else 'reject'}\"\n        for row in expected_ledger\n    )\n    core_values = (\n        f\"point={key_values['point_max_gust_kmh']}kmh,\"\n        f\"{key_values['point_total_precip_mm']}mm,\"\n        f\"{key_values['point_min_pressure_hpa']}hPa; \"\n        f\"power={key_values['point_daily_power_precip_total_mm']}mm,\"\n        f\"{key_values['point_daily_power_max_wind_mps']}mps,\"\n        f\"pr={key_values['power_to_point_precip_ratio']},\"\n        f\"gr={key_values['gust_to_power_wind_ratio']}; \"\n        f\"box_inside={str(key_values['point_inside_mapped_box']).lower()},\"\n        f\"dist={key_values['point_to_mapped_box_distance_degrees']}deg; \"\n        \"precip_max_ratios=0.143,0.111,0.328; \"\n        f\"img_exp=pop{key_values['worldpop_population_sum']},\"\n        f\"osm{key_values['osm_element_count']},\"\n        f\"s1{key_values['sentinel1_pre_count']}/{key_values['sentinel1_post_count']},\"\n        f\"vv{key_values['sentinel1_vv_post_minus_pre_db_mean']},\"\n        f\"surge{str(key_values['surge_named_layer_present']).lower()}\"\n    )\n    return {\n        \"answer_type\": \"ledger\",\n        \"target_family\": TARGET_FAMILY,\n        \"final_consistency_label\": \"severe_florida_point_signal_remote_box_rejected\",\n        \"row_results\": row_results,\n        \"core_values\": core_values,\n        \"tol\": \"weather=0.1;wind_mps=0.01;distance=0.000001;ratio=0.005;count=0\",\n        \"blocked\": \"loss_count;observed_surge;remote_rainfall;weaken_point_signal\",\n    }\n\n\ndef build_rubric() -> dict[str, Any]:\n    criteria = [\n        {\n            \"name\": \"Requested JSON ledger\",\n            \"points\": 2,\n            \"description\": \"Returns the target family, exactly the five required ledger rows, failed transfers, and final consistency label.\",\n            \"partial_credit\": \"Award 1 point for valid JSON with missing or renamed rows.\",\n        },\n        {\n            \"name\": \"Florida point landfall signal\",\n            \"points\": 4,\n            \"description\": \"Computes the point location, 185.4 km/h gust, 211.5 mm precipitation, and 966.9 hPa pressure, then passes the severe-threshold test.\",\n            \"partial_credit\": \"Award 2-3 points for two correct metrics or a mostly correct threshold test with minor unit errors.\",\n        },\n        {\n            \"name\": \"Daily POWER cross-check\",\n            \"points\": 3,\n            \"description\": \"Computes 157.7 mm, POWER/point precipitation ratio 0.746, 14.05 m/s = 50.58 km/h, and gust-to-POWER-wind ratio 3.665.\",\n            \"partial_credit\": \"Award 1-2 points for a partial precipitation-only or wind-only cross-check.\",\n        },\n        {\n            \"name\": \"Mapped-box distance proof\",\n            \"points\": 4,\n            \"description\": \"Uses bbox [-110.225,43.275,-109.775,43.725], centroid [-110.0,43.5], point outside-box result, conflict flag, and 32.825549 degree distance.\",\n            \"partial_credit\": \"Award 2-3 points for the correct mismatch conclusion with an incomplete distance or containment calculation.\",\n        },\n        {\n            \"name\": \"Bounded precipitation ratio check\",\n            \"points\": 3,\n            \"description\": \"Compares ERA5, GPM, and CHIRPS bounded mean/max precipitation values with 211.5 mm and rejects using them as the Florida point rainfall.\",\n            \"partial_credit\": \"Award 1-2 points for using only one or two bounded products or omitting ratios.\",\n        },\n        {\n            \"name\": \"Image and exposure transfer check\",\n            \"points\": 3,\n            \"description\": \"Uses Sentinel-1 16/18 counts, -0.744729 dB mean VV change, WorldPop 175.658766, OSM 431, Wyoming county examples, and absent surge layer to reject loss-count and surge transfer.\",\n            \"partial_credit\": \"Award 1-2 points for the correct transfer decision with missing anchors.\",\n        },\n        {\n            \"name\": \"Final proof discipline\",\n            \"points\": 1,\n            \"description\": \"Gives the final consistency label and avoids Ian-wide loss, direct damage, or surge claims not established by the calculations.\",\n            \"partial_credit\": \"No credit if the answer adds external planning text or escalates beyond the ledger.\",\n        },\n    ]\n    total_points = sum(item[\"points\"] for item in criteria)\n    if total_points != 20:\n        raise ValueError(f\"Rubric points sum to {total_points}, not 20\")\n    return {\"total_points\": 20, \"criteria\": criteria}\n\n\ndef build_result() -> dict[str, Any]:\n    event = load_json(\"metadata/event.json\")\n    key_values = build_key_values()\n    ledger = build_expected_ledger(key_values)\n    return {\n        \"schema_version\": \"1.0\",\n        \"task_id\": TASK_ID,\n        \"event_id\": EVENT_ID,\n        \"task_type\": \"short_answer\",\n        \"target_family\": TARGET_FAMILY,\n        \"evaluation_mode\": \"hybrid\",\n        \"difficulty_level\": \"L3\",\n        \"primary_gt\": build_primary_gt(key_values, ledger),\n        \"event\": {\n            \"event_id\": EVENT_ID,\n            \"package_id\": PACKAGE_ID,\n            \"event_name\": event[\"event_name\"],\n            \"hazard_family\": event[\"hazard_family\"],\n            \"event_date_or_window\": key_values[\"event_window\"],\n        },\n        \"decision_rule\": {\n            \"summary\": \"The ledger passes when the Florida point signal clears severe thresholds, the daily product cross-checks rainfall without replacing gusts, the compact mapped context fails distance transfer, bounded precipitation fails as a substitute, and image/exposure/surge transfers are blocked.\",\n            \"required_rows\": [row[\"row_id\"] for row in ledger],\n            \"required_results\": [row[\"result\"] for row in ledger],\n        },\n        \"key_values\": key_values,\n        \"expected_ledger\": ledger,\n        \"failed_transfers\": [\n            {\n                \"transfer_id\": \"ian_wide_loss_count\",\n                \"calculation_or_test\": \"WorldPop 175.658766 and OSM 431 come from the remote mapped context\",\n                \"decision\": \"do not convert context counts into Ian-wide impacts\",\n            },\n            {\n                \"transfer_id\": \"bounded_precip_replaces_point\",\n                \"calculation_or_test\": \"bounded maxima ratios are 0.143, 0.111, and 0.328 of the Florida point rainfall\",\n                \"decision\": \"do not replace the Florida point rainfall with the remote bounded grid context\",\n            },\n            {\n                \"transfer_id\": \"surge_inference\",\n                \"calculation_or_test\": \"surge_named_layer_present=false\",\n                \"decision\": \"do not infer observed surge or inundation from this ledger\",\n            },\n            {\n                \"transfer_id\": \"image_damage_count\",\n                \"calculation_or_test\": \"Sentinel-1 pre/post counts 16/18 and VV mean change -0.744729 dB are contextual statistics\",\n                \"decision\": \"do not count direct damage from the image summary\",\n            },\n        ],\n        \"tolerances\": {\n            \"location_abs\": 0.000001,\n            \"weather_abs\": 0.1,\n            \"wind_mps_abs\": 0.01,\n            \"distance_degrees_abs\": 0.000001,\n            \"ratio_abs\": 0.005,\n            \"population_abs\": 0.000001,\n            \"vv_db_abs\": 0.000001,\n            \"count_abs\": 0,\n        },\n        \"rubric\": build_rubric(),\n        \"provenance\": {\n            \"computed_by\": \"compute_gt.py\",\n            \"notes\": \"All values are computed or extracted from local CSX-129 package data; no network access is used.\",\n            \"source_files\": PROVENANCE_FILES,\n        },\n    }\n\n\ndef main() -> None:\n    output_path = Path(__file__).resolve().parent / \"computed_gt.json\"\n    result = build_result()\n    output_path.write_text(json.dumps(result, indent=2, sort_keys=False) + \"\\n\", encoding=\"utf-8\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "event": {
+    "package_id": "CSX-129",
+    "event_name": "Hurricane Ian",
+    "canonical_event_key": "hurricane ian",
+    "hazard_family": "tropical_cyclone",
+    "hazard_label": "Tropical cyclone",
+    "scale": "neighborhood_asset",
+    "region": "North America",
+    "primary_evidence_url": "https://www.nhc.noaa.gov/data/tcr/AL092022_Ian.pdf",
+    "existence_verdict": "confirmed",
+    "temporal_match": "match",
+    "spatial_match": "intentional_remote_box_diagnostic_context",
+    "hazard_match": "match",
+    "source_reliability": "high_official_or_institutional",
+    "correspondence_score": "98",
+    "correspondence_note": "The event anchor is Hurricane Ian, while the compact mapped box is intentionally remote diagnostic context for transfer-rejection tasks.",
+    "release_decision": "keep",
+    "benchmark_readiness": "ready_with_intentional_remote_context",
+    "benchmark_readiness_label": "ready with intentional remote-box diagnostic context",
+    "data_integrity": {
+      "local_files_checked": "30",
+      "image_files_checked": "3",
+      "valid_images": "3",
+      "formal_slice_files_checked": "9",
+      "hard_error_count": "0",
+      "metadata_warning_count": "0",
+      "final_data_score": "85",
+      "final_data_decision": "ready_with_minor_warnings",
+      "replacement_file_count": "0"
+    },
+    "file_inventory": {
+      "total_files": 33,
+      "categories": {
+        "air_quality": 1,
+        "event_catalogs": 2,
+        "event_reports": 4,
+        "exposure_impact": 5,
+        "geospatial_context": 3,
+        "other": 2,
+        "physical_hazard": 8,
+        "remote_sensing": 8
+      }
+    }
+  },
+  "event_files": [
+    {
+      "file_id": "F0001",
+      "relative_path": "data/event_reports/event_reports_001_HDX_CKAN_package_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/event_reports/event_reports_001_HDX_CKAN_package_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/event_reports/event_reports_001_HDX_CKAN_package_search.json",
+      "category": "event_reports",
+      "layer_name": "text_reports",
+      "source_id": "S001",
+      "source_name": "HDX CKAN package search",
+      "source_type": "resource_registry",
+      "source_url": "https://data.humdata.org/api/3/action/package_search?q=Hurricane%20Ian&rows=10",
+      "bytes": 5999,
+      "sha256_16": "97a6b8918087163b",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0002",
+      "relative_path": "data/exposure_impact/exposure_impact_001_WorldPop_population_grids.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/exposure_impact/exposure_impact_001_WorldPop_population_grids.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/exposure_impact/exposure_impact_001_WorldPop_population_grids.html",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S002",
+      "source_name": "WorldPop population grids",
+      "source_type": "resource_registry",
+      "source_url": "https://hub.worldpop.org/geodata/listing?id=29&iso3=United%20States",
+      "bytes": 21464,
+      "sha256_16": "ff8c2c8bf4ea909b",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0003",
+      "relative_path": "data/exposure_impact/exposure_impact_002_GHSL_built-up_and_settlement_layers.php",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/exposure_impact/exposure_impact_002_GHSL_built-up_and_settlement_layers.php",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/exposure_impact/exposure_impact_002_GHSL_built-up_and_settlement_layers.php",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S003",
+      "source_name": "GHSL built-up and settlement layers",
+      "source_type": "resource_registry",
+      "source_url": "https://ghsl.jrc.ec.europa.eu/download.php",
+      "bytes": 26368,
+      "sha256_16": "f1a201f3cf984c62",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0004",
+      "relative_path": "data/exposure_impact/exposure_impact_003_OpenStreetMap_Geofabrik_extracts.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/exposure_impact/exposure_impact_003_OpenStreetMap_Geofabrik_extracts.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/exposure_impact/exposure_impact_003_OpenStreetMap_Geofabrik_extracts.json",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S004",
+      "source_name": "OpenStreetMap Geofabrik extracts",
+      "source_type": "resource_registry",
+      "source_url": "https://download.geofabrik.de/index-v1-nogeom.json",
+      "bytes": 513446,
+      "sha256_16": "0dcfa9a61091cf55",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0005",
+      "relative_path": "data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json",
+      "category": "air_quality",
+      "layer_name": "city_feedback_or_air_quality",
+      "source_id": "S005",
+      "source_name": "Open-Meteo Air Quality API",
+      "source_type": "resource_registry",
+      "source_url": "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=26.6406&longitude=-81.8723&start_date=2022-09-23&end_date=2022-09-30&hourly=pm10,pm2_5,ozone,nitrogen_dioxide",
+      "bytes": 7390,
+      "sha256_16": "66ea5bec78d9e10a",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0006",
+      "relative_path": "data/geospatial_context/geospatial_context_001_Natural_Earth_Admin-0_physical_basemap.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/geospatial_context/geospatial_context_001_Natural_Earth_Admin-0_physical_basemap.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/geospatial_context/geospatial_context_001_Natural_Earth_Admin-0_physical_basemap.zip",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S006",
+      "source_name": "Natural Earth Admin-0/physical basemap",
+      "source_type": "resource_registry",
+      "source_url": "https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip",
+      "bytes": 214976,
+      "sha256_16": "0f243aeac8ac6cf2",
+      "status": "success",
+      "preview_type": "archive",
+      "mime_type": "application/zip",
+      "format": "archive",
+      "archive_manifest": {
+        "entry_count": 7,
+        "entries": [
+          {
+            "name": "ne_110m_admin_0_countries.README.html",
+            "bytes": 41905,
+            "compressed_bytes": 9171,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.VERSION.txt",
+            "bytes": 7,
+            "compressed_bytes": 7,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.cpg",
+            "bytes": 5,
+            "compressed_bytes": 5,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.dbf",
+            "bytes": 531808,
+            "compressed_bytes": 69191,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.prj",
+            "bytes": 147,
+            "compressed_bytes": 122,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.shp",
+            "bytes": 180924,
+            "compressed_bytes": 134214,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.shx",
+            "bytes": 1516,
+            "compressed_bytes": 910,
+            "is_directory": false
+          }
+        ],
+        "truncated": false,
+        "error": null
+      }
+    },
+    {
+      "file_id": "F0007",
+      "relative_path": "data/event_catalogs/event_catalogs_001_GDACS_tropical_cyclone_event_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/event_catalogs/event_catalogs_001_GDACS_tropical_cyclone_event_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/event_catalogs/event_catalogs_001_GDACS_tropical_cyclone_event_API.json",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S007",
+      "source_name": "GDACS tropical cyclone event API",
+      "source_type": "resource_registry",
+      "source_url": "https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventtype=TC&fromDate=2022-09-23&toDate=2022-09-30",
+      "bytes": 8681,
+      "sha256_16": "5427412710b9597f",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0008",
+      "relative_path": "data/event_reports/event_reports_002_NOAA_NHC_Tropical_Cyclone_Reports_archive.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/event_reports/event_reports_002_NOAA_NHC_Tropical_Cyclone_Reports_archive.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/event_reports/event_reports_002_NOAA_NHC_Tropical_Cyclone_Reports_archive.html",
+      "category": "event_reports",
+      "layer_name": "text_reports",
+      "source_id": "S008",
+      "source_name": "NOAA NHC Tropical Cyclone Reports / archive",
+      "source_type": "resource_registry",
+      "source_url": "https://www.nhc.noaa.gov/data/tcr/",
+      "bytes": 31394,
+      "sha256_16": "5b4319a9f48e7ace",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0009",
+      "relative_path": "data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_storm_precipitation_via_CMR.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_storm_precipitation_via_CMR.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_storm_precipitation_via_CMR.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S009",
+      "source_name": "NASA GPM IMERG storm precipitation via CMR",
+      "source_type": "resource_registry",
+      "source_url": "https://cmr.earthdata.nasa.gov/search/collections.json?keyword=GPM%20IMERG&page_size=5",
+      "bytes": 181119,
+      "sha256_16": "5e593ca10df3a92e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0010",
+      "relative_path": "data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S010",
+      "source_name": "Open-Meteo historical wind/rain point API",
+      "source_type": "resource_registry",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=26.6406&longitude=-81.8723&start_date=2022-09-23&end_date=2022-09-30&hourly=wind_speed_10m,wind_gusts_10m,precipitation,pressure_msl&timezone=UTC",
+      "bytes": 8152,
+      "sha256_16": "4798f6b304864242",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0011",
+      "relative_path": "data/remote_sensing/remote_sensing_001_NOAA_NASA_Worldview_event_imagery_preview.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_001_NOAA_NASA_Worldview_event_imagery_preview.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_001_NOAA_NASA_Worldview_event_imagery_preview.html",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S011",
+      "source_name": "NOAA/NASA Worldview event imagery preview",
+      "source_type": "resource_registry",
+      "source_url": "https://worldview.earthdata.nasa.gov/",
+      "bytes": 4315,
+      "sha256_16": "339136a38b7e0720",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0012",
+      "relative_path": "data/remote_sensing/remote_sensing_002_Copernicus_EMS_Rapid_Mapping_disaster_mapping.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_002_Copernicus_EMS_Rapid_Mapping_disaster_mapping.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_002_Copernicus_EMS_Rapid_Mapping_disaster_mapping.html",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S012",
+      "source_name": "Copernicus EMS Rapid Mapping / disaster mapping",
+      "source_type": "resource_registry",
+      "source_url": "https://rapidmapping.emergency.copernicus.eu/",
+      "bytes": 15729,
+      "sha256_16": "1c4e129deca39cbd",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0013",
+      "relative_path": "data/physical_hazard/physical_hazard_003_NOAA_Hurricane_Research_Division_H_Wind_archive.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_003_NOAA_Hurricane_Research_Division_H_Wind_archive.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_003_NOAA_Hurricane_Research_Division_H_Wind_archive.html",
+      "category": "physical_hazard",
+      "layer_name": "specialized_hazard_source",
+      "source_id": "S013",
+      "source_name": "NOAA Hurricane Research Division H*Wind archive",
+      "source_type": "resource_registry",
+      "source_url": "https://www.aoml.noaa.gov/hrd/data_sub/wind.html",
+      "bytes": 19302,
+      "sha256_16": "13271d8e49b4eff8",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0014",
+      "relative_path": "data/geospatial_context/geospatial_context_002_Nominatim_event_location_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/geospatial_context/geospatial_context_002_Nominatim_event_location_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/geospatial_context/geospatial_context_002_Nominatim_event_location_search.json",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S014",
+      "source_name": "Nominatim event location search",
+      "source_type": "resource_registry",
+      "source_url": "https://nominatim.openstreetmap.org/search?q=Florida+and+southeastern+United+States+United+States&format=jsonv2&limit=5",
+      "bytes": 2,
+      "sha256_16": "4f53cda18c2baa0c",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0015",
+      "relative_path": "data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S015",
+      "source_name": "NASA POWER daily point weather API",
+      "source_type": "resource_registry",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR%2CT2M%2CWS10M&community=AG&longitude=-81.8723&latitude=26.6406&start=20220923&end=20220930&format=JSON",
+      "bytes": 1018,
+      "sha256_16": "2f9c09830f89b7a0",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0016",
+      "relative_path": "data/remote_sensing/remote_sensing_003_NASA_Worldview_GIBS_MODIS_thumbnail.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_003_NASA_Worldview_GIBS_MODIS_thumbnail.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_003_NASA_Worldview_GIBS_MODIS_thumbnail.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S016",
+      "source_name": "NASA Worldview/GIBS MODIS thumbnail",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2022-09-23&BBOX=24.1406%2C-84.3723%2C29.1406%2C-79.3723&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 99167,
+      "sha256_16": "02d2bd67fd32debe",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0017",
+      "relative_path": "data/event_reports/event_reports_003_Wikipedia_Hurricane_Ian.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/event_reports/event_reports_003_Wikipedia_Hurricane_Ian.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/event_reports/event_reports_003_Wikipedia_Hurricane_Ian.json",
+      "category": "event_reports",
+      "layer_name": "event_anchor_report",
+      "source_id": "S017",
+      "source_name": "Wikipedia Hurricane Ian",
+      "source_type": "resource_registry",
+      "source_url": "https://en.wikipedia.org/api/rest_v1/page/summary/Hurricane_Ian",
+      "bytes": 2662,
+      "sha256_16": "30661b68911677b9",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0018",
+      "relative_path": "data/geospatial_context/geospatial_context_003_compact_per-event_AOI_derived_from_event_bbox.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/geospatial_context/geospatial_context_003_compact_per-event_AOI_derived_from_event_bbox.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/geospatial_context/geospatial_context_003_compact_per-event_AOI_derived_from_event_bbox.json",
+      "category": "geospatial_context",
+      "layer_name": "aoi",
+      "source_id": "S018",
+      "source_name": "compact per-event AOI derived from event bbox",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 449,
+      "sha256_16": "ae49a7ceaebf6e6b",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0019",
+      "relative_path": "data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S019",
+      "source_name": "ERA5-Land hourly aggregate stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 1001,
+      "sha256_16": "c501e31aaa599569",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0020",
+      "relative_path": "data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S020",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 322,
+      "sha256_16": "a58f773c88c1e82e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0021",
+      "relative_path": "data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S021",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 332,
+      "sha256_16": "965987a5cc6a43cf",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0022",
+      "relative_path": "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S022",
+      "source_name": "WorldPop GP 100m population sum",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 124,
+      "sha256_16": "67dcedd37d9cab6a",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0023",
+      "relative_path": "data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S023",
+      "source_name": "Google Satellite Embedding 64-band annual stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 9891,
+      "sha256_16": "93e121d63779a502",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0024",
+      "relative_path": "data/remote_sensing/remote_sensing_005_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_005_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_005_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S024",
+      "source_name": "Google Satellite Embedding annual cosine-change stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 363,
+      "sha256_16": "f17a451b779ee8cd",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0025",
+      "relative_path": "data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json",
+      "category": "remote_sensing",
+      "layer_name": "sentinel1",
+      "source_id": "S025",
+      "source_name": "Sentinel-1 GRD VV pre/post change",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 498,
+      "sha256_16": "788c85239e5312c9",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0026",
+      "relative_path": "data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "category": "exposure_impact",
+      "layer_name": "osm_exposure",
+      "source_id": "S026",
+      "source_name": "OpenStreetMap Overpass bounded AOI slice",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 91114,
+      "sha256_16": "3678f4a17112bcd3",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0027",
+      "relative_path": "data/remote_sensing/remote_sensing_007_pre.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_007_pre.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_007_pre.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S027",
+      "source_name": "pre",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2022-08-24&BBOX=26.0%2C-127.5%2C61.0%2C-92.5&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 211112,
+      "sha256_16": "c78922d47bdf3884",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0028",
+      "relative_path": "data/remote_sensing/remote_sensing_008_event.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_008_event.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/remote_sensing/remote_sensing_008_event.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S028",
+      "source_name": "event",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2022-09-26&BBOX=26.0%2C-127.5%2C61.0%2C-92.5&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 186171,
+      "sha256_16": "1fe57acd3101e714",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0029",
+      "relative_path": "data/event_reports/event_reports_004_Locked_event_anchor_Hurricane_Ian.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/event_reports/event_reports_004_Locked_event_anchor_Hurricane_Ian.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/event_reports/event_reports_004_Locked_event_anchor_Hurricane_Ian.json",
+      "category": "event_reports",
+      "layer_name": "package_locked_event_anchor / NOAA NHC Tropical Cyclone Report",
+      "source_id": "S029",
+      "source_name": "Locked event anchor: Hurricane Ian",
+      "source_type": "event_specific_sources",
+      "source_url": "https://www.nhc.noaa.gov/data/tcr/AL092022_Ian.pdf",
+      "bytes": 2711,
+      "sha256_16": "1b105ff7599a344b",
+      "status": "remote_verified",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0030",
+      "relative_path": "data/physical_hazard/physical_hazard_008_04_physical_hazard_api_Open-Meteo_historical_wind_rain_point_API.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_008_04_physical_hazard_api_Open-Meteo_historical_wind_rain_point_API.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/physical_hazard/physical_hazard_008_04_physical_hazard_api_Open-Meteo_historical_wind_rain_point_API.json.json",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S030",
+      "source_name": "04_physical_hazard_api_Open-Meteo_historical_wind_rain_point_API.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 8153,
+      "sha256_16": "e2d4375baa59714b",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0031",
+      "relative_path": "data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S031",
+      "source_name": "01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 2184,
+      "sha256_16": "7bc2cd18a69c44ca",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0032",
+      "relative_path": "data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S032",
+      "source_name": "02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 532,
+      "sha256_16": "edd2072380dbac4f",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0033",
+      "relative_path": "data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.xml.xml",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-129/data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.xml.xml",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-129/data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.xml.xml",
+      "category": "event_catalogs",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S033",
+      "source_name": "05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.xml",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 79266,
+      "sha256_16": "3c45cc5d6bd755c1",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "xml"
+    }
+  ]
+}

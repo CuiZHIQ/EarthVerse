@@ -1,0 +1,1073 @@
+{
+  "task_id": "CSX-315_Q1",
+  "event_id": "CSX-315",
+  "title": "Puncak Jaya Tropical Glacier Retreat Priority",
+  "event_name": "Puncak Jaya glacier retreat episode",
+  "hazard_family": "cryosphere_avalanche_glof_snowmelt",
+  "hazard_label": "Cryosphere, avalanche, GLOF, and snowmelt",
+  "region": "Southeast Asia",
+  "scale": "national_admin",
+  "difficulty": "L4_earth_system_causal_reasoning",
+  "difficulty_rationale": "Manual review: \"Puncak Jaya Tropical Glacier Retreat Priority\" requires Earth-system causal judgement such as mechanism competition, response/priority ranking, counterfactual or scenario reasoning, or a trigger-to-impact causal chain.",
+  "primary_dimension": "ranking_decision",
+  "dimensions": [
+    "ranking_decision",
+    "physical_mechanism",
+    "causal_chain"
+  ],
+  "dimension_rationale": "Puncak Jaya tropical glacier retreat priority.",
+  "task_type": "short_answer",
+  "target_family": "unknown",
+  "file_count": 36,
+  "category_counts": {
+    "event_catalogs": 5,
+    "event_reports": 5,
+    "exposure_impact": 6,
+    "geospatial_context": 3,
+    "other": 4,
+    "physical_hazard": 9,
+    "remote_sensing": 4
+  },
+  "question": "# Puncak Jaya Tropical Glacier Retreat Priority\n\nA cryosphere risk team is preparing a short technical note for disaster-management partners in Papua, Indonesia, after reviewing the October 2015-March 2016 Puncak Jaya glacier retreat episode. The team needs to decide what response posture should frame the briefing: long-duration tropical glacier-retreat monitoring, acute ice or lake-outburst response, rainfall-flood response, or fire and surface-scar response.\n\nMake the priority call by connecting the event window, tropical high-mountain setting, snow-and-ice loss process, landscape-change clues, and implications for nearby exposed places. Use the package event window from `2015-10-01` through `2016-03-31` inclusively. Your answer should distinguish slow cryosphere retreat from short-fuse emergency triggers, and it should use quantitative anchors where they are important to the decision.\n\nUse this priority-index rule. Add to `slow_onset_monitoring_score`: `+2` if event duration is at least 90 days, `+2` if the event name identifies glacier retreat, `+2` if package metadata frames the hazard as slow-onset glacier retreat, `+1` if the event anchor notes cryosphere/ice-loss context, `+1` if the Sentinel-1 mean scene change magnitude is below 0.5 dB, and `+1` if the Sentinel-2 burn-severity product has no sufficient scenes. Add to `acute_response_score`: `+2` if matching event-catalog hits are present, `+2` if humanitarian response reports are present, `+1` if Sentinel-1 mean scene change magnitude is at least 3 dB, `+1` if usable post-event Sentinel-2 burn-severity scenes exist, and `+1` if critical amenities reach at least 20. Choose the posture with the higher score.\n\nReturn your answer as JSON:\n\n```json\n{\n  \"answer\": \"<compact_priority_label>\",\n  \"priority_index\": {\n    \"slow_onset_monitoring_score\": \"<value>\",\n    \"acute_response_score\": \"<value>\"\n  },\n  \"key_numeric_anchors\": [\n    {\"name\": \"<anchor>\", \"value\": \"<value>\"}\n  ],\n  \"impact_chain\": [\"<driver>\", \"<hazard_process>\", \"<priority>\"],\n  \"rationale\": \"<brief explanation>\"\n}\n```\n",
+  "solution": "# Final Answer\n\nThe correct compact answer is `slow_onset_tropical_glacier_retreat_monitoring_priority`.\n\nExpected structured answer:\n\n```json\n{\n  \"answer\": \"slow_onset_tropical_glacier_retreat_monitoring_priority\",\n  \"priority_index\": {\n    \"slow_onset_monitoring_score\": 9,\n    \"acute_response_score\": 0\n  },\n  \"key_numeric_anchors\": [\n    {\"name\": \"event_duration_days\", \"value\": 183},\n    {\"name\": \"scene_mean_change_db\", \"value\": -0.147},\n    {\"name\": \"matching_catalog_events\", \"value\": 0},\n    {\"name\": \"critical_amenities_in_aoi\", \"value\": 10}\n  ],\n  \"impact_chain\": [\n    \"tropical_cryosphere_warming\",\n    \"slow_glacier_retreat_and_ice_loss\",\n    \"monitoring_and_long_term_risk_management\"\n  ]\n}\n```\n\n# Key Computations\n\nThe locked event anchor for CSX-315 identifies the Puncak Jaya glacier retreat episode in Papua, Indonesia, with a temporal window from 2015-10-01 to 2016-03-31. Inclusive duration:\n\n```text\n2015-10-01 through 2016-03-31 = 183 days\n```\n\nThe response-priority index in `compute_gt.py` gives slow-onset monitoring 9 points and acute response 0 points. The slow-onset score is driven by the long event duration, the glacier-retreat event name, the slow-onset hazard match, the tropical cryosphere anchor, weak radar scene-change magnitude, and the lack of sufficient burn-severity scenes. The acute-response score remains 0 because there are no matching event-catalog hits, no ReliefWeb response reports, no strong radar disturbance, no usable post-event burn-severity scenes, and the count of critical amenities does not by itself cross the acute-response threshold.\n\nThe scoring rule is:\n\n- slow-onset monitoring: `+2` for duration at least 90 days, `+2` for a glacier-retreat event name, `+2` for slow-onset glacier-retreat metadata framing, `+1` for cryosphere context in the event anchor, `+1` for Sentinel-1 mean-change magnitude below 0.5 dB, and `+1` for no sufficient Sentinel-2 burn-severity scenes;\n- acute response: `+2` for matching catalog hits, `+2` for humanitarian response reports, `+1` for Sentinel-1 mean-change magnitude at least 3 dB, `+1` for usable post-event Sentinel-2 scenes, and `+1` for at least 20 critical amenities.\n\nFor this package, all six slow-onset components pass and all five acute-response components fail, giving `9` versus `0`.\n\nKey anchors:\n\n- `event_duration_days`: 183\n- `scene_mean_change_db`: -0.147, with tolerance +/-0.02\n- `matching_catalog_events`: 0\n- `critical_amenities_in_aoi`: 10\n\nSupporting metrics include gridded event precipitation context, short-window point weather, broad population context, and file-status counts. These support the diagnosis but are not enough to turn the event into a documented flood, avalanche, glacial-lake outburst, fire, casualty, evacuation, or infrastructure-damage event.\n\n# Reasoning Path\n\nThe event is a tropical high-mountain cryosphere problem. The key decision is whether the briefing should emphasize long-duration glacier retreat and monitoring, or whether it should shift into an acute emergency posture such as avalanche, lake-outburst flood, rainfall flood, or fire response.\n\nThe 183-day window is much longer than the normal signature of a short-fuse avalanche, glacial-lake outburst, flash flood, or fire scar response. That duration matches slow glacier retreat and ice loss better than a rapid-onset emergency. The event metadata and locked anchor also point to snow and ice loss in the Puncak Jaya tropical cryosphere, so the physical process should be interpreted as retreat monitoring unless independent acute-impact evidence overrides it.\n\nThe local scene-change and report checks do not supply that override. The radar mean change is close to zero at -0.147 dB, which is not a strong acute surface-disturbance signal. The burn-severity scene check reports no sufficient scenes, so there is no basis for a fire or surface-scar priority. Event-catalog matching returns 0 relevant events, and the humanitarian-report check does not establish an acute response episode. Rainfall and exposure context are operationally relevant, but they remain contextual risk factors unless linked to observed impacts.\n\nThe correct impact chain is therefore tropical cryosphere warming leading to slow glacier retreat and ice loss, which calls for monitoring, long-term risk management, and preparedness communication rather than immediate evacuation or response framing.\n\n# Disaster Interpretation\n\nPuncak Jaya is one of the few tropical glacier settings in Southeast Asia. In this context, glacier retreat is a climate-sensitive, slow-onset hazard with important scientific and operational consequences: shrinking ice cover, changing high-mountain hydrology, loss of cryosphere indicators, and potential future instability concerns. A disaster-management briefing should therefore emphasize surveillance, trend interpretation, risk communication, and preparedness for secondary hazards.\n\nThe exposure context matters because nearby people, services, and infrastructure make continued monitoring consequential. However, exposure is not the same as observed damage. The evidence supports a monitoring priority, not claims of casualties, displacement, road closure, burn severity, confirmed flood impacts, or a documented glacial-lake outburst.\n\nMajor alternatives fail for substantive reasons:\n\n- Acute avalanche or lake-outburst response is not supported by the long event window, weak scene-change signal, and lack of matching catalog or response-report evidence.\n- Rainfall-flood response is not the dominant priority because wet tropical precipitation context is not observed flood damage.\n- Fire or surface-scar response is not supported because the burn-severity check lacks sufficient scenes and the event framing is cryosphere retreat.\n- Exact glacier-area loss should not be claimed because this task does not compute a glacier-area time series.\n\n# Scoring Rubric\n\nTotal: 20 points.\n\n- 4 points: Gives `slow_onset_tropical_glacier_retreat_monitoring_priority` or a clearly equivalent compact label, and reports the priority index with slow-onset monitoring higher than acute response by applying the visible scoring rule, ideally 9 versus 0.\n- 5 points: Reports the four key numeric anchors with appropriate precision or tolerance: 183 event days, -0.147 dB scene mean change within +/-0.02, 0 matching catalog events, and 10 critical amenities.\n- 4 points: Explains the physical mechanism linking tropical cryosphere warming, long-duration glacier retreat, and slow ice loss rather than treating the event as a sudden avalanche, glacial-lake outburst, flood, or fire.\n- 3 points: Uses landscape-change, catalog, and report signals correctly: weak radar mean change, no sufficient burn-severity scenes, no matching catalog events, and no humanitarian response report that would justify an acute posture.\n- 2 points: Builds an operational impact chain that moves from driver to hazard process to monitoring and long-term risk management, while treating exposure as a reason for preparedness rather than proof of damage.\n- 2 points: Provides concise, valid JSON in the requested structure and avoids unsupported claims about exact ice-area loss, casualties, evacuation, road disruption, burn severity, observed infrastructure damage, or confirmed flood impacts.\n",
+  "ground_truth": {
+    "difficulty_level": "L3",
+    "evaluation_mode": "hybrid",
+    "event_id": "CSX-315",
+    "forbidden_overclaims": [
+      "Do not claim that the package proves an acute glacial-lake outburst flood or avalanche.",
+      "Do not treat precipitation totals alone as observed flood damage or evacuation evidence.",
+      "Do not infer exact glacier-area loss because no local glacier-area time series is computed here.",
+      "Do not claim burn severity, casualties, displacement, road closure, or infrastructure damage from context layers alone."
+    ],
+    "key_values": {
+      "acute_response_score": 0,
+      "critical_amenities_in_aoi": 10,
+      "event_duration_days": 183,
+      "matching_eonet_events": 0,
+      "priority_score_components": {
+        "acute_response_score": {
+          "critical_amenities_at_least_20": false,
+          "humanitarian_response_reports_present": false,
+          "matching_event_catalog_hits_present": false,
+          "sentinel1_mean_change_abs_at_least_3_db": false,
+          "usable_post_event_sentinel2_scenes_present": false
+        },
+        "slow_onset_monitoring_score": {
+          "event_anchor_notes_cryosphere_context": true,
+          "event_duration_days_at_least_90": true,
+          "event_name_identifies_glacier_retreat": true,
+          "metadata_frames_slow_onset_glacier_retreat": true,
+          "sentinel1_mean_change_abs_below_0_5_db": true,
+          "sentinel2_no_sufficient_scenes": true
+        }
+      },
+      "priority_scoring_rule": {
+        "acute_response_score": {
+          "critical_amenities_at_least_20": 1,
+          "humanitarian_response_reports_present": 2,
+          "matching_event_catalog_hits_present": 2,
+          "sentinel1_mean_change_abs_at_least_3_db": 1,
+          "usable_post_event_sentinel2_scenes_present": 1
+        },
+        "slow_onset_monitoring_score": {
+          "event_anchor_notes_cryosphere_context": 1,
+          "event_duration_days_at_least_90": 2,
+          "event_name_identifies_glacier_retreat": 2,
+          "metadata_frames_slow_onset_glacier_retreat": 2,
+          "sentinel1_mean_change_abs_below_0_5_db": 1,
+          "sentinel2_no_sufficient_scenes": 1
+        }
+      },
+      "sentinel1_mean_change_db": -0.147,
+      "sentinel2_scene_status": "no_sufficient_scenes",
+      "slow_onset_monitoring_score": 9
+    },
+    "numeric_anchor_count": 4,
+    "numeric_tolerances": {
+      "critical_amenities_in_aoi": {
+        "tolerance": 0,
+        "value": 10
+      },
+      "event_duration_days": {
+        "tolerance": 0,
+        "value": 183
+      },
+      "matching_catalog_events": {
+        "tolerance": 0,
+        "value": 0
+      },
+      "scene_mean_change_db": {
+        "tolerance": 0.02,
+        "value": -0.147
+      }
+    },
+    "primary_gt": {
+      "acceptable_variants": [
+        "slow_onset_glacier_retreat_monitoring",
+        "tropical_glacier_retreat_monitoring_priority",
+        "long_term_cryosphere_monitoring_priority"
+      ],
+      "answer": "slow_onset_tropical_glacier_retreat_monitoring_priority",
+      "answer_type": "structured_priority_json",
+      "canonical_answer": "slow_onset_tropical_glacier_retreat_monitoring_priority",
+      "canonical_stance": "The Puncak Jaya episode should be framed as slow-onset tropical glacier-retreat monitoring and long-term risk management, not as an acute flood, avalanche, GLOF, or fire response.",
+      "confidence": "moderate",
+      "deterministic_targets": {
+        "acute_response_score": 0,
+        "answer": "slow_onset_tropical_glacier_retreat_monitoring_priority",
+        "numeric_tolerances": {
+          "critical_amenities_in_aoi": {
+            "tolerance": 0,
+            "value": 10
+          },
+          "event_duration_days": {
+            "tolerance": 0,
+            "value": 183
+          },
+          "matching_catalog_events": {
+            "tolerance": 0,
+            "value": 0
+          },
+          "scene_mean_change_db": {
+            "tolerance": 0.02,
+            "value": -0.147
+          }
+        },
+        "slow_onset_monitoring_score": 9
+      },
+      "event_window": {
+        "end": "2016-03-31",
+        "inclusive_days": 183,
+        "start": "2015-10-01"
+      },
+      "forbidden_claims": [
+        "The event proves an acute glacial-lake outburst flood or avalanche.",
+        "Precipitation context alone proves observed flood damage or evacuation.",
+        "The task computes exact glacier-area loss.",
+        "The evidence proves casualties, displacement, road closure, burn severity, or observed infrastructure damage."
+      ],
+      "impact_chain": [
+        "tropical_cryosphere_warming",
+        "slow_glacier_retreat_and_ice_loss",
+        "monitoring_and_long_term_risk_management"
+      ],
+      "key_numeric_anchors": [
+        {
+          "name": "event_duration_days",
+          "value": 183
+        },
+        {
+          "name": "scene_mean_change_db",
+          "value": -0.147
+        },
+        {
+          "name": "matching_catalog_events",
+          "value": 0
+        },
+        {
+          "name": "critical_amenities_in_aoi",
+          "value": 10
+        }
+      ],
+      "priority_index": {
+        "acute_response_score": 0,
+        "slow_onset_monitoring_score": 9
+      },
+      "priority_score_components": {
+        "acute_response_score": {
+          "critical_amenities_at_least_20": false,
+          "humanitarian_response_reports_present": false,
+          "matching_event_catalog_hits_present": false,
+          "sentinel1_mean_change_abs_at_least_3_db": false,
+          "usable_post_event_sentinel2_scenes_present": false
+        },
+        "slow_onset_monitoring_score": {
+          "event_anchor_notes_cryosphere_context": true,
+          "event_duration_days_at_least_90": true,
+          "event_name_identifies_glacier_retreat": true,
+          "metadata_frames_slow_onset_glacier_retreat": true,
+          "sentinel1_mean_change_abs_below_0_5_db": true,
+          "sentinel2_no_sufficient_scenes": true
+        }
+      },
+      "priority_scoring_rule": {
+        "acute_response_score": {
+          "critical_amenities_at_least_20": 1,
+          "humanitarian_response_reports_present": 2,
+          "matching_event_catalog_hits_present": 2,
+          "sentinel1_mean_change_abs_at_least_3_db": 1,
+          "usable_post_event_sentinel2_scenes_present": 1
+        },
+        "slow_onset_monitoring_score": {
+          "event_anchor_notes_cryosphere_context": 1,
+          "event_duration_days_at_least_90": 2,
+          "event_name_identifies_glacier_retreat": 2,
+          "metadata_frames_slow_onset_glacier_retreat": 2,
+          "sentinel1_mean_change_abs_below_0_5_db": 1,
+          "sentinel2_no_sufficient_scenes": 1
+        }
+      },
+      "rationale": "The event timing and cryosphere-retreat framing favor monitoring and long-term risk management; acute-response alternatives are weakened by weak scene-change, catalog, and humanitarian-impact signals.",
+      "required_claims": [
+        "The 2015-10-01 to 2016-03-31 event window gives 183 inclusive days and supports a slow-onset cryosphere interpretation.",
+        "The weak radar mean change and lack of sufficient burn-severity scenes do not support an acute surface-disturbance priority.",
+        "Zero matching event-catalog hits and no humanitarian response reports weaken acute-response interpretations.",
+        "Exposure context motivates monitoring and preparedness but is not observed damage evidence."
+      ],
+      "required_metrics": [
+        {
+          "name": "event_duration_days",
+          "tolerance": 0,
+          "value": 183
+        },
+        {
+          "name": "scene_mean_change_db",
+          "tolerance": 0.02,
+          "value": -0.147
+        },
+        {
+          "name": "matching_catalog_events",
+          "tolerance": 0,
+          "value": 0
+        },
+        {
+          "name": "critical_amenities_in_aoi",
+          "tolerance": 0,
+          "value": 10
+        }
+      ]
+    },
+    "provenance": {
+      "computed_by": "compute_gt.py",
+      "source_files": [
+        "metadata/event.json",
+        "metadata/files.csv",
+        "data/event_reports/event_reports_004_Locked_event_anchor_Puncak_Jaya_glacier_retreat_episode.json",
+        "data/event_reports/event_reports_005_02_reliefweb_reports.json.json",
+        "data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "data/event_reports/event_reports_003_ICIMOD_NSIDC_national_glacier_hazard_reports.html",
+        "data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json",
+        "data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json",
+        "data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+        "data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+        "data/remote_sensing/remote_sensing_001_Sentinel-1_GRD_VV_pre_post_change.json",
+        "data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+        "data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+        "data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+        "data/event_catalogs/event_catalogs_005_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json"
+      ]
+    },
+    "reasoning_requirements": [
+      "Connect the long event window to a slow-onset cryosphere mechanism.",
+      "Apply the visible priority-index rule rather than inventing a hidden score.",
+      "Use remote-sensing change and catalog/report alignment to separate monitoring from acute response.",
+      "Treat rainfall and exposure as contextual risk factors unless linked to observed impacts.",
+      "Return a compact priority label, priority index, anchors, impact chain, and rationale."
+    ],
+    "required_findings": [
+      {
+        "name": "dominant_mechanism",
+        "value": "slow-onset tropical glacier retreat and ice-loss monitoring"
+      },
+      {
+        "name": "acute_cryosphere_alternative",
+        "value": "acute avalanche or lake-outburst response should not be the dominant priority"
+      },
+      {
+        "name": "rainfall_flood_alternative",
+        "value": "wet tropical precipitation context does not become a damaging flood diagnosis by itself"
+      },
+      {
+        "name": "exposure_context",
+        "value": "population and critical amenities motivate monitoring and preparedness, not observed-loss claims"
+      }
+    ],
+    "rubric": {
+      "criteria": [
+        {
+          "description": "Gives the slow-onset tropical glacier-retreat monitoring priority label or a clear equivalent, and reports a priority index with slow-onset monitoring dominant over acute response by applying the visible scoring rule, ideally 9 versus 0.",
+          "name": "priority_label_and_index",
+          "points": 4
+        },
+        {
+          "description": "Reports the four required anchors with appropriate precision: 183 event days, -0.147 dB scene mean change within +/-0.02, 0 matching catalog events, and 10 critical amenities.",
+          "name": "key_numeric_anchors",
+          "points": 5
+        },
+        {
+          "description": "Connects the tropical high-mountain setting and long event duration to slow glacier retreat and ice loss rather than a short-fuse avalanche, GLOF, flood, or fire mechanism.",
+          "name": "cryosphere_mechanism_reasoning",
+          "points": 4
+        },
+        {
+          "description": "Correctly interprets weak radar change, no sufficient burn-severity scenes, zero matching event-catalog hits, and no humanitarian response report as evidence against an acute-response posture.",
+          "name": "change_catalog_report_interpretation",
+          "points": 3
+        },
+        {
+          "description": "Builds an impact chain from tropical cryosphere warming to glacier retreat and monitoring or long-term risk management, treating exposure as a preparedness concern rather than observed damage.",
+          "name": "impact_chain_and_operational_posture",
+          "points": 2
+        },
+        {
+          "description": "Returns concise JSON in the requested structure and avoids unsupported claims about exact glacier-area loss, casualties, evacuation, road disruption, burn severity, observed infrastructure damage, or confirmed flood impacts.",
+          "name": "format_and_overclaim_control",
+          "points": 2
+        }
+      ],
+      "total_points": 20
+    },
+    "schema_version": "crossscale_extreme_event_bench_v1",
+    "strict_audit": {
+      "absolute_path_hits": 0,
+      "issue_score": 2,
+      "numeric_anchor_count": 4,
+      "product_hits_visible": 1,
+      "specific_file_hits_visible": 0,
+      "visible_numeric_anchor_count": 27,
+      "visible_package_directive_hits": 0
+    },
+    "supporting_metrics": {
+      "computed_metrics": {
+        "chirps_event_precip_mm_mean": 270.8,
+        "critical_amenities_in_aoi": 10,
+        "downloaded_or_success_file_count": 36,
+        "era5_precipitation_sum_mm_mean": 617.5,
+        "event_duration_days": 183,
+        "gpm_event_precip_mm_mean": 291.5,
+        "matching_eonet_events": 0,
+        "open_meteo_days": 15,
+        "open_meteo_max_tmax_c": 28.5,
+        "open_meteo_mean_tmax_c": 28.2,
+        "open_meteo_total_precip_mm": 3.4,
+        "power_total_precip_mm": 3.8,
+        "reliefweb_has_reports": false,
+        "sentinel1_mean_change_db": -0.147,
+        "sentinel1_stddev_change_db": 2.853,
+        "sentinel2_post_count": 0,
+        "sentinel2_pre_count": 0,
+        "sentinel2_scene_status": "no_sufficient_scenes",
+        "worldpop_population_sum": 385051
+      },
+      "file_status_counts": {
+        "downloaded": 10,
+        "local_file_found": 14,
+        "remote_verified": 1,
+        "success": 11
+      },
+      "package_claim_flags": {
+        "anchor_event_lock_notes_cryosphere": true,
+        "benchmark_needs_event_review": true,
+        "event_name_has_glacier_retreat": true,
+        "hazard_match_slow_onset_partial": true,
+        "icimod_general_cryosphere_impact": true,
+        "nasa_html_contains_event_terms": false,
+        "temporal_match_partial": true
+      }
+    },
+    "task_design_version": "crossscale_extreme_event_bench_v1",
+    "task_id": "CSX-315_Q1",
+    "task_subtype": "response_priority_cryosphere_mechanism",
+    "task_type": "short_answer"
+  },
+  "compute_gt_py": "#!/usr/bin/env python3\n\"\"\"Compute ground truth for CSX-315_Q1 from the local CSX-315 package.\"\"\"\n\nfrom __future__ import annotations\n\nimport csv\nimport json\nimport re\nfrom datetime import date\nfrom pathlib import Path\nfrom typing import Any\n\n\nTASK_ID = \"CSX-315_Q1\"\nEVENT_ID = \"CSX-315\"\nTASK_SUBTYPE = \"response_priority_cryosphere_mechanism\"\n\nVISIBLE_PACKAGE_DIRECTIVE_PATTERNS = [\n    r\"inspect the package inventory\",\n    r\"inspect the local package\",\n    r\"use only local package evidence\",\n    r\"use only the local package\",\n    r\"use only evidence found inside the package\",\n    r\"do not use outside sources\",\n    r\"use no outside sources\",\n    r\"cite the package file types\",\n    r\"cite .*filenames\",\n]\n\nPRODUCT_TERMS = [\n    \"Open-Meteo\",\n    \"ERA5\",\n    \"ERA5-Land\",\n    \"GPM\",\n    \"IMERG\",\n    \"CHIRPS\",\n    \"WorldPop\",\n    \"OSM\",\n    \"OpenStreetMap\",\n    \"Sentinel\",\n    \"AlphaEarth\",\n    \"NASA\",\n    \"FIRMS\",\n    \"OpenAQ\",\n    \"NOAA\",\n    \"USGS\",\n    \"GDACS\",\n    \"EONET\",\n    \"MODIS\",\n    \"VIIRS\",\n    \"Landsat\",\n    \"Copernicus\",\n    \"WMO\",\n    \"ECMWF\",\n    \"IBTrACS\",\n]\n\n\ndef load_json(package_dir: Path, relative_path: str) -> Any:\n    with (package_dir / relative_path).open(\"r\", encoding=\"utf-8-sig\") as handle:\n        return json.load(handle)\n\n\ndef read_text(package_dir: Path, relative_path: str) -> str:\n    with (package_dir / relative_path).open(\"r\", encoding=\"utf-8\", errors=\"ignore\") as handle:\n        return handle.read()\n\n\ndef load_csv_rows(package_dir: Path, relative_path: str) -> list[dict[str, str]]:\n    with (package_dir / relative_path).open(\"r\", encoding=\"utf-8-sig\", newline=\"\") as handle:\n        return list(csv.DictReader(handle))\n\n\ndef parse_day(value: str) -> date:\n    return date.fromisoformat(value)\n\n\ndef inclusive_days(start_date: str, end_date: str) -> int:\n    return (parse_day(end_date) - parse_day(start_date)).days + 1\n\n\ndef mean(values: list[float]) -> float:\n    return sum(values) / len(values) if values else 0.0\n\n\ndef count_osm_critical_amenities(osm: dict[str, Any]) -> int:\n    critical = {\"hospital\", \"clinic\", \"school\", \"police\", \"shelter\"}\n    count = 0\n    for element in osm.get(\"elements\", []):\n        tags = element.get(\"tags\", {})\n        if tags.get(\"amenity\") in critical or tags.get(\"healthcare\") in critical:\n            count += 1\n    return count\n\n\ndef count_matching_eonet_events(eonet: dict[str, Any]) -> int:\n    terms = re.compile(r\"puncak|jaya|papua|indonesia|glacier|glacial\", re.IGNORECASE)\n    count = 0\n    for event in eonet.get(\"events\", []):\n        haystack = \" \".join(\n            str(event.get(key, \"\"))\n            for key in [\"id\", \"title\", \"description\", \"link\"]\n        )\n        category_text = \" \".join(\n            str(category.get(\"title\", \"\"))\n            for category in event.get(\"categories\", [])\n            if isinstance(category, dict)\n        )\n        if terms.search(haystack + \" \" + category_text):\n            count += 1\n    return count\n\n\ndef count_patterns(text: str, patterns: list[str]) -> int:\n    lower = text.lower()\n    return sum(1 for pattern in patterns if re.search(pattern, lower))\n\n\ndef count_terms(text: str, terms: list[str]) -> int:\n    lower = text.lower()\n    count = 0\n    for term in terms:\n        escaped = re.escape(term.lower())\n        if re.search(rf\"(?<![a-z0-9]){escaped}(?![a-z0-9])\", lower):\n            count += 1\n    return count\n\n\ndef question_audit(task_dir: Path, numeric_anchor_count: int) -> dict[str, Any]:\n    question = (task_dir / \"question_en.md\").read_text(encoding=\"utf-8\", errors=\"replace\")\n    visible_package_directive_hits = count_patterns(question, VISIBLE_PACKAGE_DIRECTIVE_PATTERNS)\n    absolute_path_hits = len(re.findall(r\"[A-Za-z]:[\\\\/][^\\s`'\\\"\\)]+\", question))\n    product_hits_visible = count_terms(question, PRODUCT_TERMS)\n    specific_file_hits_visible = len(\n        re.findall(r\"data/[A-Za-z0-9_./-]+|metadata/[A-Za-z0-9_./-]+|\\.(?:json|csv|zip|tif|html)\", question)\n    )\n    visible_numeric_anchor_count = len(re.findall(r\"(?<![A-Za-z0-9])-?\\d+(?:\\.\\d+)?\", question))\n\n    issue_score = 0\n    issue_score += 3 if visible_package_directive_hits else 0\n    issue_score += 3 if absolute_path_hits else 0\n    issue_score += 2 if product_hits_visible else 0\n    issue_score += 2 if specific_file_hits_visible else 0\n    issue_score += 1 if numeric_anchor_count > 5 else 0\n\n    return {\n        \"visible_package_directive_hits\": visible_package_directive_hits,\n        \"absolute_path_hits\": absolute_path_hits,\n        \"product_hits_visible\": product_hits_visible,\n        \"specific_file_hits_visible\": specific_file_hits_visible,\n        \"visible_numeric_anchor_count\": visible_numeric_anchor_count,\n        \"numeric_anchor_count\": numeric_anchor_count,\n        \"issue_score\": issue_score,\n    }\n\n\ndef main() -> None:\n    task_dir = Path(__file__).resolve().parent\n    workspace_root = task_dir.parents[2]\n    package_dir = workspace_root / \"event_packages\" / \"standard_event_packages\" / \"packages\" / \"CSX-315\"\n\n    event_metadata_path = \"metadata/event.json\"\n    files_manifest_path = \"metadata/files.csv\"\n    anchor_path = \"data/event_reports/event_reports_004_Locked_event_anchor_Puncak_Jaya_glacier_retreat_episode.json\"\n    reliefweb_path = \"data/event_reports/event_reports_005_02_reliefweb_reports.json.json\"\n    nasa_html_path = \"data/event_reports/event_reports_001_Locked_package_evidence_report.html\"\n    icimod_html_path = \"data/event_reports/event_reports_003_ICIMOD_NSIDC_national_glacier_hazard_reports.html\"\n    open_meteo_path = \"data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json\"\n    power_path = \"data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json\"\n    era5_path = \"data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\"\n    gpm_path = \"data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\"\n    chirps_path = \"data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json\"\n    sentinel1_path = \"data/remote_sensing/remote_sensing_001_Sentinel-1_GRD_VV_pre_post_change.json\"\n    sentinel2_path = \"data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json\"\n    osm_path = \"data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json\"\n    worldpop_path = \"data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json\"\n    eonet_path = \"data/event_catalogs/event_catalogs_005_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\"\n\n    event_metadata = load_json(package_dir, event_metadata_path)\n    anchor = load_json(package_dir, anchor_path)\n    files_manifest = load_csv_rows(package_dir, files_manifest_path)\n    reliefweb = load_json(package_dir, reliefweb_path)\n    open_meteo = load_json(package_dir, open_meteo_path)\n    power = load_json(package_dir, power_path)\n    era5 = load_json(package_dir, era5_path)\n    gpm = load_json(package_dir, gpm_path)\n    chirps = load_json(package_dir, chirps_path)\n    sentinel1 = load_json(package_dir, sentinel1_path)\n    sentinel2 = load_json(package_dir, sentinel2_path)\n    osm = load_json(package_dir, osm_path)\n    worldpop = load_json(package_dir, worldpop_path)\n    eonet = load_json(package_dir, eonet_path)\n    nasa_text = read_text(package_dir, nasa_html_path)\n    icimod_text = read_text(package_dir, icimod_html_path)\n\n    window = anchor[\"temporal_window\"]\n    event_duration_days = inclusive_days(window[\"start_date\"], window[\"end_date\"])\n    open_meteo_daily = open_meteo[\"daily\"]\n    open_meteo_tmax = [float(value) for value in open_meteo_daily[\"temperature_2m_max\"]]\n    open_meteo_precip = [float(value) for value in open_meteo_daily[\"precipitation_sum\"]]\n    power_precip = [\n        float(value)\n        for value in power[\"properties\"][\"parameter\"][\"PRECTOTCORR\"].values()\n    ]\n\n    file_status_counts: dict[str, int] = {}\n    for row in files_manifest:\n        status = row[\"file_status\"]\n        file_status_counts[status] = file_status_counts.get(status, 0) + 1\n\n    reliefweb_has_reports = bool(reliefweb.get(\"reports\")) if isinstance(reliefweb, dict) else False\n    matching_eonet_events = count_matching_eonet_events(eonet)\n    critical_amenities = count_osm_critical_amenities(osm)\n    s1_mean_change = float(sentinel1[\"stats\"][\"s1_vv_post_minus_pre_db_mean\"])\n    s2_status = sentinel2.get(\"status\", \"unknown\")\n\n    package_claims = {\n        \"event_name_has_glacier_retreat\": bool(\n            re.search(r\"glacier retreat\", event_metadata[\"event_name\"], re.IGNORECASE)\n        ),\n        \"temporal_match_partial\": event_metadata[\"temporal_match\"].startswith(\"partial\"),\n        \"hazard_match_slow_onset_partial\": \"slow-onset glacier retreat\" in event_metadata[\"hazard_match\"],\n        \"benchmark_needs_event_review\": event_metadata[\"benchmark_readiness\"] == \"needs_event_review\",\n        \"anchor_event_lock_notes_cryosphere\": \"cryosphere\" in anchor[\"locked_event_anchor\"][\"event_lock_notes\"].lower(),\n        \"icimod_general_cryosphere_impact\": bool(\n            re.search(r\"glaciers disappearing|changing cryosphere|people and nature\", icimod_text, re.IGNORECASE)\n        ),\n        \"nasa_html_contains_event_terms\": bool(\n            re.search(r\"Puncak Jaya|last glaciers|glacier retreat\", nasa_text, re.IGNORECASE)\n        ),\n    }\n\n    slow_onset_monitoring_score = 0\n    slow_onset_monitoring_score += 2 if event_duration_days >= 90 else 0\n    slow_onset_monitoring_score += 2 if package_claims[\"event_name_has_glacier_retreat\"] else 0\n    slow_onset_monitoring_score += 2 if package_claims[\"hazard_match_slow_onset_partial\"] else 0\n    slow_onset_monitoring_score += 1 if package_claims[\"anchor_event_lock_notes_cryosphere\"] else 0\n    slow_onset_monitoring_score += 1 if abs(s1_mean_change) < 0.5 else 0\n    slow_onset_monitoring_score += 1 if s2_status == \"no_sufficient_scenes\" else 0\n\n    acute_response_score = 0\n    acute_response_score += 2 if matching_eonet_events > 0 else 0\n    acute_response_score += 2 if reliefweb_has_reports else 0\n    acute_response_score += 1 if abs(s1_mean_change) >= 3.0 else 0\n    acute_response_score += 1 if sentinel2.get(\"counts\", {}).get(\"post_count\", 0) > 0 else 0\n    acute_response_score += 1 if critical_amenities >= 20 else 0\n\n    priority_scoring_rule = {\n        \"slow_onset_monitoring_score\": {\n            \"event_duration_days_at_least_90\": 2,\n            \"event_name_identifies_glacier_retreat\": 2,\n            \"metadata_frames_slow_onset_glacier_retreat\": 2,\n            \"event_anchor_notes_cryosphere_context\": 1,\n            \"sentinel1_mean_change_abs_below_0_5_db\": 1,\n            \"sentinel2_no_sufficient_scenes\": 1,\n        },\n        \"acute_response_score\": {\n            \"matching_event_catalog_hits_present\": 2,\n            \"humanitarian_response_reports_present\": 2,\n            \"sentinel1_mean_change_abs_at_least_3_db\": 1,\n            \"usable_post_event_sentinel2_scenes_present\": 1,\n            \"critical_amenities_at_least_20\": 1,\n        },\n    }\n    priority_score_components = {\n        \"slow_onset_monitoring_score\": {\n            \"event_duration_days_at_least_90\": event_duration_days >= 90,\n            \"event_name_identifies_glacier_retreat\": package_claims[\"event_name_has_glacier_retreat\"],\n            \"metadata_frames_slow_onset_glacier_retreat\": package_claims[\"hazard_match_slow_onset_partial\"],\n            \"event_anchor_notes_cryosphere_context\": package_claims[\"anchor_event_lock_notes_cryosphere\"],\n            \"sentinel1_mean_change_abs_below_0_5_db\": abs(s1_mean_change) < 0.5,\n            \"sentinel2_no_sufficient_scenes\": s2_status == \"no_sufficient_scenes\",\n        },\n        \"acute_response_score\": {\n            \"matching_event_catalog_hits_present\": matching_eonet_events > 0,\n            \"humanitarian_response_reports_present\": reliefweb_has_reports,\n            \"sentinel1_mean_change_abs_at_least_3_db\": abs(s1_mean_change) >= 3.0,\n            \"usable_post_event_sentinel2_scenes_present\": sentinel2.get(\"counts\", {}).get(\"post_count\", 0) > 0,\n            \"critical_amenities_at_least_20\": critical_amenities >= 20,\n        },\n    }\n\n    metrics = {\n        \"event_duration_days\": event_duration_days,\n        \"open_meteo_days\": len(open_meteo_daily[\"time\"]),\n        \"open_meteo_max_tmax_c\": round(max(open_meteo_tmax), 1),\n        \"open_meteo_mean_tmax_c\": round(mean(open_meteo_tmax), 1),\n        \"open_meteo_total_precip_mm\": round(sum(open_meteo_precip), 1),\n        \"power_total_precip_mm\": round(sum(power_precip), 1),\n        \"era5_precipitation_sum_mm_mean\": round(era5[\"stats\"][\"precipitation_sum_mm_mean\"], 1),\n        \"gpm_event_precip_mm_mean\": round(gpm[\"stats\"][\"gpm_event_precip_mm_mean\"], 1),\n        \"chirps_event_precip_mm_mean\": round(chirps[\"stats\"][\"chirps_event_precip_mm_mean\"], 1),\n        \"sentinel1_mean_change_db\": round(s1_mean_change, 3),\n        \"sentinel1_stddev_change_db\": round(float(sentinel1[\"stats\"][\"s1_vv_post_minus_pre_db_stdDev\"]), 3),\n        \"sentinel2_scene_status\": s2_status,\n        \"sentinel2_pre_count\": int(sentinel2.get(\"counts\", {}).get(\"pre_count\", 0)),\n        \"sentinel2_post_count\": int(sentinel2.get(\"counts\", {}).get(\"post_count\", 0)),\n        \"matching_eonet_events\": matching_eonet_events,\n        \"reliefweb_has_reports\": reliefweb_has_reports,\n        \"critical_amenities_in_aoi\": critical_amenities,\n        \"worldpop_population_sum\": round(float(worldpop[\"population_sum\"][\"population\"])),\n        \"downloaded_or_success_file_count\": sum(\n            file_status_counts.get(status, 0)\n            for status in [\"downloaded\", \"success\", \"remote_verified\", \"local_file_found\"]\n        ),\n    }\n\n    if slow_onset_monitoring_score > acute_response_score:\n        answer = \"slow_onset_tropical_glacier_retreat_monitoring_priority\"\n        confidence = \"moderate\"\n        impact_chain = [\n            \"tropical_cryosphere_warming\",\n            \"slow_glacier_retreat_and_ice_loss\",\n            \"monitoring_and_long_term_risk_management\",\n        ]\n    else:\n        answer = \"acute_cryosphere_response_priority\"\n        confidence = \"low\"\n        impact_chain = [\n            \"uncertain_acute_trigger\",\n            \"possible_rapid_cryosphere_hazard\",\n            \"emergency_response_review\",\n        ]\n\n    numeric_tolerances = {\n        \"event_duration_days\": {\"value\": metrics[\"event_duration_days\"], \"tolerance\": 0},\n        \"scene_mean_change_db\": {\"value\": metrics[\"sentinel1_mean_change_db\"], \"tolerance\": 0.02},\n        \"matching_catalog_events\": {\"value\": metrics[\"matching_eonet_events\"], \"tolerance\": 0},\n        \"critical_amenities_in_aoi\": {\"value\": metrics[\"critical_amenities_in_aoi\"], \"tolerance\": 0},\n    }\n    key_numeric_anchors = [\n        {\"name\": \"event_duration_days\", \"value\": metrics[\"event_duration_days\"]},\n        {\"name\": \"scene_mean_change_db\", \"value\": metrics[\"sentinel1_mean_change_db\"]},\n        {\"name\": \"matching_catalog_events\", \"value\": metrics[\"matching_eonet_events\"]},\n        {\"name\": \"critical_amenities_in_aoi\", \"value\": metrics[\"critical_amenities_in_aoi\"]},\n    ]\n    strict_audit = question_audit(task_dir, len(numeric_tolerances))\n\n    computed_gt = {\n        \"schema_version\": \"crossscale_extreme_event_bench_v1\",\n        \"task_design_version\": \"crossscale_extreme_event_bench_v1\",\n        \"task_id\": TASK_ID,\n        \"event_id\": EVENT_ID,\n        \"task_type\": \"short_answer\",\n        \"task_subtype\": TASK_SUBTYPE,\n        \"evaluation_mode\": \"hybrid\",\n        \"difficulty_level\": \"L3\",\n        \"primary_gt\": {\n            \"answer_type\": \"structured_priority_json\",\n            \"answer\": answer,\n            \"canonical_answer\": answer,\n            \"confidence\": confidence,\n            \"deterministic_targets\": {\n                \"answer\": answer,\n                \"slow_onset_monitoring_score\": slow_onset_monitoring_score,\n                \"acute_response_score\": acute_response_score,\n                \"numeric_tolerances\": numeric_tolerances,\n            },\n            \"priority_index\": {\n                \"slow_onset_monitoring_score\": slow_onset_monitoring_score,\n                \"acute_response_score\": acute_response_score,\n            },\n            \"event_window\": {\n                \"start\": window[\"start_date\"],\n                \"end\": window[\"end_date\"],\n                \"inclusive_days\": event_duration_days,\n            },\n            \"priority_scoring_rule\": priority_scoring_rule,\n            \"priority_score_components\": priority_score_components,\n            \"key_numeric_anchors\": key_numeric_anchors,\n            \"impact_chain\": impact_chain,\n            \"canonical_stance\": (\n                \"The Puncak Jaya episode should be framed as slow-onset tropical glacier-retreat \"\n                \"monitoring and long-term risk management, not as an acute flood, avalanche, GLOF, \"\n                \"or fire response.\"\n            ),\n            \"required_claims\": [\n                \"The 2015-10-01 to 2016-03-31 event window gives 183 inclusive days and supports a slow-onset cryosphere interpretation.\",\n                \"The weak radar mean change and lack of sufficient burn-severity scenes do not support an acute surface-disturbance priority.\",\n                \"Zero matching event-catalog hits and no humanitarian response reports weaken acute-response interpretations.\",\n                \"Exposure context motivates monitoring and preparedness but is not observed damage evidence.\",\n            ],\n            \"required_metrics\": [\n                {\"name\": \"event_duration_days\", \"value\": metrics[\"event_duration_days\"], \"tolerance\": 0},\n                {\"name\": \"scene_mean_change_db\", \"value\": metrics[\"sentinel1_mean_change_db\"], \"tolerance\": 0.02},\n                {\"name\": \"matching_catalog_events\", \"value\": metrics[\"matching_eonet_events\"], \"tolerance\": 0},\n                {\"name\": \"critical_amenities_in_aoi\", \"value\": metrics[\"critical_amenities_in_aoi\"], \"tolerance\": 0},\n            ],\n            \"forbidden_claims\": [\n                \"The event proves an acute glacial-lake outburst flood or avalanche.\",\n                \"Precipitation context alone proves observed flood damage or evacuation.\",\n                \"The task computes exact glacier-area loss.\",\n                \"The evidence proves casualties, displacement, road closure, burn severity, or observed infrastructure damage.\",\n            ],\n            \"acceptable_variants\": [\n                \"slow_onset_glacier_retreat_monitoring\",\n                \"tropical_glacier_retreat_monitoring_priority\",\n                \"long_term_cryosphere_monitoring_priority\",\n            ],\n            \"rationale\": (\n                \"The event timing and cryosphere-retreat framing favor monitoring and long-term risk \"\n                \"management; acute-response alternatives are weakened by weak scene-change, catalog, \"\n                \"and humanitarian-impact signals.\"\n            ),\n        },\n        \"required_findings\": [\n            {\n                \"name\": \"dominant_mechanism\",\n                \"value\": \"slow-onset tropical glacier retreat and ice-loss monitoring\",\n            },\n            {\n                \"name\": \"acute_cryosphere_alternative\",\n                \"value\": \"acute avalanche or lake-outburst response should not be the dominant priority\",\n            },\n            {\n                \"name\": \"rainfall_flood_alternative\",\n                \"value\": \"wet tropical precipitation context does not become a damaging flood diagnosis by itself\",\n            },\n            {\n                \"name\": \"exposure_context\",\n                \"value\": \"population and critical amenities motivate monitoring and preparedness, not observed-loss claims\",\n            },\n        ],\n        \"numeric_tolerances\": numeric_tolerances,\n        \"numeric_anchor_count\": len(numeric_tolerances),\n            \"reasoning_requirements\": [\n            \"Connect the long event window to a slow-onset cryosphere mechanism.\",\n            \"Apply the visible priority-index rule rather than inventing a hidden score.\",\n            \"Use remote-sensing change and catalog/report alignment to separate monitoring from acute response.\",\n            \"Treat rainfall and exposure as contextual risk factors unless linked to observed impacts.\",\n            \"Return a compact priority label, priority index, anchors, impact chain, and rationale.\",\n        ],\n        \"forbidden_overclaims\": [\n            \"Do not claim that the package proves an acute glacial-lake outburst flood or avalanche.\",\n            \"Do not treat precipitation totals alone as observed flood damage or evacuation evidence.\",\n            \"Do not infer exact glacier-area loss because no local glacier-area time series is computed here.\",\n            \"Do not claim burn severity, casualties, displacement, road closure, or infrastructure damage from context layers alone.\",\n        ],\n        \"rubric\": {\n            \"total_points\": 20,\n            \"criteria\": [\n                {\n                    \"name\": \"priority_label_and_index\",\n                    \"points\": 4,\n                    \"description\": (\n                        \"Gives the slow-onset tropical glacier-retreat monitoring priority label or a \"\n                        \"clear equivalent, and reports a priority index with slow-onset monitoring \"\n                        \"dominant over acute response by applying the visible scoring rule, ideally 9 versus 0.\"\n                    ),\n                },\n                {\n                    \"name\": \"key_numeric_anchors\",\n                    \"points\": 5,\n                    \"description\": (\n                        \"Reports the four required anchors with appropriate precision: 183 event days, \"\n                        \"-0.147 dB scene mean change within +/-0.02, 0 matching catalog events, and \"\n                        \"10 critical amenities.\"\n                    ),\n                },\n                {\n                    \"name\": \"cryosphere_mechanism_reasoning\",\n                    \"points\": 4,\n                    \"description\": (\n                        \"Connects the tropical high-mountain setting and long event duration to slow \"\n                        \"glacier retreat and ice loss rather than a short-fuse avalanche, GLOF, flood, \"\n                        \"or fire mechanism.\"\n                    ),\n                },\n                {\n                    \"name\": \"change_catalog_report_interpretation\",\n                    \"points\": 3,\n                    \"description\": (\n                        \"Correctly interprets weak radar change, no sufficient burn-severity scenes, \"\n                        \"zero matching event-catalog hits, and no humanitarian response report as \"\n                        \"evidence against an acute-response posture.\"\n                    ),\n                },\n                {\n                    \"name\": \"impact_chain_and_operational_posture\",\n                    \"points\": 2,\n                    \"description\": (\n                        \"Builds an impact chain from tropical cryosphere warming to glacier retreat \"\n                        \"and monitoring or long-term risk management, treating exposure as a \"\n                        \"preparedness concern rather than observed damage.\"\n                    ),\n                },\n                {\n                    \"name\": \"format_and_overclaim_control\",\n                    \"points\": 2,\n                    \"description\": (\n                        \"Returns concise JSON in the requested structure and avoids unsupported \"\n                        \"claims about exact glacier-area loss, casualties, evacuation, road disruption, \"\n                        \"burn severity, observed infrastructure damage, or confirmed flood impacts.\"\n                    ),\n                },\n            ],\n        },\n        \"strict_audit\": strict_audit,\n        \"key_values\": {\n            \"event_duration_days\": metrics[\"event_duration_days\"],\n            \"slow_onset_monitoring_score\": slow_onset_monitoring_score,\n            \"acute_response_score\": acute_response_score,\n            \"priority_scoring_rule\": priority_scoring_rule,\n            \"priority_score_components\": priority_score_components,\n            \"sentinel1_mean_change_db\": metrics[\"sentinel1_mean_change_db\"],\n            \"sentinel2_scene_status\": metrics[\"sentinel2_scene_status\"],\n            \"matching_eonet_events\": metrics[\"matching_eonet_events\"],\n            \"critical_amenities_in_aoi\": metrics[\"critical_amenities_in_aoi\"],\n        },\n        \"supporting_metrics\": {\n            \"computed_metrics\": metrics,\n            \"package_claim_flags\": package_claims,\n            \"file_status_counts\": file_status_counts,\n        },\n        \"provenance\": {\n            \"computed_by\": \"compute_gt.py\",\n            \"source_files\": [\n                event_metadata_path,\n                files_manifest_path,\n                anchor_path,\n                reliefweb_path,\n                nasa_html_path,\n                icimod_html_path,\n                open_meteo_path,\n                power_path,\n                era5_path,\n                gpm_path,\n                chirps_path,\n                sentinel1_path,\n                sentinel2_path,\n                osm_path,\n                worldpop_path,\n                eonet_path,\n            ],\n        },\n    }\n\n    with (task_dir / \"computed_gt.json\").open(\"w\", encoding=\"utf-8\") as handle:\n        json.dump(computed_gt, handle, indent=2, sort_keys=True)\n        handle.write(\"\\n\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "event": {
+    "package_id": "CSX-315",
+    "event_name": "Puncak Jaya glacier retreat episode",
+    "canonical_event_key": "puncak jaya glacier retreat episode",
+    "hazard_family": "cryosphere_avalanche_glof_snowmelt",
+    "hazard_label": "Cryosphere, avalanche, GLOF, and snowmelt",
+    "scale": "national_admin",
+    "region": "Southeast Asia",
+    "primary_evidence_url": "https://science.nasa.gov/missions/landsat/decline-of-the-last-glaciers-in-the-eastern-tropics/",
+    "existence_verdict": "confirmed",
+    "temporal_match": "partial: source supports 2006-2015 retreat more than 2015-10 to 2016-03 episode",
+    "spatial_match": "match",
+    "hazard_match": "partial: slow-onset glacier retreat, not avalanche/GLOF event",
+    "source_reliability": "high_official_or_institutional",
+    "correspondence_score": "60",
+    "release_decision": "replace_event",
+    "benchmark_readiness": "needs_event_review",
+    "benchmark_readiness_label": "needs event review",
+    "data_integrity": {
+      "local_files_checked": "30",
+      "image_files_checked": "2",
+      "valid_images": "2",
+      "formal_slice_files_checked": "16",
+      "hard_error_count": "0",
+      "metadata_warning_count": "2",
+      "final_data_score": "93",
+      "final_data_decision": "ready_with_minor_warnings",
+      "replacement_file_count": "0"
+    },
+    "file_inventory": {
+      "total_files": 36,
+      "categories": {
+        "event_catalogs": 5,
+        "event_reports": 5,
+        "exposure_impact": 6,
+        "geospatial_context": 3,
+        "other": 4,
+        "physical_hazard": 9,
+        "remote_sensing": 4
+      }
+    }
+  },
+  "event_files": [
+    {
+      "file_id": "F0001",
+      "relative_path": "data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "category": "event_reports",
+      "layer_name": "event_anchor_report",
+      "source_id": "S001",
+      "source_name": "Locked package evidence report",
+      "source_type": "resource_registry",
+      "source_url": "https://earthobservatory.nasa.gov/images/88229/the-last-glaciers-in-the-tropics",
+      "bytes": 297215,
+      "sha256_16": "cbeed67ca9332399",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0002",
+      "relative_path": "data/event_reports/event_reports_002_ReliefWeb_public_updates_search.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/event_reports/event_reports_002_ReliefWeb_public_updates_search.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/event_reports/event_reports_002_ReliefWeb_public_updates_search.html",
+      "category": "event_reports",
+      "layer_name": "text_reports",
+      "source_id": "S002",
+      "source_name": "ReliefWeb public updates search",
+      "source_type": "resource_registry",
+      "source_url": "https://reliefweb.int/updates?search=Puncak+Jaya+glacier+retreat+episode+Indonesia",
+      "bytes": 109820,
+      "sha256_16": "e9f2f6cc4b1be55b",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0003",
+      "relative_path": "data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S003",
+      "source_name": "GDACS event feeds and archive",
+      "source_type": "resource_registry",
+      "source_url": "https://www.gdacs.org/xml/rss.xml",
+      "bytes": 225166,
+      "sha256_16": "9326ca698a7adb8c",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "xml"
+    },
+    {
+      "file_id": "F0004",
+      "relative_path": "data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_and_Overpass_AOI.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_and_Overpass_AOI.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_and_Overpass_AOI.json",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S004",
+      "source_name": "OpenStreetMap Nominatim and Overpass AOI",
+      "source_type": "resource_registry",
+      "source_url": "https://nominatim.openstreetmap.org/search?q=Puncak+Jaya+glacier+retreat+episode+Puncak+Jaya%2C+Papua+Indonesia+Southeast+Asia&format=jsonv2&limit=5&addressdetails=1",
+      "bytes": 2,
+      "sha256_16": "4f53cda18c2baa0c",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0005",
+      "relative_path": "data/event_catalogs/event_catalogs_002_GLIMS_glacier_database_and_RGI_outlines.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/event_catalogs/event_catalogs_002_GLIMS_glacier_database_and_RGI_outlines.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/event_catalogs/event_catalogs_002_GLIMS_glacier_database_and_RGI_outlines.html",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S005",
+      "source_name": "GLIMS glacier database and RGI outlines",
+      "source_type": "resource_registry",
+      "source_url": "https://www.glims.org/",
+      "bytes": 5148,
+      "sha256_16": "4430be6eafa92768",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0006",
+      "relative_path": "data/event_reports/event_reports_003_ICIMOD_NSIDC_national_glacier_hazard_reports.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/event_reports/event_reports_003_ICIMOD_NSIDC_national_glacier_hazard_reports.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/event_reports/event_reports_003_ICIMOD_NSIDC_national_glacier_hazard_reports.html",
+      "category": "event_reports",
+      "layer_name": "specialized_hazard_source",
+      "source_id": "S006",
+      "source_name": "ICIMOD / NSIDC / national glacier hazard reports",
+      "source_type": "resource_registry",
+      "source_url": "https://www.icimod.org/",
+      "bytes": 207725,
+      "sha256_16": "43e101f356f2fde7",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0007",
+      "relative_path": "data/event_catalogs/event_catalogs_003_NASA_EONET_events_API.xml",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/event_catalogs/event_catalogs_003_NASA_EONET_events_API.xml",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/event_catalogs/event_catalogs_003_NASA_EONET_events_API.xml",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S007",
+      "source_name": "NASA EONET events API",
+      "source_type": "resource_registry",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events?start=2015-10-01&end=2015-10-15&status=all&limit=20",
+      "bytes": 132285,
+      "sha256_16": "c10528982cd71127",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "xml"
+    },
+    {
+      "file_id": "F0008",
+      "relative_path": "data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S008",
+      "source_name": "NASA POWER daily point sample",
+      "source_type": "resource_registry",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M%2CPRECTOTCORR%2CWS10M&community=RE&longitude=118.0000&latitude=-2.5000&start=20151001&end=20151015&format=JSON",
+      "bytes": 1350,
+      "sha256_16": "6215eb46659dccda",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0009",
+      "relative_path": "data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S009",
+      "source_name": "Open-Meteo archive point sample",
+      "source_type": "resource_registry",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=-2.5000&longitude=118.0000&start_date=2015-10-01&end_date=2015-10-15&daily=temperature_2m_max%2Cprecipitation_sum%2Cwind_speed_10m_max&timezone=UTC",
+      "bytes": 784,
+      "sha256_16": "624bd2b654a3f297",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0010",
+      "relative_path": "data/exposure_impact/exposure_impact_001_Overpass_small_critical-amenity_sample.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/exposure_impact/exposure_impact_001_Overpass_small_critical-amenity_sample.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/exposure_impact/exposure_impact_001_Overpass_small_critical-amenity_sample.json",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S010",
+      "source_name": "Overpass small critical-amenity sample",
+      "source_type": "resource_registry",
+      "source_url": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A25%5D%3B%28node%5B%22amenity%22~%22hospital%7Cclinic%7Cschool%22%5D%28near%3A10000%2C-2.50000%2C118.00000%29%3Bway%5B%22amenity%22~%22hospital%7Cclinic%7Cschool%22%5D%28near%3A10000%2C-2.50000%2C118.00000%29%3B%29%3Bout+center+50%3B",
+      "bytes": 287,
+      "sha256_16": "5c0eb17ccf62900a",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0011",
+      "relative_path": "data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "category": "geospatial_context",
+      "layer_name": "aoi",
+      "source_id": "S011",
+      "source_name": "compact per-event AOI derived from event bbox",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 454,
+      "sha256_16": "fefb66d2c0b0ebfc",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0012",
+      "relative_path": "data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S012",
+      "source_name": "ERA5-Land hourly aggregate stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 1005,
+      "sha256_16": "445e8b6e48671fa6",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0013",
+      "relative_path": "data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S013",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 319,
+      "sha256_16": "e6177781404ee34e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0014",
+      "relative_path": "data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S014",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 334,
+      "sha256_16": "25876e0edbf88473",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0015",
+      "relative_path": "data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S015",
+      "source_name": "WorldPop GP 100m population sum",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 124,
+      "sha256_16": "6ebcb46bdfd219ea",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0016",
+      "relative_path": "data/remote_sensing/remote_sensing_001_Sentinel-1_GRD_VV_pre_post_change.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/remote_sensing/remote_sensing_001_Sentinel-1_GRD_VV_pre_post_change.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/remote_sensing/remote_sensing_001_Sentinel-1_GRD_VV_pre_post_change.json",
+      "category": "remote_sensing",
+      "layer_name": "sentinel1",
+      "source_id": "S016",
+      "source_name": "Sentinel-1 GRD VV pre/post change",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 499,
+      "sha256_16": "f26bb176ef72f6b3",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0017",
+      "relative_path": "data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+      "category": "physical_hazard",
+      "layer_name": "sentinel2",
+      "source_id": "S017",
+      "source_name": "Sentinel-2 SR Harmonized dNBR",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 148,
+      "sha256_16": "e08b52f31e781b6f",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0018",
+      "relative_path": "data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "category": "exposure_impact",
+      "layer_name": "osm_exposure",
+      "source_id": "S018",
+      "source_name": "OpenStreetMap Overpass bounded AOI slice",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 157227,
+      "sha256_16": "40cbe5ee011a001d",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0019",
+      "relative_path": "data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "category": "exposure_impact",
+      "layer_name": "osm_exposure",
+      "source_id": "S018",
+      "source_name": "OpenStreetMap Overpass bounded AOI slice",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 157227,
+      "sha256_16": "9b559a6598311002",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0020",
+      "relative_path": "data/remote_sensing/remote_sensing_002_pre.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/remote_sensing/remote_sensing_002_pre.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/remote_sensing/remote_sensing_002_pre.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S019",
+      "source_name": "pre",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2015-09-01&BBOX=-4.5786%2C136.6586%2C-3.5786%2C137.6586&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 127761,
+      "sha256_16": "87a71cb00757ad6b",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0021",
+      "relative_path": "data/remote_sensing/remote_sensing_003_event.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/remote_sensing/remote_sensing_003_event.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/remote_sensing/remote_sensing_003_event.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S020",
+      "source_name": "event",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2015-12-31&BBOX=-4.5786%2C136.6586%2C-3.5786%2C137.6586&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 137798,
+      "sha256_16": "229c46bcc5113f25",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0022",
+      "relative_path": "data/event_reports/event_reports_004_Locked_event_anchor_Puncak_Jaya_glacier_retreat_episode.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/event_reports/event_reports_004_Locked_event_anchor_Puncak_Jaya_glacier_retreat_episode.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/event_reports/event_reports_004_Locked_event_anchor_Puncak_Jaya_glacier_retreat_episode.json",
+      "category": "event_reports",
+      "layer_name": "package_locked_event_anchor / NASA Earth Observatory",
+      "source_id": "S021",
+      "source_name": "Locked event anchor: Puncak Jaya glacier retreat episode",
+      "source_type": "event_specific_sources",
+      "source_url": "https://earthobservatory.nasa.gov/images/88229/the-last-glaciers-in-the-tropics",
+      "bytes": 2935,
+      "sha256_16": "cc1f0c8b61ff1b9b",
+      "status": "remote_verified",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0023",
+      "relative_path": "data/other/other_001_01_anchor.html.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/other/other_001_01_anchor.html.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/other/other_001_01_anchor.html.html",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S022",
+      "source_name": "01_anchor.html",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 297128,
+      "sha256_16": "1cb7ebe5ca9c2a7c",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0024",
+      "relative_path": "data/event_reports/event_reports_005_02_reliefweb_reports.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/event_reports/event_reports_005_02_reliefweb_reports.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/event_reports/event_reports_005_02_reliefweb_reports.json.json",
+      "category": "event_reports",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S023",
+      "source_name": "02_reliefweb_reports.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 143,
+      "sha256_16": "16e210c3f8fefa1d",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0025",
+      "relative_path": "data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml",
+      "category": "event_catalogs",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S024",
+      "source_name": "03_gdacs_rss.xml",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 225163,
+      "sha256_16": "0ed9a0afdc4361a3",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "xml"
+    },
+    {
+      "file_id": "F0026",
+      "relative_path": "data/geospatial_context/geospatial_context_003_04_nominatim.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/geospatial_context/geospatial_context_003_04_nominatim.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/geospatial_context/geospatial_context_003_04_nominatim.json.json",
+      "category": "geospatial_context",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S025",
+      "source_name": "04_nominatim.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 1270,
+      "sha256_16": "adac043bd96d24d2",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0027",
+      "relative_path": "data/other/other_002_05_open_meteo_archive.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/other/other_002_05_open_meteo_archive.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/other/other_002_05_open_meteo_archive.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S026",
+      "source_name": "05_open_meteo_archive.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 633,
+      "sha256_16": "3b0fd230ae04bb4a",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0028",
+      "relative_path": "data/physical_hazard/physical_hazard_007_chirps_event_precip.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_007_chirps_event_precip.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_007_chirps_event_precip.zip.zip",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S027",
+      "source_name": "chirps_event_precip.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 3668,
+      "sha256_16": "eda2f776f5813dd7",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/14b836e5401ff9c350cf.png"
+    },
+    {
+      "file_id": "F0029",
+      "relative_path": "data/physical_hazard/physical_hazard_008_era5_land_event_stack.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_008_era5_land_event_stack.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_008_era5_land_event_stack.zip.zip",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S028",
+      "source_name": "era5_land_event_stack.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 3395,
+      "sha256_16": "2278387138532dcd",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/acc7704449033d467759.png"
+    },
+    {
+      "file_id": "F0030",
+      "relative_path": "data/physical_hazard/physical_hazard_009_gpm_imerg_event_precip.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_009_gpm_imerg_event_precip.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/physical_hazard/physical_hazard_009_gpm_imerg_event_precip.zip.zip",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S029",
+      "source_name": "gpm_imerg_event_precip.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 1902,
+      "sha256_16": "8537f4bcec9c1d92",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/09cef1db23c7d2992b95.png"
+    },
+    {
+      "file_id": "F0031",
+      "relative_path": "data/exposure_impact/exposure_impact_005_osm_overpass_exposure_slice.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/exposure_impact/exposure_impact_005_osm_overpass_exposure_slice.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/exposure_impact/exposure_impact_005_osm_overpass_exposure_slice.json.json",
+      "category": "exposure_impact",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S030",
+      "source_name": "osm_overpass_exposure_slice.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 157227,
+      "sha256_16": "506e978a3a51b1a2",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0032",
+      "relative_path": "data/remote_sensing/remote_sensing_004_sentinel1_vv_change_250m.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/remote_sensing/remote_sensing_004_sentinel1_vv_change_250m.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/remote_sensing/remote_sensing_004_sentinel1_vv_change_250m.zip.zip",
+      "category": "remote_sensing",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S031",
+      "source_name": "sentinel1_vv_change_250m.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 1527802,
+      "sha256_16": "a0553e2839ed059b",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/06412a6470cef17798b6.png"
+    },
+    {
+      "file_id": "F0033",
+      "relative_path": "data/exposure_impact/exposure_impact_006_worldpop_population_1km.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/exposure_impact/exposure_impact_006_worldpop_population_1km.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/exposure_impact/exposure_impact_006_worldpop_population_1km.zip.zip",
+      "category": "exposure_impact",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S032",
+      "source_name": "worldpop_population_1km.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 46628,
+      "sha256_16": "1a4d9c00697d952e",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/9a1b2ac0d92779f43d17.png"
+    },
+    {
+      "file_id": "F0034",
+      "relative_path": "data/other/other_003_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/other/other_003_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/other/other_003_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S033",
+      "source_name": "01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 2106,
+      "sha256_16": "d750f229fb4a2a23",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0035",
+      "relative_path": "data/other/other_004_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/other/other_004_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/other/other_004_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S034",
+      "source_name": "02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 87,
+      "sha256_16": "d15ed91c1cc1f324",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0036",
+      "relative_path": "data/event_catalogs/event_catalogs_005_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-315/data/event_catalogs/event_catalogs_005_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-315/data/event_catalogs/event_catalogs_005_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "category": "event_catalogs",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S035",
+      "source_name": "04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 22353,
+      "sha256_16": "189a1e1d18ea3923",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    }
+  ]
+}

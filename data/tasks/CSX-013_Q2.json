@@ -1,0 +1,1189 @@
+{
+  "task_id": "CSX-013_Q2",
+  "event_id": "CSX-013",
+  "title": "CSX-013 Text-Numeric Alignment Audit",
+  "event_name": "June 2021 Pacific Northwest heat wave",
+  "hazard_family": "heat_wave_urban_heat",
+  "hazard_label": "Heat wave and urban heat exposure",
+  "region": "North America",
+  "scale": "national_admin",
+  "difficulty": "L4_earth_system_causal_reasoning",
+  "difficulty_rationale": "Manual review: \"CSX-013 Text-Numeric Alignment Audit\" requires Earth-system causal judgement such as mechanism competition, response/priority ranking, counterfactual or scenario reasoning, or a trigger-to-impact causal chain.",
+  "primary_dimension": "multi_source_evidence",
+  "dimensions": [
+    "multi_source_evidence",
+    "quantitative_calculation"
+  ],
+  "dimension_rationale": "Text-numeric alignment task comparing NOAA language with local heat evidence and guarding against over-claiming.",
+  "task_type": "short_answer",
+  "target_family": "text_numeric_alignment_audit",
+  "file_count": 31,
+  "category_counts": {
+    "event_catalogs": 3,
+    "event_reports": 3,
+    "exposure_impact": 6,
+    "geospatial_context": 2,
+    "other": 2,
+    "physical_hazard": 9,
+    "remote_sensing": 6
+  },
+  "question": "# CSX-013 Text-Numeric Alignment Audit\n\nA benchmark reviewer is checking whether a model can align the NOAA report language for the June 25-July 1, 2021 Pacific Northwest heat wave with the package's machine-readable local heat evidence without over-claiming that a local point file proves every regional or city-specific statement.\n\nUse only evidence from the local CSX-013 event package. Do not use web search, inactive tasks, hidden answers, or outside facts. Return package-relative paths only.\n\nConstruct a structured JSON answer that performs a text-numeric alignment audit:\n\n1. Extract five compact claim records from the locked NOAA report: regional four-day record heat, Portland's three-day record sequence, Lytton/Canada's peak record sequence, the high-pressure/downslope mechanism, and Seattle/Portland air-conditioning vulnerability.\n2. Recompute the local Open-Meteo point checks for the official event window and the report's June 26-29 heat window: daily Tmax sequence, local peak, days at or above 100 F, hot-hour count, heat-degree hours above 30 C, warm-night count using Tmin >= 16 C, peak wet-bulb temperature by the Stull approximation, and RH at the peak air-temperature hour.\n3. For each claim, classify the alignment between the report text and the local/package evidence as one of: `aligned_local_numeric`, `partial_timing_not_magnitude`, `report_supported_not_local_numeric`, or `unsupported_by_package_machine_data`.\n4. Build a source provenance reliability ladder for this specific audit, distinguishing direct local numeric evidence, locked report text, event anchor metadata, weak mechanism context, and wrong-modality decoys.\n5. Include rejected or insufficient alternatives for common failure modes: treating the local point as Portland or Lytton, using ERA5 aggregate wind/temperature statistics as a pressure/downsloping proof, and using precipitation/catalog/remote-sensing files as direct heat-record evidence.\n\nUse these formulas and rounding rules:\n\n- `F = C * 9 / 5 + 32`\n- `C = (F - 32) * 5 / 9`\n- `HDD30 = sum(max(T - 30, 0))` over hourly temperature in degrees C.\n- Stull wet-bulb approximation with hourly `T` in degrees C and `RH` in percent:\n\n```text\nWBT = T * atan(0.151977 * sqrt(RH + 8.313659))\n      + atan(T + RH)\n      - atan(RH - 1.676331)\n      + 0.00391838 * RH^1.5 * atan(0.023101 * RH)\n      - 4.686035\n```\n\nRound temperatures and temperature deltas to 1 decimal, HDD30 to 1 decimal, precipitation means/deltas to 3 decimals, population to 3 decimals, and wet-bulb/RH checks to 1 decimal.\n\nReturn only JSON with exactly these top-level keys:\n\n`answer_type`, `audit_question`, `scope`, `claim_matrix`, `local_numeric_checks`, `source_reliability_ladder`, `counterfactuals`, `final_ruling`, `reference_trace`\n\nUse fixed answer type `text_numeric_alignment_audit`. Use stable IDs in ordered lists: claims `C1`-`C5`, numeric checks `NC1`-`NC7`, sources `S1`-`S5`, counterfactuals `CF1`-`CF3`, and trace steps `T1`-`T6`.\n\n## Reasoning-depth requirement\n\nAdd a top-level `reasoning_depth` object to the returned JSON with exactly these string fields:\n\n```json\n{\n  \"reasoning_depth\": {\n    \"evidence_weighting\": \"<which evidence is decisive versus contextual>\",\n    \"counterfactual_rejection\": \"<which tempting simpler explanation fails and why>\",\n    \"uncertainty_or_scale_caveat\": \"<what the evidence should not be over-interpreted to prove>\"\n  }\n}\n```\n\nFor this task, use that object to emphasize report-vs-local numerical alignment and prevent the local point from being overextended to Portland, Lytton, or regional mechanisms.\n\n",
+  "solution": "# Final Answer\n\n```json\n{\n  \"answer_type\": \"text_numeric_alignment_audit\",\n  \"audit_question\": \"Do package-local report text and local numeric heat files support the same claims without over-extending the local point evidence?\",\n  \"claim_matrix\": [\n    {\n      \"alignment\": \"partial_timing_not_magnitude\",\n      \"claim_id\": \"C1\",\n      \"claim_label\": \"regional_four_day_record_heat\",\n      \"numeric_check_ids\": [\n        \"NC2\",\n        \"NC4\"\n      ],\n      \"report_values\": {\n        \"threshold_text\": \"well_over_100f\",\n        \"window\": \"2021-06-26_to_2021-06-29\"\n      },\n      \"ruling\": \"local_point_confirms_persistent_heat_not_regional_record_magnitude\",\n      \"source_paths\": [\n        \"data/event_reports/event_reports_001_Locked_package_evidence_report.bin\",\n        \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\"\n      ]\n    },\n    {\n      \"alignment\": \"report_supported_not_local_numeric\",\n      \"claim_id\": \"C2\",\n      \"claim_label\": \"portland_three_day_record_sequence\",\n      \"numeric_check_ids\": [\n        \"NC6\"\n      ],\n      \"report_values\": {\n        \"portland_avg_f\": 112.0,\n        \"portland_tmax_f\": [\n          108,\n          112,\n          116\n        ]\n      },\n      \"ruling\": \"city_claim_not_reproducible_from_local_point_file\",\n      \"source_paths\": [\n        \"data/event_reports/event_reports_001_Locked_package_evidence_report.bin\",\n        \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\"\n      ]\n    },\n    {\n      \"alignment\": \"report_supported_not_local_numeric\",\n      \"claim_id\": \"C3\",\n      \"claim_label\": \"lytton_canada_peak_record_sequence\",\n      \"numeric_check_ids\": [\n        \"NC7\"\n      ],\n      \"report_values\": {\n        \"lytton_tmax_c\": [\n          46.1,\n          47.5,\n          49.5\n        ],\n        \"lytton_tmax_f\": [\n          116,\n          118,\n          121\n        ],\n        \"peak_c\": 49.5,\n        \"peak_f\": 121.0\n      },\n      \"ruling\": \"canada_record_claim_not_reproducible_from_local_point_file\",\n      \"source_paths\": [\n        \"data/event_reports/event_reports_001_Locked_package_evidence_report.bin\",\n        \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\"\n      ]\n    },\n    {\n      \"alignment\": \"unsupported_by_package_machine_data\",\n      \"claim_id\": \"C4\",\n      \"claim_label\": \"high_pressure_downslope_mechanism\",\n      \"numeric_check_ids\": [],\n      \"report_values\": {\n        \"mechanism_terms\": [\n          \"high_pressure\",\n          \"cloudless_sinking_air\",\n          \"downslope_winds\"\n        ]\n      },\n      \"ruling\": \"report_text_supports_claim_but_machine_files_lack_pressure_and_descent_variables\",\n      \"source_paths\": [\n        \"data/event_reports/event_reports_001_Locked_package_evidence_report.bin\",\n        \"data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json\"\n      ]\n    },\n    {\n      \"alignment\": \"report_supported_not_local_numeric\",\n      \"claim_id\": \"C5\",\n      \"claim_label\": \"air_conditioning_vulnerability\",\n      \"numeric_check_ids\": [],\n      \"report_values\": {\n        \"portland_primary_ac_pct\": 78,\n        \"seattle_primary_ac_pct\": 44\n      },\n      \"ruling\": \"worldpop_population_does_not_measure_air_conditioning\",\n      \"source_paths\": [\n        \"data/event_reports/event_reports_001_Locked_package_evidence_report.bin\",\n        \"data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json\"\n      ]\n    }\n  ],\n  \"counterfactuals\": [\n    {\n      \"counterfactual_id\": \"CF1\",\n      \"rejection_reason\": \"wrong_location_scale\",\n      \"source_paths\": [\n        \"data/event_reports/event_reports_001_Locked_package_evidence_report.bin\",\n        \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\"\n      ],\n      \"wrong_move\": \"treat_local_open_meteo_point_as_portland_or_lytton\",\n      \"wrong_result\": {\n        \"local_peak_f\": 95.9,\n        \"lytton_peak_shortfall_f\": 25.1,\n        \"portland_avg_gap_f\": -22.2\n      }\n    },\n    {\n      \"counterfactual_id\": \"CF2\",\n      \"rejection_reason\": \"missing_mechanism_variables\",\n      \"source_paths\": [\n        \"data/event_reports/event_reports_001_Locked_package_evidence_report.bin\",\n        \"data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json\"\n      ],\n      \"wrong_move\": \"use_era5_aggregate_as_high_pressure_downslope_proof\",\n      \"wrong_result\": {\n        \"available_wind_stats\": [\n          \"u_component_of_wind_10m\",\n          \"v_component_of_wind_10m\"\n        ],\n        \"era5_temperature_2m_max_c_max\": 31.3,\n        \"missing_required_variables\": [\n          \"surface_pressure\",\n          \"geopotential_height\",\n          \"time_resolved_downslope_path\"\n        ]\n      }\n    },\n    {\n      \"counterfactual_id\": \"CF3\",\n      \"rejection_reason\": \"wrong_modality_for_heat_record_claim\",\n      \"source_paths\": [\n        \"data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n        \"data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json\",\n        \"data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json\",\n        \"data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n        \"data/physical_hazard/physical_hazard_008_Sentinel-2_SR_Harmonized_dNBR.json\"\n      ],\n      \"wrong_move\": \"use_precip_catalog_or_remote_sensing_as_direct_heat_record_evidence\",\n      \"wrong_result\": {\n        \"chirps_mean_mm\": 5.003,\n        \"dnbr_mean\": 0.1178,\n        \"embedding_change_mean\": 0.0311,\n        \"gdacs_heat_match_count\": 0,\n        \"gpm_mean_mm\": 5.279,\n        \"precip_mean_delta_mm\": 0.276\n      }\n    }\n  ],\n  \"final_ruling\": {\n    \"directly_computable_local_conclusion\": \"persistent_dry_local_heat_with_limited_wet_bulb_stress\",\n    \"do_not_claim\": [\n      \"local_point_proves_portland_or_lytton_records\",\n      \"era5_aggregate_proves_high_pressure_downslope_mechanism\",\n      \"precip_or_remote_sensing_files_are_direct_heat_record_evidence\"\n    ],\n    \"ruling_label\": \"report_claims_text_supported_local_numeric_only_partial\"\n  },\n  \"local_numeric_checks\": {\n    \"NC1\": {\n      \"end\": \"2021-07-01\",\n      \"label\": \"official_event_window\",\n      \"source_path\": \"data/event_reports/event_reports_003_Locked_event_anchor_June_2021_Pacific_Northwest_heat_wave.json\",\n      \"start\": \"2021-06-25\"\n    },\n    \"NC2\": {\n      \"all_days_ge_30c\": true,\n      \"dates\": [\n        \"2021-06-26\",\n        \"2021-06-27\",\n        \"2021-06-28\",\n        \"2021-06-29\"\n      ],\n      \"days_ge_100f\": 0,\n      \"label\": \"local_report_window_tmax_sequence\",\n      \"source_path\": \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\",\n      \"tmax_c\": [\n        30.1,\n        32.2,\n        34.0,\n        35.5\n      ],\n      \"tmax_f\": [\n        86.2,\n        90.0,\n        93.2,\n        95.9\n      ],\n      \"window\": \"2021-06-26_to_2021-06-29\"\n    },\n    \"NC3\": {\n      \"label\": \"local_peak_and_dryness\",\n      \"peak_time\": \"2021-06-29T15:00\",\n      \"rh_at_tmax_peak_pct\": 18.0,\n      \"source_path\": \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\",\n      \"tmax_peak_c\": 35.5,\n      \"tmax_peak_f\": 95.9,\n      \"wbt_at_tmax_peak_c\": 19.0\n    },\n    \"NC4\": {\n      \"hdd30_c_hours\": 71.0,\n      \"hot_day_run_ge_30c\": {\n        \"count\": 4,\n        \"end\": \"2021-06-29\",\n        \"start\": \"2021-06-26\"\n      },\n      \"hot_hours_ge_30c\": 29,\n      \"label\": \"local_persistence_heat_load\",\n      \"source_path\": \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\",\n      \"warm_nights_ge_16c\": 3\n    },\n    \"NC5\": {\n      \"label\": \"local_wet_bulb_screen\",\n      \"source_path\": \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\",\n      \"wbt_hours_ge_28c\": 0,\n      \"wbt_peak_c\": 22.0,\n      \"wbt_peak_time\": \"2021-06-29T19:00\"\n    },\n    \"NC6\": {\n      \"date_matched_delta_f\": -22.2,\n      \"date_matched_local_avg_f\": 89.8,\n      \"hottest_local_3day_avg_f\": 93.0,\n      \"hottest_local_3day_window\": \"2021-06-27_to_2021-06-29\",\n      \"hottest_local_delta_f\": -19.0,\n      \"label\": \"portland_claim_local_gap\",\n      \"report_portland_avg_f\": 112.0,\n      \"report_portland_tmax_f\": [\n        108,\n        112,\n        116\n      ],\n      \"source_paths\": [\n        \"data/event_reports/event_reports_001_Locked_package_evidence_report.bin\",\n        \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\"\n      ]\n    },\n    \"NC7\": {\n      \"label\": \"lytton_claim_local_gap\",\n      \"local_peak_c\": 35.5,\n      \"local_peak_f\": 95.9,\n      \"local_shortfall_c\": 14.0,\n      \"local_shortfall_f\": 25.1,\n      \"report_lytton_peak_c\": 49.5,\n      \"report_lytton_peak_f\": 121.0,\n      \"report_lytton_tmax_c\": [\n        46.1,\n        47.5,\n        49.5\n      ],\n      \"report_lytton_tmax_f\": [\n        116,\n        118,\n        121\n      ],\n      \"source_paths\": [\n        \"data/event_reports/event_reports_001_Locked_package_evidence_report.bin\",\n        \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\"\n      ]\n    }\n  },\n  \"reference_trace\": [\n    {\n      \"action\": \"read_metadata_and_anchor\",\n      \"paths\": [\n        \"metadata/event.json\",\n        \"data/event_reports/event_reports_003_Locked_event_anchor_June_2021_Pacific_Northwest_heat_wave.json\"\n      ],\n      \"step_id\": \"T1\"\n    },\n    {\n      \"action\": \"extract_report_claim_numbers\",\n      \"paths\": [\n        \"data/event_reports/event_reports_001_Locked_package_evidence_report.bin\"\n      ],\n      \"step_id\": \"T2\"\n    },\n    {\n      \"action\": \"compute_open_meteo_local_heat_checks\",\n      \"paths\": [\n        \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\"\n      ],\n      \"step_id\": \"T3\"\n    },\n    {\n      \"action\": \"compare_report_city_values_to_local_point_values\",\n      \"paths\": [\n        \"data/event_reports/event_reports_001_Locked_package_evidence_report.bin\",\n        \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\"\n      ],\n      \"step_id\": \"T4\"\n    },\n    {\n      \"action\": \"test_mechanism_and_wrong_modality_decoys\",\n      \"paths\": [\n        \"data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json\",\n        \"data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n        \"data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json\",\n        \"data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json\",\n        \"data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n        \"data/physical_hazard/physical_hazard_008_Sentinel-2_SR_Harmonized_dNBR.json\"\n      ],\n      \"step_id\": \"T5\"\n    },\n    {\n      \"action\": \"emit_fixed_schema_alignment_audit\",\n      \"paths\": [\n        \"data/event_reports/event_reports_001_Locked_package_evidence_report.bin\",\n        \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\",\n        \"data/event_reports/event_reports_003_Locked_event_anchor_June_2021_Pacific_Northwest_heat_wave.json\"\n      ],\n      \"step_id\": \"T6\"\n    }\n  ],\n  \"scope\": {\n    \"event_id\": \"CSX-013\",\n    \"event_name\": \"June 2021 Pacific Northwest heat wave\",\n    \"evidence_boundary\": \"package_local_only\",\n    \"official_window\": \"2021-06-25_to_2021-07-01\",\n    \"report_heat_window\": \"2021-06-26_to_2021-06-29\"\n  },\n  \"source_reliability_ladder\": [\n    {\n      \"path\": \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\",\n      \"reliability_label\": \"direct_machine_readable_point_series\",\n      \"role\": \"direct_local_numeric_heat\",\n      \"source_id\": \"S1\",\n      \"supports\": [\n        \"NC2\",\n        \"NC3\",\n        \"NC4\",\n        \"NC5\"\n      ],\n      \"tier\": 1\n    },\n    {\n      \"path\": \"data/event_reports/event_reports_001_Locked_package_evidence_report.bin\",\n      \"reliability_label\": \"locked_noaa_html_report\",\n      \"role\": \"locked_report_text_claims\",\n      \"source_id\": \"S2\",\n      \"supports\": [\n        \"C1\",\n        \"C2\",\n        \"C3\",\n        \"C4\",\n        \"C5\"\n      ],\n      \"tier\": 2\n    },\n    {\n      \"path\": \"data/event_reports/event_reports_003_Locked_event_anchor_June_2021_Pacific_Northwest_heat_wave.json\",\n      \"reliability_label\": \"locked_event_metadata\",\n      \"role\": \"event_window_and_scope_anchor\",\n      \"source_id\": \"S3\",\n      \"supports\": [\n        \"NC1\"\n      ],\n      \"tier\": 3\n    },\n    {\n      \"path\": \"data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json\",\n      \"reliability_label\": \"aggregate_stats_missing_pressure_and_trajectory\",\n      \"role\": \"weak_mechanism_context\",\n      \"source_id\": \"S4\",\n      \"supports\": [],\n      \"tier\": 4\n    },\n    {\n      \"paths\": [\n        \"data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n        \"data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json\",\n        \"data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json\",\n        \"data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n        \"data/physical_hazard/physical_hazard_008_Sentinel-2_SR_Harmonized_dNBR.json\"\n      ],\n      \"reliability_label\": \"not_direct_heat_record_evidence\",\n      \"role\": \"wrong_modality_decoys\",\n      \"source_id\": \"S5\",\n      \"supports\": [],\n      \"tier\": 5\n    }\n  ]\n}\n```\n\n# Evidence Used\n\nPackage-local files inspected for the answer:\n\n- `metadata/event.json`\n- `metadata/files.csv`\n- `metadata/sources.csv`\n- `data/event_reports/event_reports_001_Locked_package_evidence_report.bin`\n- `data/event_reports/event_reports_003_Locked_event_anchor_June_2021_Pacific_Northwest_heat_wave.json`\n- `data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json`\n- `data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json`\n- `data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json`\n- `data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json`\n- `data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json`\n- `data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json`\n- `data/physical_hazard/physical_hazard_008_Sentinel-2_SR_Harmonized_dNBR.json`\n- `data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json`\n\n# Key Computations\n\nThe event anchor gives the official window as `2021-06-25` through `2021-07-01`. The locked NOAA HTML report supplies the report claims: June 26-29 regional record heat, Portland's `108, 112, 116 F` sequence with `112.0 F` average, Lytton's `116, 118, 121 F` sequence with report-stated Celsius values `46.1, 47.5, 49.5 C`, the high-pressure/downslope mechanism language, and Seattle/Portland primary air-conditioning values of `44%` and `78%`.\n\nFrom `data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json`, the local June 26-29 daily Tmax sequence is `30.1, 32.2, 34.0, 35.5 C`, or `86.2, 90.0, 93.2, 95.9 F`. This confirms local persistence above 30 C but not the report's regional/city magnitude above 100 F, since the local point has `0` days at or above 100 F.\n\nHourly calculations from the same Open-Meteo file give peak local air temperature `35.5 C / 95.9 F` at `2021-06-29T15:00`, RH at that peak of `18.0%`, peak wet-bulb temperature `22.0 C`, `0` hours at or above 28 C wet-bulb, `29` hot hours at or above 30 C, `71.0` C-hours HDD30, a 4-day Tmax run at or above 30 C, and `3` warm nights with Tmin at or above 16 C.\n\nFor the Portland claim, the local date-matched June 26-28 mean is `89.8 F`, which is `22.2 F` below the report's Portland `112.0 F` mean. Even the hottest local three-day mean, `93.0 F` for June 27-29, is `19.0 F` below the Portland report value. For the Lytton claim, the report peak is `121.0 F / 49.5 C`, while the local point peak is `95.9 F / 35.5 C`, a local shortfall of `25.1 F / 14.0 C`.\n\n# Rejected Or Insufficient Alternatives\n\nERA5-Land aggregate stats include temperature and wind-component aggregates, but they do not include surface pressure, geopotential height, or a time-resolved downslope trajectory. They therefore cannot prove the high-pressure/downsloping mechanism, even though the report text supports that claim.\n\nGPM and CHIRPS precipitation files report mean precipitation values of `5.279 mm` and `5.003 mm` with a `0.276 mm` mean difference. GDACS has `0` heat matches in this package slice, and the annual embedding/dNBR files are land-surface or burn-change modalities. These are rejected as direct evidence for heat-record claims.\n\nWorldPop gives a package AOI population of `49269.915`, but it has no air-conditioning field, so it cannot verify the report's Seattle/Portland AC percentages.\n\n# Reference Solving Trace\n\n1. Read `metadata/event.json` and the locked event anchor to set the event ID, hazard family, official date window, and package-local evidence boundary.\n2. Parse the locked NOAA HTML report for the five claim records and the numeric report values used in C1-C5.\n3. Read the Open-Meteo hourly and daily arrays, filter the official/report windows, convert C to F, and compute HDD30 and wet-bulb values.\n4. Compare report city/regional values against the local point values without treating the local point as Portland, Lytton, or the whole region.\n5. Inspect ERA5, precipitation, GDACS, embedding, dNBR, and WorldPop files only to classify their source roles and failure modes.\n6. Emit the fixed-schema JSON with claim alignments, numeric checks, source ladder, counterfactuals, final ruling, and trace.\n\n\n# Reasoning-Depth Addendum\n\nThe expected final JSON should also include this task-specific reasoning object:\n\n```json\n{\n  \"reasoning_depth\": {\n    \"counterfactual_rejection\": \"Treating the local point as Portland or Lytton fails because the local peak is far below the report city and Canada records.\",\n    \"evidence_weighting\": \"Open-Meteo local heat metrics are decisive for local persistence; the NOAA report is decisive for Portland, Lytton, AC vulnerability, and mechanism language.\",\n    \"uncertainty_or_scale_caveat\": \"ERA5 aggregate wind and temperature statistics cannot by themselves prove high-pressure subsidence or downslope trajectories.\"\n  }\n}\n```\n\nThis addition makes the answer explain the evidence hierarchy, reject the main tempting simplification, and state the bounded scale or uncertainty caveat without changing the numeric ground truth.\n\n# Scoring Rubric\n\nTotal: 20 points.\n\n- 2 points: Fixed schema and scope. Full credit returns the exact top-level keys, `text_numeric_alignment_audit` answer type, package-relative paths, official event window, and report heat window.\n- 3 points: Report claim extraction. Full credit extracts C1-C5 with the Portland `108/112/116 F` sequence, Lytton `116/118/121 F` and `46.1/47.5/49.5 C` sequence, mechanism terms, and Seattle/Portland AC percentages.\n- 5 points: Local numeric recomputation. Full credit reports NC1-NC7, including local Tmax sequence, `35.5 C / 95.9 F` peak, `0` days >=100 F, `29` hot hours, `71.0` C-hours HDD30, `3` warm nights, `22.0 C` peak WBT, and `18.0%` RH at peak temperature.\n- 3 points: Text-numeric alignment rulings. Full credit correctly classifies C1 as `partial_timing_not_magnitude`, C2/C3/C5 as `report_supported_not_local_numeric`, and C4 as `unsupported_by_package_machine_data` for machine verification.\n- 2 points: Source reliability ladder. Full credit ranks direct local numeric heat, locked report text, anchor metadata, weak ERA5 mechanism context, and wrong-modality decoys with correct roles and paths.\n- 3 points: Counterfactual rejections. Full credit includes CF1-CF3 with numeric consequences and reason codes for wrong location scale, missing mechanism variables, and wrong modality.\n- 2 points: Reference trace and boundaries. Full credit includes T1-T6 and avoids web evidence, hidden answers, broad mechanism prose, and unscored disaster-response claims.\n",
+  "ground_truth": {
+    "answer_detail": {
+      "expected_answer": {
+        "answer_type": "text_numeric_alignment_audit",
+        "audit_question": "Do package-local report text and local numeric heat files support the same claims without over-extending the local point evidence?",
+        "claim_matrix": [
+          {
+            "alignment": "partial_timing_not_magnitude",
+            "claim_id": "C1",
+            "claim_label": "regional_four_day_record_heat",
+            "numeric_check_ids": [
+              "NC2",
+              "NC4"
+            ],
+            "report_values": {
+              "threshold_text": "well_over_100f",
+              "window": "2021-06-26_to_2021-06-29"
+            },
+            "ruling": "local_point_confirms_persistent_heat_not_regional_record_magnitude",
+            "source_paths": [
+              "data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+              "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json"
+            ]
+          },
+          {
+            "alignment": "report_supported_not_local_numeric",
+            "claim_id": "C2",
+            "claim_label": "portland_three_day_record_sequence",
+            "numeric_check_ids": [
+              "NC6"
+            ],
+            "report_values": {
+              "portland_avg_f": 112.0,
+              "portland_tmax_f": [
+                108,
+                112,
+                116
+              ]
+            },
+            "ruling": "city_claim_not_reproducible_from_local_point_file",
+            "source_paths": [
+              "data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+              "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json"
+            ]
+          },
+          {
+            "alignment": "report_supported_not_local_numeric",
+            "claim_id": "C3",
+            "claim_label": "lytton_canada_peak_record_sequence",
+            "numeric_check_ids": [
+              "NC7"
+            ],
+            "report_values": {
+              "lytton_tmax_c": [
+                46.1,
+                47.5,
+                49.5
+              ],
+              "lytton_tmax_f": [
+                116,
+                118,
+                121
+              ],
+              "peak_c": 49.5,
+              "peak_f": 121.0
+            },
+            "ruling": "canada_record_claim_not_reproducible_from_local_point_file",
+            "source_paths": [
+              "data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+              "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json"
+            ]
+          },
+          {
+            "alignment": "unsupported_by_package_machine_data",
+            "claim_id": "C4",
+            "claim_label": "high_pressure_downslope_mechanism",
+            "numeric_check_ids": [],
+            "report_values": {
+              "mechanism_terms": [
+                "high_pressure",
+                "cloudless_sinking_air",
+                "downslope_winds"
+              ]
+            },
+            "ruling": "report_text_supports_claim_but_machine_files_lack_pressure_and_descent_variables",
+            "source_paths": [
+              "data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+              "data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json"
+            ]
+          },
+          {
+            "alignment": "report_supported_not_local_numeric",
+            "claim_id": "C5",
+            "claim_label": "air_conditioning_vulnerability",
+            "numeric_check_ids": [],
+            "report_values": {
+              "portland_primary_ac_pct": 78,
+              "seattle_primary_ac_pct": 44
+            },
+            "ruling": "worldpop_population_does_not_measure_air_conditioning",
+            "source_paths": [
+              "data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+              "data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json"
+            ]
+          }
+        ],
+        "counterfactuals": [
+          {
+            "counterfactual_id": "CF1",
+            "rejection_reason": "wrong_location_scale",
+            "source_paths": [
+              "data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+              "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json"
+            ],
+            "wrong_move": "treat_local_open_meteo_point_as_portland_or_lytton",
+            "wrong_result": {
+              "local_peak_f": 95.9,
+              "lytton_peak_shortfall_f": 25.1,
+              "portland_avg_gap_f": -22.2
+            }
+          },
+          {
+            "counterfactual_id": "CF2",
+            "rejection_reason": "missing_mechanism_variables",
+            "source_paths": [
+              "data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+              "data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json"
+            ],
+            "wrong_move": "use_era5_aggregate_as_high_pressure_downslope_proof",
+            "wrong_result": {
+              "available_wind_stats": [
+                "u_component_of_wind_10m",
+                "v_component_of_wind_10m"
+              ],
+              "era5_temperature_2m_max_c_max": 31.3,
+              "missing_required_variables": [
+                "surface_pressure",
+                "geopotential_height",
+                "time_resolved_downslope_path"
+              ]
+            }
+          },
+          {
+            "counterfactual_id": "CF3",
+            "rejection_reason": "wrong_modality_for_heat_record_claim",
+            "source_paths": [
+              "data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+              "data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json",
+              "data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json",
+              "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+              "data/physical_hazard/physical_hazard_008_Sentinel-2_SR_Harmonized_dNBR.json"
+            ],
+            "wrong_move": "use_precip_catalog_or_remote_sensing_as_direct_heat_record_evidence",
+            "wrong_result": {
+              "chirps_mean_mm": 5.003,
+              "dnbr_mean": 0.1178,
+              "embedding_change_mean": 0.0311,
+              "gdacs_heat_match_count": 0,
+              "gpm_mean_mm": 5.279,
+              "precip_mean_delta_mm": 0.276
+            }
+          }
+        ],
+        "final_ruling": {
+          "directly_computable_local_conclusion": "persistent_dry_local_heat_with_limited_wet_bulb_stress",
+          "do_not_claim": [
+            "local_point_proves_portland_or_lytton_records",
+            "era5_aggregate_proves_high_pressure_downslope_mechanism",
+            "precip_or_remote_sensing_files_are_direct_heat_record_evidence"
+          ],
+          "ruling_label": "report_claims_text_supported_local_numeric_only_partial"
+        },
+        "local_numeric_checks": {
+          "NC1": {
+            "end": "2021-07-01",
+            "label": "official_event_window",
+            "source_path": "data/event_reports/event_reports_003_Locked_event_anchor_June_2021_Pacific_Northwest_heat_wave.json",
+            "start": "2021-06-25"
+          },
+          "NC2": {
+            "all_days_ge_30c": true,
+            "dates": [
+              "2021-06-26",
+              "2021-06-27",
+              "2021-06-28",
+              "2021-06-29"
+            ],
+            "days_ge_100f": 0,
+            "label": "local_report_window_tmax_sequence",
+            "source_path": "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json",
+            "tmax_c": [
+              30.1,
+              32.2,
+              34.0,
+              35.5
+            ],
+            "tmax_f": [
+              86.2,
+              90.0,
+              93.2,
+              95.9
+            ],
+            "window": "2021-06-26_to_2021-06-29"
+          },
+          "NC3": {
+            "label": "local_peak_and_dryness",
+            "peak_time": "2021-06-29T15:00",
+            "rh_at_tmax_peak_pct": 18.0,
+            "source_path": "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json",
+            "tmax_peak_c": 35.5,
+            "tmax_peak_f": 95.9,
+            "wbt_at_tmax_peak_c": 19.0
+          },
+          "NC4": {
+            "hdd30_c_hours": 71.0,
+            "hot_day_run_ge_30c": {
+              "count": 4,
+              "end": "2021-06-29",
+              "start": "2021-06-26"
+            },
+            "hot_hours_ge_30c": 29,
+            "label": "local_persistence_heat_load",
+            "source_path": "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json",
+            "warm_nights_ge_16c": 3
+          },
+          "NC5": {
+            "label": "local_wet_bulb_screen",
+            "source_path": "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json",
+            "wbt_hours_ge_28c": 0,
+            "wbt_peak_c": 22.0,
+            "wbt_peak_time": "2021-06-29T19:00"
+          },
+          "NC6": {
+            "date_matched_delta_f": -22.2,
+            "date_matched_local_avg_f": 89.8,
+            "hottest_local_3day_avg_f": 93.0,
+            "hottest_local_3day_window": "2021-06-27_to_2021-06-29",
+            "hottest_local_delta_f": -19.0,
+            "label": "portland_claim_local_gap",
+            "report_portland_avg_f": 112.0,
+            "report_portland_tmax_f": [
+              108,
+              112,
+              116
+            ],
+            "source_paths": [
+              "data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+              "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json"
+            ]
+          },
+          "NC7": {
+            "label": "lytton_claim_local_gap",
+            "local_peak_c": 35.5,
+            "local_peak_f": 95.9,
+            "local_shortfall_c": 14.0,
+            "local_shortfall_f": 25.1,
+            "report_lytton_peak_c": 49.5,
+            "report_lytton_peak_f": 121.0,
+            "report_lytton_tmax_c": [
+              46.1,
+              47.5,
+              49.5
+            ],
+            "report_lytton_tmax_f": [
+              116,
+              118,
+              121
+            ],
+            "source_paths": [
+              "data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+              "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json"
+            ]
+          }
+        },
+        "reference_trace": [
+          {
+            "action": "read_metadata_and_anchor",
+            "paths": [
+              "metadata/event.json",
+              "data/event_reports/event_reports_003_Locked_event_anchor_June_2021_Pacific_Northwest_heat_wave.json"
+            ],
+            "step_id": "T1"
+          },
+          {
+            "action": "extract_report_claim_numbers",
+            "paths": [
+              "data/event_reports/event_reports_001_Locked_package_evidence_report.bin"
+            ],
+            "step_id": "T2"
+          },
+          {
+            "action": "compute_open_meteo_local_heat_checks",
+            "paths": [
+              "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json"
+            ],
+            "step_id": "T3"
+          },
+          {
+            "action": "compare_report_city_values_to_local_point_values",
+            "paths": [
+              "data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+              "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json"
+            ],
+            "step_id": "T4"
+          },
+          {
+            "action": "test_mechanism_and_wrong_modality_decoys",
+            "paths": [
+              "data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json",
+              "data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+              "data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json",
+              "data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json",
+              "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+              "data/physical_hazard/physical_hazard_008_Sentinel-2_SR_Harmonized_dNBR.json"
+            ],
+            "step_id": "T5"
+          },
+          {
+            "action": "emit_fixed_schema_alignment_audit",
+            "paths": [
+              "data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+              "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json",
+              "data/event_reports/event_reports_003_Locked_event_anchor_June_2021_Pacific_Northwest_heat_wave.json"
+            ],
+            "step_id": "T6"
+          }
+        ],
+        "scope": {
+          "event_id": "CSX-013",
+          "event_name": "June 2021 Pacific Northwest heat wave",
+          "evidence_boundary": "package_local_only",
+          "official_window": "2021-06-25_to_2021-07-01",
+          "report_heat_window": "2021-06-26_to_2021-06-29"
+        },
+        "source_reliability_ladder": [
+          {
+            "path": "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json",
+            "reliability_label": "direct_machine_readable_point_series",
+            "role": "direct_local_numeric_heat",
+            "source_id": "S1",
+            "supports": [
+              "NC2",
+              "NC3",
+              "NC4",
+              "NC5"
+            ],
+            "tier": 1
+          },
+          {
+            "path": "data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+            "reliability_label": "locked_noaa_html_report",
+            "role": "locked_report_text_claims",
+            "source_id": "S2",
+            "supports": [
+              "C1",
+              "C2",
+              "C3",
+              "C4",
+              "C5"
+            ],
+            "tier": 2
+          },
+          {
+            "path": "data/event_reports/event_reports_003_Locked_event_anchor_June_2021_Pacific_Northwest_heat_wave.json",
+            "reliability_label": "locked_event_metadata",
+            "role": "event_window_and_scope_anchor",
+            "source_id": "S3",
+            "supports": [
+              "NC1"
+            ],
+            "tier": 3
+          },
+          {
+            "path": "data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json",
+            "reliability_label": "aggregate_stats_missing_pressure_and_trajectory",
+            "role": "weak_mechanism_context",
+            "source_id": "S4",
+            "supports": [],
+            "tier": 4
+          },
+          {
+            "paths": [
+              "data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+              "data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json",
+              "data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json",
+              "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+              "data/physical_hazard/physical_hazard_008_Sentinel-2_SR_Harmonized_dNBR.json"
+            ],
+            "reliability_label": "not_direct_heat_record_evidence",
+            "role": "wrong_modality_decoys",
+            "source_id": "S5",
+            "supports": [],
+            "tier": 5
+          }
+        ]
+      }
+    },
+    "answer_type": "text_numeric_alignment_audit",
+    "computed_checks": {
+      "insufficient_alternatives": {
+        "era5_missing_pressure_or_trajectory": true,
+        "gdacs_heat_match_count": 0,
+        "worldpop_population_no_ac_field": 49269.915
+      },
+      "numeric_tolerances": {
+        "hdd30_c_hours": 0.1,
+        "population": 0.001,
+        "precip_mm": 0.001,
+        "relative_humidity_pct": 0.1,
+        "temperature_c": 0.1,
+        "temperature_f": 0.1
+      },
+      "report_values": {
+        "four_day_window": "2021-06-26_to_2021-06-29",
+        "lytton_peak_c": 49.5,
+        "lytton_peak_f": 121.0,
+        "lytton_tmax_c": [
+          46.1,
+          47.5,
+          49.5
+        ],
+        "lytton_tmax_f": [
+          116,
+          118,
+          121
+        ],
+        "portland_ac_pct": 78,
+        "portland_avg_f": 112.0,
+        "portland_tmax_f": [
+          108,
+          112,
+          116
+        ],
+        "regional_threshold_f": 100.0,
+        "seattle_ac_pct": 44
+      }
+    },
+    "difficulty_level": "L4",
+    "evaluation_mode": "hybrid",
+    "event_id": "CSX-013",
+    "forbidden_claims": [
+      "Do not use web search or outside facts.",
+      "Do not treat the local Open-Meteo point as Portland or Lytton.",
+      "Do not use precipitation, catalog, dNBR, or annual embedding files as direct heat-record evidence.",
+      "Do not replace the structured JSON audit with a generic heat-wave explanation."
+    ],
+    "primary_gt": {
+      "answer": "report_claims_text_supported_local_numeric_only_partial",
+      "answer_type": "text_numeric_alignment_audit",
+      "claim_rulings": {
+        "C1": "partial_timing_not_magnitude",
+        "C2": "report_supported_not_local_numeric",
+        "C3": "report_supported_not_local_numeric",
+        "C4": "unsupported_by_package_machine_data",
+        "C5": "report_supported_not_local_numeric"
+      },
+      "counterfactuals": [
+        "CF1",
+        "CF2",
+        "CF3"
+      ],
+      "final_ruling": "report_claims_text_supported_local_numeric_only_partial",
+      "key_values": {
+        "days_ge_100f": 0,
+        "hdd30_c_hours": 71.0,
+        "hot_hours_ge_30c": 29,
+        "local_peak_c": 35.5,
+        "local_peak_f": 95.9,
+        "rh_at_tmax_peak_pct": 18.0,
+        "wbt_peak_c": 22.0
+      },
+      "reasoning_depth": {
+        "counterfactual_rejection": "Treating the local point as Portland or Lytton fails because the local peak is far below the report city and Canada records.",
+        "evidence_weighting": "Open-Meteo local heat metrics are decisive for local persistence; the NOAA report is decisive for Portland, Lytton, AC vulnerability, and mechanism language.",
+        "uncertainty_or_scale_caveat": "ERA5 aggregate wind and temperature statistics cannot by themselves prove high-pressure subsidence or downslope trajectories."
+      }
+    },
+    "provenance": {
+      "computed_by": "compute_gt.py",
+      "source_files": [
+        "metadata/event.json",
+        "metadata/files.csv",
+        "metadata/sources.csv",
+        "data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+        "data/event_reports/event_reports_003_Locked_event_anchor_June_2021_Pacific_Northwest_heat_wave.json",
+        "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json",
+        "data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json",
+        "data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json",
+        "data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json",
+        "data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json",
+        "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+        "data/physical_hazard/physical_hazard_008_Sentinel-2_SR_Harmonized_dNBR.json"
+      ]
+    },
+    "rubric": {
+      "criteria": [
+        {
+          "description": "Returns the fixed text_numeric_alignment_audit JSON schema with package-local paths, official event window, and report heat window.",
+          "name": "schema_and_scope",
+          "partial_credit": "Award 1 point for the correct audit schema with minor scope or path omissions.",
+          "points": 2
+        },
+        {
+          "description": "Extracts C1-C5 with the Portland 108/112/116 F sequence, Lytton 116/118/121 F sequence, high-pressure/downsloping mechanism, and Seattle/Portland AC percentages.",
+          "name": "report_claim_extraction",
+          "partial_credit": "Award 1-2 points for extracting most claims but missing one numeric sequence or vulnerability claim.",
+          "points": 3
+        },
+        {
+          "description": "Recomputes NC1-NC7, including local Tmax sequence, 35.5 C/95.9 F peak, 0 days >=100 F, 29 hot hours, 71.0 C-hours HDD30, 3 warm nights, 22.0 C peak WBT, and 18.0% RH at peak temperature.",
+          "name": "local_numeric_recomputation",
+          "partial_credit": "Award proportional credit for correct local heat, wet-bulb, humidity, and persistence calculations.",
+          "points": 5
+        },
+        {
+          "description": "Classifies report claims as partial timing/not magnitude, report-supported not local numeric, or unsupported by package machine data as appropriate.",
+          "name": "text_numeric_alignment_rulings",
+          "partial_credit": "Award 1-2 points if most rulings are correct but one claim is overgeneralized.",
+          "points": 3
+        },
+        {
+          "description": "Ranks Open-Meteo, NOAA report HTML, anchor metadata, ERA5 aggregate context, and wrong-modality decoys by their role for this audit.",
+          "name": "source_reliability_ladder",
+          "partial_credit": "Award 1 point for a mostly correct ladder with one source-role error.",
+          "points": 2
+        },
+        {
+          "description": "Rejects the local-as-Portland/Lytton, ERA5-as-mechanism-proof, and precip/catalog/remote-sensing-as-heat-evidence failure modes with numeric consequences.",
+          "name": "counterfactual_rejections",
+          "partial_credit": "Award 1 point for each correctly rejected failure mode with a source-specific reason.",
+          "points": 3
+        },
+        {
+          "description": "Includes a reproducible T1-T6 trace and avoids outside facts, hidden answers, and broad mechanism prose. Full credit also requires the `reasoning_depth` object to identify decisive evidence, reject the main tempting simplification, and state a bounded uncertainty or scale caveat.",
+          "name": "reference_trace_and_no_external_claims",
+          "partial_credit": "Award 1 point for a reproducible trace with minor omissions.",
+          "points": 2
+        }
+      ],
+      "total_points": 20
+    },
+    "schema_version": "1.0",
+    "target_family": "text_numeric_alignment_audit",
+    "task_id": "CSX-013_Q2",
+    "task_subtype": "text_numeric_alignment_audit",
+    "task_type": "short_answer"
+  },
+  "compute_gt_py": "#!/usr/bin/env python3\n\"\"\"Regenerate ground truth for CSX-013_Q2.\"\"\"\n\nfrom __future__ import annotations\n\nimport csv\nimport html\nimport json\nimport math\nimport re\nfrom pathlib import Path\nfrom typing import Any\n\n\nTASK_ID = \"CSX-013_Q2\"\nEVENT_ID = \"CSX-013\"\nANSWER_TYPE = \"text_numeric_alignment_audit\"\nTASK_SUBTYPE = \"text_numeric_alignment_audit\"\n\nREPORT_HTML = \"data/event_reports/event_reports_001_Locked_package_evidence_report.bin\"\nANCHOR_JSON = \"data/event_reports/event_reports_003_Locked_event_anchor_June_2021_Pacific_Northwest_heat_wave.json\"\nOPEN_METEO = \"data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\"\nERA5_STATS = \"data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json\"\nGPM_PRECIP = \"data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\"\nCHIRPS_PRECIP = \"data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json\"\nWORLDPOP = \"data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json\"\nGDACS = \"data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json\"\nEMBEDDING_CHANGE = \"data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json\"\nDNBR = \"data/physical_hazard/physical_hazard_008_Sentinel-2_SR_Harmonized_dNBR.json\"\n\nSOURCE_FILES = [\n    \"metadata/event.json\",\n    \"metadata/files.csv\",\n    \"metadata/sources.csv\",\n    REPORT_HTML,\n    ANCHOR_JSON,\n    OPEN_METEO,\n    ERA5_STATS,\n    GPM_PRECIP,\n    CHIRPS_PRECIP,\n    WORLDPOP,\n    GDACS,\n    EMBEDDING_CHANGE,\n    DNBR,\n]\n\n\n\nREASONING_DEPTH = {'evidence_weighting': 'Open-Meteo local heat metrics are decisive for local persistence; the NOAA report is decisive for Portland, Lytton, AC vulnerability, and mechanism language.', 'counterfactual_rejection': 'Treating the local point as Portland or Lytton fails because the local peak is far below the report city and Canada records.', 'uncertainty_or_scale_caveat': 'ERA5 aggregate wind and temperature statistics cannot by themselves prove high-pressure subsidence or downslope trajectories.'}\n\n\ndef attach_reasoning_depth(result):\n    reasoning = dict(REASONING_DEPTH)\n    primary = result.get(\"primary_gt\")\n    if isinstance(primary, dict):\n        primary[\"reasoning_depth\"] = reasoning\n    guidance = result.get(\"answer_guidance\")\n    if isinstance(guidance, dict):\n        guidance[\"reasoning_depth\"] = reasoning\n    key_values = result.get(\"key_values\")\n    if isinstance(key_values, dict):\n        key_values[\"reasoning_depth\"] = reasoning\n    rubric = result.get(\"rubric\")\n    if isinstance(rubric, dict):\n        criteria = rubric.get(\"criteria\")\n        if isinstance(criteria, list) and criteria:\n            addition = \" Full credit also requires the `reasoning_depth` object to identify decisive evidence, reject the main tempting simplification, and state a bounded uncertainty or scale caveat.\"\n            last = criteria[-1]\n            desc = last.get(\"description\", \"\")\n            if addition.strip() not in desc:\n                last[\"description\"] = (desc.rstrip() + addition).strip()\n    return result\n\ndef repo_root() -> Path:\n    return Path(__file__).resolve().parents[3]\n\n\ndef package_dir() -> Path:\n    return repo_root() / \"event_packages\" / \"standard_event_packages\" / \"packages\" / EVENT_ID\n\n\ndef read_json(package: Path, rel_path: str) -> Any:\n    return json.loads((package / rel_path).read_text(encoding=\"utf-8-sig\"))\n\n\ndef read_text(package: Path, rel_path: str) -> str:\n    return (package / rel_path).read_text(encoding=\"utf-8\", errors=\"replace\")\n\n\ndef require_manifest_paths(package: Path, rel_paths: list[str]) -> None:\n    with (package / \"metadata\" / \"files.csv\").open(newline=\"\", encoding=\"utf-8-sig\") as handle:\n        manifest_paths = {row[\"relative_path\"] for row in csv.DictReader(handle)}\n    for rel_path in rel_paths:\n        if rel_path.startswith(\"metadata/\"):\n            continue\n        if rel_path not in manifest_paths:\n            raise ValueError(f\"Source file is not listed in metadata/files.csv: {rel_path}\")\n\n\ndef c_to_f(value_c: float) -> float:\n    return value_c * 9.0 / 5.0 + 32.0\n\n\ndef f_to_c(value_f: float) -> float:\n    return (value_f - 32.0) * 5.0 / 9.0\n\n\ndef stull_wet_bulb_c(temperature_c: float, relative_humidity_pct: float) -> float:\n    rh = max(1.0, min(100.0, relative_humidity_pct))\n    t = temperature_c\n    return (\n        t * math.atan(0.151977 * math.sqrt(rh + 8.313659))\n        + math.atan(t + rh)\n        - math.atan(rh - 1.676331)\n        + 0.00391838 * rh**1.5 * math.atan(0.023101 * rh)\n        - 4.686035\n    )\n\n\ndef longest_true_run(flags: list[bool], labels: list[str]) -> dict[str, Any]:\n    best_count = 0\n    best_start = 0\n    best_end = -1\n    current_count = 0\n    current_start = 0\n    for index, flag in enumerate(flags):\n        if flag:\n            if current_count == 0:\n                current_start = index\n            current_count += 1\n            if current_count > best_count:\n                best_count = current_count\n                best_start = current_start\n                best_end = index\n        else:\n            current_count = 0\n\n    result: dict[str, Any] = {\"count\": int(best_count)}\n    if best_count:\n        result[\"start\"] = labels[best_start]\n        result[\"end\"] = labels[best_end]\n    return result\n\n\ndef normalized_article_text(raw_html: str) -> str:\n    text = re.sub(r\"<script\\b.*?</script>\", \" \", raw_html, flags=re.IGNORECASE | re.DOTALL)\n    text = re.sub(r\"<style\\b.*?</style>\", \" \", text, flags=re.IGNORECASE | re.DOTALL)\n    text = re.sub(r\"<[^>]+>\", \" \", text)\n    text = html.unescape(text)\n    return re.sub(r\"\\s+\", \" \", text)\n\n\ndef extract_report_values(article_text: str) -> dict[str, Any]:\n    required_phrases = [\n        \"Over a four-day period, June 26-29\",\n        \"Portland, Oregon\",\n        \"Lytton, British Columbia\",\n        \"high-pressure system\",\n        \"downslope winds\",\n        \"Only 44% of homes in Seattle\",\n    ]\n    for phrase in required_phrases:\n        if phrase not in article_text:\n            raise ValueError(f\"Expected report phrase not found: {phrase}\")\n\n    portland_match = re.search(\n        r\"All three days.?(\\d{3}) on June 26, (\\d{3}) on June 27, and (\\d{3}) on June 28\",\n        article_text,\n    )\n    lytton_values = [int(value) for value in re.findall(r\"(?:reached|soared to|shocking) (\\d{3}) degrees\", article_text)]\n    lytton_c_values = [\n        float(value)\n        for value in re.findall(\n            r\"\\b(?:116|118|121) degrees(?: Fahrenheit)? \\((\\d+\\.\\d)C\\)\",\n            article_text,\n        )\n    ]\n    ac_match = re.search(r\"Only (\\d+)% of homes in Seattle.*?Portland, at (\\d+)%\", article_text)\n    if not portland_match or len(lytton_values) < 3 or len(lytton_c_values) < 3 or not ac_match:\n        raise ValueError(\"Could not extract report numeric claims\")\n\n    portland_tmax_f = [int(value) for value in portland_match.groups()]\n    lytton_tmax_f = lytton_values[:3]\n    return {\n        \"four_day_window\": \"2021-06-26_to_2021-06-29\",\n        \"regional_threshold_f\": 100.0,\n        \"portland_tmax_f\": portland_tmax_f,\n        \"portland_avg_f\": round(sum(portland_tmax_f) / len(portland_tmax_f), 1),\n        \"lytton_tmax_f\": lytton_tmax_f,\n        \"lytton_tmax_c\": lytton_c_values[:3],\n        \"lytton_peak_f\": float(max(lytton_tmax_f)),\n        \"lytton_peak_c\": round(max(lytton_c_values[:3]), 1),\n        \"seattle_ac_pct\": int(ac_match.group(1)),\n        \"portland_ac_pct\": int(ac_match.group(2)),\n    }\n\n\ndef daily_values_for_window(daily: dict[str, Any], start: str, end: str) -> tuple[list[str], list[float]]:\n    records = [\n        (date, float(value))\n        for date, value in zip(daily[\"time\"], daily[\"temperature_2m_max\"])\n        if start <= date <= end\n    ]\n    return [date for date, _ in records], [value for _, value in records]\n\n\ndef main() -> None:\n    package = package_dir()\n    require_manifest_paths(package, SOURCE_FILES)\n\n    event = read_json(package, \"metadata/event.json\")\n    anchor = read_json(package, ANCHOR_JSON)\n    weather = read_json(package, OPEN_METEO)\n    era5 = read_json(package, ERA5_STATS)\n    gpm = read_json(package, GPM_PRECIP)\n    chirps = read_json(package, CHIRPS_PRECIP)\n    worldpop = read_json(package, WORLDPOP)\n    gdacs = read_json(package, GDACS)\n    embedding = read_json(package, EMBEDDING_CHANGE)\n    dnbr = read_json(package, DNBR)\n    article_text = normalized_article_text(read_text(package, REPORT_HTML))\n    report_values = extract_report_values(article_text)\n\n    hourly = weather[\"hourly\"]\n    daily = weather[\"daily\"]\n    hourly_temperature = [float(value) for value in hourly[\"temperature_2m\"]]\n    hourly_rh = [float(value) for value in hourly[\"relative_humidity_2m\"]]\n    daily_tmin = [float(value) for value in daily[\"temperature_2m_min\"]]\n    daily_tmax = [float(value) for value in daily[\"temperature_2m_max\"]]\n    wbt = [stull_wet_bulb_c(temp, rh) for temp, rh in zip(hourly_temperature, hourly_rh)]\n\n    peak_temperature_index = max(range(len(hourly_temperature)), key=hourly_temperature.__getitem__)\n    peak_wbt_index = max(range(len(wbt)), key=wbt.__getitem__)\n    four_day_dates, four_day_tmax_c = daily_values_for_window(daily, \"2021-06-26\", \"2021-06-29\")\n    portland_dates, portland_date_matched_tmax_c = daily_values_for_window(daily, \"2021-06-26\", \"2021-06-28\")\n    hottest_3day = max(\n        (\n            sum(daily_tmax[index : index + 3]) / 3.0,\n            daily[\"time\"][index],\n            daily[\"time\"][index + 2],\n        )\n        for index in range(len(daily_tmax) - 2)\n    )\n\n    local_checks = {\n        \"NC1\": {\n            \"label\": \"official_event_window\",\n            \"start\": anchor[\"temporal_window\"][\"start_date\"],\n            \"end\": anchor[\"temporal_window\"][\"end_date\"],\n            \"source_path\": ANCHOR_JSON,\n        },\n        \"NC2\": {\n            \"label\": \"local_report_window_tmax_sequence\",\n            \"window\": report_values[\"four_day_window\"],\n            \"dates\": four_day_dates,\n            \"tmax_c\": [round(value, 1) for value in four_day_tmax_c],\n            \"tmax_f\": [round(c_to_f(value), 1) for value in four_day_tmax_c],\n            \"all_days_ge_30c\": all(value >= 30.0 for value in four_day_tmax_c),\n            \"days_ge_100f\": int(sum(c_to_f(value) >= report_values[\"regional_threshold_f\"] for value in four_day_tmax_c)),\n            \"source_path\": OPEN_METEO,\n        },\n        \"NC3\": {\n            \"label\": \"local_peak_and_dryness\",\n            \"peak_time\": hourly[\"time\"][peak_temperature_index],\n            \"tmax_peak_c\": round(hourly_temperature[peak_temperature_index], 1),\n            \"tmax_peak_f\": round(c_to_f(hourly_temperature[peak_temperature_index]), 1),\n            \"rh_at_tmax_peak_pct\": round(hourly_rh[peak_temperature_index], 1),\n            \"wbt_at_tmax_peak_c\": round(wbt[peak_temperature_index], 1),\n            \"source_path\": OPEN_METEO,\n        },\n        \"NC4\": {\n            \"label\": \"local_persistence_heat_load\",\n            \"hot_hours_ge_30c\": int(sum(value >= 30.0 for value in hourly_temperature)),\n            \"hot_day_run_ge_30c\": longest_true_run([value >= 30.0 for value in daily_tmax], daily[\"time\"]),\n            \"warm_nights_ge_16c\": int(sum(value >= 16.0 for value in daily_tmin)),\n            \"hdd30_c_hours\": round(sum(max(0.0, value - 30.0) for value in hourly_temperature), 1),\n            \"source_path\": OPEN_METEO,\n        },\n        \"NC5\": {\n            \"label\": \"local_wet_bulb_screen\",\n            \"wbt_peak_time\": hourly[\"time\"][peak_wbt_index],\n            \"wbt_peak_c\": round(wbt[peak_wbt_index], 1),\n            \"wbt_hours_ge_28c\": int(sum(value >= 28.0 for value in wbt)),\n            \"source_path\": OPEN_METEO,\n        },\n        \"NC6\": {\n            \"label\": \"portland_claim_local_gap\",\n            \"report_portland_tmax_f\": report_values[\"portland_tmax_f\"],\n            \"report_portland_avg_f\": report_values[\"portland_avg_f\"],\n            \"date_matched_local_avg_f\": round(c_to_f(sum(portland_date_matched_tmax_c) / 3.0), 1),\n            \"hottest_local_3day_avg_f\": round(c_to_f(hottest_3day[0]), 1),\n            \"hottest_local_3day_window\": f\"{hottest_3day[1]}_to_{hottest_3day[2]}\",\n            \"date_matched_delta_f\": round(c_to_f(sum(portland_date_matched_tmax_c) / 3.0) - report_values[\"portland_avg_f\"], 1),\n            \"hottest_local_delta_f\": round(c_to_f(hottest_3day[0]) - report_values[\"portland_avg_f\"], 1),\n            \"source_paths\": [REPORT_HTML, OPEN_METEO],\n        },\n        \"NC7\": {\n            \"label\": \"lytton_claim_local_gap\",\n            \"report_lytton_tmax_f\": report_values[\"lytton_tmax_f\"],\n            \"report_lytton_tmax_c\": report_values[\"lytton_tmax_c\"],\n            \"report_lytton_peak_f\": report_values[\"lytton_peak_f\"],\n            \"report_lytton_peak_c\": report_values[\"lytton_peak_c\"],\n            \"local_peak_f\": round(c_to_f(hourly_temperature[peak_temperature_index]), 1),\n            \"local_peak_c\": round(hourly_temperature[peak_temperature_index], 1),\n            \"local_shortfall_f\": round(report_values[\"lytton_peak_f\"] - c_to_f(hourly_temperature[peak_temperature_index]), 1),\n            \"local_shortfall_c\": round(report_values[\"lytton_peak_c\"] - hourly_temperature[peak_temperature_index], 1),\n            \"source_paths\": [REPORT_HTML, OPEN_METEO],\n        },\n    }\n\n    gdacs_heat_matches = sum(\n        \"heat\" in feature.get(\"properties\", {}).get(\"name\", \"\").lower()\n        or feature.get(\"properties\", {}).get(\"eventtype\") == \"HT\"\n        for feature in gdacs[\"features\"]\n    )\n    precip_mean_delta = (\n        gpm[\"stats\"][\"gpm_event_precip_mm_mean\"] - chirps[\"stats\"][\"chirps_event_precip_mm_mean\"]\n    )\n\n    claim_matrix = [\n        {\n            \"claim_id\": \"C1\",\n            \"claim_label\": \"regional_four_day_record_heat\",\n            \"report_values\": {\n                \"window\": report_values[\"four_day_window\"],\n                \"threshold_text\": \"well_over_100f\",\n            },\n            \"alignment\": \"partial_timing_not_magnitude\",\n            \"numeric_check_ids\": [\"NC2\", \"NC4\"],\n            \"ruling\": \"local_point_confirms_persistent_heat_not_regional_record_magnitude\",\n            \"source_paths\": [REPORT_HTML, OPEN_METEO],\n        },\n        {\n            \"claim_id\": \"C2\",\n            \"claim_label\": \"portland_three_day_record_sequence\",\n            \"report_values\": {\n                \"portland_tmax_f\": report_values[\"portland_tmax_f\"],\n                \"portland_avg_f\": report_values[\"portland_avg_f\"],\n            },\n            \"alignment\": \"report_supported_not_local_numeric\",\n            \"numeric_check_ids\": [\"NC6\"],\n            \"ruling\": \"city_claim_not_reproducible_from_local_point_file\",\n            \"source_paths\": [REPORT_HTML, OPEN_METEO],\n        },\n        {\n            \"claim_id\": \"C3\",\n            \"claim_label\": \"lytton_canada_peak_record_sequence\",\n            \"report_values\": {\n                \"lytton_tmax_f\": report_values[\"lytton_tmax_f\"],\n                \"lytton_tmax_c\": report_values[\"lytton_tmax_c\"],\n                \"peak_f\": report_values[\"lytton_peak_f\"],\n                \"peak_c\": report_values[\"lytton_peak_c\"],\n            },\n            \"alignment\": \"report_supported_not_local_numeric\",\n            \"numeric_check_ids\": [\"NC7\"],\n            \"ruling\": \"canada_record_claim_not_reproducible_from_local_point_file\",\n            \"source_paths\": [REPORT_HTML, OPEN_METEO],\n        },\n        {\n            \"claim_id\": \"C4\",\n            \"claim_label\": \"high_pressure_downslope_mechanism\",\n            \"report_values\": {\n                \"mechanism_terms\": [\"high_pressure\", \"cloudless_sinking_air\", \"downslope_winds\"],\n            },\n            \"alignment\": \"unsupported_by_package_machine_data\",\n            \"numeric_check_ids\": [],\n            \"ruling\": \"report_text_supports_claim_but_machine_files_lack_pressure_and_descent_variables\",\n            \"source_paths\": [REPORT_HTML, ERA5_STATS],\n        },\n        {\n            \"claim_id\": \"C5\",\n            \"claim_label\": \"air_conditioning_vulnerability\",\n            \"report_values\": {\n                \"seattle_primary_ac_pct\": report_values[\"seattle_ac_pct\"],\n                \"portland_primary_ac_pct\": report_values[\"portland_ac_pct\"],\n            },\n            \"alignment\": \"report_supported_not_local_numeric\",\n            \"numeric_check_ids\": [],\n            \"ruling\": \"worldpop_population_does_not_measure_air_conditioning\",\n            \"source_paths\": [REPORT_HTML, WORLDPOP],\n        },\n    ]\n\n    source_reliability_ladder = [\n        {\n            \"source_id\": \"S1\",\n            \"tier\": 1,\n            \"role\": \"direct_local_numeric_heat\",\n            \"path\": OPEN_METEO,\n            \"supports\": [\"NC2\", \"NC3\", \"NC4\", \"NC5\"],\n            \"reliability_label\": \"direct_machine_readable_point_series\",\n        },\n        {\n            \"source_id\": \"S2\",\n            \"tier\": 2,\n            \"role\": \"locked_report_text_claims\",\n            \"path\": REPORT_HTML,\n            \"supports\": [\"C1\", \"C2\", \"C3\", \"C4\", \"C5\"],\n            \"reliability_label\": \"locked_noaa_html_report\",\n        },\n        {\n            \"source_id\": \"S3\",\n            \"tier\": 3,\n            \"role\": \"event_window_and_scope_anchor\",\n            \"path\": ANCHOR_JSON,\n            \"supports\": [\"NC1\"],\n            \"reliability_label\": \"locked_event_metadata\",\n        },\n        {\n            \"source_id\": \"S4\",\n            \"tier\": 4,\n            \"role\": \"weak_mechanism_context\",\n            \"path\": ERA5_STATS,\n            \"supports\": [],\n            \"reliability_label\": \"aggregate_stats_missing_pressure_and_trajectory\",\n        },\n        {\n            \"source_id\": \"S5\",\n            \"tier\": 5,\n            \"role\": \"wrong_modality_decoys\",\n            \"paths\": [GPM_PRECIP, CHIRPS_PRECIP, GDACS, EMBEDDING_CHANGE, DNBR],\n            \"supports\": [],\n            \"reliability_label\": \"not_direct_heat_record_evidence\",\n        },\n    ]\n\n    counterfactuals = [\n        {\n            \"counterfactual_id\": \"CF1\",\n            \"wrong_move\": \"treat_local_open_meteo_point_as_portland_or_lytton\",\n            \"wrong_result\": {\n                \"local_peak_f\": local_checks[\"NC3\"][\"tmax_peak_f\"],\n                \"portland_avg_gap_f\": local_checks[\"NC6\"][\"date_matched_delta_f\"],\n                \"lytton_peak_shortfall_f\": local_checks[\"NC7\"][\"local_shortfall_f\"],\n            },\n            \"rejection_reason\": \"wrong_location_scale\",\n            \"source_paths\": [REPORT_HTML, OPEN_METEO],\n        },\n        {\n            \"counterfactual_id\": \"CF2\",\n            \"wrong_move\": \"use_era5_aggregate_as_high_pressure_downslope_proof\",\n            \"wrong_result\": {\n                \"era5_temperature_2m_max_c_max\": round(era5[\"stats\"][\"temperature_2m_max_c_max\"], 1),\n                \"available_wind_stats\": [\"u_component_of_wind_10m\", \"v_component_of_wind_10m\"],\n                \"missing_required_variables\": [\"surface_pressure\", \"geopotential_height\", \"time_resolved_downslope_path\"],\n            },\n            \"rejection_reason\": \"missing_mechanism_variables\",\n            \"source_paths\": [REPORT_HTML, ERA5_STATS],\n        },\n        {\n            \"counterfactual_id\": \"CF3\",\n            \"wrong_move\": \"use_precip_catalog_or_remote_sensing_as_direct_heat_record_evidence\",\n            \"wrong_result\": {\n                \"gpm_mean_mm\": round(gpm[\"stats\"][\"gpm_event_precip_mm_mean\"], 3),\n                \"chirps_mean_mm\": round(chirps[\"stats\"][\"chirps_event_precip_mm_mean\"], 3),\n                \"precip_mean_delta_mm\": round(precip_mean_delta, 3),\n                \"gdacs_heat_match_count\": int(gdacs_heat_matches),\n                \"embedding_change_mean\": round(embedding[\"stats\"][\"alphaearth_1_minus_cosine_mean\"], 4),\n                \"dnbr_mean\": round(dnbr[\"stats\"][\"sentinel2_dnbr_mean\"], 4),\n            },\n            \"rejection_reason\": \"wrong_modality_for_heat_record_claim\",\n            \"source_paths\": [GPM_PRECIP, CHIRPS_PRECIP, GDACS, EMBEDDING_CHANGE, DNBR],\n        },\n    ]\n\n    final_answer = {\n        \"answer_type\": ANSWER_TYPE,\n        \"audit_question\": \"Do package-local report text and local numeric heat files support the same claims without over-extending the local point evidence?\",\n        \"scope\": {\n            \"event_id\": EVENT_ID,\n            \"event_name\": event[\"event_name\"],\n            \"official_window\": f\"{anchor['temporal_window']['start_date']}_to_{anchor['temporal_window']['end_date']}\",\n            \"report_heat_window\": report_values[\"four_day_window\"],\n            \"evidence_boundary\": \"package_local_only\",\n        },\n        \"claim_matrix\": claim_matrix,\n        \"local_numeric_checks\": local_checks,\n        \"source_reliability_ladder\": source_reliability_ladder,\n        \"counterfactuals\": counterfactuals,\n        \"final_ruling\": {\n            \"ruling_label\": \"report_claims_text_supported_local_numeric_only_partial\",\n            \"directly_computable_local_conclusion\": \"persistent_dry_local_heat_with_limited_wet_bulb_stress\",\n            \"do_not_claim\": [\n                \"local_point_proves_portland_or_lytton_records\",\n                \"era5_aggregate_proves_high_pressure_downslope_mechanism\",\n                \"precip_or_remote_sensing_files_are_direct_heat_record_evidence\",\n            ],\n        },\n        \"reference_trace\": [\n            {\"step_id\": \"T1\", \"action\": \"read_metadata_and_anchor\", \"paths\": [\"metadata/event.json\", ANCHOR_JSON]},\n            {\"step_id\": \"T2\", \"action\": \"extract_report_claim_numbers\", \"paths\": [REPORT_HTML]},\n            {\"step_id\": \"T3\", \"action\": \"compute_open_meteo_local_heat_checks\", \"paths\": [OPEN_METEO]},\n            {\"step_id\": \"T4\", \"action\": \"compare_report_city_values_to_local_point_values\", \"paths\": [REPORT_HTML, OPEN_METEO]},\n            {\"step_id\": \"T5\", \"action\": \"test_mechanism_and_wrong_modality_decoys\", \"paths\": [ERA5_STATS, GPM_PRECIP, CHIRPS_PRECIP, GDACS, EMBEDDING_CHANGE, DNBR]},\n            {\"step_id\": \"T6\", \"action\": \"emit_fixed_schema_alignment_audit\", \"paths\": [REPORT_HTML, OPEN_METEO, ANCHOR_JSON]},\n        ],\n    }\n    compact_primary_gt = {\n        \"answer\": final_answer[\"final_ruling\"][\"ruling_label\"],\n        \"answer_type\": ANSWER_TYPE,\n        \"final_ruling\": final_answer[\"final_ruling\"][\"ruling_label\"],\n        \"key_values\": {\n            \"local_peak_c\": local_checks[\"NC3\"][\"tmax_peak_c\"],\n            \"local_peak_f\": local_checks[\"NC3\"][\"tmax_peak_f\"],\n            \"days_ge_100f\": local_checks[\"NC2\"][\"days_ge_100f\"],\n            \"hot_hours_ge_30c\": local_checks[\"NC4\"][\"hot_hours_ge_30c\"],\n            \"hdd30_c_hours\": local_checks[\"NC4\"][\"hdd30_c_hours\"],\n            \"wbt_peak_c\": local_checks[\"NC5\"][\"wbt_peak_c\"],\n            \"rh_at_tmax_peak_pct\": local_checks[\"NC3\"][\"rh_at_tmax_peak_pct\"],\n        },\n        \"claim_rulings\": {\n            \"C1\": \"partial_timing_not_magnitude\",\n            \"C2\": \"report_supported_not_local_numeric\",\n            \"C3\": \"report_supported_not_local_numeric\",\n            \"C4\": \"unsupported_by_package_machine_data\",\n            \"C5\": \"report_supported_not_local_numeric\",\n        },\n        \"counterfactuals\": [\"CF1\", \"CF2\", \"CF3\"],\n    }\n\n    computed_gt = {\n        \"schema_version\": \"1.0\",\n        \"task_id\": TASK_ID,\n        \"event_id\": EVENT_ID,\n        \"task_type\": \"short_answer\",\n        \"task_subtype\": TASK_SUBTYPE,\n        \"target_family\": TASK_SUBTYPE,\n        \"answer_type\": ANSWER_TYPE,\n        \"evaluation_mode\": \"hybrid\",\n        \"difficulty_level\": \"L4\",\n        \"primary_gt\": compact_primary_gt,\n        \"answer_detail\": {\n            \"expected_answer\": final_answer,\n        },\n        \"computed_checks\": {\n            \"report_values\": report_values,\n            \"numeric_tolerances\": {\n                \"temperature_c\": 0.1,\n                \"temperature_f\": 0.1,\n                \"hdd30_c_hours\": 0.1,\n                \"relative_humidity_pct\": 0.1,\n                \"precip_mm\": 0.001,\n                \"population\": 0.001,\n            },\n            \"insufficient_alternatives\": {\n                \"era5_missing_pressure_or_trajectory\": True,\n                \"gdacs_heat_match_count\": int(gdacs_heat_matches),\n                \"worldpop_population_no_ac_field\": round(\n                    worldpop[\"population_sum\"][\"population\"], 3\n                ),\n            },\n        },\n        \"provenance\": {\n            \"computed_by\": \"compute_gt.py\",\n            \"source_files\": SOURCE_FILES,\n        },\n        \"forbidden_claims\": [\n            \"Do not use web search or outside facts.\",\n            \"Do not treat the local Open-Meteo point as Portland or Lytton.\",\n            \"Do not use precipitation, catalog, dNBR, or annual embedding files as direct heat-record evidence.\",\n            \"Do not replace the structured JSON audit with a generic heat-wave explanation.\",\n        ],\n        \"rubric\": {\n            \"total_points\": 20,\n            \"criteria\": [\n                {\n                    \"name\": \"schema_and_scope\",\n                    \"points\": 2,\n                    \"description\": \"Returns the fixed text_numeric_alignment_audit JSON schema with package-local paths, official event window, and report heat window.\",\n                    \"partial_credit\": \"Award 1 point for the correct audit schema with minor scope or path omissions.\",\n                },\n                {\n                    \"name\": \"report_claim_extraction\",\n                    \"points\": 3,\n                    \"description\": \"Extracts C1-C5 with the Portland 108/112/116 F sequence, Lytton 116/118/121 F sequence, high-pressure/downsloping mechanism, and Seattle/Portland AC percentages.\",\n                    \"partial_credit\": \"Award 1-2 points for extracting most claims but missing one numeric sequence or vulnerability claim.\",\n                },\n                {\n                    \"name\": \"local_numeric_recomputation\",\n                    \"points\": 5,\n                    \"description\": \"Recomputes NC1-NC7, including local Tmax sequence, 35.5 C/95.9 F peak, 0 days >=100 F, 29 hot hours, 71.0 C-hours HDD30, 3 warm nights, 22.0 C peak WBT, and 18.0% RH at peak temperature.\",\n                    \"partial_credit\": \"Award proportional credit for correct local heat, wet-bulb, humidity, and persistence calculations.\",\n                },\n                {\n                    \"name\": \"text_numeric_alignment_rulings\",\n                    \"points\": 3,\n                    \"description\": \"Classifies report claims as partial timing/not magnitude, report-supported not local numeric, or unsupported by package machine data as appropriate.\",\n                    \"partial_credit\": \"Award 1-2 points if most rulings are correct but one claim is overgeneralized.\",\n                },\n                {\n                    \"name\": \"source_reliability_ladder\",\n                    \"points\": 2,\n                    \"description\": \"Ranks Open-Meteo, NOAA report HTML, anchor metadata, ERA5 aggregate context, and wrong-modality decoys by their role for this audit.\",\n                    \"partial_credit\": \"Award 1 point for a mostly correct ladder with one source-role error.\",\n                },\n                {\n                    \"name\": \"counterfactual_rejections\",\n                    \"points\": 3,\n                    \"description\": \"Rejects the local-as-Portland/Lytton, ERA5-as-mechanism-proof, and precip/catalog/remote-sensing-as-heat-evidence failure modes with numeric consequences.\",\n                    \"partial_credit\": \"Award 1 point for each correctly rejected failure mode with a source-specific reason.\",\n                },\n                {\n                    \"name\": \"reference_trace_and_no_external_claims\",\n                    \"points\": 2,\n                    \"description\": \"Includes a reproducible T1-T6 trace and avoids outside facts, hidden answers, and broad mechanism prose.\",\n                    \"partial_credit\": \"Award 1 point for a reproducible trace with minor omissions.\",\n                },\n            ],\n        },\n    }\n\n    output_path = Path(__file__).resolve().parent / \"computed_gt.json\"\n    attach_reasoning_depth(computed_gt)\n    output_path.write_text(json.dumps(computed_gt, indent=2, sort_keys=True) + \"\\n\", encoding=\"utf-8\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "event": {
+    "package_id": "CSX-013",
+    "event_name": "June 2021 Pacific Northwest heat wave",
+    "canonical_event_key": "2021 pacific northwest heat wave",
+    "hazard_family": "heat_wave_urban_heat",
+    "hazard_label": "Heat wave and urban heat exposure",
+    "scale": "national_admin",
+    "region": "North America",
+    "primary_evidence_url": "https://www.climate.gov/news-features/event-tracker/astounding-heat-obliterates-all-time-records-across-pacific-northwest",
+    "existence_verdict": "confirmed",
+    "temporal_match": "match",
+    "spatial_match": "match",
+    "hazard_match": "match",
+    "source_reliability": "high_official_or_institutional",
+    "correspondence_score": "96",
+    "release_decision": "keep",
+    "benchmark_readiness": "ready_with_metadata_warnings",
+    "benchmark_readiness_label": "ready with metadata warnings",
+    "data_integrity": {
+      "local_files_checked": "48",
+      "image_files_checked": "2",
+      "valid_images": "2",
+      "formal_slice_files_checked": "29",
+      "hard_error_count": "0",
+      "metadata_warning_count": "23",
+      "final_data_score": "65",
+      "final_data_decision": "ready_with_minor_warnings",
+      "replacement_file_count": "0"
+    },
+    "file_inventory": {
+      "total_files": 31,
+      "categories": {
+        "event_catalogs": 3,
+        "event_reports": 3,
+        "exposure_impact": 6,
+        "geospatial_context": 2,
+        "other": 2,
+        "physical_hazard": 9,
+        "remote_sensing": 6
+      }
+    }
+  },
+  "event_files": [
+    {
+      "file_id": "F0001",
+      "relative_path": "data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/event_reports/event_reports_001_Locked_package_evidence_report.bin",
+      "category": "event_reports",
+      "layer_name": "event_anchor_report",
+      "source_id": "S001",
+      "source_name": "Locked package evidence report",
+      "source_type": "resource_registry",
+      "source_url": "https://www.climate.gov/news-features/event-tracker/astounding-heat-obliterates-all-time-records-across-pacific-northwest",
+      "bytes": 97120,
+      "sha256_16": "5842cbbc149ba132",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0002",
+      "relative_path": "data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S002",
+      "source_name": "GDACS public event feeds and archive",
+      "source_type": "resource_registry",
+      "source_url": "https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventtype=FL%2CTC%2CEQ%2CVO&fromdate=2021-06-25&todate=2021-07-01",
+      "bytes": 6462,
+      "sha256_16": "381730532a57eaf2",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0003",
+      "relative_path": "data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S003",
+      "source_name": "GDACS public event feeds and archive",
+      "source_type": "resource_registry",
+      "source_url": "https://www.gdacs.org/xml/rss.xml",
+      "bytes": 225166,
+      "sha256_16": "3ce6904decd46109",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "xml"
+    },
+    {
+      "file_id": "F0004",
+      "relative_path": "data/exposure_impact/exposure_impact_001_OSM_Nominatim_fallback_package_location.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/exposure_impact/exposure_impact_001_OSM_Nominatim_fallback_package_location.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/exposure_impact/exposure_impact_001_OSM_Nominatim_fallback_package_location.json",
+      "category": "exposure_impact",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S004",
+      "source_name": "OSM Nominatim fallback package location",
+      "source_type": "resource_registry",
+      "source_url": "https://nominatim.openstreetmap.org/search?q=Pacific+Northwest%2C+United+States+and+western+Canada%2C+United+States+%2F+Canada&format=jsonv2&limit=1",
+      "bytes": 2,
+      "sha256_16": "4f53cda18c2baa0c",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0005",
+      "relative_path": "data/geospatial_context/geospatial_context_001_geoBoundaries_administrative_boundaries.bin",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/geospatial_context/geospatial_context_001_geoBoundaries_administrative_boundaries.bin",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/geospatial_context/geospatial_context_001_geoBoundaries_administrative_boundaries.bin",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S005",
+      "source_name": "geoBoundaries administrative boundaries",
+      "source_type": "resource_registry",
+      "source_url": "https://www.geoboundaries.org/api/current/gbOpen/USA/ADM1/",
+      "bytes": 1845,
+      "sha256_16": "5d5ab2ceac2bd029",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0006",
+      "relative_path": "data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S006",
+      "source_name": "Open-Meteo historical archive",
+      "source_type": "resource_registry",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=46.80000&longitude=-121.50000&start_date=2021-06-25&end_date=2021-07-01&hourly=temperature_2m%2Crelative_humidity_2m%2Cdew_point_2m%2Capparent_temperature&daily=temperature_2m_max%2Ctemperature_2m_min%2Capparent_temperature_max&timezone=auto",
+      "bytes": 6993,
+      "sha256_16": "99f6976df53087de",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0007",
+      "relative_path": "data/remote_sensing/remote_sensing_001_NASA_Worldview_GIBS_snapshot.bin",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/remote_sensing/remote_sensing_001_NASA_Worldview_GIBS_snapshot.bin",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/remote_sensing/remote_sensing_001_NASA_Worldview_GIBS_snapshot.bin",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S007",
+      "source_name": "NASA Worldview/GIBS snapshot",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2021-06-25&BBOX=-125.00000%2C42.00000%2C-116.00000%2C52.00000&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=512&HEIGHT=512",
+      "bytes": 1820,
+      "sha256_16": "dd5adf8ac2316b1a",
+      "status": "downloaded",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0008",
+      "relative_path": "data/event_reports/event_reports_002_HDX_CKAN_package_search.bin",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/event_reports/event_reports_002_HDX_CKAN_package_search.bin",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/event_reports/event_reports_002_HDX_CKAN_package_search.bin",
+      "category": "event_reports",
+      "layer_name": "text_reports",
+      "source_id": "S008",
+      "source_name": "HDX CKAN package search",
+      "source_type": "resource_registry",
+      "source_url": "https://data.humdata.org/api/3/action/package_search?q=June+2021+Pacific+Northwest+heat+wave+United+States+%2F+Canada&rows=10",
+      "bytes": 294,
+      "sha256_16": "8b0409239393d27e",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0009",
+      "relative_path": "data/exposure_impact/exposure_impact_002_Overpass_small_roads_and_critical_amenities.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/exposure_impact/exposure_impact_002_Overpass_small_roads_and_critical_amenities.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/exposure_impact/exposure_impact_002_Overpass_small_roads_and_critical_amenities.json",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S009",
+      "source_name": "Overpass small roads and critical amenities",
+      "source_type": "resource_registry",
+      "source_url": "https://overpass-api.de/api/interpreter",
+      "bytes": 9645,
+      "sha256_16": "5dd59e689a004cce",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0010",
+      "relative_path": "data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "category": "geospatial_context",
+      "layer_name": "aoi",
+      "source_id": "S010",
+      "source_name": "compact per-event AOI derived from event bbox",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 429,
+      "sha256_16": "d17e080969eea6bb",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0011",
+      "relative_path": "data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S011",
+      "source_name": "ERA5-Land hourly aggregate stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 1005,
+      "sha256_16": "732e5f8f88249c71",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0012",
+      "relative_path": "data/physical_hazard/physical_hazard_003_ERA5-Land_temperature_precipitation_wind_stack.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_003_ERA5-Land_temperature_precipitation_wind_stack.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_003_ERA5-Land_temperature_precipitation_wind_stack.zip",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S012",
+      "source_name": "ERA5-Land temperature precipitation wind stack",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 5074,
+      "sha256_16": "747ac924dfa386e9",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/95db29f2841846c93668.png"
+    },
+    {
+      "file_id": "F0013",
+      "relative_path": "data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S013",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 322,
+      "sha256_16": "868de7026bd0bf3e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0014",
+      "relative_path": "data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.zip",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S013",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 3850,
+      "sha256_16": "2416d8a66882dfc6",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/338ad3371acde6d7572f.png"
+    },
+    {
+      "file_id": "F0015",
+      "relative_path": "data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S014",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 316,
+      "sha256_16": "d78f5c3208a98c9b",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0016",
+      "relative_path": "data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.zip",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S014",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 6398,
+      "sha256_16": "feb8afe01a458d96",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/a3c1ce0b2fb88d711f39.png"
+    },
+    {
+      "file_id": "F0017",
+      "relative_path": "data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S015",
+      "source_name": "WorldPop GP 100m population sum",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 125,
+      "sha256_16": "61dcac55381f0ca6",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0018",
+      "relative_path": "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_resampled_1km_AOI.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_resampled_1km_AOI.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_resampled_1km_AOI.zip",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S016",
+      "source_name": "WorldPop GP 100m population resampled 1km AOI",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 123673,
+      "sha256_16": "cba3dd0f3771c3f5",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/c012a3d5d35dcbb272cb.png"
+    },
+    {
+      "file_id": "F0019",
+      "relative_path": "data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S017",
+      "source_name": "Google Satellite Embedding 64-band annual stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 9873,
+      "sha256_16": "2e3b0eca370d3cfe",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0020",
+      "relative_path": "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S018",
+      "source_name": "Google Satellite Embedding annual cosine-change stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 361,
+      "sha256_16": "12159ca081e64b1e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0021",
+      "relative_path": "data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_raster.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_raster.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_raster.zip",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S019",
+      "source_name": "Google Satellite Embedding annual cosine-change raster",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 366230,
+      "sha256_16": "366e647fb93e9b88",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/8677b74b8693d46ed107.png"
+    },
+    {
+      "file_id": "F0022",
+      "relative_path": "data/physical_hazard/physical_hazard_008_Sentinel-2_SR_Harmonized_dNBR.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_008_Sentinel-2_SR_Harmonized_dNBR.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_008_Sentinel-2_SR_Harmonized_dNBR.json",
+      "category": "physical_hazard",
+      "layer_name": "sentinel2",
+      "source_id": "S020",
+      "source_name": "Sentinel-2 SR Harmonized dNBR",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 474,
+      "sha256_16": "d8026a1442520a7b",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0023",
+      "relative_path": "data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "category": "exposure_impact",
+      "layer_name": "osm_exposure",
+      "source_id": "S021",
+      "source_name": "OpenStreetMap Overpass bounded AOI slice",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 307026,
+      "sha256_16": "58953a16d4d20980",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0024",
+      "relative_path": "data/physical_hazard/physical_hazard_009_Sentinel-2_SR_Harmonized_dNBR_raster.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_009_Sentinel-2_SR_Harmonized_dNBR_raster.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/physical_hazard/physical_hazard_009_Sentinel-2_SR_Harmonized_dNBR_raster.zip",
+      "category": "physical_hazard",
+      "layer_name": "sentinel2",
+      "source_id": "S022",
+      "source_name": "Sentinel-2 SR Harmonized dNBR raster",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 2939365,
+      "sha256_16": "1abbf31768540d03",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/1e0fab89127e262f249f.png"
+    },
+    {
+      "file_id": "F0025",
+      "relative_path": "data/exposure_impact/exposure_impact_006_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/exposure_impact/exposure_impact_006_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/exposure_impact/exposure_impact_006_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "category": "exposure_impact",
+      "layer_name": "osm_exposure",
+      "source_id": "S021",
+      "source_name": "OpenStreetMap Overpass bounded AOI slice",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 307026,
+      "sha256_16": "79e98e4638c98abd",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0026",
+      "relative_path": "data/remote_sensing/remote_sensing_005_pre.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/remote_sensing/remote_sensing_005_pre.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/remote_sensing/remote_sensing_005_pre.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S023",
+      "source_name": "pre",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2021-05-26&BBOX=26.0%2C-127.5%2C61.0%2C-92.5&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 188933,
+      "sha256_16": "a53bb35b1f99ba78",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0027",
+      "relative_path": "data/remote_sensing/remote_sensing_006_event.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/remote_sensing/remote_sensing_006_event.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/remote_sensing/remote_sensing_006_event.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S024",
+      "source_name": "event",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2021-06-28&BBOX=26.0%2C-127.5%2C61.0%2C-92.5&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 200423,
+      "sha256_16": "878ba0a568125c6f",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0028",
+      "relative_path": "data/event_reports/event_reports_003_Locked_event_anchor_June_2021_Pacific_Northwest_heat_wave.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/event_reports/event_reports_003_Locked_event_anchor_June_2021_Pacific_Northwest_heat_wave.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/event_reports/event_reports_003_Locked_event_anchor_June_2021_Pacific_Northwest_heat_wave.json",
+      "category": "event_reports",
+      "layer_name": "package_locked_event_anchor / NOAA event article",
+      "source_id": "S025",
+      "source_name": "Locked event anchor: June 2021 Pacific Northwest heat wave",
+      "source_type": "event_specific_sources",
+      "source_url": "https://www.climate.gov/news-features/event-tracker/astounding-heat-obliterates-all-time-records-across-pacific-northwest",
+      "bytes": 3127,
+      "sha256_16": "257dba18d38b2264",
+      "status": "remote_verified",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0029",
+      "relative_path": "data/event_catalogs/event_catalogs_003_04_NASA_EONET_v3_events.xml.xml",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/event_catalogs/event_catalogs_003_04_NASA_EONET_v3_events.xml.xml",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/event_catalogs/event_catalogs_003_04_NASA_EONET_v3_events.xml.xml",
+      "category": "event_catalogs",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S026",
+      "source_name": "04_NASA_EONET_v3_events.xml",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 14084,
+      "sha256_16": "f4f50fc454038bf4",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "xml"
+    },
+    {
+      "file_id": "F0030",
+      "relative_path": "data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S027",
+      "source_name": "01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 2860,
+      "sha256_16": "a442d86ee0541f2c",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0031",
+      "relative_path": "data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-013/data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-013/data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S028",
+      "source_name": "02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 89,
+      "sha256_16": "29f21138abea952a",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    }
+  ]
+}

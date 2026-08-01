@@ -1,0 +1,821 @@
+{
+  "task_id": "CSX-016_Q1",
+  "model_id": "deepseek-v4-flash",
+  "model_name": "DeepSeek V4 Flash",
+  "scores": {
+    "overall": 94.16,
+    "answer": 93.33,
+    "rubric": 95.0,
+    "unit_accuracy": 93.33,
+    "answer_units_correct": 14,
+    "answer_units_total": 15,
+    "rubric_points_earned": 19.0,
+    "rubric_points_total": 20.0,
+    "verdict": "correct"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 261.422,
+    "tool_calls": 18,
+    "model_rounds": 19,
+    "file_reads": 12,
+    "unique_evidence_files": 14,
+    "python_calls": 2,
+    "tool_errors": 0,
+    "prompt_tokens": 256413,
+    "completion_tokens": 16601,
+    "total_tokens": 273014
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "Discover all files in the CSX-016 event package to find relevant data for computing the anchor hierarchy.",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 38,\n  \"file_count_total\": 38,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json\",\n      \"bytes\": 14962,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml\",\n      \"bytes\": 225166,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.xml\",\n      \"bytes\": 145,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_004_04_NASA_EONET_v3_events.xml.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_004_04_NASA_EONET_v3_events.xml.xml\",\n      \"bytes\": 14084,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/event_reports/event_reports_001_package_json.source_plan.locked_event_anchor.evidence_final_url.bin\",\n      \"package_relative_path\": \"data/event_reports/event_reports_001_package_json.source_plan.locked_event_anchor.evidence_final_url.bin\",\n      \"bytes\": 79349,\n      \"suffix\": \"\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read event metadata to get event window, AOI, and other context needed for all anchors.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-016/metadata/event.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-016/metadata/event.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-016\\\",\\n  \\\"event_name\\\": \\\"2015 India-Pakistan heat wave\\\",\\n  \\\"canonical_event_key\\\": \\\"2015 india pakistan heatwave\\\",\\n  \\\"hazard_family\\\": \\\"heat_wave_urban_heat\\\",\\n  \\\"hazard_label\\\": \\\"Heat wave and urban heat exposure\\\",\\n  \\\"scale\\\": \\\"global_synoptic\\\",\\n  \\\"region\\\": \\\"South Asia\\\",\\n  \\\"primary_evidence_url\\\": \\\"https://www.earthobservatory.nasa.gov/images/85986/india-faces-deadly-heat-wave\\\",\\n  \\\"existence_verdict\\\": \\\"confirmed\\\",\\n  \\\"temporal_match\\\": \\\"match\\\",\\n  \\\"spatial_match\\\": \\\"partial\\\",\\n  \\\"hazard_match\\\": \\\"match\\\",\\n  \\\"source_reliability\\\": \\\"mostly_reliable_with_access_or_metadata_gaps\\\",\\n  \\\"correspondence_score\\\": \\\"84\\\",\\n  \\\"release_decision\\\": \\\"keep_with_minor_fix\\\",\\n  \\\"benchmark_readiness\\\": \\\"ready_with_metadata_warnings\\\",\\n  \\\"benchmark_readiness_label\\\": \\\"ready with metadata warnings\\\",\\n  \\\"data_integrity\\\": {\\n    \\\"local_files_checked\\\": \\\"41\\\",\\n    \\\"image_files_checked\\\": \\\"2\\\",\\n    \\\"valid_images\\\": \\\"2\\\",\\n    \\\"formal_slice_files_checked\\\": \\\"22\\\",\\n    \\\"hard_error_count\\\": \\\"0\\\",\\n    \\\"metadata_warning_count\\\": \\\"19\\\",\\n    \\\"final_data_score\\\": \\\"65\\\",\\n    \\\"final_data_decision\\\": \\\"ready_with_minor_warnings\\\",\\n    \\\"replacement_file_count\\\": \\\"0\\\"\\n  },\\n  \\\"file_inventory\\\": {\\n    \\\"total_files\\\": 34,\\n    \\\"categories\\\": {\\n      \\\"event_catalogs\\\": 4,\\n      \\\"event_reports\\\": 7,\\n      \\\"exposure_impact\\\": 7,\\n      \\\"geospatial_context\\\": 2,\\n      \\\"other\\\": 3,\\n      \\\"physical_hazard\\\": 8,\\n      \\\"remote_sensing\\\": 3\\n    }\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1663
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/metadata/event.json"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get the regional study box (AOI) for the heat field anchor and point location test.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-016/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json\",\n  \"text\": \"{\\n  \\\"type\\\": \\\"Feature\\\",\\n  \\\"properties\\\": {},\\n  \\\"geometry\\\": {\\n    \\\"type\\\": \\\"Polygon\\\",\\n    \\\"coordinates\\\": [\\n      [\\n        [\\n          78.0,\\n          19.5\\n        ],\\n        [\\n          80.0,\\n          19.5\\n        ],\\n        [\\n          80.0,\\n          21.5\\n        ],\\n        [\\n          78.0,\\n          21.5\\n        ],\\n        [\\n          78.0,\\n          19.5\\n        ]\\n      ]\\n    ]\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 616
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the Open-Meteo point-based temperature time series for the cool point anchor and potentially for precipitation.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\",\n  \"text\": \"{\\\"latitude\\\":34.059753,\\\"longitude\\\":74.8125,\\\"generationtime_ms\\\":0.37992000579833984,\\\"utc_offset_seconds\\\":19800,\\\"timezone\\\":\\\"Asia/Kolkata\\\",\\\"timezone_abbreviation\\\":\\\"GMT+5:30\\\",\\\"elevation\\\":1606.0,\\\"hourly_units\\\":{\\\"time\\\":\\\"iso8601\\\",\\\"temperature_2m\\\":\\\"°C\\\",\\\"relative_humidity_2m\\\":\\\"%\\\",\\\"dew_point_2m\\\":\\\"°C\\\",\\\"apparent_temperature\\\":\\\"°C\\\"},\\\"hourly\\\":{\\\"time\\\":[\\\"2015-05-01T00:00\\\",\\\"2015-05-01T01:00\\\",\\\"2015-05-01T02:00\\\",\\\"2015-05-01T03:00\\\",\\\"2015-05-01T04:00\\\",\\\"2015-05-01T05:00\\\",\\\"2015-05-01T06:00\\\",\\\"2015-05-01T07:00\\\",\\\"2015-05-01T08:00\\\",\\\"2015-05-01T09:00\\\",\\\"2015-05-01T10:00\\\",\\\"2015-05-01T11:00\\\",\\\"2015-05-01T12:00\\\",\\\"2015-05-01T13:00\\\",\\\"2015-05-01T14:00\\\",\\\"2015-05-01T15:00\\\",\\\"2015-05-01T16:00\\\",\\\"2015-05-01T17:00\\\",\\\"2015-05-01T18:00\\\",\\\"2015-05-01T19:00\\\",\\\"2015-05-01T20:00\\\",\\\"2015-05-01T21:00\\\",\\\"2015-05-01T22:00\\\",\\\"2015-05-01T23:00\\\",\\\"2015-05-02T00:00\\\",\\\"2015-05-02T01:00\\\",\\\"2015-05-02T02:00\\\",\\\"2015-05-02T03:00\\\",\\\"2015-05-02T04:00\\\",\\\"2015-05-02T05:00\\\",\\\"2015-05-02T06:00\\\",\\\"2015-05-02T07:00\\\",\\\"2015-05-02T08:00\\\",\\\"2015-05-02T09:00\\\",\\\"2015-05-02T10:00\\\",\\\"2015-05-02T11:00\\\",\\\"2015-05-02T12:00\\\",\\\"2015-05-02T13:00\\\",\\\"2015-05-02T14:00\\\",\\\"2015-05-02T15:00\\\",\\\"2015-05-02T16:00\\\",\\\"2015-05-02T17:00\\\",\\\"2015-05-02T18:00\\\",\\\"2015-05-02T19:00\\\",\\\"2015-05-02T20:00\\\",\\\"2015-05-02T21:00\\\",\\\"2015-05-02T22:00\\\",\\\"2015-05-02T23:00\\\",\\\"2015-05-03T00:00\\\",\\\"2015-05-03T01:00\\\",\\\"2015-05-03T02:00\\\",\\\"2015-05-03T03:00\\\",\\\"2015-05-03T04:00\\\",\\\"2015-05-03T05:00\\\",\\\"2015-05-03T06:00\\\",\\\"2015-05-03T07:00\\\",\\\"20\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "summarize_table_or_json",
+      "ok": true,
+      "reason": "Get a compact summary of this large JSON to understand the temporal range, temperature values, and structure.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json"
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json\",\n  \"type\": \"json\",\n  \"shape\": {\n    \"latitude\": \"float\",\n    \"longitude\": \"float\",\n    \"generationtime_ms\": \"float\",\n    \"utc_offset_seconds\": \"int\",\n    \"timezone\": \"str\",\n    \"timezone_abbreviation\": \"str\",\n    \"elevation\": \"float\",\n    \"hourly_units\": {\n      \"time\": \"str\",\n      \"temperature_2m\": \"str\",\n      \"relative_humidity_2m\": \"str\",\n      \"dew_point_2m\": \"str\",\n      \"apparent_temperature\": \"str\"\n    },\n    \"hourly\": {\n      \"time\": {\n        \"type\": \"list\",\n        \"length\": 1464,\n        \"sample\": \"str\"\n      },\n      \"temperature_2m\": {\n        \"type\": \"list\",\n        \"length\": 1464,\n        \"sample\": \"float\"\n      },\n      \"relative_humidity_2m\": {\n        \"type\": \"list\",\n        \"length\": 1464,\n        \"sample\": \"int\"\n      },\n      \"dew_point_2m\": {\n        \"type\": \"list\",\n        \"length\": 1464,\n        \"sample\": \"float\"\n      },\n      \"apparent_temperature\": {\n        \"type\": \"list\",\n        \"length\": 1464,\n        \"sample\": \"float\"\n      }\n    },\n    \"daily_units\": {\n      \"time\": \"str\",\n      \"temperature_2m_max\": \"str\",\n      \"temperature_2m_min\": \"str\",\n      \"apparent_temperature_max\": \"str\"\n    },\n    \"daily\": {\n      \"time\": {\n        \"type\": \"list\",\n        \"length\": 61,\n        \"sample\": \"str\"\n      },\n      \"temperature_2m_max\": {\n        \"type\": \"list\",\n        \"length\": 61,\n        \"sample\": \"float\"\n      },\n      \"temperature_2m_min\": {\n        \"type\": \"list\",\n        \"length\": 61,\n        \"sample\": \"float\"\n      },\n      \"apparent_temperature_max\": {\n        \"type\": \"list\",\n        \"length\": 61,\n        \"sample\": \"f\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read ERA5-Land aggregate stats to get regional Tmax metrics for the heat field anchor.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"ECMWF/ERA5_LAND/HOURLY\\\",\\n  \\\"start\\\": \\\"2015-05-01\\\",\\n  \\\"end\\\": \\\"2015-06-15\\\",\\n  \\\"stats\\\": {\\n    \\\"precipitation_sum_mm_max\\\": 176.4477180015689,\\n    \\\"precipitation_sum_mm_mean\\\": 112.73312105827375,\\n    \\\"precipitation_sum_mm_min\\\": 50.25455222245512,\\n    \\\"precipitation_sum_mm_stdDev\\\": 28.25649681178524,\\n    \\\"temperature_2m_max_c_max\\\": 46.2466979980469,\\n    \\\"temperature_2m_max_c_mean\\\": 44.65293957304009,\\n    \\\"temperature_2m_max_c_min\\\": 41.43891296386721,\\n    \\\"temperature_2m_max_c_stdDev\\\": 0.8889879389768492,\\n    \\\"u_component_of_wind_10m_max\\\": 1.7901166677474976,\\n    \\\"u_component_of_wind_10m_mean\\\": 1.037593087057697,\\n    \\\"u_component_of_wind_10m_min\\\": 0.42406539467797766,\\n    \\\"u_component_of_wind_10m_stdDev\\\": 0.2893825105958458,\\n    \\\"v_component_of_wind_10m_max\\\": 0.8478775845057722,\\n    \\\"v_component_of_wind_10m_mean\\\": 0.0028427582463822214,\\n    \\\"v_component_of_wind_10m_min\\\": -1.082410979098168,\\n    \\\"v_component_of_wind_10m_stdDev\\\": 0.4613944485872551\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1206
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get population sum for exposure denominator anchor.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-016/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"WorldPop/GP/100m/pop\\\",\\n  \\\"year\\\": 2015,\\n  \\\"population_sum\\\": {\\n    \\\"population\\\": 10849061.098342912\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 298
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "summarize_table_or_json",
+      "ok": true,
+      "reason": "Get CHIRPS daily precipitation summary to compute daily means.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json"
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json\",\n  \"type\": \"json\",\n  \"shape\": {\n    \"dataset\": \"str\",\n    \"start\": \"str\",\n    \"end\": \"str\",\n    \"stats\": {\n      \"chirps_event_precip_mm_max\": \"float\",\n      \"chirps_event_precip_mm_mean\": \"float\",\n      \"chirps_event_precip_mm_min\": \"float\",\n      \"chirps_event_precip_mm_stdDev\": \"float\"\n    }\n  },\n  \"numeric_list_summaries\": {},\n  \"text_preview\": \"{\\n  \\\"dataset\\\": \\\"UCSB-CHG/CHIRPS/DAILY\\\",\\n  \\\"start\\\": \\\"2015-05-01\\\",\\n  \\\"end\\\": \\\"2015-06-15\\\",\\n  \\\"stats\\\": {\\n    \\\"chirps_event_precip_mm_max\\\": 156.11135065555573,\\n    \\\"chirps_event_precip_mm_mean\\\": 110.37099070034142,\\n    \\\"chirps_event_precip_mm_min\\\": 56.02958796545863,\\n    \\\"chirps_event_precip_mm_stdDev\\\": 20.818470169148057\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 872
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 9,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get GPM IMERG precipitation total to compute daily mean for precipitation relief anchor.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"NASA/GPM_L3/IMERG_V07\\\",\\n  \\\"start\\\": \\\"2015-05-01\\\",\\n  \\\"end\\\": \\\"2015-06-15\\\",\\n  \\\"stats\\\": {\\n    \\\"gpm_event_precip_mm_max\\\": 175.78649680968374,\\n    \\\"gpm_event_precip_mm_mean\\\": 97.41285874583234,\\n    \\\"gpm_event_precip_mm_min\\\": 42.05899908207357,\\n    \\\"gpm_event_precip_mm_stdDev\\\": 24.656573909899063\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 520
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 10,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find all precipitation-related JSON files for the three precipitation totals.",
+      "args": {
+        "query": "precipitation",
+        "glob": "**/*.json",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"precipitation\",\n  \"match_count\": 1,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json\",\n      \"snippet\": \"\\\"precipitation_sum_mm_max\\\": 176.4477180015689,\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 302
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json"
+      ]
+    },
+    {
+      "step": 11,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "List remote sensing files for image surface anchor counts.",
+      "args": {
+        "subdir": "data/remote_sensing",
+        "max_files": 20
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 3,\n  \"file_count_total\": 3,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/remote_sensing/remote_sensing_001_NASA_Worldview_GIBS_snapshot.bin\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_001_NASA_Worldview_GIBS_snapshot.bin\",\n      \"bytes\": 1822,\n      \"suffix\": \".bin\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/remote_sensing/remote_sensing_002_pre.jpg\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_002_pre.jpg\",\n      \"bytes\": 155329,\n      \"suffix\": \".jpg\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/remote_sensing/remote_sensing_003_event.jpg\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_003_event.jpg\",\n      \"bytes\": 175291,\n      \"suffix\": \".jpg\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 934
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 12,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the GDACS event catalog to count matching records for the image surface anchor.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json\",\n  \"text\": \"{\\\"type\\\":\\\"FeatureCollection\\\",\\\"features\\\":[{\\\"type\\\":\\\"Feature\\\",\\\"bbox\\\":[125.4,38.4,125.4,38.4],\\\"geometry\\\":{\\\"type\\\":\\\"Point\\\",\\\"coordinates\\\":[125.4,38.4]},\\\"properties\\\":{\\\"eventtype\\\":\\\"TC\\\",\\\"eventid\\\":1000172,\\\"episodeid\\\":50,\\\"eventname\\\":\\\"CHAN-HOM-15\\\",\\\"glide\\\":\\\"\\\",\\\"name\\\":\\\"Tropical Cyclone CHAN-HOM-15\\\",\\\"description\\\":\\\"Tropical Cyclone CHAN-HOM-15\\\",\\\"htmldescription\\\":\\\"Orange Tropical Cyclone CHAN-HOM-15 in Japan, China from: 30 Jun 2015  to: 12 Jul 2015 .\\\",\\\"icon\\\":\\\"https://www.gdacs.org/images/gdacs_icons/maps/Green/TC.png\\\",\\\"iconoverall\\\":\\\"https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png\\\",\\\"url\\\":{\\\"geometry\\\":\\\"https://www.gdacs.org/gdacsapi/api/polygons/getgeometry?eventtype=TC&eventid=1000172&episodeid=50\\\",\\\"report\\\":\\\"https://www.gdacs.org/report.aspx?eventid=1000172&episodeid=50&eventtype=TC\\\",\\\"details\\\":\\\"https://www.gdacs.org/gdacsapi/api/events/geteventdata?eventtype=TC&eventid=1000172\\\"},\\\"alertlevel\\\":\\\"Orange\\\",\\\"alertscore\\\":2,\\\"episodealertlevel\\\":\\\"Green\\\",\\\"episodealertscore\\\":1.0,\\\"istemporary\\\":\\\"false\\\",\\\"iscurrent\\\":\\\"false\\\",\\\"country\\\":\\\"Japan, China\\\",\\\"fromdate\\\":\\\"2015-06-30T12:00:00\\\",\\\"todate\\\":\\\"2015-07-12T18:00:00\\\",\\\"datemodified\\\":\\\"2022-07-06T07:58:22\\\",\\\"iso3\\\":\\\"JPN\\\",\\\"source\\\":\\\"JTWC\\\",\\\"sourceid\\\":\\\"\\\",\\\"polygonlabel\\\":\\\"Centroid\\\",\\\"Class\\\":\\\"Point_Centroid\\\",\\\"countryonland\\\":\\\"\\\",\\\"affectedcountries\\\":[{\\\"iso2\\\":\\\"JP\\\",\\\"iso3\\\":\\\"JPN\\\",\\\"countryname\\\":\\\"Japan\\\"},{\\\"iso2\\\":\\\"CN\\\",\\\"iso3\\\":\\\"CHN\\\",\\\"countryname\\\":\\\"China\\\"}],\\\"severitydata\\\":{\\\"severi\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json"
+      ]
+    },
+    {
+      "step": 13,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Check the XML catalog for heat wave matching records.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml\",\n  \"text\": \"<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?>\\n<rss version=\\\"2.0\\\" xmlns:dc=\\\"http://purl.org/dc/elements/1.1/\\\" xmlns:geo=\\\"http://www.w3.org/2003/01/geo/wgs84_pos#\\\" xmlns:gdacs=\\\"http://www.gdacs.org\\\" xmlns:glide=\\\"http://glidenumber.net\\\" xmlns:georss=\\\"http://www.georss.org/georss\\\" xmlns:atom=\\\"http://www.w3.org/2005/Atom\\\">\\n  <channel>\\n    <title>GDACS RSS information</title>\\n    <link>https://www.gdacs.org/</link>\\n    <copyright>public domain</copyright>\\n    <description>Near real-time notification about natural disaster with a potential humanitarian impact</description>\\n    <managingEditor>stefano.paris@ext.ec.europa.eu</managingEditor>\\n    <!--Records number 73-->\\n    <!--Start 5/21/2026 10:25:01 PM-->\\n    <!--=Start 5/21/2026 10:25:01 PM-->\\n    <webMaster>stefano.paris@ext.ec.europa.eu</webMaster>\\n    <pubDate>Thu, 21 May 2026 20:25:01 GMT</pubDate>\\n    <atom:link href=\\\"https://www.gdacs.org/xml/rss.xml\\\" rel=\\\"self\\\" type=\\\"application/rss+xml\\\" />\\n    <item>\\n      <title>Green forest fire notification in Australia</title>\\n      <description>On 21/05/2026, a forest fire started in Australia,  until 21/05/2026.</description>\\n      <enclosure type=\\\"image/png\\\" length=\\\"1\\\" url=\\\"\\\" />\\n      <gdacs:temporary>false</gdacs:temporary>\\n      <link>https://www.gdacs.org/report.aspx?eventtype=WF&amp;eventid=1028722</link>\\n      <pubDate>Thu, 21 May 2026 11:00:10 GMT</pubDate>\\n      <gdacs:dateadded>Thu, 21 May 2026 11:00:10 GMT</gdacs:dateadded>\\n      <gdacs:datemodified>Thu, 21 May 2026 19:00:10 GMT</gdacs:\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml"
+      ]
+    },
+    {
+      "step": 14,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Compute all numeric values for each anchor from package evidence.",
+      "args": {
+        "code_chars": 2917,
+        "code_sha1": "f3762291c709",
+        "code_preview": "import json\n# Load the Open-Meteo hourly data for point record\nwith open('event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json') as f:\n    data = json.load(f)\nhourly = data['hourly']\ntimes = hourly['time']\ntemps = hourly['temperature_2m']\n# Find Tmax maximum\ntmax_max = max(temps)\nprint(f'Tmax max point: {tmax_max}')\n# Compute heat load above 25 C: sum of all hourly Tmax? Actually heat load above 25 C: sum of (Tmax - 25) for hours where T\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-016_Q1/python_snippets/step_14_f3762291c709.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-016_Q1/python_snippets/step_14_f3762291c709.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.143,\n  \"stdout\": \"Tmax max point: 27.9\\nHeat load above 25 C (degree-hours): 24.5\\nLongest Tmax >=25 C run (hours): 8\\nPoint lon/lat: 74.8125, 34.059753\\nInside box: False, nearest edge dist (deg): 12.957914634346416\\nGap from regional Tmax max: 18.3466979980469\\nGap from regional Tmax mean max: 16.752939573040095\\nSpatial range: 4.8077850341796875\\nPopulation millions: 10.849061098342911\\nMean margin above 40 C: 4.6529395730400935\\nExposure weighted mean margin: 50.48002571480956\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 694
+      },
+      "code": {
+        "text": "import json\n# Load the Open-Meteo hourly data for point record\nwith open('event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json') as f:\n    data = json.load(f)\nhourly = data['hourly']\ntimes = hourly['time']\ntemps = hourly['temperature_2m']\n# Find Tmax maximum\ntmax_max = max(temps)\nprint(f'Tmax max point: {tmax_max}')\n# Compute heat load above 25 C: sum of all hourly Tmax? Actually heat load above 25 C: sum of (Tmax - 25) for hours where T\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-016_Q1/python_snippets/step_14_f3762291c709.py"
+      ]
+    },
+    {
+      "step": 15,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Compute daily mean precipitation and confirm window length.",
+      "args": {
+        "code_chars": 618,
+        "code_sha1": "a9bc167cb599",
+        "code_preview": "# Compute daily means for three precipitation totals\n# Accumulated means from files\nera5_total_mean = 112.73312105827375\nchirps_total_mean = 110.37099070034142\ngpm_total_mean = 97.41285874583234\nwindow_days = 46  # May 1 to June 15 inclusive\nprint('ERA5-Land daily mean (mm/day):', era5_total_mean / window_days)\nprint('CHIRPS daily mean (mm/day):', chirps_total_mean / window_days)\nprint('GPM IMERG daily mean (mm/day):', gpm_total_mean / window_days)\n# Check window length inclusive\nfrom datetime import date\nd1 = date\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-016_Q1/python_snippets/step_15_a9bc167cb599.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-016_Q1/python_snippets/step_15_a9bc167cb599.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.14,\n  \"stdout\": \"ERA5-Land daily mean (mm/day): 2.450720023005951\\nCHIRPS daily mean (mm/day): 2.3993693630509005\\nGPM IMERG daily mean (mm/day): 2.117670842300703\\nInclusive window days: 46\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 399
+      },
+      "code": {
+        "text": "# Compute daily means for three precipitation totals\n# Accumulated means from files\nera5_total_mean = 112.73312105827375\nchirps_total_mean = 110.37099070034142\ngpm_total_mean = 97.41285874583234\nwindow_days = 46  # May 1 to June 15 inclusive\nprint('ERA5-Land daily mean (mm/day):', era5_total_mean / window_days)\nprint('CHIRPS daily mean (mm/day):', chirps_total_mean / window_days)\nprint('GPM IMERG daily mean (mm/day):', gpm_total_mean / window_days)\n# Check window length inclusive\nfrom datetime import date\nd1 = date\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-016_Q1/python_snippets/step_15_a9bc167cb599.py"
+      ]
+    },
+    {
+      "step": 16,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "List all catalog files to check for heat wave matching records.",
+      "args": {
+        "subdir": "data/event_catalogs",
+        "max_files": 10
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 4,\n  \"file_count_total\": 4,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json\",\n      \"bytes\": 14962,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml\",\n      \"bytes\": 225166,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.xml\",\n      \"bytes\": 145,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_004_04_NASA_EONET_v3_events.xml.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_004_04_NASA_EONET_v3_events.xml.xml\",\n      \"bytes\": 14084,\n      \"suffix\": \".xml\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1360
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 17,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Check NASA EONET catalog for heat wave matching record.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.xml",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.xml\",\n  \"text\": \"{\\n\\t\\\"title\\\": \\\"EONET Events\\\",\\n\\t\\\"description\\\": \\\"Natural events from EONET.\\\",\\n\\t\\\"link\\\": \\\"https://eonet.gsfc.nasa.gov/api/v3/events\\\",\\n\\t\\\"events\\\": [\\n\\t]\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 322
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.xml"
+      ]
+    },
+    {
+      "step": 18,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read NASA EONET v3 events to find heat wave matching record.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_004_04_NASA_EONET_v3_events.xml.xml",
+        "max_chars": 15000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_004_04_NASA_EONET_v3_events.xml.xml\",\n  \"text\": \"{\\n\\t\\\"title\\\": \\\"EONET Events\\\",\\n\\t\\\"description\\\": \\\"Natural events from EONET.\\\",\\n\\t\\\"link\\\": \\\"https://eonet.gsfc.nasa.gov/api/v3/events\\\",\\n\\t\\\"events\\\": [\\n\\t\\t{\\n\\t\\t\\t\\\"id\\\": \\\"EONET_20222\\\",\\n\\t\\t\\t\\\"title\\\": \\\"Wildfire in Australia 1028722\\\",\\n            \\\"description\\\": null,\\n\\t\\t\\t\\\"link\\\": \\\"https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20222\\\",\\n\\t\\t\\t\\\"closed\\\": \\\"2026-05-20T00:00:00Z\\\",\\n\\t\\t\\t\\t\\\"categories\\\": [\\n\\t\\t\\t\\t\\t{\\n\\t\\t\\t\\t\\t\\\"id\\\": \\\"wildfires\\\",\\n\\t\\t\\t\\t\\t\\\"title\\\": \\\"Wildfires\\\"\\n\\t\\t\\t\\t}\\n\\n\\t    \\t\\t\\t\\t],\\n    \\t\\t\\t\\\"sources\\\": [\\n\\t\\t\\t\\t\\t{\\n\\t\\t\\t\\t\\t\\\"id\\\": \\\"GDACS\\\",\\n\\t\\t\\t\\t\\t\\\"url\\\": \\\"https://www.gdacs.org/report.aspx?eventtype=WF&eventid=1028722\\\"\\n\\t\\t\\t\\t}\\n\\n\\t\\t\\t\\t\\t\\t\\n\\t\\t\\t],\\n\\t\\t\\t\\t\\t\\\"geometry\\\": [\\n\\t\\t\\t\\t\\t{\\n\\t\\t\\t\\t\\t\\t\\t\\\"magnitudeValue\\\": 8927.00,\\n\\t\\t\\t\\t\\t\\\"magnitudeUnit\\\": \\\"hectare\\\",\\n\\t\\t\\t\\t\\t\\\"date\\\": \\\"2026-05-20T19:00:00Z\\\",\\n\\t\\t\\t\\t\\t\\\"type\\\": \\\"Point\\\", \\n\\t\\t\\t\\t\\t\\t\\t\\\"coordinates\\\": [ 127.08583841737595, -14.079938543695741 ]\\n\\t\\t\\t\\t\\t\\t\\t}\\n\\n\\t\\t\\t\\t\\t\\t\\n\\t\\t\\t]\\n\\t\\t},\\n\\n\\t\\t\\t{\\n\\t\\t\\t\\\"id\\\": \\\"EONET_20223\\\",\\n\\t\\t\\t\\\"title\\\": \\\"Wildfire in Australia 1028723\\\",\\n            \\\"description\\\": null,\\n\\t\\t\\t\\\"link\\\": \\\"https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20223\\\",\\n\\t\\t\\t\\\"closed\\\": \\\"2026-05-20T00:00:00Z\\\",\\n\\t\\t\\t\\t\\\"categories\\\": [\\n\\t\\t\\t\\t\\t{\\n\\t\\t\\t\\t\\t\\\"id\\\": \\\"wildfires\\\",\\n\\t\\t\\t\\t\\t\\\"title\\\": \\\"Wildfires\\\"\\n\\t\\t\\t\\t}\\n\\n\\t    \\t\\t\\t\\t],\\n    \\t\\t\\t\\\"sources\\\": [\\n\\t\\t\\t\\t\\t{\\n\\t\\t\\t\\t\\t\\\"id\\\": \\\"GDACS\\\",\\n\\t\\t\\t\\t\\t\\\"url\\\": \\\"htt\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-016/data/event_catalogs/event_catalogs_004_04_NASA_EONET_v3_events.xml.xml"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Event window is 46 days inclusive from 1 May to 15 June 2015",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json",
+      "support_type": "metadata"
+    },
+    {
+      "claim": "Regional Tmax max = 46.2467 °C, mean = 44.6529 °C, min = 41.4389 °C",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "Point record (lat=34.06, lon=74.81) has Tmax max = 27.9 °C, heat load above 25 °C = 24.5 degree-hours, longest run >=25 °C = 8 hours",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_archive.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Point is outside the AOI box (78-80°E, 19.5-21.5°N) with nearest-edge distance ~13°",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-016/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "ERA5-Land total precipitation mean = 112.73 mm over 46 days → 2.45 mm/day",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "CHIRPS total precipitation mean = 110.37 mm → 2.40 mm/day",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "GPM IMERG total precipitation mean = 97.41 mm → 2.12 mm/day",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-016/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Pre scene exists (remote_sensing_002_pre.jpg), no post scene exists, no matching heat wave catalog record in any GDACS or EONET file",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-016/data/remote_sensing/",
+      "support_type": "metadata"
+    },
+    {
+      "claim": "Population sum = 10,849,061 (10.85 million)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-016/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "Exposure weighted mean margin = 10.85 * 4.6529 = 50.48",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-016/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "support_type": "derived_metric"
+    }
+  ],
+  "reasoning_summary": [
+    "Listed package files, identified key evidence for all five anchors.",
+    "Computed inclusive window = 46 days from ERA5-Land metadata (May 1 – June 15).",
+    "From ERA5-Land stats: regional Tmax max=46.25, mean=44.65, min=41.44; mean margin above 40°C = 4.65, absolute margin = 6.25, spatial range = 4.81.",
+    "Regional heat-field anchor passes all three condition checks (window=46, mean margin>=4.5, absolute margin>=6.0) → primary_heat_anchor.",
+    "Open-Meteo point (lat 34.06, lon 74.81) is far outside AOI box (78–80°E, 19.5–21.5°N); gaps from regional max and mean >16°C, so cool_point fails.",
+    "Precipitation daily means all below 2.5 mm/day, far below 5.0 mm/day threshold → precipitation_relief fails.",
+    "Remote sensing has one pre image, no post image, no matching catalog record → image_surface fails.",
+    "Exposure denominator is positive (10.85M people) and regional heat-field anchor is primary, so exposure_denominator_anchor is supporting_context.",
+    "Constructed final JSON hierarchy with regional_heat_field_anchor as primary, exposure as context, all others as not_primary."
+  ],
+  "unsupported_or_unresolved": [
+    "No explicit 'post' scene found; only pre.jpg and event.jpg exist.",
+    "Event catalogs contain no heat wave entries for India/Pakistan 2015, so matching catalog count is zero.",
+    "Point temperature data spans May 1–23 only, not full 46 days, but gaps are large enough that full period would not change conclusion."
+  ],
+  "final_answer": {
+    "event_window_days": 46,
+    "candidate_tests": [
+      {
+        "test_id": "regional_heat_field_anchor",
+        "computed_value": {
+          "event_window_days": 46,
+          "regional_Tmax_mean_margin_above_40C": 4.6529395730400935,
+          "regional_Tmax_absolute_margin_above_40C": 6.246697998046875,
+          "regional_Tmax_spatial_range": 4.8077850341796875
+        },
+        "evidence_result": "pass",
+        "role": "primary_heat_anchor"
+      },
+      {
+        "test_id": "cool_point_scale_anchor",
+        "computed_value": {
+          "point_inside_box": false,
+          "nearest_edge_distance_deg": 12.957914634346416,
+          "Tmax_max_point": 27.9,
+          "gap_from_regional_Tmax_max": 18.3466979980469,
+          "gap_from_regional_Tmax_mean_max": 16.752939573040095,
+          "heat_load_above_25C_degree_hours": 24.5,
+          "longest_Tmax_ge25C_run_hours": 8
+        },
+        "evidence_result": "fail",
+        "role": "not_primary_heat_anchor"
+      },
+      {
+        "test_id": "precipitation_relief_anchor",
+        "computed_value": {
+          "ERA5_land_daily_mean_mm_per_day": 2.450720023005951,
+          "CHIRPS_daily_mean_mm_per_day": 2.3993693630509005,
+          "GPM_IMERG_daily_mean_mm_per_day": 2.117670842300703
+        },
+        "evidence_result": "fail",
+        "role": "not_primary_heat_anchor"
+      },
+      {
+        "test_id": "image_surface_anchor",
+        "computed_value": {
+          "pre_scene_count": 1,
+          "post_scene_count": 0,
+          "matching_event_catalog_count": 0
+        },
+        "evidence_result": "fail",
+        "role": "not_primary_heat_anchor"
+      },
+      {
+        "test_id": "exposure_denominator_anchor",
+        "computed_value": {
+          "population_millions": 10.849061098342911,
+          "exposure_weighted_mean_margin": 50.48002571480956
+        },
+        "evidence_result": "pass",
+        "role": "supporting_context"
+      }
+    ],
+    "primary_heat_calibration": {
+      "label": "Regional heat-field anchor dominates because it satisfies the severity criteria (window=46 days, mean margin>=4.5°C, absolute margin>=6.0°C). All other anchors fail their representativeness or evidence thresholds.",
+      "primary_anchor": "regional_heat_field_anchor",
+      "supporting_context": [
+        "exposure_denominator_anchor"
+      ],
+      "not_primary_heat_anchors": [
+        "cool_point_scale_anchor",
+        "precipitation_relief_anchor",
+        "image_surface_anchor"
+      ]
+    },
+    "one_sentence_interpretation": "The regional heat-field anchor carries the heat severity diagnosis because its inclusive 46-day window, 4.65 °C mean margin above 40 °C, and 6.25 °C absolute margin above 40 °C all meet the primary-anchor criteria; the cool-point record is scale-mismatched (point lies 13° outside the AOI, gaps exceed 16 °C), precipitation totals are too weak (all daily means <2.5 mm/day), surface-change imagery lacks a post scene and catalog match, and the exposure denominator scales consequence via the regional mean margin rather than replacing the physical heat field."
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "The final JSON answer includes all required elements with correct numeric values mostly within tolerance. Minor schema and unit naming inconsistencies and a slightly verbose label reduce full correctness score slightly.",
+      "llm_rubric": "Almost all rubric criteria are fully met with some minor deductions for schema/label style differences."
+    },
+    "one_sentence_rationale": "The model's answer is nearly fully correct with comprehensive computations and reasoning, only losing minor points for schema and labeling conventions.",
+    "critical_errors": [],
+    "missing_answer_elements": []
+  },
+  "provenance": {
+    "task_id": "CSX-016_Q1",
+    "model_id": "deepseek-v4-flash",
+    "model_name": "DeepSeek V4 Flash",
+    "trajectory_path": "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-016_Q1/trajectory.json",
+    "judge_path": "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/judge_gpt41mini_final/per_task_judge_scores.jsonl"
+  }
+}

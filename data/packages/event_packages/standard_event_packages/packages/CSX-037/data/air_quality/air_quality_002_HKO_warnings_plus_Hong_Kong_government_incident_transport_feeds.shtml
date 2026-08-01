@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tropical Cyclone Warning Signals｜Hong Kong Observatory(HKO)｜Warnings & Signals Database</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="Tropical Cyclone Warning Signals">
+    <meta name="description" content="Tropical Cyclone Warning Signals">
+    <meta name="recordId" content="2018123100000036348">
+    <meta name="lang" content="en">
+	<meta property="fb:app_id" content="468280339992518" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Tropical Cyclone Warning Signals" />
+	<meta property="og:description" content="Tropical Cyclone Warning Signals Database records since 1946. Please refer to the page for historical tropical cyclone warning records between 1917 and 1941. For historical records of using typhoon gun" />
+	<meta property="og:image" content="" />
+	<meta property="og:url" content="https://www.hko.gov.hk/en/wxinfo/climat/warndb/warndb1.shtml" />
+	<meta property="og:image:width" content="600" />
+	<meta property="og:image:height" content="314" />
+    <!-- Bootstrap -->
+    <link id="styleSheet0" href="/css/bootstrap.css" rel="stylesheet" media="screen" type="text/css">
+    <link id="styleSheet1" href="/css/bsplus.css" rel="stylesheet" media="all" type="text/css">
+    <link id="styleSheet2" href="/css/default.css" rel="stylesheet" media="screen" type="text/css">
+    <link id="styleSheet3" href="/css/layout.css" rel="stylesheet" media="all" type="text/css">
+    <link href="/css/flexslider.css" rel="stylesheet" media="all" type="text/css">
+    <link href="/css/jquery-ui.1.13.1.css" rel="stylesheet" media="all" type="text/css">
+    <style type="text/css">
+.abc{
+display: none;
+}
+		#result, #result td {border:1px solid black;}
+#result {width:90%; margin:2px auto;border-collapse:collapse;}
+#result td {padding:1em; text-align:center; font-weight:bold;}
+#result th {text-align:center; border:1px solid black; color:white; background-color:rgb(26, 88, 171); padding:1em;}
+#result tr:nth-child(2) td {background-color:rgb(26, 88, 171); color:white;}
+#startdate, #enddate {width:80px;}
+#seldateSub {margin-bottom:0;}
+.provis {font-style:italic; background-color:#B4CEF2;}
+#provis {display:none;}
+#remarks1, #remarks2, #remarks3 {font-weight:bold; display:none;} 
+@media only screen and (max-width: 1023px) {
+    #result_content {
+        overflow-x:auto;
+    }
+    #result {min-width:542px;}
+}
+    </style>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:/ -->
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="js/html5shiv.js"></script>
+    <script type="text/javascript" src="js/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-ui.min.1.13.1.js"></script>
+    <script type="text/javascript" src="/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/js/jquery.easing.js"></script>
+    <script type="text/javascript" src="/js/jquery.flexslider.js"></script>
+    <script type="text/javascript" src="/js/menu.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+	<script type="text/javascript" src="/js/moment.2.29.4.js"></script>
+	<script type="text/javascript" src="/js/vue.min.js"></script>
+	<script type="text/javascript" src="/js/vue-router.js"></script>
+	<script type="text/javascript" src="/js/vue-extend.js"></script>
+	<script type="text/javascript" src="/js/tmp.js"></script>
+	<script type="text/javascript" src="/js/jquery.rwdImageMaps.min.js"></script>
+
+
+    <script type="text/javascript">
+		
+var menu_id = '0';
+var section_id = '2018010100000011396';
+
+ (function () {
+  var data;
+  var tcnames = {};
+
+  function addzero(arg) {
+    if (arg.length == 1) {
+      return "0" + arg;
+    } else {
+      return arg;
+    }
+  }
+
+  function doAPIcall(type, url, callback) {
+    var rands = Math.floor(Math.random(100) * 100000).toString();
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.overrideMimeType("text/plain");
+    xmlhttp.onreadystatechange = function () {
+      if (xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status == 200) {
+        var data = xmlhttp.responseText;
+        if (callback) callback(data);
+      }
+    };
+    xmlhttp.open(type, url + "?s=" + rands, true);
+    xmlhttp.send();
+  }
+
+  function processtcname(text) {
+    var lines = text.split("\n");
+    for (var i = 0; i < lines.length; i++) {
+      if (lines[i] != "") {
+        var raw = lines[i].split(/\t/);
+        tcnames[raw[0]] = raw[1];
+      }
+    }
+    tcnames["NIL"] = "No Name";
+    process(data);
+  }
+
+  function processtc(lines) {
+    doAPIcall("GET", "/dps/wxinfo/climat/warndb/tcname.dat", processtcname);
+    data = lines;
+    //alert(data);
+  }
+
+  function process(data) {
+    var startdate = document.getElementById("startdate").value.trim();
+    var enddate = document.getElementById("enddate").value.trim();
+    var sel = document.getElementById("selType");
+    var selText = sel.options[sel.selectedIndex].text;
+    var selType = sel.options[sel.selectedIndex].value;
+    var months = {
+      "01": "Jan",
+      "02": "Feb",
+      "03": "Mar",
+      "04": "Apr",
+      "05": "May",
+      "06": "Jun",
+      "07": "Jul",
+      "08": "Aug",
+      "09": "Sep",
+      10: "Oct",
+      11: "Nov",
+      12: "Dec",
+    };
+    var showRemark1 = false;
+    var showRemark2 = false;
+    var showRemark3 = false;
+    var searchdate1 = startdate;
+    var searchdate2 = enddate;
+    startdate = startdate.substr(0, 4) + "-" + startdate.substr(4, 2);
+    startdate = moment(startdate).subtract(1, "months").format("YYYY-MM");
+    enddate = enddate.substr(0, 4) + "-" + enddate.substr(4, 2);
+    enddate = moment(enddate).add(1, "months").format("YYYY-MM");
+    var lines = data.split("\n");
+    var html = "";
+    var num_records = 0;
+    var provis = false;
+    var intensity = {
+      UC: "--",
+      TS: "Tropical Storm",
+      T: "Typhoon",
+      TST: "Typhoon (Severe Typhoon)",
+      STS: "Severe Tropical Storm",
+      TD: "Tropical Depression",
+      TSupT: "Typhoon (Super Typhoon)",
+      SuperT: "Super Typhoon",
+      "TD/TD": "Tropical Depression/Tropical Depression",
+      ST: "Severe Typhoon",
+    };
+
+    for (var i = 0; i < lines.length; i++) {
+      var data = lines[i].split(/\t/);
+      if (lines[i].search("UUUU") > -1) {
+        provis = true;
+        continue;
+      }
+      if (data.length > 1) {
+        if (data[1] != "MSN") {
+          var obsdate = data[8] + "-" + addzero(data[7]);
+          var obsdate2 = data[13] + "-" + addzero(data[12]);
+          if (
+            moment(obsdate, "YYYY-MM-DD").isBetween(startdate, enddate) ==
+              true ||
+            moment(obsdate2, "YYYY-MM-DD").isBetween(startdate, enddate) == true
+          ) {
+            var signaltype = data[3];
+            if (
+              selType != "all" &&
+              selType != "3above" &&
+              selType != "8above" &&
+              selType != "9above"
+            ) {
+              var options = false;
+            } else {
+              var options = true;
+            }
+            if (signaltype != selType && options == false) {
+              continue;
+            } else if (selType == "3above" && signaltype == "1") {
+              continue;
+            } else if (
+              selType == "8above" &&
+              (signaltype == "1" || signaltype == "3")
+            ) {
+              continue;
+            } else if (
+              selType == "9above" &&
+              (signaltype == "1" || signaltype == "3" || signaltype == "8")
+            ) {
+              continue;
+            }
+            num_records++;
+            var dir = data[4];
+            if (data[5].length == 4) {
+              var starttime = data[5].substr(0, 2) + ":" + data[5].substr(2, 2);
+            } else if (data[5].length == 3) {
+              var starttime =
+                "0" + data[5].substr(0, 1) + ":" + data[5].substr(1, 2);
+            } else if (data[5].length == 2) {
+              var starttime = "00" + ":" + data[5];
+            } else if (data[5].length == 1) {
+              var starttime = "00" + ":0" + data[5];
+            }
+            if (data[10].length == 4) {
+              var endtime = data[10].substr(0, 2) + ":" + data[10].substr(2, 2);
+            } else if (data[10].length == 3) {
+              var endtime =
+                "0" + data[10].substr(0, 1) + ":" + data[10].substr(1, 2);
+            } else if (data[10].length == 2) {
+              var endtime = "00" + ":" + data[10];
+            } else if (data[10].length == 1) {
+              var endtime = "00" + ":0" + data[10];
+            }
+
+            if (data[15].length == 5) {
+              var duration =
+                data[15].substr(0, 3) + " " + data[15].substr(3, 2);
+            } else if (data[15].length == 4) {
+              var duration =
+                data[15].substr(0, 2) + " " + data[15].substr(2, 2);
+            } else if (data[15].length == 3) {
+              var duration =
+                "0" + data[15].substr(0, 1) + " " + data[15].substr(1, 2);
+            }
+
+            var launchdate =
+              addzero(data[6]) + "/" + months[addzero(data[7])] + "/" + data[8];
+            var canceldate =
+              addzero(data[11]) +
+              "/" +
+              months[addzero(data[12])] +
+              "/" +
+              data[13];
+            if (data[3] != "8") {
+              var signal = data[3];
+            } else {
+              showRemark1 = true;
+              if (data[4] == "SE") var signal = "8 SE";
+              if (data[4] == "SW") var signal = "8 SW";
+              if (data[4] == "NE") var signal = "8 NE";
+              if (data[4] == "NW") var signal = "8 NW";
+            }
+            if (data[4] == "*") {
+              signal = signal + "*";
+              showRemark2 = true;
+            }
+            if (data[2] == "" || data[2] == "NIL") {
+              var tcname = "no name";
+            } else {
+              var tcname = data[2];
+            }
+            if (data[9] == "S") {
+              starttime = starttime + " S";
+              showRemark3 = true;
+            }
+            if (data[14] == "S") {
+              endtime = endtime + " S";
+              showRemark3 = true;
+            }
+            if (provis == false) {
+              html += "<tr>";
+            } else {
+              html += "<tr class='provis'>";
+            }
+            if (intensity.hasOwnProperty(data[1])) {
+              html +=
+                "<td headers='header1'>" +
+                intensity[data[1]] +
+                "</td><td headers='header2'>" +
+                tcname +
+                "</td><td headers='header3'>" +
+                signal +
+                "</td><td headers='header4 header7'>" +
+                starttime +
+                "</td><td>" +
+                launchdate +
+                "</td><td headers='header5 header9'>" +
+                endtime +
+                "</td><td>" +
+                canceldate +
+                "</td><td headers='header6'>" +
+                duration +
+                "</td></tr>";
+            } else {
+              html +=
+                "<td headers='header1'></td><td headers='header2'>" +
+                tcname +
+                "</td><td headers='header3'>" +
+                signal +
+                "</td><td headers='header4 header7'>" +
+                starttime +
+                "</td><td>" +
+                launchdate +
+                "</td><td headers='header5 header9'>" +
+                endtime +
+                "</td><td>" +
+                canceldate +
+                "</td><td headers='header6'>" +
+                duration +
+                "</td></tr>";
+            }
+          }
+        }
+      }
+    }
+    if (html != "") {
+      var heading =
+        "<tr><th rowspan='2' id='header1' axis='intensity'>Intensity</th><th rowspan='2' id='header2' axis='name'>Name</th><th rowspan='2' id='header3' axis='signal'>Signal</th><th colspan='2' id='header4' axis='start time'>Start Time</th><th colspan='2' id='header5' axis='end time'>End Time</th><th rowspan='2' id='header6' axis='duration'>Duration<br>hh mm</th></tr>";
+      heading +=
+        "<tr><th id='header7' axis='hh mm'>hh mm</th><th id='header8' axis='dd/mon/yyyy'>dd/mon/yyyy</th><th id='header9' axis='hh mm'>hh mm</th><th id='header10' axis='dd/mon/yyyy'>dd/mon/yyyy</th></tr>";
+      html = heading + html;
+      var resulthead =
+        "<hr><p>Searching period : [" +
+        searchdate1 +
+        " - " +
+        searchdate2 +
+        "]<br>Signal number : [" +
+        selText +
+        "]<br>Total number of records : [" +
+        num_records.toString() +
+        "]</p>";
+      document.getElementById("result_heading").innerHTML = resulthead;
+      document.getElementById("result_content").innerHTML =
+        "<table id=\"result\" summary=\"This table list records of Tropical Cyclone Warning Signals. It consists of 8 columns.  The first column is the intensity of Tropical Cyclone.  The second column is the name of Tropical Cyclone.  The third column is the signal number.  The fourth and fifth column are under the heading 'Start Time'.  The fourth column is the Start Time time in hours and minutes.  The fifth column is the Start Time date.  The sixth and seventh column are under the heading 'End Time'.  The sixth column is the End Time time in hours and minutes.  The seventh column is the End Time date.  The eighth column is the duration in hours and minutes\">" +
+        html +
+        "</table>";
+      if (showRemark1 == true) {
+        document.getElementById("remarks1").style.display = "block";
+      } else {
+        document.getElementById("remarks1").style.display = "none";
+      }
+      if (showRemark2 == true) {
+        document.getElementById("remarks2").style.display = "block";
+      } else {
+        document.getElementById("remarks2").style.display = "none";
+      }
+      if (showRemark3 == true) {
+        document.getElementById("remarks3").style.display = "block";
+      } else {
+        document.getElementById("remarks3").style.display = "none";
+      }
+      if (document.getElementsByClassName("provis").length > 0) {
+        document.getElementById("provis").style.display = "block";
+      } else {
+        document.getElementById("provis").style.display = "none";
+      }
+    } else {
+      document.getElementById("result_content").innerHTML = "";
+      document.getElementById("result_heading").innerHTML =
+        "<hr>Searching period : [" +
+        searchdate1 +
+        " - " +
+        searchdate2 +
+        " ]<br>Signal number : [" +
+        selText +
+        "]<br>Total number of records : [0]</p>";
+      document.getElementById("remarks1").style.display = "none";
+      document.getElementById("remarks2").style.display = "none";
+      document.getElementById("remarks3").style.display = "none";
+      document.getElementById("provis").style.display = "none";
+    }
+    document.getElementById("result_content").innerHTML +=
+      "<br><center>The database does not include warnings and signals now in force. Please visit this <a href='../../dailywx/wxwarntoday.htm'>webpage</a> for warnings and signals now in force.</center><br>";
+    document.getElementById("remark").style.display = "none";
+  }
+  document.addEventListener("DOMContentLoaded", function (event) {
+    var enddate = moment().format("YYYYMM");
+    var recordStartTime = "1945-12";
+    var recordEndTime = moment(
+      enddate.substr(0, 4) + "-" + enddate.substr(4, 2),
+      "YYYY-MM"
+    )
+      .add(1, "months")
+      .format("YYYY-MM");
+    document.getElementById("startdate").value = enddate;
+    document.getElementById("enddate").value = enddate;
+    document
+      .getElementById("warningsearch")
+      .addEventListener("click", function (e) {
+        var startdate = document.getElementById("startdate").value.trim();
+        var enddate = document.getElementById("enddate").value.trim();
+        var sel = document.getElementById("selType");
+        var selType = sel.options[sel.selectedIndex].value;
+        var pattern = /\d{6}/;
+        var alertmsg = "";
+        var ferror1 = false,
+          ferror2 = false;
+        if (
+          pattern.test(startdate) == false ||
+          parseInt(startdate.substr(4, 2)) > 12 ||
+          startdate.substr(4, 2) == "00"
+        ) {
+          alertmsg += "[Start year month] Invalid format.\n";
+          ferror1 = true;
+        }
+        if (
+          pattern.test(enddate) == false ||
+          parseInt(enddate.substr(4, 2)) > 12 ||
+          enddate.substr(4, 2) == "00"
+        ) {
+          alertmsg += "[End year month] Invalid format.\n";
+          ferror2 = true;
+        }
+        if (ferror1 == false && ferror2 == false) {
+          if (moment(startdate, "YYYYMM") > moment(enddate, "YYYYMM")) {
+            alertmsg = "[Start year month] is later than [End year month]\n";
+          } else if (
+            moment(startdate, "YYYYMM").isBetween(
+              recordStartTime,
+              recordEndTime
+            ) == false ||
+            moment(enddate, "YYYYMM").isBetween(
+              recordStartTime,
+              recordEndTime
+            ) == false
+          ) {
+            alertmsg = "Invalid range";
+          }
+        }
+        if (alertmsg != "") {
+          alert(alertmsg);
+          return false;
+        }
+        doAPIcall("GET", "/dps/wxinfo/climat/warndb/tc.dat", processtc);
+      });
+  });
+})();
+
+	</script>
+</head>
+<body id="page_bg">
+<div id="skipwrapper">
+    <a id="top" title="page top"></a>
+    <a id="skiptocontent" href="#mainContentSkip" class="access">Skip Content</a>
+</div>
+<div id="wrap">
+    <div id="header" class="headerArea">
+        <div class="container">
+            <div class="headerTool">
+				<script type="text/javascript">createHeader();</script>
+            </div>
+        </div>
+    </div>
+    <div class="bodyArea">
+        <div class="container">
+            <div class="contentArea">
+                <a id="mainContentSkip"></a>
+                <div class="mainHeader"></div>
+                <div class="breadcrumb"></div>
+				<script type="text/javascript">pageTop();</script>
+				<div id="mainContent" class="mainContent">
+                <!--Begin Content-->
+                <h1 class="no_h1">Tropical Cyclone Warning Signals</h1>
+                <div class="border_blank">
+                    <!--Content Start-->
+<h2 style="font-style: italic;">Tropical Cyclone Warning Signals</h2>
+<p>Database records since 1946. Please refer to the <a href="../../../../en/informtc/tcsignaldb/index.html">page </a>for historical tropical cyclone warning records between 1917 and 1941. For historical records of using typhoon gun and explosives as tropical cyclone warning in Hong Kong, please refer to the <a href="../../../../en/informtc/tcsignaldb/typhoongun.html">relevant webpage</a>.</p>
+<select name="sgnl" title="請選擇信號" id="selType">
+<option selected="selected" value="all">1.or.higher</option>
+<option value="3above">3.or.higher</option>
+<option value="8above">8.or.higher</option>
+<option value="9above">9.or.higher</option>
+<option value="1">1</option>
+<option value="3">3</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+</select><br /><label for="startdate">Start year month:</label> <input type="text" id="startdate" /><br /><label for="enddate">End year month:</label> <input type="text" id="enddate" /> <input type="submit" value="Submit Query" id="warningsearch" /><br />Other Search by :<br /><a href="/en/wxinfo/climat/warndb/warndb91.htm"><img src="../../../../en/wxinfo/climat/warndb/images/but_e1.gif" alt="TC name" /></a>
+<p id="remark">Commencing 10 October 2011, the Warnings and Signals Database would also display the provisional records of recent warnings/signals in addition to the official records. Provisional records will normally be checked during the first working day after the expiry or cancellation of the warning/signal for confirmation to be accepted as official records.</p>
+<div id="result_heading"></div>
+<div id="result_content"></div>
+<p id="provis">NB: Records shown in blue background and Italic font are provisional information for reference only.</p>
+<p id="remarks1">Signals No. 5, 6, 7 and 8 were used to signify gales from the NW, SW, NE and SE respectively between 1931 and 1972. To avoid misunderstanding by the public, the Signals No. 5 to 8 were replaced by the Signals No. 8 NW, 8 SW, 8 NE and 8 SE in 1 January 1973. The Signals No. 8 NW, 8 SW, 8 NE and 8 SE between 1946 and 1972 as shown in this database were originally the Signals No. 5 to 8 used at the time.</p>
+<p id="remarks2">The "3*" as displayed in this database refers to the "Local Strong Wind Signal" adopted in Hong Kong between 1 January 1950 and 14 April 1956 which covered warning of strong winds due to monsoon or less intense tropical cyclones. With effect from 15 April 1956, the Strong Monsoon Signal and the Tropical Cyclone Strong Wind Signal No. 3 were introduced to delineate the warnings for monsoon systems and tropical cyclones.</p>
+<p id="remarks3">S at Start Time or End Time column indicates Summer Time HKT + 1 hour.</p>
+<!--Content End-->
+<script>var last_revision_date = '27 November 2025';</script>
+                </div>
+				<!--End Content-->
+                </div>
+            </div>
+            <script type="text/javascript">pageBottom();</script>
+        </div>
+    </div>
+    <div id="footer" class="footerArea">
+        <div class="container"> 
+			<script type="text/javascript">createFooter();</script>
+        </div>
+    </div>
+</div>
+</body>
+</html>

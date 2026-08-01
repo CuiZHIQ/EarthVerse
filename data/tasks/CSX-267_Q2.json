@@ -1,0 +1,954 @@
+{
+  "task_id": "CSX-267_Q2",
+  "event_id": "CSX-267",
+  "title": "ENSO-Linked Wet-Season Exposure Stress Model",
+  "event_name": "2023-2024 El Nino episode",
+  "hazard_family": "climate_teleconnection_enso_iod_mjo",
+  "hazard_label": "Climate teleconnection event",
+  "region": "Global oceans",
+  "scale": "global_synoptic",
+  "difficulty": "L4_earth_system_causal_reasoning",
+  "difficulty_rationale": "Manual review: \"ENSO-Linked Wet-Season Exposure Stress Model\" requires Earth-system causal judgement such as mechanism competition, response/priority ranking, counterfactual or scenario reasoning, or a trigger-to-impact causal chain.",
+  "primary_dimension": "causal_chain",
+  "dimensions": [
+    "causal_chain",
+    "physical_mechanism",
+    "ranking_decision"
+  ],
+  "dimension_rationale": "ENSO-linked wet-season exposure stress model.",
+  "task_type": "numeric_structured_reasoning",
+  "target_family": "enso_wet_season_exposure_process_model",
+  "file_count": 31,
+  "category_counts": {
+    "event_catalogs": 1,
+    "event_reports": 3,
+    "exposure_impact": 6,
+    "geospatial_context": 2,
+    "physical_hazard": 12,
+    "remote_sensing": 7
+  },
+  "question": "# ENSO-Linked Wet-Season Exposure Stress Model\n\nUse only the local CSX-267 event package. Select package-relative evidence for every value you use.\n\nTreat the package as a basin-scale 2023-2024 El Nino event with a regional early-wet-season West African/Gulf of Guinea data slice. Build a compact disaster-science model that connects the emerging ENSO signal to regional rainfall loading, exposed population, and operational monitoring confidence.\n\nCompute the following:\n\n1. Event and teleconnection timing:\n   - event start and end dates;\n   - ONI anomalies for AMJ, MJJ, and JJA 2023;\n   - mean of those three early ONI anomalies;\n   - maximum ONI anomaly from MJJ 2023 through MAM 2024;\n   - number of overlapping three-month ONI steps from JJA 2023 to that maximum;\n   - amplification from JJA 2023 ONI to the maximum;\n   - SOI month count, mean, minimum, negative-month count, and negative-month fraction for June 2023 through May 2024.\n\n2. Regional wet-load diagnostics from the three event-accumulated precipitation products:\n   - common rainfall window and inclusive day count;\n   - each product mean total;\n   - mean of product means, mean daily intensity, product range, and coefficient of variation using the population standard deviation;\n   - largest grid-cell/event maximum among the products;\n   - localized-extreme ratio = largest product maximum / mean of product means.\n\n3. Exposure and monitoring context:\n   - population in millions;\n   - approximate AOI area using the package polygon bounding box, with `width_km = 111.32 * lon_width * cos(mid_lat)` and `height_km = 110.574 * lat_height`;\n   - population density;\n   - whether the OSM exposure extraction has a data-gap remark and the number of OSM elements returned;\n   - annual satellite embedding 1-minus-cosine mean and maximum.\n\n4. Process model:\n\n```text\nrainfall_load_norm = clip(mean_product_precip_mm / 350, 0, 1)\nlocalized_extreme_norm = clip(localized_extreme_ratio / 4, 0, 1)\nteleconnection_norm =\n  0.45 * clip(mean_AMJ_MJJ_JJA_2023_ONI / 1.0, 0, 1)\n  + 0.35 * clip(peak_ONI_MJJ2023_to_MAM2024 / 2.0, 0, 1)\n  + 0.20 * SOI_negative_fraction\npopulation_load_norm = clip(population_millions / 5, 0, 1)\nmonitoring_gap_norm =\n  0.60 * OSM_gap_flag\n  + 0.40 * clip(satellite_1_minus_cosine_mean / 0.02, 0, 1)\n\nregional_wet_exposure_stress =\n  100 * (0.30 * rainfall_load_norm\n       + 0.20 * localized_extreme_norm\n       + 0.20 * teleconnection_norm\n       + 0.20 * population_load_norm\n       + 0.10 * monitoring_gap_norm)\n```\n\n5. Scenario test:\n   - increase each precipitation-product mean by 15%;\n   - increase the largest local rainfall maximum by 10%;\n   - keep the teleconnection, population, and monitoring terms fixed;\n   - recompute the stress score and the change from baseline.\n\nClassify both baseline and scenario as `very_high` if score >= 85, `high` if >= 70, `elevated` if >= 55, otherwise `watch`. Classify product agreement as `strong` when precipitation coefficient of variation <= 0.05, `moderate` when <= 0.10, otherwise `weak`.\n\nReturn one JSON object with keys `source_paths`, `process_model`, `computed_metrics`, `scenario_analysis`, and `final_interpretation`. Round displayed scores, mm values, area, and density to 2 decimals; fractions and normalized components to 4 decimals; population in millions to 3 decimals. The final interpretation should be one concise sentence grounded in the computed mechanism chain.\n",
+  "solution": "# Correct Answer\n\n```json\n{\n  \"source_paths\": {\n    \"event_window\": [\n      \"metadata/event.json\",\n      \"data/event_reports/event_reports_002_Locked_event_anchor_2023-2024_El_Nino_episode.json\"\n    ],\n    \"teleconnection\": [\n      \"data/physical_hazard/physical_hazard_006_NOAA_CPC_ONI_ASCII.txt\",\n      \"data/physical_hazard/physical_hazard_008_NOAA_PSL_SOI_data.data\"\n    ],\n    \"rainfall\": [\n      \"data/physical_hazard/physical_hazard_009_ERA5-Land_hourly_aggregate_stats.json\",\n      \"data/physical_hazard/physical_hazard_010_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n      \"data/physical_hazard/physical_hazard_011_CHIRPS_daily_event_accumulated_precipitation.json\"\n    ],\n    \"exposure_and_geospatial\": [\n      \"data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json\",\n      \"data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json\",\n      \"data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json\"\n    ],\n    \"remote_sensing\": [\n      \"data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json\"\n    ]\n  },\n  \"process_model\": {\n    \"regional_wet_exposure_stress\": 92.06,\n    \"response_tier\": \"very_high\",\n    \"product_agreement\": \"strong\",\n    \"component_scores\": {\n      \"rainfall_load_norm\": 0.9007,\n      \"localized_extreme_norm\": 0.9424,\n      \"teleconnection_norm\": 0.8628,\n      \"population_load_norm\": 0.9966,\n      \"monitoring_gap_norm\": 0.9006\n    }\n  },\n  \"computed_metrics\": {\n    \"event_window\": {\n      \"start\": \"2023-06-01\",\n      \"end\": \"2024-05-31\"\n    },\n    \"teleconnection\": {\n      \"early_oni_anomalies_c\": [\n        0.57,\n        0.84,\n        1.12\n      ],\n      \"early_oni_mean_c\": 0.8433,\n      \"peak_oni\": {\n        \"season\": \"NDJ\",\n        \"year\": 2023,\n        \"anomaly_c\": 2.06,\n        \"steps_from_jja_2023\": 5,\n        \"amplification_from_jja_c\": 0.94\n      },\n      \"soi\": {\n        \"months\": 12,\n        \"mean\": -0.53,\n        \"minimum\": -2.3,\n        \"negative_months\": 8,\n        \"negative_fraction\": 0.6667\n      }\n    },\n    \"rainfall\": {\n      \"common_window\": {\n        \"start\": \"2023-06-01\",\n        \"end\": \"2023-07-16\",\n        \"days\": 46\n      },\n      \"product_means_mm\": {\n        \"ERA5-Land\": 301.08,\n        \"GPM IMERG\": 331.98,\n        \"CHIRPS\": 312.64\n      },\n      \"mean_of_products_mm\": 315.23,\n      \"mean_daily_intensity_mm_day\": 6.85,\n      \"range_mm\": 30.89,\n      \"coefficient_of_variation\": 0.0404,\n      \"max_product_event_max_mm\": 1188.32,\n      \"localized_extreme_ratio\": 3.7696\n    },\n    \"exposure_and_monitoring\": {\n      \"population_millions\": 4.983,\n      \"aoi_area_km2\": 439336.5,\n      \"population_density_per_km2\": 11.34,\n      \"osm_element_count\": 0,\n      \"osm_gap_flag\": true,\n      \"satellite_change_mean\": 0.015031,\n      \"satellite_change_max\": 0.489133,\n      \"scope_note\": \"Exposure, AOI, OSM, and satellite-change values define the package's regional wet-season data slice and monitoring context, not direct proof of all ENSO impacts.\"\n    }\n  },\n  \"scenario_analysis\": {\n    \"rainfall_multiplier\": 1.15,\n    \"local_max_multiplier\": 1.1,\n    \"scenario_mean_of_products_mm\": 362.52,\n    \"scenario_daily_intensity_mm_day\": 7.88,\n    \"scenario_localized_extreme_ratio\": 3.6057,\n    \"scenario_rainfall_load_norm\": 1.0,\n    \"scenario_localized_extreme_norm\": 0.9014,\n    \"scenario_stress\": 94.22,\n    \"scenario_response_tier\": \"very_high\",\n    \"delta_from_baseline\": 2.16\n  },\n  \"final_interpretation\": \"A strengthening El Nino signal, coherent early-season rainfall above 300 mm, nearly full population-load normalization, and incomplete local exposure extraction place the regional wet-season monitoring priority in the very-high tier for this data slice.\"\n}\n```\n\nKey computations:\n\n- Early ONI mean = `(0.57 + 0.84 + 1.12) / 3 = 0.8433 C`; the peak in the package window is NDJ 2023 at 2.06 C, 5 overlapping-season steps after JJA 2023, with 0.94 C amplification from JJA.\n- SOI for June 2023 through May 2024 has 12 months, mean -0.53, minimum -2.30, and 8 negative months, so the negative fraction is 0.6667.\n- The three rainfall means are 301.08, 331.98, and 312.64 mm over 46 days. Their mean is 315.23 mm, daily intensity is 6.85 mm/day, range is 30.89 mm, and population CV is 0.0404. The largest product maximum is 1188.32 mm, so localized-extreme ratio is `1188.32 / 315.23 = 3.7696`.\n- The AOI bounding box has 6 degrees of longitude and 6 degrees of latitude centered at 7.5 degrees north. The equirectangular approximation gives area 439336.50 km2; 4982987.81 people gives 4.983 million and 11.34 people/km2.\n- Component scores are:\n  - rainfall_load_norm = `315.23 / 350 = 0.9007`\n  - localized_extreme_norm = `3.7696 / 4 = 0.9424`\n  - teleconnection_norm = `0.45*0.8433 + 0.35*1 + 0.20*0.6667 = 0.8628`\n  - population_load_norm = `4.983 / 5 = 0.9966`\n  - monitoring_gap_norm = `0.60*1 + 0.40*(0.015031/0.02) = 0.9006`\n- Baseline stress = `100*(0.30*0.9007 + 0.20*0.9424 + 0.20*0.8628 + 0.20*0.9966 + 0.10*0.9006) = 92.06`.\n- Scenario mean rainfall = `315.23*1.15 = 362.52 mm`; scenario local maximum = `1188.32*1.10`; scenario localized-extreme ratio = 3.6057. Reapplying the formula gives 94.22, a +2.16 increase.\n\n# Scoring Rubric\n\nTotal: 20 points.\n\n- 3 points: Selects the needed package evidence independently and cites package-relative paths for event timing, ONI/SOI, rainfall, population, AOI, OSM, and satellite-change values.\n- 4 points: Computes teleconnection timing correctly, including early ONI values, 0.8433 C early mean, NDJ 2023 peak of 2.06 C, 5-step lag, 0.94 C amplification, and SOI negative fraction of 0.6667.\n- 4 points: Computes rainfall metrics correctly, including the common 46-day window, three product means, 315.23 mm product mean, 6.85 mm/day intensity, 0.0404 CV, and 3.7696 localized-extreme ratio.\n- 3 points: Computes exposure and monitoring context correctly, including 4.983 million people, 439336.50 km2 AOI area, 11.34 people/km2 density, OSM gap flag, satellite-change mean/max, and the scope of the regional data slice.\n- 4 points: Applies all clipping, normalization, weights, and scenario perturbations correctly, obtaining 92.06 baseline stress, 94.22 scenario stress, and +2.16 delta.\n- 2 points: Returns valid structured JSON with the requested keys and gives a concise disaster-process interpretation tied to the computed mechanism chain rather than generic El Nino commentary.\n",
+  "ground_truth": {
+    "schema_version": "2.0",
+    "task_id": "CSX-267_Q2",
+    "event_id": "CSX-267",
+    "task_type": "numeric_structured_reasoning",
+    "evaluation_mode": "deterministic",
+    "difficulty_level": "L4",
+    "target_family": "enso_wet_season_exposure_process_model",
+    "primary_gt": {
+      "source_paths": {
+        "event_window": [
+          "metadata/event.json",
+          "data/event_reports/event_reports_002_Locked_event_anchor_2023-2024_El_Nino_episode.json"
+        ],
+        "teleconnection": [
+          "data/physical_hazard/physical_hazard_006_NOAA_CPC_ONI_ASCII.txt",
+          "data/physical_hazard/physical_hazard_008_NOAA_PSL_SOI_data.data"
+        ],
+        "rainfall": [
+          "data/physical_hazard/physical_hazard_009_ERA5-Land_hourly_aggregate_stats.json",
+          "data/physical_hazard/physical_hazard_010_GPM_IMERG_V07_event_accumulated_precipitation.json",
+          "data/physical_hazard/physical_hazard_011_CHIRPS_daily_event_accumulated_precipitation.json"
+        ],
+        "exposure_and_geospatial": [
+          "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+          "data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+          "data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json"
+        ],
+        "remote_sensing": [
+          "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json"
+        ]
+      },
+      "process_model": {
+        "regional_wet_exposure_stress": 92.06,
+        "response_tier": "very_high",
+        "product_agreement": "strong",
+        "component_scores": {
+          "rainfall_load_norm": 0.9007,
+          "localized_extreme_norm": 0.9424,
+          "teleconnection_norm": 0.8628,
+          "population_load_norm": 0.9966,
+          "monitoring_gap_norm": 0.9006
+        }
+      },
+      "computed_metrics": {
+        "event_window": {
+          "start": "2023-06-01",
+          "end": "2024-05-31"
+        },
+        "teleconnection": {
+          "early_oni_anomalies_c": [
+            0.57,
+            0.84,
+            1.12
+          ],
+          "early_oni_mean_c": 0.8433,
+          "peak_oni": {
+            "season": "NDJ",
+            "year": 2023,
+            "anomaly_c": 2.06,
+            "steps_from_jja_2023": 5,
+            "amplification_from_jja_c": 0.94
+          },
+          "soi": {
+            "months": 12,
+            "mean": -0.53,
+            "minimum": -2.3,
+            "negative_months": 8,
+            "negative_fraction": 0.6667
+          }
+        },
+        "rainfall": {
+          "common_window": {
+            "start": "2023-06-01",
+            "end": "2023-07-16",
+            "days": 46
+          },
+          "product_means_mm": {
+            "ERA5-Land": 301.08,
+            "GPM IMERG": 331.98,
+            "CHIRPS": 312.64
+          },
+          "mean_of_products_mm": 315.23,
+          "mean_daily_intensity_mm_day": 6.85,
+          "range_mm": 30.89,
+          "coefficient_of_variation": 0.0404,
+          "max_product_event_max_mm": 1188.32,
+          "localized_extreme_ratio": 3.7696
+        },
+        "exposure_and_monitoring": {
+          "population_millions": 4.983,
+          "aoi_area_km2": 439336.5,
+          "population_density_per_km2": 11.34,
+          "osm_element_count": 0,
+          "osm_gap_flag": true,
+          "satellite_change_mean": 0.015031,
+          "satellite_change_max": 0.489133,
+          "scope_note": "Exposure, AOI, OSM, and satellite-change values define the package's regional wet-season data slice and monitoring context, not direct proof of all ENSO impacts."
+        }
+      },
+      "scenario_analysis": {
+        "rainfall_multiplier": 1.15,
+        "local_max_multiplier": 1.1,
+        "scenario_mean_of_products_mm": 362.52,
+        "scenario_daily_intensity_mm_day": 7.88,
+        "scenario_localized_extreme_ratio": 3.6057,
+        "scenario_rainfall_load_norm": 1.0,
+        "scenario_localized_extreme_norm": 0.9014,
+        "scenario_stress": 94.22,
+        "scenario_response_tier": "very_high",
+        "delta_from_baseline": 2.16
+      },
+      "final_interpretation": "A strengthening El Nino signal, coherent early-season rainfall above 300 mm, nearly full population-load normalization, and incomplete local exposure extraction place the regional wet-season monitoring priority in the very-high tier for this data slice.",
+      "answer_summary": {
+        "regional_wet_exposure_stress": 92.06,
+        "response_tier": "very_high",
+        "scenario_stress": 94.22,
+        "scenario_delta": 2.16,
+        "product_agreement": "strong"
+      },
+      "answer_type": "regional_wet_exposure_stress_model",
+      "numeric_tolerances": {
+        "scores": 0.05,
+        "precipitation_mm": 0.05,
+        "fractions_and_norms": 0.0005,
+        "area_km2": 1.0,
+        "density_per_km2": 0.01
+      }
+    },
+    "event": {
+      "name": "2023-2024 El Nino episode",
+      "hazard_family": "climate_teleconnection_enso_iod_mjo",
+      "window_start": "2023-06-01",
+      "window_end": "2024-05-31",
+      "region": "Equatorial Pacific and global teleconnections"
+    },
+    "key_values": {
+      "source_paths": {
+        "event_window": [
+          "metadata/event.json",
+          "data/event_reports/event_reports_002_Locked_event_anchor_2023-2024_El_Nino_episode.json"
+        ],
+        "teleconnection": [
+          "data/physical_hazard/physical_hazard_006_NOAA_CPC_ONI_ASCII.txt",
+          "data/physical_hazard/physical_hazard_008_NOAA_PSL_SOI_data.data"
+        ],
+        "rainfall": [
+          "data/physical_hazard/physical_hazard_009_ERA5-Land_hourly_aggregate_stats.json",
+          "data/physical_hazard/physical_hazard_010_GPM_IMERG_V07_event_accumulated_precipitation.json",
+          "data/physical_hazard/physical_hazard_011_CHIRPS_daily_event_accumulated_precipitation.json"
+        ],
+        "exposure_and_geospatial": [
+          "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+          "data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+          "data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json"
+        ],
+        "remote_sensing": [
+          "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json"
+        ]
+      },
+      "teleconnection_metrics": {
+        "early_oni": [
+          {
+            "season": "AMJ",
+            "year": 2023,
+            "anomaly_c": 0.57
+          },
+          {
+            "season": "MJJ",
+            "year": 2023,
+            "anomaly_c": 0.84
+          },
+          {
+            "season": "JJA",
+            "year": 2023,
+            "anomaly_c": 1.12
+          }
+        ],
+        "early_oni_mean_c": 0.8433,
+        "peak_oni": {
+          "season": "NDJ",
+          "year": 2023,
+          "anomaly_c": 2.06,
+          "steps_from_jja_2023": 5,
+          "amplification_from_jja_c": 0.94
+        },
+        "soi": {
+          "months": 12,
+          "mean": -0.53,
+          "negative_months": 8,
+          "negative_fraction": 0.6667,
+          "minimum": -2.3
+        }
+      },
+      "rainfall_metrics": {
+        "common_period": true,
+        "start": "2023-06-01",
+        "end": "2023-07-16",
+        "days": 46,
+        "product_means_mm": {
+          "ERA5-Land": 301.08,
+          "GPM IMERG": 331.98,
+          "CHIRPS": 312.64
+        },
+        "mean_of_products_mm": 315.23,
+        "mean_daily_intensity_mm_day": 6.85,
+        "range_mm": 30.89,
+        "coefficient_of_variation": 0.0404,
+        "max_product_event_max_mm": 1188.32,
+        "localized_extreme_ratio": 3.7696
+      },
+      "exposure_monitoring_metrics": {
+        "population_millions": 4.983,
+        "aoi_area_km2": 439336.5,
+        "population_density_per_km2": 11.34,
+        "osm_element_count": 0,
+        "osm_gap_flag": true,
+        "satellite_change_mean": 0.015031,
+        "satellite_change_max": 0.489133,
+        "scope_note": "Exposure, AOI, OSM, and satellite-change values define the package's regional wet-season data slice and monitoring context, not direct proof of all ENSO impacts."
+      },
+      "component_scores": {
+        "rainfall_load_norm": 0.9007,
+        "localized_extreme_norm": 0.9424,
+        "teleconnection_norm": 0.8628,
+        "population_load_norm": 0.9966,
+        "monitoring_gap_norm": 0.9006
+      },
+      "scenario_analysis": {
+        "rainfall_multiplier": 1.15,
+        "local_max_multiplier": 1.1,
+        "scenario_mean_of_products_mm": 362.52,
+        "scenario_daily_intensity_mm_day": 7.88,
+        "scenario_localized_extreme_ratio": 3.6057,
+        "scenario_rainfall_load_norm": 1.0,
+        "scenario_localized_extreme_norm": 0.9014,
+        "scenario_stress": 94.22,
+        "scenario_response_tier": "very_high",
+        "delta_from_baseline": 2.16,
+        "baseline_score": 92.06
+      }
+    },
+    "calculation_rule": {
+      "stress_formula": "100*(0.30*rainfall_load_norm + 0.20*localized_extreme_norm + 0.20*teleconnection_norm + 0.20*population_load_norm + 0.10*monitoring_gap_norm)",
+      "component_definitions": {
+        "rainfall_load_norm": "clip(mean_of_three_precipitation_products_mm / 350, 0, 1)",
+        "localized_extreme_norm": "clip((largest_product_gridcell_max_mm / mean_of_three_precipitation_products_mm) / 4, 0, 1)",
+        "teleconnection_norm": "0.45*clip(mean_AMJ_MJJ_JJA_2023_ONI/1.0,0,1) + 0.35*clip(peak_ONI_MJJ2023_MAM2024/2.0,0,1) + 0.20*SOI_negative_fraction_Jun2023_May2024",
+        "population_load_norm": "clip(population_millions / 5, 0, 1)",
+        "monitoring_gap_norm": "0.60*OSM_gap_flag + 0.40*clip(satellite_1_minus_cosine_mean/0.02,0,1)"
+      },
+      "scenario": "Increase precipitation-product means by 15% and the largest gridcell maximum by 10%; keep teleconnection, population, and monitoring terms fixed.",
+      "tier_rule": "very_high >= 85, high >= 70, elevated >= 55, otherwise watch"
+    },
+    "rubric": {
+      "total_points": 20,
+      "criteria": [
+        {
+          "name": "Self-directed evidence selection and citations",
+          "points": 3,
+          "description": "Identifies the relevant package files without being handed filenames and cites package-relative paths for event timing, ONI/SOI, rainfall, exposure, AOI, OSM, and satellite-change values."
+        },
+        {
+          "name": "Teleconnection process metrics",
+          "points": 4,
+          "description": "Extracts AMJ/MJJ/JJA 2023 ONI anomalies, computes the 0.8433 C early mean, finds the NDJ 2023 peak of 2.06 C, the 5-step lag from JJA 2023, the 0.94 C amplification, and the 12-month SOI negative fraction of 0.6667."
+        },
+        {
+          "name": "Regional rainfall load and agreement",
+          "points": 4,
+          "description": "Uses the three 2023-06-01 to 2023-07-16 precipitation products, computes the 46-day duration, 315.23 mm mean, 6.85 mm/day intensity, 0.0404 product CV, and 3.7696 localized-extreme ratio."
+        },
+        {
+          "name": "Exposure, geospatial, and monitoring context",
+          "points": 3,
+          "description": "Computes 4.983 million exposed population, approximate 439336.50 km2 AOI area, 11.34 people/km2 density, OSM gap flag, satellite 1-minus-cosine mean/max values, and the scope of the regional data slice."
+        },
+        {
+          "name": "Process-index formula and scenario",
+          "points": 4,
+          "description": "Applies the stated clipping and weighted formula to obtain 92.06 baseline stress, then recomputes the +15% rainfall/+10% local-maximum scenario as 94.22 with a +2.16 delta."
+        },
+        {
+          "name": "Disaster-process interpretation and JSON shape",
+          "points": 2,
+          "description": "Returns valid JSON with process_model, computed_metrics, scenario_analysis, source_paths, and final_interpretation, and interprets why a developing basin-scale El Nino signal, coherent early wet load, exposed population, and monitoring gaps imply very-high response priority."
+        }
+      ]
+    },
+    "judge_anchors": {
+      "baseline_score": 92.06,
+      "baseline_tier": "very_high",
+      "scenario_score": 94.22,
+      "scenario_delta": 2.16,
+      "teleconnection_norm": 0.8628,
+      "rainfall_load_norm": 0.9007,
+      "localized_extreme_norm": 0.9424,
+      "population_load_norm": 0.9966,
+      "monitoring_gap_norm": 0.9006,
+      "required_source_file_count": 11
+    },
+    "provenance": {
+      "computed_by": "compute_gt.py",
+      "source_files": {
+        "event_metadata": "metadata/event.json",
+        "file_manifest": "metadata/files.csv",
+        "event_anchor": "data/event_reports/event_reports_002_Locked_event_anchor_2023-2024_El_Nino_episode.json",
+        "oni": "data/physical_hazard/physical_hazard_006_NOAA_CPC_ONI_ASCII.txt",
+        "soi": "data/physical_hazard/physical_hazard_008_NOAA_PSL_SOI_data.data",
+        "era5_land": "data/physical_hazard/physical_hazard_009_ERA5-Land_hourly_aggregate_stats.json",
+        "gpm_imerg": "data/physical_hazard/physical_hazard_010_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "chirps": "data/physical_hazard/physical_hazard_011_CHIRPS_daily_event_accumulated_precipitation.json",
+        "satellite_change": "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+        "population": "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+        "osm_slice": "data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+        "aoi": "data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json"
+      },
+      "notes": "All calculations use the local CSX-267 event package."
+    }
+  },
+  "compute_gt_py": "#!/usr/bin/env python3\nfrom __future__ import annotations\n\nimport csv\nimport json\nimport math\nfrom datetime import date\nfrom pathlib import Path\nfrom typing import Any\n\n\nTASK_DIR = Path(__file__).resolve().parent\nREPO_ROOT = TASK_DIR.parents[2]\nPACKAGE_ROOT = REPO_ROOT / \"event_packages\" / \"standard_event_packages\" / \"packages\" / \"CSX-267\"\nOUTPUT = TASK_DIR / \"computed_gt.json\"\n\nSOURCE_FILES = {\n    \"event_metadata\": \"metadata/event.json\",\n    \"file_manifest\": \"metadata/files.csv\",\n    \"event_anchor\": \"data/event_reports/event_reports_002_Locked_event_anchor_2023-2024_El_Nino_episode.json\",\n    \"oni\": \"data/physical_hazard/physical_hazard_006_NOAA_CPC_ONI_ASCII.txt\",\n    \"soi\": \"data/physical_hazard/physical_hazard_008_NOAA_PSL_SOI_data.data\",\n    \"era5_land\": \"data/physical_hazard/physical_hazard_009_ERA5-Land_hourly_aggregate_stats.json\",\n    \"gpm_imerg\": \"data/physical_hazard/physical_hazard_010_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n    \"chirps\": \"data/physical_hazard/physical_hazard_011_CHIRPS_daily_event_accumulated_precipitation.json\",\n    \"satellite_change\": \"data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n    \"population\": \"data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json\",\n    \"osm_slice\": \"data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json\",\n    \"aoi\": \"data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json\",\n}\n\nEARLY_ONI = [(\"AMJ\", 2023), (\"MJJ\", 2023), (\"JJA\", 2023)]\nPACKAGE_ONI = [\n    (\"MJJ\", 2023),\n    (\"JJA\", 2023),\n    (\"JAS\", 2023),\n    (\"ASO\", 2023),\n    (\"SON\", 2023),\n    (\"OND\", 2023),\n    (\"NDJ\", 2023),\n    (\"DJF\", 2024),\n    (\"JFM\", 2024),\n    (\"FMA\", 2024),\n    (\"MAM\", 2024),\n]\n\nRAIN_REFERENCE_MM = 350.0\nLOCAL_EXTREME_REFERENCE_RATIO = 4.0\nEARLY_ONI_REFERENCE_C = 1.0\nPEAK_ONI_REFERENCE_C = 2.0\nPOPULATION_REFERENCE_MILLIONS = 5.0\nSATELLITE_CHANGE_REFERENCE = 0.02\n\n\ndef read_json(rel_path: str) -> dict[str, Any]:\n    with (PACKAGE_ROOT / rel_path).open(\"r\", encoding=\"utf-8\") as f:\n        return json.load(f)\n\n\ndef read_manifest(rel_path: str) -> list[dict[str, str]]:\n    with (PACKAGE_ROOT / rel_path).open(\"r\", encoding=\"utf-8\", newline=\"\") as f:\n        return list(csv.DictReader(f))\n\n\ndef parse_oni(rel_path: str) -> list[dict[str, Any]]:\n    rows: list[dict[str, Any]] = []\n    with (PACKAGE_ROOT / rel_path).open(\"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            parts = line.split()\n            if len(parts) != 4 or parts[0] == \"SEAS\":\n                continue\n            rows.append(\n                {\n                    \"season\": parts[0],\n                    \"year\": int(parts[1]),\n                    \"total_c\": float(parts[2]),\n                    \"anomaly_c\": float(parts[3]),\n                }\n            )\n    return rows\n\n\ndef parse_soi(rel_path: str) -> list[dict[str, Any]]:\n    rows: list[dict[str, Any]] = []\n    with (PACKAGE_ROOT / rel_path).open(\"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            parts = line.split()\n            if len(parts) < 13 or not parts[0].isdigit():\n                continue\n            year = int(parts[0])\n            for month, raw_value in enumerate(parts[1:13], start=1):\n                value = float(raw_value)\n                if value > -90:\n                    rows.append({\"year\": year, \"month\": month, \"value\": value})\n    return rows\n\n\ndef find_oni(rows: list[dict[str, Any]], season: str, year: int) -> dict[str, Any]:\n    for row in rows:\n        if row[\"season\"] == season and row[\"year\"] == year:\n            return row\n    raise ValueError(f\"missing ONI row for {season} {year}\")\n\n\ndef mean(values: list[float]) -> float:\n    return sum(values) / len(values)\n\n\ndef population_std(values: list[float]) -> float:\n    center = mean(values)\n    return math.sqrt(sum((value - center) ** 2 for value in values) / len(values))\n\n\ndef inclusive_days(start: str, end: str) -> int:\n    return (date.fromisoformat(end) - date.fromisoformat(start)).days + 1\n\n\ndef clip01(value: float) -> float:\n    return min(max(value, 0.0), 1.0)\n\n\ndef round_list(values: list[float], digits: int = 2) -> list[float]:\n    return [round(value, digits) for value in values]\n\n\ndef polygon_bbox_area_km2(aoi: dict[str, Any]) -> dict[str, float]:\n    coords = aoi[\"geometry\"][\"coordinates\"][0]\n    lon_values = [coord[0] for coord in coords]\n    lat_values = [coord[1] for coord in coords]\n    lon_min, lon_max = min(lon_values), max(lon_values)\n    lat_min, lat_max = min(lat_values), max(lat_values)\n    lon_width = lon_max - lon_min\n    lat_height = lat_max - lat_min\n    mid_lat = (lat_min + lat_max) / 2.0\n    width_km = 111.32 * lon_width * math.cos(math.radians(mid_lat))\n    height_km = 110.574 * lat_height\n    return {\n        \"lon_min\": lon_min,\n        \"lon_max\": lon_max,\n        \"lat_min\": lat_min,\n        \"lat_max\": lat_max,\n        \"mid_lat\": mid_lat,\n        \"width_km\": width_km,\n        \"height_km\": height_km,\n        \"area_km2\": width_km * height_km,\n    }\n\n\ndef response_tier(score: float) -> str:\n    if score >= 85:\n        return \"very_high\"\n    if score >= 70:\n        return \"high\"\n    if score >= 55:\n        return \"elevated\"\n    return \"watch\"\n\n\ndef product_agreement_class(cv: float) -> str:\n    if cv <= 0.05:\n        return \"strong\"\n    if cv <= 0.10:\n        return \"moderate\"\n    return \"weak\"\n\n\ndef build_result() -> dict[str, Any]:\n    metadata = read_json(SOURCE_FILES[\"event_metadata\"])\n    manifest_rows = read_manifest(SOURCE_FILES[\"file_manifest\"])\n    anchor = read_json(SOURCE_FILES[\"event_anchor\"])\n    oni_rows = parse_oni(SOURCE_FILES[\"oni\"])\n    soi_rows = parse_soi(SOURCE_FILES[\"soi\"])\n    era5 = read_json(SOURCE_FILES[\"era5_land\"])\n    gpm = read_json(SOURCE_FILES[\"gpm_imerg\"])\n    chirps = read_json(SOURCE_FILES[\"chirps\"])\n    satellite_change = read_json(SOURCE_FILES[\"satellite_change\"])\n    population = read_json(SOURCE_FILES[\"population\"])\n    osm = read_json(SOURCE_FILES[\"osm_slice\"])\n    aoi = read_json(SOURCE_FILES[\"aoi\"])\n\n    early_rows = [find_oni(oni_rows, season, year) for season, year in EARLY_ONI]\n    package_rows = [find_oni(oni_rows, season, year) for season, year in PACKAGE_ONI]\n    jja_row = find_oni(package_rows, \"JJA\", 2023)\n    peak_row = max(package_rows, key=lambda row: row[\"anomaly_c\"])\n    peak_steps_from_jja = package_rows.index(peak_row) - package_rows.index(jja_row)\n    early_oni_mean = mean([row[\"anomaly_c\"] for row in early_rows])\n    peak_amplification_c = peak_row[\"anomaly_c\"] - jja_row[\"anomaly_c\"]\n\n    soi_period = [\n        row\n        for row in soi_rows\n        if (row[\"year\"] == 2023 and 6 <= row[\"month\"] <= 12)\n        or (row[\"year\"] == 2024 and 1 <= row[\"month\"] <= 5)\n    ]\n    soi_values = [row[\"value\"] for row in soi_period]\n    soi_negative_count = sum(value < 0 for value in soi_values)\n    soi_negative_fraction = soi_negative_count / len(soi_values)\n\n    precipitation_layers = {\n        \"ERA5-Land\": {\n            \"mean_mm\": era5[\"stats\"][\"precipitation_sum_mm_mean\"],\n            \"max_mm\": era5[\"stats\"][\"precipitation_sum_mm_max\"],\n            \"stdDev_mm\": era5[\"stats\"][\"precipitation_sum_mm_stdDev\"],\n            \"start\": era5[\"start\"],\n            \"end\": era5[\"end\"],\n        },\n        \"GPM IMERG\": {\n            \"mean_mm\": gpm[\"stats\"][\"gpm_event_precip_mm_mean\"],\n            \"max_mm\": gpm[\"stats\"][\"gpm_event_precip_mm_max\"],\n            \"stdDev_mm\": gpm[\"stats\"][\"gpm_event_precip_mm_stdDev\"],\n            \"start\": gpm[\"start\"],\n            \"end\": gpm[\"end\"],\n        },\n        \"CHIRPS\": {\n            \"mean_mm\": chirps[\"stats\"][\"chirps_event_precip_mm_mean\"],\n            \"max_mm\": chirps[\"stats\"][\"chirps_event_precip_mm_max\"],\n            \"stdDev_mm\": chirps[\"stats\"][\"chirps_event_precip_mm_stdDev\"],\n            \"start\": chirps[\"start\"],\n            \"end\": chirps[\"end\"],\n        },\n    }\n    precip_values = [layer[\"mean_mm\"] for layer in precipitation_layers.values()]\n    precip_maxima = [layer[\"max_mm\"] for layer in precipitation_layers.values()]\n    precip_average = mean(precip_values)\n    precip_cv = population_std(precip_values) / precip_average\n    precip_range = max(precip_values) - min(precip_values)\n    common_period = len({(layer[\"start\"], layer[\"end\"]) for layer in precipitation_layers.values()}) == 1\n    precip_start = era5[\"start\"]\n    precip_end = era5[\"end\"]\n    precip_days = inclusive_days(precip_start, precip_end)\n    daily_intensity = precip_average / precip_days\n    max_product_event_max = max(precip_maxima)\n    localized_extreme_ratio = max_product_event_max / precip_average\n\n    aoi_area = polygon_bbox_area_km2(aoi)\n    population_total = population[\"population_sum\"][\"population\"]\n    population_millions = population_total / 1_000_000\n    population_density = population_total / aoi_area[\"area_km2\"]\n    osm_remark_flag = bool(osm.get(\"remark\"))\n    osm_element_count = len(osm.get(\"elements\", []))\n    satellite_stats = satellite_change[\"stats\"]\n    satellite_change_mean = satellite_stats[\"alphaearth_1_minus_cosine_mean\"]\n    satellite_change_max = satellite_stats[\"alphaearth_1_minus_cosine_max\"]\n\n    rainfall_load_norm = clip01(precip_average / RAIN_REFERENCE_MM)\n    localized_extreme_norm = clip01(localized_extreme_ratio / LOCAL_EXTREME_REFERENCE_RATIO)\n    teleconnection_norm = (\n        0.45 * clip01(early_oni_mean / EARLY_ONI_REFERENCE_C)\n        + 0.35 * clip01(peak_row[\"anomaly_c\"] / PEAK_ONI_REFERENCE_C)\n        + 0.20 * soi_negative_fraction\n    )\n    population_load_norm = clip01(population_millions / POPULATION_REFERENCE_MILLIONS)\n    monitoring_gap_norm = (\n        0.60 * int(osm_remark_flag)\n        + 0.40 * clip01(satellite_change_mean / SATELLITE_CHANGE_REFERENCE)\n    )\n    stress_score = 100 * (\n        0.30 * rainfall_load_norm\n        + 0.20 * localized_extreme_norm\n        + 0.20 * teleconnection_norm\n        + 0.20 * population_load_norm\n        + 0.10 * monitoring_gap_norm\n    )\n\n    scenario_precip_average = precip_average * 1.15\n    scenario_max_product_event_max = max_product_event_max * 1.10\n    scenario_daily_intensity = scenario_precip_average / precip_days\n    scenario_localized_extreme_ratio = scenario_max_product_event_max / scenario_precip_average\n    scenario_rainfall_load_norm = clip01(scenario_precip_average / RAIN_REFERENCE_MM)\n    scenario_localized_extreme_norm = clip01(\n        scenario_localized_extreme_ratio / LOCAL_EXTREME_REFERENCE_RATIO\n    )\n    scenario_score = 100 * (\n        0.30 * scenario_rainfall_load_norm\n        + 0.20 * scenario_localized_extreme_norm\n        + 0.20 * teleconnection_norm\n        + 0.20 * population_load_norm\n        + 0.10 * monitoring_gap_norm\n    )\n\n    source_paths = {\n        \"event_window\": [SOURCE_FILES[\"event_metadata\"], SOURCE_FILES[\"event_anchor\"]],\n        \"teleconnection\": [SOURCE_FILES[\"oni\"], SOURCE_FILES[\"soi\"]],\n        \"rainfall\": [\n            SOURCE_FILES[\"era5_land\"],\n            SOURCE_FILES[\"gpm_imerg\"],\n            SOURCE_FILES[\"chirps\"],\n        ],\n        \"exposure_and_geospatial\": [\n            SOURCE_FILES[\"population\"],\n            SOURCE_FILES[\"aoi\"],\n            SOURCE_FILES[\"osm_slice\"],\n        ],\n        \"remote_sensing\": [SOURCE_FILES[\"satellite_change\"]],\n    }\n\n    process_model = {\n        \"regional_wet_exposure_stress\": round(stress_score, 2),\n        \"response_tier\": response_tier(stress_score),\n        \"product_agreement\": product_agreement_class(precip_cv),\n        \"component_scores\": {\n            \"rainfall_load_norm\": round(rainfall_load_norm, 4),\n            \"localized_extreme_norm\": round(localized_extreme_norm, 4),\n            \"teleconnection_norm\": round(teleconnection_norm, 4),\n            \"population_load_norm\": round(population_load_norm, 4),\n            \"monitoring_gap_norm\": round(monitoring_gap_norm, 4),\n        },\n    }\n    computed_metrics = {\n        \"event_window\": {\n            \"start\": anchor[\"temporal_window\"][\"start_date\"],\n            \"end\": anchor[\"temporal_window\"][\"end_date\"],\n        },\n        \"teleconnection\": {\n            \"early_oni_anomalies_c\": round_list([row[\"anomaly_c\"] for row in early_rows], 2),\n            \"early_oni_mean_c\": round(early_oni_mean, 4),\n            \"peak_oni\": {\n                \"season\": peak_row[\"season\"],\n                \"year\": peak_row[\"year\"],\n                \"anomaly_c\": round(peak_row[\"anomaly_c\"], 2),\n                \"steps_from_jja_2023\": peak_steps_from_jja,\n                \"amplification_from_jja_c\": round(peak_amplification_c, 2),\n            },\n            \"soi\": {\n                \"months\": len(soi_values),\n                \"mean\": round(mean(soi_values), 2),\n                \"minimum\": round(min(soi_values), 2),\n                \"negative_months\": soi_negative_count,\n                \"negative_fraction\": round(soi_negative_fraction, 4),\n            },\n        },\n        \"rainfall\": {\n            \"common_window\": {\n                \"start\": precip_start,\n                \"end\": precip_end,\n                \"days\": precip_days,\n            },\n            \"product_means_mm\": {\n                name: round(layer[\"mean_mm\"], 2)\n                for name, layer in precipitation_layers.items()\n            },\n            \"mean_of_products_mm\": round(precip_average, 2),\n            \"mean_daily_intensity_mm_day\": round(daily_intensity, 2),\n            \"range_mm\": round(precip_range, 2),\n            \"coefficient_of_variation\": round(precip_cv, 4),\n            \"max_product_event_max_mm\": round(max_product_event_max, 2),\n            \"localized_extreme_ratio\": round(localized_extreme_ratio, 4),\n        },\n        \"exposure_and_monitoring\": {\n            \"population_millions\": round(population_millions, 3),\n            \"aoi_area_km2\": round(aoi_area[\"area_km2\"], 2),\n            \"population_density_per_km2\": round(population_density, 2),\n            \"osm_element_count\": osm_element_count,\n            \"osm_gap_flag\": osm_remark_flag,\n            \"satellite_change_mean\": round(satellite_change_mean, 6),\n            \"satellite_change_max\": round(satellite_change_max, 6),\n            \"scope_note\": \"Exposure, AOI, OSM, and satellite-change values define the package's regional wet-season data slice and monitoring context, not direct proof of all ENSO impacts.\",\n        },\n    }\n    scenario_output = {\n        \"rainfall_multiplier\": 1.15,\n        \"local_max_multiplier\": 1.10,\n        \"scenario_mean_of_products_mm\": round(scenario_precip_average, 2),\n        \"scenario_daily_intensity_mm_day\": round(scenario_daily_intensity, 2),\n        \"scenario_localized_extreme_ratio\": round(scenario_localized_extreme_ratio, 4),\n        \"scenario_rainfall_load_norm\": round(scenario_rainfall_load_norm, 4),\n        \"scenario_localized_extreme_norm\": round(scenario_localized_extreme_norm, 4),\n        \"scenario_stress\": round(scenario_score, 2),\n        \"scenario_response_tier\": response_tier(scenario_score),\n        \"delta_from_baseline\": round(scenario_score - stress_score, 2),\n    }\n    final_interpretation = (\n        \"A strengthening El Nino signal, coherent early-season rainfall above 300 mm, nearly full \"\n        \"population-load normalization, and incomplete local exposure extraction place the regional \"\n        \"wet-season monitoring priority in the very-high tier for this data slice.\"\n    )\n    primary_answer = {\n        \"regional_wet_exposure_stress\": process_model[\"regional_wet_exposure_stress\"],\n        \"response_tier\": process_model[\"response_tier\"],\n        \"scenario_stress\": scenario_output[\"scenario_stress\"],\n        \"scenario_delta\": scenario_output[\"delta_from_baseline\"],\n        \"product_agreement\": process_model[\"product_agreement\"],\n    }\n\n    return {\n        \"schema_version\": \"2.0\",\n        \"task_id\": \"CSX-267_Q2\",\n        \"event_id\": metadata[\"package_id\"],\n        \"task_type\": \"numeric_structured_reasoning\",\n        \"evaluation_mode\": \"deterministic\",\n        \"difficulty_level\": \"L4\",\n        \"target_family\": \"enso_wet_season_exposure_process_model\",\n        \"primary_gt\": {\n            \"source_paths\": source_paths,\n            \"process_model\": process_model,\n            \"computed_metrics\": computed_metrics,\n            \"scenario_analysis\": scenario_output,\n            \"final_interpretation\": final_interpretation,\n            \"answer_summary\": primary_answer,\n            \"answer_type\": \"regional_wet_exposure_stress_model\",\n            \"numeric_tolerances\": {\n                \"scores\": 0.05,\n                \"precipitation_mm\": 0.05,\n                \"fractions_and_norms\": 0.0005,\n                \"area_km2\": 1.0,\n                \"density_per_km2\": 0.01,\n            },\n        },\n        \"event\": {\n            \"name\": metadata[\"event_name\"],\n            \"hazard_family\": metadata[\"hazard_family\"],\n            \"window_start\": anchor[\"temporal_window\"][\"start_date\"],\n            \"window_end\": anchor[\"temporal_window\"][\"end_date\"],\n            \"region\": anchor[\"spatial_window\"][\"location_text\"],\n        },\n        \"key_values\": {\n            \"source_paths\": source_paths,\n            \"teleconnection_metrics\": {\n                \"early_oni\": [\n                    {\n                        \"season\": row[\"season\"],\n                        \"year\": row[\"year\"],\n                        \"anomaly_c\": round(row[\"anomaly_c\"], 2),\n                    }\n                    for row in early_rows\n                ],\n                \"early_oni_mean_c\": round(early_oni_mean, 4),\n                \"peak_oni\": {\n                    \"season\": peak_row[\"season\"],\n                    \"year\": peak_row[\"year\"],\n                    \"anomaly_c\": round(peak_row[\"anomaly_c\"], 2),\n                    \"steps_from_jja_2023\": peak_steps_from_jja,\n                    \"amplification_from_jja_c\": round(peak_amplification_c, 2),\n                },\n                \"soi\": {\n                    \"months\": len(soi_values),\n                    \"mean\": round(mean(soi_values), 2),\n                    \"negative_months\": soi_negative_count,\n                    \"negative_fraction\": round(soi_negative_fraction, 4),\n                    \"minimum\": round(min(soi_values), 2),\n                },\n            },\n            \"rainfall_metrics\": {\n                \"common_period\": common_period,\n                \"start\": precip_start,\n                \"end\": precip_end,\n                \"days\": precip_days,\n                \"product_means_mm\": {\n                    name: round(layer[\"mean_mm\"], 2)\n                    for name, layer in precipitation_layers.items()\n                },\n                \"mean_of_products_mm\": round(precip_average, 2),\n                \"mean_daily_intensity_mm_day\": round(daily_intensity, 2),\n                \"range_mm\": round(precip_range, 2),\n                \"coefficient_of_variation\": round(precip_cv, 4),\n                \"max_product_event_max_mm\": round(max_product_event_max, 2),\n                \"localized_extreme_ratio\": round(localized_extreme_ratio, 4),\n            },\n            \"exposure_monitoring_metrics\": {\n                \"population_millions\": round(population_millions, 3),\n                \"aoi_area_km2\": round(aoi_area[\"area_km2\"], 2),\n                \"population_density_per_km2\": round(population_density, 2),\n                \"osm_element_count\": osm_element_count,\n                \"osm_gap_flag\": osm_remark_flag,\n                \"satellite_change_mean\": round(satellite_change_mean, 6),\n                \"satellite_change_max\": round(satellite_change_max, 6),\n                \"scope_note\": \"Exposure, AOI, OSM, and satellite-change values define the package's regional wet-season data slice and monitoring context, not direct proof of all ENSO impacts.\",\n            },\n            \"component_scores\": {\n                \"rainfall_load_norm\": round(rainfall_load_norm, 4),\n                \"localized_extreme_norm\": round(localized_extreme_norm, 4),\n                \"teleconnection_norm\": round(teleconnection_norm, 4),\n                \"population_load_norm\": round(population_load_norm, 4),\n                \"monitoring_gap_norm\": round(monitoring_gap_norm, 4),\n            },\n            \"scenario_analysis\": {\n                **scenario_output,\n                \"baseline_score\": round(stress_score, 2),\n            },\n        },\n        \"calculation_rule\": {\n            \"stress_formula\": (\n                \"100*(0.30*rainfall_load_norm + 0.20*localized_extreme_norm + \"\n                \"0.20*teleconnection_norm + 0.20*population_load_norm + \"\n                \"0.10*monitoring_gap_norm)\"\n            ),\n            \"component_definitions\": {\n                \"rainfall_load_norm\": \"clip(mean_of_three_precipitation_products_mm / 350, 0, 1)\",\n                \"localized_extreme_norm\": \"clip((largest_product_gridcell_max_mm / mean_of_three_precipitation_products_mm) / 4, 0, 1)\",\n                \"teleconnection_norm\": \"0.45*clip(mean_AMJ_MJJ_JJA_2023_ONI/1.0,0,1) + 0.35*clip(peak_ONI_MJJ2023_MAM2024/2.0,0,1) + 0.20*SOI_negative_fraction_Jun2023_May2024\",\n                \"population_load_norm\": \"clip(population_millions / 5, 0, 1)\",\n                \"monitoring_gap_norm\": \"0.60*OSM_gap_flag + 0.40*clip(satellite_1_minus_cosine_mean/0.02,0,1)\",\n            },\n            \"scenario\": \"Increase precipitation-product means by 15% and the largest gridcell maximum by 10%; keep teleconnection, population, and monitoring terms fixed.\",\n            \"tier_rule\": \"very_high >= 85, high >= 70, elevated >= 55, otherwise watch\",\n        },\n        \"rubric\": {\n            \"total_points\": 20,\n            \"criteria\": [\n                {\n                    \"name\": \"Self-directed evidence selection and citations\",\n                    \"points\": 3,\n                    \"description\": \"Identifies the relevant package files without being handed filenames and cites package-relative paths for event timing, ONI/SOI, rainfall, exposure, AOI, OSM, and satellite-change values.\",\n                },\n                {\n                    \"name\": \"Teleconnection process metrics\",\n                    \"points\": 4,\n                    \"description\": \"Extracts AMJ/MJJ/JJA 2023 ONI anomalies, computes the 0.8433 C early mean, finds the NDJ 2023 peak of 2.06 C, the 5-step lag from JJA 2023, the 0.94 C amplification, and the 12-month SOI negative fraction of 0.6667.\",\n                },\n                {\n                    \"name\": \"Regional rainfall load and agreement\",\n                    \"points\": 4,\n                    \"description\": \"Uses the three 2023-06-01 to 2023-07-16 precipitation products, computes the 46-day duration, 315.23 mm mean, 6.85 mm/day intensity, 0.0404 product CV, and 3.7696 localized-extreme ratio.\",\n                },\n                {\n                    \"name\": \"Exposure, geospatial, and monitoring context\",\n                    \"points\": 3,\n                    \"description\": \"Computes 4.983 million exposed population, approximate 439336.50 km2 AOI area, 11.34 people/km2 density, OSM gap flag, satellite 1-minus-cosine mean/max values, and the scope of the regional data slice.\",\n                },\n                {\n                    \"name\": \"Process-index formula and scenario\",\n                    \"points\": 4,\n                    \"description\": \"Applies the stated clipping and weighted formula to obtain 92.06 baseline stress, then recomputes the +15% rainfall/+10% local-maximum scenario as 94.22 with a +2.16 delta.\",\n                },\n                {\n                    \"name\": \"Disaster-process interpretation and JSON shape\",\n                    \"points\": 2,\n                    \"description\": \"Returns valid JSON with process_model, computed_metrics, scenario_analysis, source_paths, and final_interpretation, and interprets why a developing basin-scale El Nino signal, coherent early wet load, exposed population, and monitoring gaps imply very-high response priority.\",\n                },\n            ],\n        },\n        \"judge_anchors\": {\n            \"baseline_score\": round(stress_score, 2),\n            \"baseline_tier\": response_tier(stress_score),\n            \"scenario_score\": round(scenario_score, 2),\n            \"scenario_delta\": round(scenario_score - stress_score, 2),\n            \"teleconnection_norm\": round(teleconnection_norm, 4),\n            \"rainfall_load_norm\": round(rainfall_load_norm, 4),\n            \"localized_extreme_norm\": round(localized_extreme_norm, 4),\n            \"population_load_norm\": round(population_load_norm, 4),\n            \"monitoring_gap_norm\": round(monitoring_gap_norm, 4),\n            \"required_source_file_count\": len({path for paths in source_paths.values() for path in paths}),\n        },\n        \"provenance\": {\n            \"computed_by\": \"compute_gt.py\",\n            \"source_files\": SOURCE_FILES,\n            \"notes\": \"All calculations use the local CSX-267 event package.\",\n        },\n    }\n\n\ndef main() -> None:\n    result = build_result()\n    with OUTPUT.open(\"w\", encoding=\"utf-8\") as f:\n        json.dump(result, f, indent=2, ensure_ascii=True)\n        f.write(\"\\n\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "event": {
+    "package_id": "CSX-267",
+    "event_name": "2023-2024 El Nino episode",
+    "canonical_event_key": "2023 2024 el nino",
+    "hazard_family": "climate_teleconnection_enso_iod_mjo",
+    "hazard_label": "Climate teleconnection event",
+    "scale": "global_synoptic",
+    "region": "Global oceans",
+    "primary_evidence_url": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php",
+    "existence_verdict": "confirmed",
+    "temporal_match": "match",
+    "spatial_match": "global_match",
+    "hazard_match": "match",
+    "source_reliability": "high_official_or_institutional",
+    "correspondence_score": "95",
+    "release_decision": "keep",
+    "benchmark_readiness": "ready_with_metadata_warnings",
+    "benchmark_readiness_label": "ready with metadata warnings",
+    "data_integrity": {
+      "local_files_checked": "26",
+      "image_files_checked": "2",
+      "valid_images": "2",
+      "formal_slice_files_checked": "8",
+      "hard_error_count": "1",
+      "metadata_warning_count": "0",
+      "final_data_score": "84",
+      "final_data_decision": "ready_with_minor_warnings",
+      "replacement_file_count": "1"
+    },
+    "file_inventory": {
+      "total_files": 31,
+      "categories": {
+        "event_catalogs": 1,
+        "event_reports": 3,
+        "exposure_impact": 6,
+        "geospatial_context": 2,
+        "physical_hazard": 12,
+        "remote_sensing": 7
+      }
+    }
+  },
+  "event_files": [
+    {
+      "file_id": "F0001",
+      "relative_path": "data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S001",
+      "source_name": "OpenStreetMap Nominatim geocoding",
+      "source_type": "resource_registry",
+      "source_url": "https://nominatim.openstreetmap.org/search?q=Equatorial%20Pacific%20and%20global%20teleconnections&format=json&limit=5",
+      "bytes": 2,
+      "sha256_16": "4f53cda18c2baa0c",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0002",
+      "relative_path": "data/physical_hazard/physical_hazard_001_NOAA_PSL_climate_indices.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_001_NOAA_PSL_climate_indices.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_001_NOAA_PSL_climate_indices.html",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S002",
+      "source_name": "NOAA PSL climate indices",
+      "source_type": "resource_registry",
+      "source_url": "https://psl.noaa.gov/data/climateindices/list/",
+      "bytes": 69905,
+      "sha256_16": "393a7eb50650d977",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0003",
+      "relative_path": "data/physical_hazard/physical_hazard_002_IRI_BoM_ENSO_monitoring_archive.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_002_IRI_BoM_ENSO_monitoring_archive.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_002_IRI_BoM_ENSO_monitoring_archive.html",
+      "category": "physical_hazard",
+      "layer_name": "specialized_hazard_source",
+      "source_id": "S003",
+      "source_name": "IRI / BoM ENSO monitoring archive",
+      "source_type": "resource_registry",
+      "source_url": "https://iri.columbia.edu/our-expertise/climate/forecasts/enso/",
+      "bytes": 92791,
+      "sha256_16": "4e52045fc859dbde",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0004",
+      "relative_path": "data/physical_hazard/physical_hazard_003_IRI_BoM_ENSO_monitoring_archive.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_003_IRI_BoM_ENSO_monitoring_archive.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_003_IRI_BoM_ENSO_monitoring_archive.html",
+      "category": "physical_hazard",
+      "layer_name": "specialized_hazard_source",
+      "source_id": "S004",
+      "source_name": "IRI / BoM ENSO monitoring archive",
+      "source_type": "resource_registry",
+      "source_url": "http://www.bom.gov.au/climate/enso/",
+      "bytes": 182922,
+      "sha256_16": "83ce037995f621e8",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0005",
+      "relative_path": "data/physical_hazard/physical_hazard_004_CHIRPS_GPCC_precipitation_anomaly.0",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_004_CHIRPS_GPCC_precipitation_anomaly.0",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_004_CHIRPS_GPCC_precipitation_anomaly.0",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S005",
+      "source_name": "CHIRPS / GPCC precipitation anomaly",
+      "source_type": "resource_registry",
+      "source_url": "https://data.chc.ucsb.edu/products/CHIRPS-2.0/",
+      "bytes": 7005,
+      "sha256_16": "ca7af0f62bd4d261",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0006",
+      "relative_path": "data/physical_hazard/physical_hazard_005_CHIRPS_GPCC_precipitation_anomaly.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_005_CHIRPS_GPCC_precipitation_anomaly.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_005_CHIRPS_GPCC_precipitation_anomaly.html",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S006",
+      "source_name": "CHIRPS / GPCC precipitation anomaly",
+      "source_type": "resource_registry",
+      "source_url": "https://psl.noaa.gov/data/gridded/data.gpcc.html",
+      "bytes": 34720,
+      "sha256_16": "f11e75e77b2728b2",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0007",
+      "relative_path": "data/remote_sensing/remote_sensing_001_MODIS_VIIRS_vegetation_and_drought_stress_preview.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/remote_sensing/remote_sensing_001_MODIS_VIIRS_vegetation_and_drought_stress_preview.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/remote_sensing/remote_sensing_001_MODIS_VIIRS_vegetation_and_drought_stress_preview.html",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S007",
+      "source_name": "MODIS/VIIRS vegetation and drought stress preview",
+      "source_type": "resource_registry",
+      "source_url": "https://worldview.earthdata.nasa.gov/",
+      "bytes": 4315,
+      "sha256_16": "339136a38b7e0720",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0008",
+      "relative_path": "data/exposure_impact/exposure_impact_001_FEWS_NET_IPC_HDX_food-security_and_drought_impact_layers.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/exposure_impact/exposure_impact_001_FEWS_NET_IPC_HDX_food-security_and_drought_impact_layers.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/exposure_impact/exposure_impact_001_FEWS_NET_IPC_HDX_food-security_and_drought_impact_layers.html",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S008",
+      "source_name": "FEWS NET / IPC / HDX food-security and drought impact layers",
+      "source_type": "resource_registry",
+      "source_url": "https://fews.net/",
+      "bytes": 70552,
+      "sha256_16": "544f449c7eed6960",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0009",
+      "relative_path": "data/exposure_impact/exposure_impact_002_FEWS_NET_IPC_HDX_food-security_and_drought_impact_layers.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/exposure_impact/exposure_impact_002_FEWS_NET_IPC_HDX_food-security_and_drought_impact_layers.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/exposure_impact/exposure_impact_002_FEWS_NET_IPC_HDX_food-security_and_drought_impact_layers.html",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S009",
+      "source_name": "FEWS NET / IPC / HDX food-security and drought impact layers",
+      "source_type": "resource_registry",
+      "source_url": "https://data.humdata.org/",
+      "bytes": 0,
+      "sha256_16": "e3b0c44298fc1c14",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0010",
+      "relative_path": "data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events.json",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S010",
+      "source_name": "NASA EONET v3 events",
+      "source_type": "resource_registry",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events?q=2023-2024+El+Nino+episode&status=all&limit=20",
+      "bytes": 14185,
+      "sha256_16": "63a32fc6c774cb2b",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0011",
+      "relative_path": "data/exposure_impact/exposure_impact_003_HDX_CKAN_package_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/exposure_impact/exposure_impact_003_HDX_CKAN_package_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/exposure_impact/exposure_impact_003_HDX_CKAN_package_search.json",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S011",
+      "source_name": "HDX CKAN package_search",
+      "source_type": "resource_registry",
+      "source_url": "https://data.humdata.org/api/3/action/package_search?q=2023-2024+El+Nino+episode+Global&rows=10",
+      "bytes": 1101256,
+      "sha256_16": "728df1f1c3214af0",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0012",
+      "relative_path": "data/event_reports/event_reports_001_Package_locked_anchor.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/event_reports/event_reports_001_Package_locked_anchor.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/event_reports/event_reports_001_Package_locked_anchor.html",
+      "category": "event_reports",
+      "layer_name": "event_anchor_report",
+      "source_id": "S012",
+      "source_name": "Package locked anchor",
+      "source_type": "resource_registry",
+      "source_url": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php",
+      "bytes": 162479,
+      "sha256_16": "abe5907e70a6f61a",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0013",
+      "relative_path": "data/physical_hazard/physical_hazard_006_NOAA_CPC_ONI_ASCII.txt",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_006_NOAA_CPC_ONI_ASCII.txt",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_006_NOAA_CPC_ONI_ASCII.txt",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S013",
+      "source_name": "NOAA CPC ONI ASCII",
+      "source_type": "resource_registry",
+      "source_url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+      "bytes": 22900,
+      "sha256_16": "2334e9ebe116e7c7",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0014",
+      "relative_path": "data/physical_hazard/physical_hazard_007_NOAA_PSL_ONI_data.data",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_007_NOAA_PSL_ONI_data.data",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_007_NOAA_PSL_ONI_data.data",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S014",
+      "source_name": "NOAA PSL ONI data",
+      "source_type": "resource_registry",
+      "source_url": "https://psl.noaa.gov/data/correlation/oni.data",
+      "bytes": 7212,
+      "sha256_16": "5eb081064d607802",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0015",
+      "relative_path": "data/physical_hazard/physical_hazard_008_NOAA_PSL_SOI_data.data",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_008_NOAA_PSL_SOI_data.data",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_008_NOAA_PSL_SOI_data.data",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S015",
+      "source_name": "NOAA PSL SOI data",
+      "source_type": "resource_registry",
+      "source_url": "https://psl.noaa.gov/data/correlation/soi.data",
+      "bytes": 7139,
+      "sha256_16": "f92cd2be98eab04c",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0016",
+      "relative_path": "data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "category": "geospatial_context",
+      "layer_name": "aoi",
+      "source_id": "S016",
+      "source_name": "compact per-event AOI derived from event bbox",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 414,
+      "sha256_16": "df1d12b77e7d9380",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0017",
+      "relative_path": "data/physical_hazard/physical_hazard_009_ERA5-Land_hourly_aggregate_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_009_ERA5-Land_hourly_aggregate_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_009_ERA5-Land_hourly_aggregate_stats.json",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S017",
+      "source_name": "ERA5-Land hourly aggregate stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 992,
+      "sha256_16": "6eadd50846d36bfd",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0018",
+      "relative_path": "data/physical_hazard/physical_hazard_010_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_010_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_010_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S018",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 320,
+      "sha256_16": "790a7d1f37b2c92e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0019",
+      "relative_path": "data/physical_hazard/physical_hazard_011_CHIRPS_daily_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_011_CHIRPS_daily_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_011_CHIRPS_daily_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S019",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 334,
+      "sha256_16": "e12a236f5d128a1a",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0020",
+      "relative_path": "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S020",
+      "source_name": "WorldPop GP 100m population sum",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 124,
+      "sha256_16": "cfb1ec63c56328fb",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0021",
+      "relative_path": "data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S021",
+      "source_name": "Google Satellite Embedding 64-band annual stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 9875,
+      "sha256_16": "9d17e05ad3b74026",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0022",
+      "relative_path": "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S022",
+      "source_name": "Google Satellite Embedding annual cosine-change stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 361,
+      "sha256_16": "43d57157565edcb8",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0023",
+      "relative_path": "data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "category": "exposure_impact",
+      "layer_name": "osm_exposure",
+      "source_id": "S023",
+      "source_name": "OpenStreetMap Overpass bounded AOI slice",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 413,
+      "sha256_16": "0c0a369da97702ee",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0024",
+      "relative_path": "data/remote_sensing/remote_sensing_004_pre.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/remote_sensing/remote_sensing_004_pre.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/remote_sensing/remote_sensing_004_pre.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S024",
+      "source_name": "pre",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2023-05-02&BBOX=-10.0%2C-17.5%2C25.0%2C17.5&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 158349,
+      "sha256_16": "012c5a1c1d8012e4",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0025",
+      "relative_path": "data/remote_sensing/remote_sensing_005_event.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/remote_sensing/remote_sensing_005_event.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/remote_sensing/remote_sensing_005_event.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S025",
+      "source_name": "event",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2023-11-30&BBOX=-10.0%2C-17.5%2C25.0%2C17.5&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 154221,
+      "sha256_16": "6d986399bc7f7434",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0026",
+      "relative_path": "data/event_reports/event_reports_002_Locked_event_anchor_2023-2024_El_Nino_episode.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/event_reports/event_reports_002_Locked_event_anchor_2023-2024_El_Nino_episode.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/event_reports/event_reports_002_Locked_event_anchor_2023-2024_El_Nino_episode.json",
+      "category": "event_reports",
+      "layer_name": "package_locked_event_anchor / NOAA CPC ONI table",
+      "source_id": "S026",
+      "source_name": "Locked event anchor: 2023-2024 El Nino episode",
+      "source_type": "event_specific_sources",
+      "source_url": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php",
+      "bytes": 2935,
+      "sha256_16": "c5a6680fa417ff8d",
+      "status": "remote_verified",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0027",
+      "relative_path": "data/event_reports/event_reports_003_CSX-267_01_text_reports_ReliefWeb_Reports_API_event_country_date_search.error.txt.txt",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/event_reports/event_reports_003_CSX-267_01_text_reports_ReliefWeb_Reports_API_event_country_date_search.error.txt.txt",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/event_reports/event_reports_003_CSX-267_01_text_reports_ReliefWeb_Reports_API_event_country_date_search.error.txt.txt",
+      "category": "event_reports",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S027",
+      "source_name": "CSX-267_01_text_reports_ReliefWeb_Reports_API_event_country_date_search.error.txt",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 143,
+      "sha256_16": "16e210c3f8fefa1d",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0028",
+      "relative_path": "data/remote_sensing/remote_sensing_006_event_2023-06-11_modis_truecolor.jpg.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/remote_sensing/remote_sensing_006_event_2023-06-11_modis_truecolor.jpg.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/remote_sensing/remote_sensing_006_event_2023-06-11_modis_truecolor.jpg.jpg",
+      "category": "remote_sensing",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S028",
+      "source_name": "event_2023-06-11_modis_truecolor.jpg",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 169236,
+      "sha256_16": "dd95996b411e6d63",
+      "status": "local_file_found",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0029",
+      "relative_path": "data/remote_sensing/remote_sensing_007_pre_2023-05-02_modis_truecolor.jpg.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/remote_sensing/remote_sensing_007_pre_2023-05-02_modis_truecolor.jpg.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/remote_sensing/remote_sensing_007_pre_2023-05-02_modis_truecolor.jpg.jpg",
+      "category": "remote_sensing",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S029",
+      "source_name": "pre_2023-05-02_modis_truecolor.jpg",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 176666,
+      "sha256_16": "713f675e7fcb1409",
+      "status": "local_file_found",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0030",
+      "relative_path": "data/exposure_impact/exposure_impact_006_004_exposure_or_impact_OpenStreetMap_Overpass_roads_buildings_critical_facilities_af92053c.txt",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/exposure_impact/exposure_impact_006_004_exposure_or_impact_OpenStreetMap_Overpass_roads_buildings_critical_facilities_af92053c.txt",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/exposure_impact/exposure_impact_006_004_exposure_or_impact_OpenStreetMap_Overpass_roads_buildings_critical_facilities_af92053c.txt",
+      "category": "exposure_impact",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S030",
+      "source_name": "004_exposure_or_impact_OpenStreetMap_Overpass_roads_buildings_critical_facilities_af92053c.error.txt",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 593,
+      "sha256_16": "5bfb0dca6ed11e88",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0031",
+      "relative_path": "data/physical_hazard/physical_hazard_012_010_specialized_hazard_source_IRI_BoM_ENSO_monitoring_archive_be8f0efa.html.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_012_010_specialized_hazard_source_IRI_BoM_ENSO_monitoring_archive_be8f0efa.html.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-267/data/physical_hazard/physical_hazard_012_010_specialized_hazard_source_IRI_BoM_ENSO_monitoring_archive_be8f0efa.html.html",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S031",
+      "source_name": "010_specialized_hazard_source_IRI_BoM_ENSO_monitoring_archive_be8f0efa.html",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 182922,
+      "sha256_16": "b2a37fe25e128903",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    }
+  ]
+}

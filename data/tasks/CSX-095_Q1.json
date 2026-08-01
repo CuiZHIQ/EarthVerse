@@ -1,0 +1,973 @@
+{
+  "task_id": "CSX-095_Q1",
+  "event_id": "CSX-095",
+  "title": "Typhoon Doksuri Remnant Rainfall Phase Segmentation",
+  "event_name": "Typhoon Doksuri Beijing-Tianjin-Hebei and Haihe flood",
+  "hazard_family": "river_coastal_flood",
+  "hazard_label": "River and coastal flooding",
+  "region": "East Asia",
+  "scale": "neighborhood_asset",
+  "difficulty": "L3_process_mechanism_reasoning",
+  "difficulty_rationale": "Manual review: \"Typhoon Doksuri Remnant Rainfall Phase Segmentation\" requires using quantitative evidence to explain a physical process, phase/timing pattern, routing/transport pathway, or mechanism diagnosis beyond a simple numeric ledger.",
+  "primary_dimension": "spatiotemporal_process",
+  "dimensions": [
+    "spatiotemporal_process",
+    "physical_mechanism",
+    "quantitative_calculation"
+  ],
+  "dimension_rationale": "Typhoon Doksuri remnant rainfall phase segmentation.",
+  "task_type": "short_answer",
+  "target_family": "doksuri_rainfall_phase_segmentation",
+  "file_count": 32,
+  "category_counts": {
+    "air_quality": 1,
+    "event_catalogs": 3,
+    "event_reports": 3,
+    "exposure_impact": 5,
+    "geospatial_context": 3,
+    "other": 2,
+    "physical_hazard": 8,
+    "remote_sensing": 7
+  },
+  "question": "# Typhoon Doksuri Remnant Rainfall Phase Segmentation\n\nYou are an event-timeline analyst segmenting the late July to early August 2023 rainfall process caused by Typhoon Doksuri remnants over Beijing, Hebei, Tianjin, and the Haihe river system. The task is to divide the event into physically meaningful phases with computed transition evidence.\n\nUse only the local CSX-095 event package. Select package-relative evidence for hourly rainfall, daily rainfall, reported extreme rainfall anchors, and wind background.\n\nSegment the event into these phases:\n\n- sustained wet-hour rainfall phase;\n- three-day concentration phase;\n- report-calibrated extreme rainfall phase;\n- wind-dominance rejection phase.\n\nCompute:\n\n- `wet_hour_fraction = wet_hours / window_hours`;\n- `longest_wet_run_share = longest_wet_run_hours / wet_hours`;\n- `peak_hour_share = peak_hour_mm / hourly_total_mm`;\n- `wet_hour_mean_mm = hourly_total_mm / wet_hours`;\n- `window_mean_mm_per_hour = hourly_total_mm / window_hours`;\n- `max_3day_share = max_3day_daily_sum_mm / daily_total_mm`;\n- `peak_day_share = peak_day_mm / daily_total_mm`;\n- `daily_to_hourly_total_ratio = daily_total_mm / hourly_total_mm`;\n- `report_avg_intensity_mm_per_hour = report_avg_mm / report_duration_hours`;\n- `report_avg_to_hourly_total_ratio = report_avg_mm / hourly_total_mm`;\n- `reservoir_to_report_avg_ratio = reservoir_mm / report_avg_mm`;\n- `single_point_to_report_avg_ratio = single_point_max_mm / report_avg_mm`;\n- `peak_wind_ms` and `wind_energy_proxy = peak_wind_ms^2`.\n\nReturn this JSON shape:\n\n```json\n{\n  \"target_family\": \"doksuri_rainfall_phase_segmentation\",\n  \"phases\": [\n    {\"phase\": \"sustained_wet_hour_rainfall\", \"time_window\": \"\", \"dominant_process\": \"\", \"computed_value\": {}, \"transition_basis\": \"\"},\n    {\"phase\": \"three_day_concentration\", \"time_window\": \"\", \"dominant_process\": \"\", \"computed_value\": {}, \"transition_basis\": \"\"},\n    {\"phase\": \"report_calibrated_extreme_rainfall\", \"time_window\": \"\", \"dominant_process\": \"\", \"computed_value\": {}, \"transition_basis\": \"\"},\n    {\"phase\": \"wind_dominance_rejection\", \"time_window\": \"\", \"dominant_process\": \"\", \"computed_value\": {}, \"transition_basis\": \"\"}\n  ],\n  \"phase_checks\": [\n    {\"row_id\": \"rainfall_persistence\", \"computed_value\": {}, \"result\": \"\"},\n    {\"row_id\": \"three_day_concentration\", \"computed_value\": {}, \"result\": \"\"},\n    {\"row_id\": \"report_intensity_alignment\", \"computed_value\": {}, \"result\": \"\"},\n    {\"row_id\": \"wind_rejection\", \"computed_value\": {}, \"result\": \"\"}\n  ],\n  \"final_label\": \"\"\n}\n```\n\nUse `persistent_remnant_cyclone_rainfall_supported` only when the rainfall persistence, three-day concentration, report-intensity alignment, and wind rejection phases all support a rainfall-dominant remnant-cyclone timeline.\n",
+  "solution": "# Final Answer\n\nCorrect answer: `persistent_remnant_cyclone_rainfall_supported`.\n\n```json\n{\n  \"target_family\": \"doksuri_rainfall_phase_segmentation\",\n  \"phases\": [\n    {\n      \"phase\": \"sustained_wet_hour_rainfall\",\n      \"time_window\": \"120-hour event window\",\n      \"dominant_process\": \"persistent remnant-cyclone rainfall\",\n      \"computed_value\": {\"window_hours\": 120, \"wet_hour_fraction\": 0.7, \"longest_wet_run_share\": 0.929, \"peak_hour_share\": 0.0889, \"wet_hour_mean_mm\": 2.344, \"window_mean_mm_per_hour\": 1.641},\n      \"transition_basis\": \"A long wet run and low peak-hour share show persistence rather than a single-hour burst.\"\n    },\n    {\n      \"phase\": \"three_day_concentration\",\n      \"time_window\": \"wettest three daily totals\",\n      \"dominant_process\": \"multi-day rainfall concentration\",\n      \"computed_value\": {\"max_3day_share\": 0.926, \"peak_day_share\": 0.441, \"daily_to_hourly_total_ratio\": 1.12},\n      \"transition_basis\": \"Most daily rainfall sits in a three-day block while the peak day remains below half of the total.\"\n    },\n    {\n      \"phase\": \"report_calibrated_extreme_rainfall\",\n      \"time_window\": \"83-hour reported extreme-rainfall anchor\",\n      \"dominant_process\": \"report-scale rainfall alignment\",\n      \"computed_value\": {\"report_avg_intensity_mm_per_hour\": 3.988, \"report_avg_to_hourly_total_ratio\": 1.681, \"reservoir_to_report_avg_ratio\": 2.25, \"single_point_to_report_avg_ratio\": 3.097},\n      \"transition_basis\": \"Report-average intensity and reported maxima align with extreme rainfall rather than weak background rain.\"\n    },\n    {\n      \"phase\": \"wind_dominance_rejection\",\n      \"time_window\": \"event wind background\",\n      \"dominant_process\": \"rainfall-dominant remnant timeline\",\n      \"computed_value\": {\"peak_wind_ms\": 10.69, \"peak_wind_kmh\": 38.5, \"wind_energy_proxy\": 114.3},\n      \"transition_basis\": \"Peak wind is below the wind-dominance cutoff, so wind cannot replace rainfall as the timeline control.\"\n    }\n  ],\n  \"phase_checks\": [\n    {\"row_id\": \"rainfall_persistence\", \"computed_value\": {\"window_hours\": 120, \"wet_hour_fraction\": 0.7, \"longest_wet_run_share\": 0.929, \"peak_hour_share\": 0.0889, \"wet_hour_mean_mm\": 2.344, \"window_mean_mm_per_hour\": 1.641}, \"result\": \"pass_persistent_multiday_rainfall\"},\n    {\"row_id\": \"three_day_concentration\", \"computed_value\": {\"max_3day_share\": 0.926, \"peak_day_share\": 0.441, \"daily_to_hourly_total_ratio\": 1.12}, \"result\": \"pass_multiday_concentrated_rainfall\"},\n    {\"row_id\": \"report_intensity_alignment\", \"computed_value\": {\"report_avg_intensity_mm_per_hour\": 3.988, \"report_avg_to_hourly_total_ratio\": 1.681, \"reservoir_to_report_avg_ratio\": 2.25, \"single_point_to_report_avg_ratio\": 3.097}, \"result\": \"pass_report_extreme_rainfall_alignment\"},\n    {\"row_id\": \"wind_rejection\", \"computed_value\": {\"peak_wind_ms\": 10.69, \"peak_wind_kmh\": 38.5, \"wind_energy_proxy\": 114.3}, \"result\": \"reject_wind_dominant_calibration\"}\n  ],\n  \"final_label\": \"persistent_remnant_cyclone_rainfall_supported\"\n}\n```\n\n# Key Computations\n\nThe hourly rainfall series has `window_hours = 120`, `hourly_total_mm = 196.9`, `wet_hours = 84`, `longest_wet_run_hours = 78`, and `peak_hour_mm = 17.5`. Thus `wet_hour_fraction = 84 / 120 = 0.700`, `longest_wet_run_share = 78 / 84 = 0.929`, `peak_hour_share = 17.5 / 196.9 = 0.0889`, `wet_hour_mean = 196.9 / 84 = 2.344`, and `window_mean = 196.9 / 120 = 1.641`.\n\nDaily precipitation gives `max_3day_share = 204.32 / 220.61 = 0.926`, `peak_day_share = 97.29 / 220.61 = 0.441`, and `daily_to_hourly_total_ratio = 220.61 / 196.9 = 1.120`. Report anchors give `331.0 / 83 = 3.988 mm/hour`, `331.0 / 196.9 = 1.681`, `744.8 / 331.0 = 2.250`, and `1025.0 / 331.0 = 3.097`. Peak wind is `38.5 km/h = 10.69 m/s`; the wind-energy proxy is `10.69^2 = 114.3`.\n\n# Reasoning Path\n\nThe segmentation is rainfall-first. The sustained wet-hour phase establishes persistence, the three-day phase shows concentration within a multi-day block, the report-calibrated phase connects the point series to reported extreme rainfall anchors, and the wind phase rejects wind as the dominant calibration. All four checks support the final label.\n\n# Scoring Rubric\n\nTotal: 20 points.\n\n- 3 points: Returns the required phase-segmentation JSON with four phases, four checks, and final label. Partial credit for the correct label with one missing phase.\n- 4 points: Computes rainfall-persistence values correctly: 120 hours, 0.700, 0.929, 0.0889, 2.344, and 1.641. Partial credit for four or five correct values.\n- 3 points: Computes three-day concentration values correctly: 0.926, 0.441, and 1.120. Partial credit for two correct ratios.\n- 4 points: Computes report-intensity alignment correctly: 3.988, 1.681, 2.250, and 3.097. Partial credit for three correct report ratios.\n- 3 points: Converts wind and rejects wind dominance correctly: 38.5 km/h, 10.69 m/s, 114.3, and wind-dominance rejection. Partial credit for correct rejection with incomplete conversion.\n- 2 points: Explains the phase transitions as a rainfall-dominant timeline rather than isolated metrics. Partial credit for correct checks without transition logic.\n- 1 point: Avoids realized-loss, emergency-response, or broad event-history claims beyond the computed timeline.\n",
+  "ground_truth": {
+    "schema_version": "1.0",
+    "task_id": "CSX-095_Q1",
+    "event_id": "CSX-095",
+    "task_type": "short_answer",
+    "target_family": "doksuri_rainfall_phase_segmentation",
+    "evaluation_mode": "hybrid",
+    "difficulty_level": "L3",
+    "primary_gt": {
+      "target_family": "doksuri_rainfall_phase_segmentation",
+      "phases": [
+        {
+          "phase": "sustained_wet_hour_rainfall",
+          "time_window": "120-hour event window",
+          "dominant_process": "persistent remnant-cyclone rainfall",
+          "computed_value": {
+            "window_hours": 120,
+            "wet_hour_fraction": 0.7,
+            "longest_wet_run_share": 0.929,
+            "peak_hour_share": 0.0889,
+            "wet_hour_mean_mm": 2.344,
+            "window_mean_mm_per_hour": 1.641
+          },
+          "transition_basis": "A long wet run and low peak-hour share show persistence rather than a single-hour burst."
+        },
+        {
+          "phase": "three_day_concentration",
+          "time_window": "wettest three daily totals",
+          "dominant_process": "multi-day rainfall concentration",
+          "computed_value": {
+            "max_3day_share": 0.926,
+            "peak_day_share": 0.441,
+            "daily_to_hourly_total_ratio": 1.12
+          },
+          "transition_basis": "Most daily rainfall sits in a three-day block while the peak day remains below half of the total."
+        },
+        {
+          "phase": "report_calibrated_extreme_rainfall",
+          "time_window": "83-hour reported extreme-rainfall anchor",
+          "dominant_process": "report-scale rainfall alignment",
+          "computed_value": {
+            "report_avg_intensity_mm_per_hour": 3.988,
+            "report_avg_to_hourly_total_ratio": 1.681,
+            "reservoir_to_report_avg_ratio": 2.25,
+            "single_point_to_report_avg_ratio": 3.097
+          },
+          "transition_basis": "Report-average intensity and reported maxima align with extreme rainfall rather than weak background rain."
+        },
+        {
+          "phase": "wind_dominance_rejection",
+          "time_window": "event wind background",
+          "dominant_process": "rainfall-dominant remnant timeline",
+          "computed_value": {
+            "peak_wind_ms": 10.69,
+            "peak_wind_kmh": 38.5,
+            "wind_energy_proxy": 114.3
+          },
+          "transition_basis": "Peak wind is below the wind-dominance cutoff, so wind cannot replace rainfall as the timeline control."
+        }
+      ],
+      "phase_checks": [
+        {
+          "row_id": "rainfall_persistence",
+          "computed_value": {
+            "window_hours": 120,
+            "wet_hour_fraction": 0.7,
+            "longest_wet_run_share": 0.929,
+            "peak_hour_share": 0.0889,
+            "wet_hour_mean_mm": 2.344,
+            "window_mean_mm_per_hour": 1.641
+          },
+          "result": "pass_persistent_multiday_rainfall"
+        },
+        {
+          "row_id": "three_day_concentration",
+          "computed_value": {
+            "max_3day_share": 0.926,
+            "peak_day_share": 0.441,
+            "daily_to_hourly_total_ratio": 1.12
+          },
+          "result": "pass_multiday_concentrated_rainfall"
+        },
+        {
+          "row_id": "report_intensity_alignment",
+          "computed_value": {
+            "report_avg_intensity_mm_per_hour": 3.988,
+            "report_avg_to_hourly_total_ratio": 1.681,
+            "reservoir_to_report_avg_ratio": 2.25,
+            "single_point_to_report_avg_ratio": 3.097
+          },
+          "result": "pass_report_extreme_rainfall_alignment"
+        },
+        {
+          "row_id": "wind_rejection",
+          "computed_value": {
+            "peak_wind_ms": 10.69,
+            "peak_wind_kmh": 38.5,
+            "wind_energy_proxy": 114.3
+          },
+          "result": "reject_wind_dominant_calibration"
+        }
+      ],
+      "final_label": "persistent_remnant_cyclone_rainfall_supported"
+    },
+    "key_values": {
+      "event_name": "Typhoon Doksuri Beijing-Tianjin-Hebei and Haihe flood",
+      "hazard_family": "river_coastal_flood",
+      "event_window": "2023-07-29 to 2023-08-02",
+      "hourly_total_mm": 196.9,
+      "wet_hours": 84,
+      "longest_wet_run_hours": 78,
+      "peak_hour_mm": 17.5,
+      "daily_total_mm": 220.61,
+      "max_3day_daily_sum_mm": 204.32,
+      "peak_day_mm": 97.29,
+      "report_avg_mm": 331.0,
+      "report_duration_hours": 83,
+      "reservoir_mm": 744.8,
+      "single_point_max_mm": 1025.0,
+      "peak_wind_kmh": 38.5
+    },
+    "derived_metrics": {
+      "phases": [
+        {
+          "phase": "sustained_wet_hour_rainfall",
+          "time_window": "120-hour event window",
+          "dominant_process": "persistent remnant-cyclone rainfall",
+          "computed_value": {
+            "window_hours": 120,
+            "wet_hour_fraction": 0.7,
+            "longest_wet_run_share": 0.929,
+            "peak_hour_share": 0.0889,
+            "wet_hour_mean_mm": 2.344,
+            "window_mean_mm_per_hour": 1.641
+          },
+          "transition_basis": "A long wet run and low peak-hour share show persistence rather than a single-hour burst."
+        },
+        {
+          "phase": "three_day_concentration",
+          "time_window": "wettest three daily totals",
+          "dominant_process": "multi-day rainfall concentration",
+          "computed_value": {
+            "max_3day_share": 0.926,
+            "peak_day_share": 0.441,
+            "daily_to_hourly_total_ratio": 1.12
+          },
+          "transition_basis": "Most daily rainfall sits in a three-day block while the peak day remains below half of the total."
+        },
+        {
+          "phase": "report_calibrated_extreme_rainfall",
+          "time_window": "83-hour reported extreme-rainfall anchor",
+          "dominant_process": "report-scale rainfall alignment",
+          "computed_value": {
+            "report_avg_intensity_mm_per_hour": 3.988,
+            "report_avg_to_hourly_total_ratio": 1.681,
+            "reservoir_to_report_avg_ratio": 2.25,
+            "single_point_to_report_avg_ratio": 3.097
+          },
+          "transition_basis": "Report-average intensity and reported maxima align with extreme rainfall rather than weak background rain."
+        },
+        {
+          "phase": "wind_dominance_rejection",
+          "time_window": "event wind background",
+          "dominant_process": "rainfall-dominant remnant timeline",
+          "computed_value": {
+            "peak_wind_ms": 10.69,
+            "peak_wind_kmh": 38.5,
+            "wind_energy_proxy": 114.3
+          },
+          "transition_basis": "Peak wind is below the wind-dominance cutoff, so wind cannot replace rainfall as the timeline control."
+        }
+      ],
+      "phase_checks": [
+        {
+          "row_id": "rainfall_persistence",
+          "computed_value": {
+            "window_hours": 120,
+            "wet_hour_fraction": 0.7,
+            "longest_wet_run_share": 0.929,
+            "peak_hour_share": 0.0889,
+            "wet_hour_mean_mm": 2.344,
+            "window_mean_mm_per_hour": 1.641
+          },
+          "result": "pass_persistent_multiday_rainfall"
+        },
+        {
+          "row_id": "three_day_concentration",
+          "computed_value": {
+            "max_3day_share": 0.926,
+            "peak_day_share": 0.441,
+            "daily_to_hourly_total_ratio": 1.12
+          },
+          "result": "pass_multiday_concentrated_rainfall"
+        },
+        {
+          "row_id": "report_intensity_alignment",
+          "computed_value": {
+            "report_avg_intensity_mm_per_hour": 3.988,
+            "report_avg_to_hourly_total_ratio": 1.681,
+            "reservoir_to_report_avg_ratio": 2.25,
+            "single_point_to_report_avg_ratio": 3.097
+          },
+          "result": "pass_report_extreme_rainfall_alignment"
+        },
+        {
+          "row_id": "wind_rejection",
+          "computed_value": {
+            "peak_wind_ms": 10.69,
+            "peak_wind_kmh": 38.5,
+            "wind_energy_proxy": 114.3
+          },
+          "result": "reject_wind_dominant_calibration"
+        }
+      ],
+      "final_label": "persistent_remnant_cyclone_rainfall_supported"
+    },
+    "rubric": {
+      "total_points": 20,
+      "criteria": [
+        {
+          "name": "Answer structure",
+          "points": 3,
+          "description": "Returns JSON only with target_family, four phases, four phase_checks, and final_label.",
+          "partial_credit": "Award 1-2 points for valid JSON with one missing row or one misplaced field."
+        },
+        {
+          "name": "Rainfall persistence row",
+          "points": 4,
+          "description": "Computes 120 h, 0.700 wet-hour fraction, 0.929 longest-run share, 0.0889 peak-hour share, 2.344 mm/wet-hour, 1.641 mm/window-hour, and the pass result.",
+          "partial_credit": "Award 2-3 points for mostly correct values with one formula or rounding error."
+        },
+        {
+          "name": "Three-day concentration row",
+          "points": 3,
+          "description": "Computes 0.926 max 3-day share, 0.441 peak-day share, 1.120 daily-to-hourly ratio, and the pass result.",
+          "partial_credit": "Award 1-2 points for two correct ratios or a correct result with incomplete arithmetic."
+        },
+        {
+          "name": "Report intensity row",
+          "points": 4,
+          "description": "Computes 3.988 mm/hour, 1.681 report-to-hourly ratio, 2.250 reservoir-to-average ratio, 3.097 single-point-to-average ratio, and the pass result.",
+          "partial_credit": "Award 2-3 points for most values correct with one missing report ratio."
+        },
+        {
+          "name": "Wind rejection row",
+          "points": 3,
+          "description": "Computes 38.5 km/h, 10.69 m/s, 114.3 proxy, applies the below-15 m/s test, and rejects wind-dominant calibration.",
+          "partial_credit": "Award 1-2 points for the right rejection with incomplete conversion or proxy work."
+        },
+        {
+          "name": "Final label and bounded interpretation",
+          "points": 3,
+          "description": "Gives the exact final label and ties the interpretation to persistent rainfall, daily/report alignment, and wind rejection without extra realized-loss or action statements.",
+          "partial_credit": "Award 1-2 points for a nearly correct label or an interpretation that is correct but too broad."
+        }
+      ]
+    },
+    "provenance": {
+      "computed_by": "compute_gt.py",
+      "source_files": [
+        "metadata/event.json",
+        "data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "data/other/other_001_WMO_-_Typhoons_trigger_record-breaking_rainfall_in_China.html",
+        "data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json",
+        "data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json"
+      ]
+    }
+  },
+  "compute_gt_py": "#!/usr/bin/env python3\n\"\"\"Compute ground truth for CSX-095_Q1 from the local CSX-095 record.\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nimport math\nimport re\nfrom html.parser import HTMLParser\nfrom pathlib import Path\nfrom typing import Any\n\n\nTASK_ID = \"CSX-095_Q1\"\nEVENT_ID = \"CSX-095\"\nTARGET_FAMILY = \"doksuri_rainfall_phase_segmentation\"\nFINAL_LABEL = \"persistent_remnant_cyclone_rainfall_supported\"\n\n\nclass TextExtractor(HTMLParser):\n    def __init__(self) -> None:\n        super().__init__()\n        self.parts: list[str] = []\n\n    def handle_data(self, data: str) -> None:\n        text = data.strip()\n        if text:\n            self.parts.append(text)\n\n\ndef repo_root() -> Path:\n    here = Path(__file__).resolve()\n    for parent in [here.parent, *here.parents]:\n        candidate = parent / \"event_packages\" / \"standard_event_packages\" / \"packages\" / EVENT_ID\n        if candidate.is_dir():\n            return parent\n    raise FileNotFoundError(\"CSX-095 record directory was not found\")\n\n\ndef package_root() -> Path:\n    return repo_root() / \"event_packages\" / \"standard_event_packages\" / \"packages\" / EVENT_ID\n\n\ndef load_json(rel_path: str) -> Any:\n    return json.loads((package_root() / rel_path).read_text(encoding=\"utf-8-sig\"))\n\n\ndef html_text(rel_path: str) -> str:\n    parser = TextExtractor()\n    parser.feed((package_root() / rel_path).read_text(encoding=\"utf-8\", errors=\"ignore\"))\n    return re.sub(r\"\\s+\", \" \", \" \".join(parser.parts)).strip()\n\n\ndef number_from_match(pattern: str, text: str) -> float:\n    match = re.search(pattern, text, flags=re.IGNORECASE)\n    if not match:\n        raise ValueError(f\"Could not parse required value with pattern: {pattern}\")\n    return float(match.group(1).replace(\",\", \"\"))\n\n\ndef longest_true_run(flags: list[bool]) -> int:\n    longest = 0\n    current = 0\n    for flag in flags:\n        current = current + 1 if flag else 0\n        longest = max(longest, current)\n    return longest\n\n\ndef max_rolling_sum(values: list[float], window: int) -> float:\n    return max(sum(values[i : i + window]) for i in range(len(values) - window + 1))\n\n\ndef round_float(value: float, digits: int) -> float:\n    return round(float(value), digits)\n\n\ndef rubric() -> dict[str, Any]:\n    return {\n        \"total_points\": 20,\n        \"criteria\": [\n            {\n                \"name\": \"Answer structure\",\n                \"points\": 3,\n                \"description\": \"Returns JSON only with target_family, four phases, four phase_checks, and final_label.\",\n                \"partial_credit\": \"Award 1-2 points for valid JSON with one missing row or one misplaced field.\",\n            },\n            {\n                \"name\": \"Rainfall persistence row\",\n                \"points\": 4,\n                \"description\": \"Computes 120 h, 0.700 wet-hour fraction, 0.929 longest-run share, 0.0889 peak-hour share, 2.344 mm/wet-hour, 1.641 mm/window-hour, and the pass result.\",\n                \"partial_credit\": \"Award 2-3 points for mostly correct values with one formula or rounding error.\",\n            },\n            {\n                \"name\": \"Three-day concentration row\",\n                \"points\": 3,\n                \"description\": \"Computes 0.926 max 3-day share, 0.441 peak-day share, 1.120 daily-to-hourly ratio, and the pass result.\",\n                \"partial_credit\": \"Award 1-2 points for two correct ratios or a correct result with incomplete arithmetic.\",\n            },\n            {\n                \"name\": \"Report intensity row\",\n                \"points\": 4,\n                \"description\": \"Computes 3.988 mm/hour, 1.681 report-to-hourly ratio, 2.250 reservoir-to-average ratio, 3.097 single-point-to-average ratio, and the pass result.\",\n                \"partial_credit\": \"Award 2-3 points for most values correct with one missing report ratio.\",\n            },\n            {\n                \"name\": \"Wind rejection row\",\n                \"points\": 3,\n                \"description\": \"Computes 38.5 km/h, 10.69 m/s, 114.3 proxy, applies the below-15 m/s test, and rejects wind-dominant calibration.\",\n                \"partial_credit\": \"Award 1-2 points for the right rejection with incomplete conversion or proxy work.\",\n            },\n            {\n                \"name\": \"Final label and bounded interpretation\",\n                \"points\": 3,\n                \"description\": \"Gives the exact final label and ties the interpretation to persistent rainfall, daily/report alignment, and wind rejection without extra realized-loss or action statements.\",\n                \"partial_credit\": \"Award 1-2 points for a nearly correct label or an interpretation that is correct but too broad.\",\n            },\n        ],\n    }\n\n\ndef compute() -> dict[str, Any]:\n    event_meta = load_json(\"metadata/event.json\")\n    open_meteo = load_json(\"data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json\")\n    nasa_power = load_json(\"data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json\")\n    local_report_text = html_text(\"data/event_reports/event_reports_001_Locked_package_evidence_report.html\")\n    regional_report_text = html_text(\"data/other/other_001_WMO_-_Typhoons_trigger_record-breaking_rainfall_in_China.html\")\n\n    hourly_precip = [float(value or 0.0) for value in open_meteo[\"hourly\"][\"precipitation\"]]\n    hourly_wind_kmh = [float(value or 0.0) for value in open_meteo[\"hourly\"][\"wind_speed_10m\"]]\n    wet_flags = [value > 0.0 for value in hourly_precip]\n    power_precip = nasa_power[\"properties\"][\"parameter\"][\"PRECTOTCORR\"]\n    daily_values = [float(value) for value in power_precip.values()]\n\n    hourly_total = sum(hourly_precip)\n    daily_total = sum(daily_values)\n    wet_hours = sum(wet_flags)\n    window_hours = len(hourly_precip)\n    longest_wet_run_hours = longest_true_run(wet_flags)\n    peak_hour_mm = max(hourly_precip)\n    peak_wind_kmh = max(hourly_wind_kmh)\n    peak_wind_ms = round_float(peak_wind_kmh / 3.6, 2)\n    peak_day_mm = max(daily_values)\n    max_3day_daily_sum_mm = max_rolling_sum(daily_values, 3)\n\n    report_avg_mm = number_from_match(r\"average rainfall of ([0-9.]+) millimeters\", local_report_text)\n    report_duration_hours = int(number_from_match(r\"over ([0-9]+) hours\", local_report_text))\n    single_point_max_mm = number_from_match(r\"single point of\\s*([0-9,]+) millimeters\", local_report_text)\n    reservoir_mm = number_from_match(r\"It logged ([0-9.]+) millimeters of rain\", regional_report_text)\n\n    rainfall_persistence = {\n        \"window_hours\": window_hours,\n        \"wet_hour_fraction\": round_float(wet_hours / window_hours, 3),\n        \"longest_wet_run_share\": round_float(longest_wet_run_hours / wet_hours, 3),\n        \"peak_hour_share\": round_float(peak_hour_mm / hourly_total, 4),\n        \"wet_hour_mean_mm\": round_float(hourly_total / wet_hours, 3),\n        \"window_mean_mm_per_hour\": round_float(hourly_total / window_hours, 3),\n    }\n    three_day_concentration = {\n        \"max_3day_share\": round_float(max_3day_daily_sum_mm / daily_total, 3),\n        \"peak_day_share\": round_float(peak_day_mm / daily_total, 3),\n        \"daily_to_hourly_total_ratio\": round_float(daily_total / hourly_total, 3),\n    }\n    report_intensity_alignment = {\n        \"report_avg_intensity_mm_per_hour\": round_float(report_avg_mm / report_duration_hours, 3),\n        \"report_avg_to_hourly_total_ratio\": round_float(report_avg_mm / hourly_total, 3),\n        \"reservoir_to_report_avg_ratio\": round_float(reservoir_mm / report_avg_mm, 3),\n        \"single_point_to_report_avg_ratio\": round_float(single_point_max_mm / report_avg_mm, 3),\n    }\n    wind_rejection = {\n        \"peak_wind_ms\": peak_wind_ms,\n        \"peak_wind_kmh\": peak_wind_kmh,\n        \"wind_energy_proxy\": round_float(math.pow(peak_wind_ms, 2), 1),\n    }\n\n    phase_checks = [\n        {\n            \"row_id\": \"rainfall_persistence\",\n            \"computed_value\": rainfall_persistence,\n            \"result\": \"pass_persistent_multiday_rainfall\",\n        },\n        {\n            \"row_id\": \"three_day_concentration\",\n            \"computed_value\": three_day_concentration,\n            \"result\": \"pass_multiday_concentrated_rainfall\",\n        },\n        {\n            \"row_id\": \"report_intensity_alignment\",\n            \"computed_value\": report_intensity_alignment,\n            \"result\": \"pass_report_extreme_rainfall_alignment\",\n        },\n        {\n            \"row_id\": \"wind_rejection\",\n            \"computed_value\": wind_rejection,\n            \"result\": \"reject_wind_dominant_calibration\",\n        },\n    ]\n    phases = [\n        {\n            \"phase\": \"sustained_wet_hour_rainfall\",\n            \"time_window\": \"120-hour event window\",\n            \"dominant_process\": \"persistent remnant-cyclone rainfall\",\n            \"computed_value\": rainfall_persistence,\n            \"transition_basis\": \"A long wet run and low peak-hour share show persistence rather than a single-hour burst.\",\n        },\n        {\n            \"phase\": \"three_day_concentration\",\n            \"time_window\": \"wettest three daily totals\",\n            \"dominant_process\": \"multi-day rainfall concentration\",\n            \"computed_value\": three_day_concentration,\n            \"transition_basis\": \"Most daily rainfall sits in a three-day block while the peak day remains below half of the total.\",\n        },\n        {\n            \"phase\": \"report_calibrated_extreme_rainfall\",\n            \"time_window\": \"83-hour reported extreme-rainfall anchor\",\n            \"dominant_process\": \"report-scale rainfall alignment\",\n            \"computed_value\": report_intensity_alignment,\n            \"transition_basis\": \"Report-average intensity and reported maxima align with extreme rainfall rather than weak background rain.\",\n        },\n        {\n            \"phase\": \"wind_dominance_rejection\",\n            \"time_window\": \"event wind background\",\n            \"dominant_process\": \"rainfall-dominant remnant timeline\",\n            \"computed_value\": wind_rejection,\n            \"transition_basis\": \"Peak wind is below the wind-dominance cutoff, so wind cannot replace rainfall as the timeline control.\",\n        },\n    ]\n\n    return {\n        \"schema_version\": \"1.0\",\n        \"task_id\": TASK_ID,\n        \"event_id\": EVENT_ID,\n        \"task_type\": \"short_answer\",\n        \"target_family\": TARGET_FAMILY,\n        \"evaluation_mode\": \"hybrid\",\n        \"difficulty_level\": \"L3\",\n        \"primary_gt\": {\n            \"target_family\": TARGET_FAMILY,\n            \"phases\": phases,\n            \"phase_checks\": phase_checks,\n            \"final_label\": FINAL_LABEL,\n        },\n        \"key_values\": {\n            \"event_name\": event_meta[\"event_name\"],\n            \"hazard_family\": event_meta[\"hazard_family\"],\n            \"event_window\": \"2023-07-29 to 2023-08-02\",\n            \"hourly_total_mm\": round_float(hourly_total, 1),\n            \"wet_hours\": wet_hours,\n            \"longest_wet_run_hours\": longest_wet_run_hours,\n            \"peak_hour_mm\": peak_hour_mm,\n            \"daily_total_mm\": round_float(daily_total, 2),\n            \"max_3day_daily_sum_mm\": round_float(max_3day_daily_sum_mm, 2),\n            \"peak_day_mm\": round_float(peak_day_mm, 2),\n            \"report_avg_mm\": report_avg_mm,\n            \"report_duration_hours\": report_duration_hours,\n            \"reservoir_mm\": reservoir_mm,\n            \"single_point_max_mm\": single_point_max_mm,\n            \"peak_wind_kmh\": peak_wind_kmh,\n        },\n        \"derived_metrics\": {\n            \"phases\": phases,\n            \"phase_checks\": phase_checks,\n            \"final_label\": FINAL_LABEL,\n        },\n        \"rubric\": rubric(),\n        \"provenance\": {\n            \"computed_by\": \"compute_gt.py\",\n            \"source_files\": [\n                \"metadata/event.json\",\n                \"data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n                \"data/other/other_001_WMO_-_Typhoons_trigger_record-breaking_rainfall_in_China.html\",\n                \"data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json\",\n                \"data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json\",\n            ],\n        },\n    }\n\ndef main() -> None:\n    output = Path(__file__).resolve().parent / \"computed_gt.json\"\n    computed_gt = compute()\n    output.write_text(json.dumps(computed_gt, indent=2, ensure_ascii=True) + \"\\n\", encoding=\"utf-8\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "event": {
+    "package_id": "CSX-095",
+    "event_name": "Typhoon Doksuri Beijing-Tianjin-Hebei and Haihe flood",
+    "canonical_event_key": "2023 typhoon doksuri north china floods",
+    "hazard_family": "river_coastal_flood",
+    "hazard_label": "River and coastal flooding",
+    "scale": "neighborhood_asset",
+    "region": "East Asia",
+    "primary_evidence_url": "https://wmo.int/media/news/typhoons-trigger-destruction-and-record-breaking-rainfall-china",
+    "existence_verdict": "confirmed",
+    "temporal_match": "match",
+    "spatial_match": "match",
+    "hazard_match": "match",
+    "source_reliability": "high_official_or_institutional",
+    "correspondence_score": "89",
+    "release_decision": "keep_with_minor_fix",
+    "benchmark_readiness": "ready_with_metadata_warnings",
+    "benchmark_readiness_label": "ready with metadata warnings",
+    "data_integrity": {
+      "local_files_checked": "29",
+      "image_files_checked": "3",
+      "valid_images": "3",
+      "formal_slice_files_checked": "9",
+      "hard_error_count": "0",
+      "metadata_warning_count": "0",
+      "final_data_score": "92",
+      "final_data_decision": "ready_with_minor_warnings",
+      "replacement_file_count": "0"
+    },
+    "file_inventory": {
+      "total_files": 32,
+      "categories": {
+        "air_quality": 1,
+        "event_catalogs": 3,
+        "event_reports": 3,
+        "exposure_impact": 5,
+        "geospatial_context": 3,
+        "other": 2,
+        "physical_hazard": 8,
+        "remote_sensing": 7
+      }
+    }
+  },
+  "event_files": [
+    {
+      "file_id": "F0001",
+      "relative_path": "data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "category": "event_reports",
+      "layer_name": "event_anchor_report",
+      "source_id": "S001",
+      "source_name": "Locked package evidence report",
+      "source_type": "resource_registry",
+      "source_url": "https://www.wmc-bj.net/EWS_practice/ProgressiveService-BJ.html",
+      "bytes": 25040,
+      "sha256_16": "8387bff6084437b4",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0002",
+      "relative_path": "data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "category": "event_reports",
+      "layer_name": "text_reports",
+      "source_id": "S002",
+      "source_name": "HDX CKAN package search",
+      "source_type": "resource_registry",
+      "source_url": "https://data.humdata.org/api/3/action/package_search?q=Typhoon%20Doksuri%20Beijing-Tianjin-Hebei%20and%20Haihe%20flood&rows=10",
+      "bytes": 294,
+      "sha256_16": "8b0409239393d27e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0003",
+      "relative_path": "data/exposure_impact/exposure_impact_001_WorldPop_population_grids.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/exposure_impact/exposure_impact_001_WorldPop_population_grids.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/exposure_impact/exposure_impact_001_WorldPop_population_grids.html",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S003",
+      "source_name": "WorldPop population grids",
+      "source_type": "resource_registry",
+      "source_url": "https://hub.worldpop.org/geodata/listing?id=29&iso3=China",
+      "bytes": 21464,
+      "sha256_16": "ff8c2c8bf4ea909b",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0004",
+      "relative_path": "data/exposure_impact/exposure_impact_002_GHSL_built-up_and_settlement_layers.php",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/exposure_impact/exposure_impact_002_GHSL_built-up_and_settlement_layers.php",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/exposure_impact/exposure_impact_002_GHSL_built-up_and_settlement_layers.php",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S004",
+      "source_name": "GHSL built-up and settlement layers",
+      "source_type": "resource_registry",
+      "source_url": "https://ghsl.jrc.ec.europa.eu/download.php",
+      "bytes": 26368,
+      "sha256_16": "f1a201f3cf984c62",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0005",
+      "relative_path": "data/exposure_impact/exposure_impact_003_OpenStreetMap_Geofabrik_extracts.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/exposure_impact/exposure_impact_003_OpenStreetMap_Geofabrik_extracts.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/exposure_impact/exposure_impact_003_OpenStreetMap_Geofabrik_extracts.json",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S005",
+      "source_name": "OpenStreetMap Geofabrik extracts",
+      "source_type": "resource_registry",
+      "source_url": "https://download.geofabrik.de/index-v1-nogeom.json",
+      "bytes": 513446,
+      "sha256_16": "0dcfa9a61091cf55",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0006",
+      "relative_path": "data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json",
+      "category": "air_quality",
+      "layer_name": "city_feedback_or_air_quality",
+      "source_id": "S006",
+      "source_name": "Open-Meteo Air Quality API",
+      "source_type": "resource_registry",
+      "source_url": "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=39.9042&longitude=116.4074&start_date=2023-07-29&end_date=2023-08-02&hourly=pm10,pm2_5,ozone,nitrogen_dioxide",
+      "bytes": 5016,
+      "sha256_16": "a15fd3f1f3d46b64",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0007",
+      "relative_path": "data/geospatial_context/geospatial_context_001_Natural_Earth_Admin-0_physical_basemap.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/geospatial_context/geospatial_context_001_Natural_Earth_Admin-0_physical_basemap.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/geospatial_context/geospatial_context_001_Natural_Earth_Admin-0_physical_basemap.zip",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S007",
+      "source_name": "Natural Earth Admin-0/physical basemap",
+      "source_type": "resource_registry",
+      "source_url": "https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip",
+      "bytes": 214976,
+      "sha256_16": "0f243aeac8ac6cf2",
+      "status": "success",
+      "preview_type": "archive",
+      "mime_type": "application/zip",
+      "format": "archive",
+      "archive_manifest": {
+        "entry_count": 7,
+        "entries": [
+          {
+            "name": "ne_110m_admin_0_countries.README.html",
+            "bytes": 41905,
+            "compressed_bytes": 9171,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.VERSION.txt",
+            "bytes": 7,
+            "compressed_bytes": 7,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.cpg",
+            "bytes": 5,
+            "compressed_bytes": 5,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.dbf",
+            "bytes": 531808,
+            "compressed_bytes": 69191,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.prj",
+            "bytes": 147,
+            "compressed_bytes": 122,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.shp",
+            "bytes": 180924,
+            "compressed_bytes": 134214,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.shx",
+            "bytes": 1516,
+            "compressed_bytes": 910,
+            "is_directory": false
+          }
+        ],
+        "truncated": false,
+        "error": null
+      }
+    },
+    {
+      "file_id": "F0008",
+      "relative_path": "data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S008",
+      "source_name": "GDACS event list GeoJSON API",
+      "source_type": "resource_registry",
+      "source_url": "https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventtype=FL&fromDate=2023-07-29&toDate=2023-08-02",
+      "bytes": 4274,
+      "sha256_16": "8b8e8d9d95c67e1e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0009",
+      "relative_path": "data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_precipitation_via_CMR_Earthdata.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_precipitation_via_CMR_Earthdata.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_precipitation_via_CMR_Earthdata.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S009",
+      "source_name": "NASA GPM IMERG precipitation via CMR/Earthdata",
+      "source_type": "resource_registry",
+      "source_url": "https://cmr.earthdata.nasa.gov/search/collections.json?keyword=GPM%20IMERG&page_size=5",
+      "bytes": 181119,
+      "sha256_16": "1619a7b854ff836e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0010",
+      "relative_path": "data/physical_hazard/physical_hazard_002_CHIRPS_daily_precipitation.0",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_002_CHIRPS_daily_precipitation.0",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_002_CHIRPS_daily_precipitation.0",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S010",
+      "source_name": "CHIRPS daily precipitation",
+      "source_type": "resource_registry",
+      "source_url": "https://data.chc.ucsb.edu/products/CHIRPS-2.0/",
+      "bytes": 7005,
+      "sha256_16": "ca7af0f62bd4d261",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0011",
+      "relative_path": "data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S011",
+      "source_name": "Open-Meteo historical weather point API",
+      "source_type": "resource_registry",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=39.9042&longitude=116.4074&start_date=2023-07-29&end_date=2023-08-02&hourly=precipitation,wind_speed_10m&timezone=UTC",
+      "bytes": 3756,
+      "sha256_16": "e5509170baf68560",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0012",
+      "relative_path": "data/remote_sensing/remote_sensing_001_Copernicus_EMS_Rapid_Mapping_EMSR_archive.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/remote_sensing/remote_sensing_001_Copernicus_EMS_Rapid_Mapping_EMSR_archive.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/remote_sensing/remote_sensing_001_Copernicus_EMS_Rapid_Mapping_EMSR_archive.html",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S012",
+      "source_name": "Copernicus EMS Rapid Mapping / EMSR archive",
+      "source_type": "resource_registry",
+      "source_url": "https://rapidmapping.emergency.copernicus.eu/",
+      "bytes": 15729,
+      "sha256_16": "a1d088a3cab5a496",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0013",
+      "relative_path": "data/geospatial_context/geospatial_context_002_Nominatim_event_location_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/geospatial_context/geospatial_context_002_Nominatim_event_location_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/geospatial_context/geospatial_context_002_Nominatim_event_location_search.json",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S013",
+      "source_name": "Nominatim event location search",
+      "source_type": "resource_registry",
+      "source_url": "https://nominatim.openstreetmap.org/search?q=Beijing%2C+Hebei%2C+Tianjin+and+Haihe+basin+China&format=jsonv2&limit=5",
+      "bytes": 2,
+      "sha256_16": "4f53cda18c2baa0c",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0014",
+      "relative_path": "data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S014",
+      "source_name": "NASA POWER daily point weather API",
+      "source_type": "resource_registry",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR%2CT2M%2CWS10M&community=AG&longitude=116.4074&latitude=39.9042&start=20230729&end=20230802&format=JSON",
+      "bytes": 875,
+      "sha256_16": "84f6cc34f1a0db63",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0015",
+      "relative_path": "data/remote_sensing/remote_sensing_002_NASA_Worldview_GIBS_MODIS_thumbnail.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/remote_sensing/remote_sensing_002_NASA_Worldview_GIBS_MODIS_thumbnail.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/remote_sensing/remote_sensing_002_NASA_Worldview_GIBS_MODIS_thumbnail.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S015",
+      "source_name": "NASA Worldview/GIBS MODIS thumbnail",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2023-07-29&BBOX=37.4042%2C113.9074%2C42.4042%2C118.9074&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 72433,
+      "sha256_16": "c5d9c19208fec84a",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0016",
+      "relative_path": "data/event_catalogs/event_catalogs_002_NASA_EONET_severe_storms_flood_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/event_catalogs/event_catalogs_002_NASA_EONET_severe_storms_flood_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/event_catalogs/event_catalogs_002_NASA_EONET_severe_storms_flood_search.json",
+      "category": "event_catalogs",
+      "layer_name": "specialized_hazard_source",
+      "source_id": "S016",
+      "source_name": "NASA EONET severe storms/flood search",
+      "source_type": "resource_registry",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events?start=2023-07-29&end=2023-08-02&keyword=Typhoon%20Doksuri%20Beijing-Tianjin-Hebei%20and%20Haihe%20flood",
+      "bytes": 145,
+      "sha256_16": "12120ad325218b8c",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0017",
+      "relative_path": "data/geospatial_context/geospatial_context_003_compact_per-event_AOI_derived_from_event_bbox.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/geospatial_context/geospatial_context_003_compact_per-event_AOI_derived_from_event_bbox.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/geospatial_context/geospatial_context_003_compact_per-event_AOI_derived_from_event_bbox.json",
+      "category": "geospatial_context",
+      "layer_name": "aoi",
+      "source_id": "S017",
+      "source_name": "compact per-event AOI derived from event bbox",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 444,
+      "sha256_16": "63d67457be968747",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0018",
+      "relative_path": "data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S018",
+      "source_name": "ERA5-Land hourly aggregate stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 996,
+      "sha256_16": "3ff54dfa85bd4cfe",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0019",
+      "relative_path": "data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S019",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 321,
+      "sha256_16": "1c440312c6f8923e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0020",
+      "relative_path": "data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S020",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 318,
+      "sha256_16": "33c20ad4f2aafc04",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0021",
+      "relative_path": "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S021",
+      "source_name": "WorldPop GP 100m population sum",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 125,
+      "sha256_16": "fda7e9dc0df4d4fb",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0022",
+      "relative_path": "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S022",
+      "source_name": "Google Satellite Embedding 64-band annual stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 9898,
+      "sha256_16": "2ed34f8d74a9cbdb",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0023",
+      "relative_path": "data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S023",
+      "source_name": "Google Satellite Embedding annual cosine-change stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 365,
+      "sha256_16": "a0da0ba8ab868d89",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0024",
+      "relative_path": "data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json",
+      "category": "remote_sensing",
+      "layer_name": "sentinel1",
+      "source_id": "S024",
+      "source_name": "Sentinel-1 GRD VV pre/post change",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 497,
+      "sha256_16": "457421d700bbd3e8",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0025",
+      "relative_path": "data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "category": "exposure_impact",
+      "layer_name": "osm_exposure",
+      "source_id": "S025",
+      "source_name": "OpenStreetMap Overpass bounded AOI slice",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 220786,
+      "sha256_16": "82fb06179ccb0cce",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0026",
+      "relative_path": "data/remote_sensing/remote_sensing_006_pre.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/remote_sensing/remote_sensing_006_pre.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/remote_sensing/remote_sensing_006_pre.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S026",
+      "source_name": "pre",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2023-06-29&BBOX=18.5%2C103.0%2C53.5%2C138.0&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 190936,
+      "sha256_16": "a425245e9bf264b7",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0027",
+      "relative_path": "data/remote_sensing/remote_sensing_007_event.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/remote_sensing/remote_sensing_007_event.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/remote_sensing/remote_sensing_007_event.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S027",
+      "source_name": "event",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2023-07-31&BBOX=18.5%2C103.0%2C53.5%2C138.0&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 195467,
+      "sha256_16": "a2d00d4517af46a8",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0028",
+      "relative_path": "data/event_reports/event_reports_003_Locked_event_anchor_Typhoon_Doksuri_Beijing-Tianjin-Hebei_and_Haihe_flood.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/event_reports/event_reports_003_Locked_event_anchor_Typhoon_Doksuri_Beijing-Tianjin-Hebei_and_Haihe_flood.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/event_reports/event_reports_003_Locked_event_anchor_Typhoon_Doksuri_Beijing-Tianjin-Hebei_and_Haihe_flood.json",
+      "category": "event_reports",
+      "layer_name": "package_locked_event_anchor / WMO World Meteorological Centre Beijing / CMA-linked",
+      "source_id": "S028",
+      "source_name": "Locked event anchor: Typhoon Doksuri Beijing-Tianjin-Hebei and Haihe flood",
+      "source_type": "event_specific_sources",
+      "source_url": "https://www.wmc-bj.net/EWS_practice/ProgressiveService-BJ.html",
+      "bytes": 3034,
+      "sha256_16": "9dba678b270e4290",
+      "status": "remote_verified",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0029",
+      "relative_path": "data/other/other_001_WMO_-_Typhoons_trigger_record-breaking_rainfall_in_China.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/other/other_001_WMO_-_Typhoons_trigger_record-breaking_rainfall_in_China.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/other/other_001_WMO_-_Typhoons_trigger_record-breaking_rainfall_in_China.html",
+      "category": "other",
+      "layer_name": "institution_event_article",
+      "source_id": "S029",
+      "source_name": "WMO - Typhoons trigger record-breaking rainfall in China",
+      "source_type": "event_specific_sources",
+      "source_url": "https://wmo.int/media/news/typhoons-trigger-destruction-and-record-breaking-rainfall-china",
+      "bytes": 128692,
+      "sha256_16": "461f9a01c3f6243a",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0030",
+      "relative_path": "data/physical_hazard/physical_hazard_008_04_physical_hazard_api_Open-Meteo_historical_weather_point_API.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_008_04_physical_hazard_api_Open-Meteo_historical_weather_point_API.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/physical_hazard/physical_hazard_008_04_physical_hazard_api_Open-Meteo_historical_weather_point_API.json.json",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S030",
+      "source_name": "04_physical_hazard_api_Open-Meteo_historical_weather_point_API.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 3755,
+      "sha256_16": "c8dfa45600315fd6",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0031",
+      "relative_path": "data/other/other_002_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/other/other_002_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/other/other_002_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S031",
+      "source_name": "01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 232,
+      "sha256_16": "bc5b349049663840",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0032",
+      "relative_path": "data/event_catalogs/event_catalogs_003_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.xml.xml",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-095/data/event_catalogs/event_catalogs_003_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.xml.xml",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-095/data/event_catalogs/event_catalogs_003_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.xml.xml",
+      "category": "event_catalogs",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S032",
+      "source_name": "05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.xml",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 23914,
+      "sha256_16": "d2c3b9e6df0a5cbc",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "xml"
+    }
+  ]
+}

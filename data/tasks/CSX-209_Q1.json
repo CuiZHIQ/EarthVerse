@@ -1,0 +1,906 @@
+{
+  "task_id": "CSX-209_Q1",
+  "event_id": "CSX-209",
+  "title": "Singapore Severe CO Haze With Partial Rain Clearing Diagnosis",
+  "event_name": "September-October 2015 Singapore haze from Indonesian peat and forest fires",
+  "hazard_family": "air_pollution_smoke_heat",
+  "hazard_label": "Air pollution, smoke, and heat exposure",
+  "region": "Southeast Asia",
+  "scale": "metro_urban",
+  "difficulty": "L3_process_mechanism_reasoning",
+  "difficulty_rationale": "Manual review: \"Singapore Severe CO Haze With Partial Rain Clearing Diagnosis\" requires using quantitative evidence to explain a physical process, phase/timing pattern, routing/transport pathway, or mechanism diagnosis beyond a simple numeric ledger.",
+  "primary_dimension": "physical_mechanism",
+  "dimensions": [
+    "physical_mechanism",
+    "spatiotemporal_process",
+    "quantitative_calculation"
+  ],
+  "dimension_rationale": "Singapore severe CO haze with partial rain clearing diagnosis.",
+  "task_type": "structured_reasoning",
+  "target_family": "co_haze_partial_rain_clearing_diagnosis",
+  "file_count": 30,
+  "category_counts": {
+    "event_catalogs": 4,
+    "event_reports": 6,
+    "exposure_impact": 5,
+    "geospatial_context": 2,
+    "other": 1,
+    "physical_hazard": 9,
+    "remote_sensing": 3
+  },
+  "question": "# Singapore Severe CO Haze With Partial Rain Clearing Diagnosis\n\nYou are a air-quality exposure analyst preparing a final mechanism diagnosis for September-October 2015 Singapore haze from Indonesian peat and forest fires. Use the local package as the only evidence source. The task is to diagnose whether pollutant or aerosol burden persists over a receptor window after accounting for meteorology and removal modifiers.\n\nWork as an interactive tool-agent: inspect the package root, choose the files that contain the event anchor and quantitative evidence, read or search those files, run calculations when needed, and record the evidence that supports each intermediate value. Do not rely on web search or hidden answers.\n\nRequired reasoning:\n\n1. Establish the event window and the physical process being tested.\n2. Recompute the package-derived evidence fields needed for the final answer, including:\n- `pollutant_load.usual_co_ppb`\n- `pollutant_load.peak_co_ppb`\n- `pollutant_load.co_multiplier`\n- `pollutant_load.co_excess_ppb`\n- `meteo_clearing.meteo_start`\n- `meteo_clearing.meteo_end`\n- `meteo_clearing.meteo_days`\n- `meteo_clearing.rain_clearing_fraction`\n- `meteo_clearing.weak_wind_fraction`\n- `meteo_clearing.dry_stagnation_fraction`\n3. Organize the result as a causal mechanism, not as a pass/fail table. The chain must cover: pollutant or aerosol burden; transport/stagnation duration; rain or ventilation modifier; receptor-context interpretation.\n4. Compare the dominant explanation with at least two simpler alternatives and reject the alternatives using computed values.\n5. State what the package evidence can and cannot prove.\n\nReturn exactly one JSON object with this top-level structure:\n\n```json\n{\n  \"answer\": \"<compact mechanism diagnosis>\",\n  \"task_mode\": \"deep_mechanism_diagnosis\",\n  \"mechanism_question\": \"<one sentence framing the physical question>\",\n  \"computed_evidence\": {},\n  \"mechanism_chain\": [\n    \"<ordered physical or impact step>\",\n    \"...\"\n  ],\n  \"decisive_evidence\": \"<which evidence carries the decision and why>\",\n  \"rejected_simplifications\": \"<which simpler explanation fails and why>\",\n  \"bounded_interpretation\": \"<what the evidence does not prove>\"\n}\n```\n",
+  "solution": "# Correct Answer\n\n```json\n{\n  \"answer\": \"severe_co_haze_exposure_with_partial_rain_clearing\",\n  \"task_mode\": \"deep_mechanism_diagnosis\",\n  \"mechanism_question\": \"diagnose whether pollutant or aerosol burden persists over a receptor window after accounting for meteorology and removal modifiers\",\n  \"computed_evidence\": {\n    \"pollutant_load\": {\n      \"usual_co_ppb\": 100,\n      \"peak_co_ppb\": 1300,\n      \"co_multiplier\": 13.0,\n      \"co_excess_ppb\": 1200\n    },\n    \"meteo_clearing\": {\n      \"meteo_start\": \"2015-09-01\",\n      \"meteo_end\": \"2015-10-16\",\n      \"meteo_days\": 46,\n      \"rain_clearing_fraction\": 0.674,\n      \"weak_wind_fraction\": 0.761,\n      \"dry_stagnation_fraction\": 0.261\n    },\n    \"visibility_proxy\": {\n      \"gray_haze_delta_pp\": 7.86,\n      \"mean_luminance_delta\": 6.09\n    },\n    \"exposure_index\": {\n      \"population\": 410885,\n      \"co_population_index\": 53.42,\n      \"compound_exposure_index\": 72.65\n    },\n    \"diagnostic_diagnostic_tests\": {\n      \"co_severe\": true,\n      \"visual_haze_increase\": true,\n      \"large_compound_exposure\": true,\n      \"partial_rain_clearing\": true\n    },\n    \"final_label\": \"severe_co_haze_exposure_with_partial_rain_clearing\"\n  },\n  \"mechanism_chain\": [\n    \"pollutant or aerosol burden\",\n    \"transport/stagnation duration\",\n    \"rain or ventilation modifier\",\n    \"receptor-context interpretation\"\n  ],\n  \"decisive_evidence\": \"Burden, duration, and receptor context carry the diagnosis; precipitation or surface products are modifiers or counterchecks.\",\n  \"rejected_simplifications\": \"Reject ordinary-weather, rain-dominated, local-heat, or surface-change explanations if they fail to explain the receptor burden.\",\n  \"bounded_interpretation\": \"Do not infer individual dose, clinical outcomes, emissions inventory, or source apportionment beyond the package.\"\n}\n```\n\n# Solving Path\n\n1. Inspect the local package root and identify the event metadata/report plus the quantitative products needed for the mechanism diagnosis.\n2. Recompute the required evidence fields rather than copying a table label. The most important fields to recover are: `pollutant_load.usual_co_ppb`, `pollutant_load.peak_co_ppb`, `pollutant_load.co_multiplier`, `pollutant_load.co_excess_ppb`, `meteo_clearing.meteo_start`, `meteo_clearing.meteo_end`, `meteo_clearing.meteo_days`, `meteo_clearing.rain_clearing_fraction`.\n3. Use the computed values to build the ordered mechanism chain: pollutant or aerosol burden -> transport/stagnation duration -> rain or ventilation modifier -> receptor-context interpretation.\n4. Weight decisive evidence against alternatives: Burden, duration, and receptor context carry the diagnosis; precipitation or surface products are modifiers or counterchecks.\n5. Reject simpler explanations: Reject ordinary-weather, rain-dominated, local-heat, or surface-change explanations if they fail to explain the receptor burden.\n6. Keep the interpretation bounded: Do not infer individual dose, clinical outcomes, emissions inventory, or source apportionment beyond the package.\n\nKey computed anchors from the package:\n\n- `pollutant_load` = `{\"usual_co_ppb\": 100, \"peak_co_ppb\": 1300, \"co_multiplier\": 13.0, \"co_excess_ppb\": 1200}`\n- `meteo_clearing` = `{\"daily_span_start\": \"2015-09-01\", \"daily_span_end\": \"2015-10-16\", \"meteo_days\": 46, \"rain_clearing_days\": 31, \"weak_wind_days\": 35, \"dry_stagnation_days\": 12, \"rain_clearing_fraction\": 0.6739130434782609, \"weak_wind_fraction\": 0.7608695652`\n- `visibility_proxy` = `{\"pre_image\": {\"valid_fraction\": 0.8697357177734375, \"mean_luminance\": 102.16847908004235, \"gray_haze_fraction\": 0.4541834067264338, \"bright_fraction\": 0.26932782446475667, \"low_contrast_fraction\": 0.9390603343918315}, \"event_image\": {\"vali`\n- `exposure_index` = `{\"population\": 410884.77942285844, \"co_population_index\": 53.4150213249716, \"compound_exposure_index\": 72.6454074133291}`\n- `thresholds` = `{\"co_severe\": true, \"visual_haze_increase\": true, \"large_compound_exposure\": true, \"partial_rain_clearing\": true}`\n- `final_label` = `severe_co_haze_exposure_with_partial_rain_clearing`\n\n# Source Paths\n\n- `metadata/event.json`\n- `data/event_reports/event_reports_003_Locked_event_anchor_September-October_2015_Singapore_haze_from_Indonesian_peat_and_forest.json`\n- `data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html`\n- `data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json`\n- `data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json`\n- `data/remote_sensing/remote_sensing_002_pre.jpg`\n- `data/remote_sensing/remote_sensing_003_event.jpg`\n\n# Scoring Rubric\n\nTotal: 20 points.\n\n- 4 points: `mechanism_diagnosis` - Identifies the dominant physical process and gives the correct compact answer label or an equivalent diagnosis.\n- 5 points: `computed_evidence` - Recomputes the quantitative evidence inherited from the original task and preserves units, signs, ratios, and key values.\n- 4 points: `evidence_weighting` - Explains which evidence streams are decisive and which are contextual or weaker proxies.\n- 3 points: `counterfactual_rejection` - Rejects at least one tempting simplified explanation using the computed values rather than assertion.\n- 2 points: `bounded_interpretation` - States scale, timing, proxy, or uncertainty limits without adding unsupported losses or impacts.\n- 2 points: `json_contract` - Returns the requested structured mechanism-diagnosis JSON without reducing the answer to a row-only table or same-scale checklist.\n",
+  "ground_truth": {
+    "schema_version": "1.0",
+    "task_id": "CSX-209_Q1",
+    "event_id": "CSX-209",
+    "task_type": "structured_reasoning",
+    "target_family": "co_haze_partial_rain_clearing_diagnosis",
+    "evaluation_mode": "hybrid",
+    "difficulty_level": "L3",
+    "primary_gt": {
+      "answer": "severe_co_haze_exposure_with_partial_rain_clearing",
+      "task_mode": "deep_mechanism_diagnosis",
+      "mechanism_question": "diagnose whether pollutant or aerosol burden persists over a receptor window after accounting for meteorology and removal modifiers",
+      "computed_evidence": {
+        "pollutant_load": {
+          "usual_co_ppb": 100,
+          "peak_co_ppb": 1300,
+          "co_multiplier": 13.0,
+          "co_excess_ppb": 1200
+        },
+        "meteo_clearing": {
+          "meteo_start": "2015-09-01",
+          "meteo_end": "2015-10-16",
+          "meteo_days": 46,
+          "rain_clearing_fraction": 0.674,
+          "weak_wind_fraction": 0.761,
+          "dry_stagnation_fraction": 0.261
+        },
+        "visibility_proxy": {
+          "gray_haze_delta_pp": 7.86,
+          "mean_luminance_delta": 6.09
+        },
+        "exposure_index": {
+          "population": 410885,
+          "co_population_index": 53.42,
+          "compound_exposure_index": 72.65
+        },
+        "diagnostic_diagnostic_tests": {
+          "co_severe": true,
+          "visual_haze_increase": true,
+          "large_compound_exposure": true,
+          "partial_rain_clearing": true
+        },
+        "final_label": "severe_co_haze_exposure_with_partial_rain_clearing"
+      },
+      "mechanism_chain": [
+        "pollutant or aerosol burden",
+        "transport/stagnation duration",
+        "rain or ventilation modifier",
+        "receptor-context interpretation"
+      ],
+      "decisive_evidence": "Burden, duration, and receptor context carry the diagnosis; precipitation or surface products are modifiers or counterchecks.",
+      "rejected_simplifications": "Reject ordinary-weather, rain-dominated, local-heat, or surface-change explanations if they fail to explain the receptor burden.",
+      "bounded_interpretation": "Do not infer individual dose, clinical outcomes, emissions inventory, or source apportionment beyond the package."
+    },
+    "answer_metadata": {
+      "answer_type": "numeric_haze_ledger",
+      "answer": "severe_co_haze_exposure_with_partial_rain_clearing",
+      "metrics": {
+        "co_multiplier": 13.0,
+        "rain_clearing_fraction": 0.674,
+        "dry_stagnation_fraction": 0.261,
+        "gray_haze_delta_pp": 7.86,
+        "compound_exposure_index": 72.65
+      },
+      "thresholds": {
+        "co_multiplier_min": 10,
+        "gray_haze_delta_pp_min": 5,
+        "compound_exposure_index_min": 60,
+        "rain_clearing_fraction_min": 0.5
+      },
+      "meteo_span": "2015-09-01_to_2015-10-16_46_days",
+      "units": "CO ppb; fractions 0-1; gray haze in percentage points; exposure index unitless"
+    },
+    "numeric_tolerances": {
+      "co_multiplier": {
+        "target": 13.0,
+        "absolute_tolerance": 0.1
+      },
+      "rain_clearing_fraction": {
+        "target": 0.674,
+        "absolute_tolerance": 0.005
+      },
+      "weak_wind_fraction": {
+        "target": 0.761,
+        "absolute_tolerance": 0.005
+      },
+      "dry_stagnation_fraction": {
+        "target": 0.261,
+        "absolute_tolerance": 0.005
+      },
+      "gray_haze_delta_pp": {
+        "target": 7.86,
+        "absolute_tolerance": 0.1
+      },
+      "mean_luminance_delta": {
+        "target": 6.09,
+        "absolute_tolerance": 0.1
+      },
+      "co_population_index": {
+        "target": 53.42,
+        "absolute_tolerance": 0.1
+      },
+      "compound_exposure_index": {
+        "target": 72.65,
+        "absolute_tolerance": 0.15
+      }
+    },
+    "event": {
+      "event_name": "September-October 2015 Singapore haze from Indonesian peat and forest fires",
+      "hazard_family": "air_pollution_smoke_heat",
+      "event_window": {
+        "start_date": "2015-09-01",
+        "end_date": "2015-10-31",
+        "source": "package_event_lock_targeted_refined_v4_repaired"
+      }
+    },
+    "key_values": {
+      "pollutant_load": {
+        "usual_co_ppb": 100,
+        "peak_co_ppb": 1300,
+        "co_multiplier": 13.0,
+        "co_excess_ppb": 1200
+      },
+      "meteo_clearing": {
+        "daily_span_start": "2015-09-01",
+        "daily_span_end": "2015-10-16",
+        "meteo_days": 46,
+        "rain_clearing_days": 31,
+        "weak_wind_days": 35,
+        "dry_stagnation_days": 12,
+        "rain_clearing_fraction": 0.6739130434782609,
+        "weak_wind_fraction": 0.7608695652173914,
+        "dry_stagnation_fraction": 0.2608695652173913,
+        "total_precipitation_mm": 197.6,
+        "max_daily_precipitation_mm": 20.7,
+        "mean_daily_wind_kmh": 15.917391304347827,
+        "max_daily_wind_kmh": 25.8
+      },
+      "visibility_proxy": {
+        "pre_image": {
+          "valid_fraction": 0.8697357177734375,
+          "mean_luminance": 102.16847908004235,
+          "gray_haze_fraction": 0.4541834067264338,
+          "bright_fraction": 0.26932782446475667,
+          "low_contrast_fraction": 0.9390603343918315
+        },
+        "event_image": {
+          "valid_fraction": 0.9175262451171875,
+          "mean_luminance": 108.2632290041742,
+          "gray_haze_fraction": 0.5328186237825193,
+          "bright_fraction": 0.2445189114876963,
+          "low_contrast_fraction": 0.956363328954006
+        },
+        "gray_haze_delta_pp": 7.863521705608551,
+        "mean_luminance_delta": 6.094749924131861
+      },
+      "exposure_index": {
+        "population": 410884.77942285844,
+        "co_population_index": 53.4150213249716,
+        "compound_exposure_index": 72.6454074133291
+      },
+      "thresholds": {
+        "co_severe": true,
+        "visual_haze_increase": true,
+        "large_compound_exposure": true,
+        "partial_rain_clearing": true
+      },
+      "final_label": "severe_co_haze_exposure_with_partial_rain_clearing"
+    },
+    "answer_schema": {
+      "top_level_fields": [
+        "pollutant_load",
+        "meteo_clearing",
+        "visibility_proxy",
+        "exposure_index",
+        "thresholds",
+        "final_label"
+      ],
+      "rounding": "whole counts and ppb; three-decimal fractions; two-decimal image deltas and exposure indices"
+    },
+    "rubric": {
+      "total_points": 20,
+      "criteria": [
+        {
+          "name": "mechanism_diagnosis",
+          "points": 4,
+          "description": "Identifies the dominant physical process and gives the correct compact answer label or an equivalent diagnosis."
+        },
+        {
+          "name": "computed_evidence",
+          "points": 5,
+          "description": "Recomputes the quantitative evidence inherited from the original task and preserves units, signs, ratios, and key values."
+        },
+        {
+          "name": "evidence_weighting",
+          "points": 4,
+          "description": "Explains which evidence streams are decisive and which are contextual or weaker proxies."
+        },
+        {
+          "name": "counterfactual_rejection",
+          "points": 3,
+          "description": "Rejects at least one tempting simplified explanation using the computed values rather than assertion."
+        },
+        {
+          "name": "bounded_interpretation",
+          "points": 2,
+          "description": "States scale, timing, proxy, or uncertainty limits without adding unsupported losses or impacts."
+        },
+        {
+          "name": "json_contract",
+          "points": 2,
+          "description": "Returns the requested structured mechanism-diagnosis JSON without reducing the answer to a row-only table or same-scale checklist."
+        }
+      ]
+    },
+    "provenance": {
+      "computed_by": "compute_gt.py",
+      "source_files": [
+        "metadata/event.json",
+        "data/event_reports/event_reports_003_Locked_event_anchor_September-October_2015_Singapore_haze_from_Indonesian_peat_and_forest.json",
+        "data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html",
+        "data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json",
+        "data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+        "data/remote_sensing/remote_sensing_002_pre.jpg",
+        "data/remote_sensing/remote_sensing_003_event.jpg"
+      ],
+      "notes": "All values are derived from local CSX-209 event package data."
+    },
+    "subtype": "deep_mechanism_diagnosis",
+    "deepened_reframe": {
+      "group": "deepened_remaining_39",
+      "replaces_table_only_task": true,
+      "new_title": "Singapore Severe CO Haze With Partial Rain Clearing Diagnosis"
+    },
+    "answer_guidance": {
+      "structured_answer": {
+        "answer": "severe_co_haze_exposure_with_partial_rain_clearing",
+        "task_mode": "deep_mechanism_diagnosis",
+        "mechanism_question": "diagnose whether pollutant or aerosol burden persists over a receptor window after accounting for meteorology and removal modifiers",
+        "computed_evidence": {
+          "pollutant_load": {
+            "usual_co_ppb": 100,
+            "peak_co_ppb": 1300,
+            "co_multiplier": 13.0,
+            "co_excess_ppb": 1200
+          },
+          "meteo_clearing": {
+            "meteo_start": "2015-09-01",
+            "meteo_end": "2015-10-16",
+            "meteo_days": 46,
+            "rain_clearing_fraction": 0.674,
+            "weak_wind_fraction": 0.761,
+            "dry_stagnation_fraction": 0.261
+          },
+          "visibility_proxy": {
+            "gray_haze_delta_pp": 7.86,
+            "mean_luminance_delta": 6.09
+          },
+          "exposure_index": {
+            "population": 410885,
+            "co_population_index": 53.42,
+            "compound_exposure_index": 72.65
+          },
+          "diagnostic_diagnostic_tests": {
+            "co_severe": true,
+            "visual_haze_increase": true,
+            "large_compound_exposure": true,
+            "partial_rain_clearing": true
+          },
+          "final_label": "severe_co_haze_exposure_with_partial_rain_clearing"
+        },
+        "mechanism_chain": [
+          "pollutant or aerosol burden",
+          "transport/stagnation duration",
+          "rain or ventilation modifier",
+          "receptor-context interpretation"
+        ],
+        "decisive_evidence": "Burden, duration, and receptor context carry the diagnosis; precipitation or surface products are modifiers or counterchecks.",
+        "rejected_simplifications": "Reject ordinary-weather, rain-dominated, local-heat, or surface-change explanations if they fail to explain the receptor burden.",
+        "bounded_interpretation": "Do not infer individual dose, clinical outcomes, emissions inventory, or source apportionment beyond the package."
+      },
+      "answer": "severe_co_haze_exposure_with_partial_rain_clearing"
+    }
+  },
+  "compute_gt_py": "#!/usr/bin/env python3\n\"\"\"Compute the numeric haze ledger ground truth for CSX-209_Q1.\"\"\"\n\nfrom __future__ import annotations\n\nimport html\nimport json\nimport re\nfrom pathlib import Path\nfrom typing import Any\n\nfrom PIL import Image\n\n\nTASK_ID = \"CSX-209_Q1\"\nEVENT_ID = \"CSX-209\"\n\nTASK_DIR = Path(__file__).resolve().parent\nROOT = Path(__file__).resolve().parents[3]\nPACKAGE_DIR = ROOT / \"event_packages\" / \"standard_event_packages\" / \"packages\" / EVENT_ID\nOUTPUT_PATH = TASK_DIR / \"computed_gt.json\"\n\nSOURCE_FILES = [\n    \"metadata/event.json\",\n    \"data/event_reports/event_reports_003_Locked_event_anchor_September-October_2015_Singapore_haze_from_Indonesian_peat_and_forest.json\",\n    \"data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\",\n    \"data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json\",\n    \"data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json\",\n    \"data/remote_sensing/remote_sensing_002_pre.jpg\",\n    \"data/remote_sensing/remote_sensing_003_event.jpg\",\n]\n\n\n\nDEEPENED_TASK_FRAME = {'bounded_prompt': 'Do not infer individual dose, clinical outcomes, emissions inventory, or source apportionment '\n                   'beyond the package.',\n 'decisive_evidence_prompt': 'Burden, duration, and receptor context carry the diagnosis; precipitation or surface '\n                             'products are modifiers or counterchecks.',\n 'group': 'deepened_remaining_39',\n 'mechanism_chain': ['pollutant or aerosol burden',\n                     'transport/stagnation duration',\n                     'rain or ventilation modifier',\n                     'receptor-context interpretation'],\n 'mechanism_question': 'diagnose whether pollutant or aerosol burden persists over a receptor window after accounting '\n                       'for meteorology and removal modifiers',\n 'new_title': 'Singapore Severe CO Haze With Partial Rain Clearing Diagnosis',\n 'rejected_prompt': 'Reject ordinary-weather, rain-dominated, local-heat, or surface-change explanations if they fail '\n                    'to explain the receptor burden.',\n 'target_family': 'co_haze_partial_rain_clearing_diagnosis',\n 'task_mode': 'deep_mechanism_diagnosis'}\n\ndef _deep_rename_key(key):\n    replacements = [\n        (\"score_ledger\", \"evidence_rows\"),\n        (\"ledger_rows\", \"evidence_rows\"),\n        (\"ledger\", \"evidence_synthesis\"),\n        (\"Ledger\", \"EvidenceSynthesis\"),\n        (\"consistency\", \"process_alignment\"),\n        (\"Consistency\", \"ProcessAlignment\"),\n        (\"threshold\", \"diagnostic_gate\"),\n        (\"Threshold\", \"DiagnosticGate\"),\n        (\"gate\", \"diagnostic_test\"),\n        (\"Gate\", \"DiagnosticTest\"),\n        (\"score_breakdown\", \"evidence_score_breakdown\"),\n        (\"score\", \"evidence_score\"),\n        (\"Score\", \"EvidenceScore\"),\n    ]\n    out = str(key)\n    for old, new in replacements:\n        out = out.replace(old, new)\n    return out\n\n\ndef _deep_rename_obj(value, parent_key=None):\n    protected_value_keys = {\n        \"answer\",\n        \"final_label\",\n        \"classification\",\n        \"label\",\n        \"diagnosis\",\n        \"result\",\n        \"answer_type\",\n        \"task_family\",\n        \"target_family\",\n    }\n    if isinstance(value, dict):\n        return {_deep_rename_key(k): _deep_rename_obj(v, k) for k, v in value.items()}\n    if isinstance(value, list):\n        return [_deep_rename_obj(v, parent_key) for v in value]\n    if isinstance(value, str):\n        if parent_key in protected_value_keys:\n            return value\n        out = value\n        replacements = [\n            (\"ledger\", \"evidence synthesis\"),\n            (\"Ledger\", \"Evidence synthesis\"),\n            (\"consistency\", \"process alignment\"),\n            (\"Consistency\", \"Process alignment\"),\n            (\"threshold\", \"diagnostic gate\"),\n            (\"Threshold\", \"Diagnostic gate\"),\n        ]\n        for old, new in replacements:\n            out = out.replace(old, new)\n        return out\n    return value\n\ndef _deep_extract_answer(value):\n    if isinstance(value, dict):\n        for key in (\"final_label\", \"answer\", \"classification\", \"label\", \"final_interpretation\", \"diagnosis\"):\n            if key in value and isinstance(value[key], (str, int, float, bool)):\n                return str(value[key])\n        for key in (\"classification\", \"threshold_result\", \"result\"):\n            if key in value and isinstance(value[key], dict):\n                nested = _deep_extract_answer(value[key])\n                if nested:\n                    return nested\n    return \"deep_mechanism_diagnosis\"\n\n\ndef apply_deepened_task_frame(result):\n    frame = dict(DEEPENED_TASK_FRAME)\n    old_primary = result.get(\"primary_gt\")\n    if not isinstance(old_primary, dict):\n        old_primary = {\"value\": old_primary}\n    transformed = {\n        \"answer\": frame.get(\"answer_override\", _deep_extract_answer(old_primary)),\n        \"task_mode\": frame[\"task_mode\"],\n        \"mechanism_question\": frame[\"mechanism_question\"],\n        \"computed_evidence\": _deep_rename_obj(old_primary),\n        \"mechanism_chain\": list(frame[\"mechanism_chain\"]),\n        \"decisive_evidence\": frame[\"decisive_evidence_prompt\"],\n        \"rejected_simplifications\": frame[\"rejected_prompt\"],\n        \"bounded_interpretation\": frame[\"bounded_prompt\"],\n    }\n    if frame.get(\"formula_prompt\"):\n        transformed[\"formula_derivation\"] = frame[\"formula_prompt\"]\n    if isinstance(transformed.get(\"computed_evidence\"), dict):\n        for stale_key in (\"answer\", \"answer_type\", \"target_family\", \"task_family\"):\n            transformed[\"computed_evidence\"].pop(stale_key, None)\n    result[\"primary_gt\"] = transformed\n    result[\"task_type\"] = \"structured_reasoning\"\n    result[\"evaluation_mode\"] = \"hybrid\"\n    result[\"subtype\"] = frame[\"task_mode\"]\n    result[\"target_family\"] = frame.get(\"target_family\", frame[\"task_mode\"])\n    result[\"deepened_reframe\"] = {\n        \"group\": frame[\"group\"],\n        \"replaces_table_only_task\": True,\n        \"new_title\": frame[\"new_title\"],\n    }\n    guidance = result.get(\"answer_guidance\")\n    if isinstance(guidance, dict):\n        guidance[\"structured_answer\"] = transformed\n        guidance[\"answer\"] = transformed[\"answer\"]\n    else:\n        result[\"answer_guidance\"] = {\"structured_answer\": transformed, \"answer\": transformed[\"answer\"]}\n    result[\"rubric\"] = {\n        \"total_points\": 20,\n        \"criteria\": [\n            {\"name\": \"mechanism_diagnosis\", \"points\": 4, \"description\": \"Identifies the dominant physical process and gives the correct compact answer label or an equivalent diagnosis.\"},\n            {\"name\": \"computed_evidence\", \"points\": 5, \"description\": \"Recomputes the quantitative evidence inherited from the original task and preserves units, signs, ratios, and key values.\"},\n            {\"name\": \"evidence_weighting\", \"points\": 4, \"description\": \"Explains which evidence streams are decisive and which are contextual or weaker proxies.\"},\n            {\"name\": \"counterfactual_rejection\", \"points\": 3, \"description\": \"Rejects at least one tempting simplified explanation using the computed values rather than assertion.\"},\n            {\"name\": \"bounded_interpretation\", \"points\": 2, \"description\": \"States scale, timing, proxy, or uncertainty limits without adding unsupported losses or impacts.\"},\n            {\"name\": \"json_contract\", \"points\": 2, \"description\": \"Returns the requested structured mechanism-diagnosis JSON without reducing the answer to a row-only table or same-scale checklist.\"},\n        ],\n    }\n    if frame.get(\"formula_prompt\"):\n        result[\"rubric\"] = {\n            \"total_points\": 20,\n            \"criteria\": [\n                {\"name\": \"mechanism_diagnosis\", \"points\": 3, \"description\": \"Identifies the dominant physical process and gives the correct compact mechanism label or equivalent diagnosis.\"},\n                {\"name\": \"computed_evidence\", \"points\": 4, \"description\": \"Recomputes the package-derived quantitative evidence with correct units, signs, ratios, dates, and rounding.\"},\n                {\"name\": \"formula_derivation\", \"points\": 3, \"description\": \"Shows the requested physical formula, scaling relation, or timing relation and connects it to the computed values.\"},\n                {\"name\": \"evidence_weighting\", \"points\": 3, \"description\": \"Explains which evidence streams are decisive and which are contextual or weaker proxies.\"},\n                {\"name\": \"counterfactual_rejection\", \"points\": 3, \"description\": \"Rejects tempting simplified explanations using computed values rather than assertion.\"},\n                {\"name\": \"bounded_interpretation\", \"points\": 2, \"description\": \"States scale, timing, proxy, or uncertainty limits without adding unsupported losses or impacts.\"},\n                {\"name\": \"json_contract\", \"points\": 2, \"description\": \"Returns the requested structured mechanism-diagnosis JSON without reducing the answer to a row-only table.\"},\n            ],\n        }\n\n    return result\n\ndef read_json(relative_path: str) -> Any:\n    return json.loads((PACKAGE_DIR / relative_path).read_text(encoding=\"utf-8-sig\"))\n\n\ndef read_text(relative_path: str) -> str:\n    return (PACKAGE_DIR / relative_path).read_text(encoding=\"utf-8\", errors=\"replace\")\n\n\ndef strip_html(raw_html: str) -> str:\n    text = re.sub(r\"(?is)<script.*?</script>\", \" \", raw_html)\n    text = re.sub(r\"(?is)<style.*?</style>\", \" \", text)\n    text = re.sub(r\"(?s)<[^>]+>\", \" \", text)\n    return re.sub(r\"\\s+\", \" \", html.unescape(text)).strip()\n\n\ndef extract_int(pattern: str, text: str, name: str) -> int:\n    match = re.search(pattern, text, flags=re.IGNORECASE)\n    if not match:\n        raise ValueError(f\"Could not extract {name}\")\n    return int(match.group(1).replace(\",\", \"\"))\n\n\ndef round_float(value: float, digits: int) -> float:\n    return round(float(value), digits)\n\n\ndef meteo_stats() -> dict[str, Any]:\n    data = read_json(\"data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json\")\n    rows = []\n    for date, precipitation, wind in zip(\n        data[\"daily\"][\"time\"],\n        data[\"daily\"][\"precipitation_sum\"],\n        data[\"daily\"][\"wind_speed_10m_max\"],\n    ):\n        if date >= \"2015-09-01\":\n            rows.append({\"date\": date, \"precipitation_mm\": float(precipitation), \"wind_kmh\": float(wind)})\n\n    days = len(rows)\n    rain_clearing_days = sum(1 for row in rows if row[\"precipitation_mm\"] >= 1.0)\n    weak_wind_days = sum(1 for row in rows if row[\"wind_kmh\"] <= 18.0)\n    dry_stagnation_days = sum(\n        1 for row in rows if row[\"precipitation_mm\"] <= 1.0 and row[\"wind_kmh\"] <= 18.0\n    )\n\n    return {\n        \"start_date\": rows[0][\"date\"],\n        \"end_date\": rows[-1][\"date\"],\n        \"days\": days,\n        \"rain_clearing_days\": rain_clearing_days,\n        \"weak_wind_days\": weak_wind_days,\n        \"dry_stagnation_days\": dry_stagnation_days,\n        \"rain_clearing_fraction\": rain_clearing_days / days,\n        \"weak_wind_fraction\": weak_wind_days / days,\n        \"dry_stagnation_fraction\": dry_stagnation_days / days,\n        \"total_precipitation_mm\": sum(row[\"precipitation_mm\"] for row in rows),\n        \"max_daily_precipitation_mm\": max(row[\"precipitation_mm\"] for row in rows),\n        \"mean_daily_wind_kmh\": sum(row[\"wind_kmh\"] for row in rows) / days,\n        \"max_daily_wind_kmh\": max(row[\"wind_kmh\"] for row in rows),\n    }\n\n\ndef image_metrics(relative_path: str) -> dict[str, float]:\n    image = Image.open(PACKAGE_DIR / relative_path).convert(\"RGB\")\n    pixel_iter = image.get_flattened_data() if hasattr(image, \"get_flattened_data\") else image.getdata()\n    pixels = list(pixel_iter)\n    valid = [pixel for pixel in pixels if max(pixel) > 15]\n    if not valid:\n        raise ValueError(f\"No valid image pixels in {relative_path}\")\n\n    luminance = [0.299 * r + 0.587 * g + 0.114 * b for r, g, b in valid]\n    gray_haze = [\n        pixel\n        for pixel in valid\n        if sum(pixel) / 3.0 > 90.0 and max(pixel) - min(pixel) < 35.0\n    ]\n    bright = [pixel for pixel in valid if sum(pixel) / 3.0 > 160.0]\n    low_contrast = [pixel for pixel in valid if max(pixel) - min(pixel) < 35.0]\n\n    return {\n        \"valid_fraction\": len(valid) / len(pixels),\n        \"mean_luminance\": sum(luminance) / len(luminance),\n        \"gray_haze_fraction\": len(gray_haze) / len(valid),\n        \"bright_fraction\": len(bright) / len(valid),\n        \"low_contrast_fraction\": len(low_contrast) / len(valid),\n    }\n\n\ndef build_rubric() -> dict[str, Any]:\n    return {\n        \"total_points\": 20,\n        \"criteria\": [\n            {\n                \"name\": \"Answer schema\",\n                \"points\": 3,\n                \"description\": \"Returns the six requested top-level JSON fields with the required nested fields, including the source-region meteo start and end dates.\",\n                \"partial_credit\": \"Award 1-2 points for a mostly complete ledger with minor schema omissions.\",\n            },\n            {\n                \"name\": \"Pollutant calculations\",\n                \"points\": 4,\n                \"description\": \"Computes usual CO 100 ppb, peak CO 1300 ppb, multiplier 13.0, and excess 1200 ppb.\",\n                \"partial_credit\": \"Award 1-3 points for partially correct CO values or correct arithmetic with a minor rounding or unit issue.\",\n            },\n            {\n                \"name\": \"Meteorology ledger\",\n                \"points\": 4,\n                \"description\": \"Uses the 2015-09-01 to 2015-10-16 source-region diagnostic span, 46 meteo days, and correctly computes 31/46 rain clearing, 35/46 weak wind, and 12/46 dry-stagnation fractions.\",\n                \"partial_credit\": \"Award 1-3 points for using the correct span but missing one count or threshold.\",\n            },\n            {\n                \"name\": \"Visibility proxies\",\n                \"points\": 3,\n                \"description\": \"Computes gray-haze proxy increase of 7.86 percentage points and mean luminance increase of 6.09.\",\n                \"partial_credit\": \"Award 1-2 points for one correct proxy or for close values with unclear rounding.\",\n            },\n            {\n                \"name\": \"Exposure index and thresholds\",\n                \"points\": 4,\n                \"description\": \"Uses population about 410885, computes indices 53.42 and 72.65, and applies all four thresholds correctly.\",\n                \"partial_credit\": \"Award 1-3 points for correct index setup with one arithmetic or threshold error.\",\n            },\n            {\n                \"name\": \"Bounded numeric interpretation\",\n                \"points\": 2,\n                \"description\": \"Returns the final label with only the computed numeric ledger fields.\",\n                \"partial_credit\": \"Award 1 point if the label is right but the answer adds extra impact language.\",\n            },\n        ],\n    }\n\n\ndef main() -> None:\n    event = read_json(\"metadata/event.json\")\n    anchor = read_json(\n        \"data/event_reports/event_reports_003_Locked_event_anchor_September-October_2015_Singapore_haze_from_Indonesian_peat_and_forest.json\"\n    )\n    report_text = strip_html(read_text(\"data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\"))\n    population = float(read_json(\"data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json\")[\"population_sum\"][\"population\"])\n\n    usual_co_ppb = extract_int(r\"usually about ([0-9,]+) parts per billion\", report_text, \"usual CO\")\n    peak_co_ppb = extract_int(r\"up to nearly ([0-9,]+) parts per billion\", report_text, \"peak CO\")\n    co_multiplier = peak_co_ppb / usual_co_ppb\n    co_excess_ppb = peak_co_ppb - usual_co_ppb\n\n    meteo = meteo_stats()\n    pre_image = image_metrics(\"data/remote_sensing/remote_sensing_002_pre.jpg\")\n    event_image = image_metrics(\"data/remote_sensing/remote_sensing_003_event.jpg\")\n    gray_haze_delta_pp = 100.0 * (event_image[\"gray_haze_fraction\"] - pre_image[\"gray_haze_fraction\"])\n    mean_luminance_delta = event_image[\"mean_luminance\"] - pre_image[\"mean_luminance\"]\n\n    co_population_index = co_multiplier * population / 100000.0\n    compound_exposure_index = (\n        co_population_index\n        * (1.0 + meteo[\"dry_stagnation_fraction\"])\n        * (1.0 + max(gray_haze_delta_pp, 0.0) / 100.0)\n    )\n\n    thresholds = {\n        \"co_severe\": co_multiplier >= 10.0,\n        \"visual_haze_increase\": gray_haze_delta_pp >= 5.0,\n        \"large_compound_exposure\": compound_exposure_index >= 60.0,\n        \"partial_rain_clearing\": meteo[\"rain_clearing_fraction\"] >= 0.5,\n    }\n    final_label = (\n        \"severe_co_haze_exposure_with_partial_rain_clearing\"\n        if all(thresholds.values())\n        else \"lower_confidence_haze_ledger\"\n    )\n\n    answer_metrics = {\n        \"co_multiplier\": round_float(co_multiplier, 3),\n        \"rain_clearing_fraction\": round_float(meteo[\"rain_clearing_fraction\"], 3),\n        \"dry_stagnation_fraction\": round_float(meteo[\"dry_stagnation_fraction\"], 3),\n        \"gray_haze_delta_pp\": round_float(gray_haze_delta_pp, 2),\n        \"compound_exposure_index\": round_float(compound_exposure_index, 2),\n    }\n\n    primary_answer = {\n        \"pollutant_load\": {\n            \"usual_co_ppb\": round(usual_co_ppb),\n            \"peak_co_ppb\": round(peak_co_ppb),\n            \"co_multiplier\": round_float(co_multiplier, 3),\n            \"co_excess_ppb\": round(co_excess_ppb),\n        },\n        \"meteo_clearing\": {\n            \"meteo_start\": meteo[\"start_date\"],\n            \"meteo_end\": meteo[\"end_date\"],\n            \"meteo_days\": meteo[\"days\"],\n            \"rain_clearing_fraction\": round_float(meteo[\"rain_clearing_fraction\"], 3),\n            \"weak_wind_fraction\": round_float(meteo[\"weak_wind_fraction\"], 3),\n            \"dry_stagnation_fraction\": round_float(meteo[\"dry_stagnation_fraction\"], 3),\n        },\n        \"visibility_proxy\": {\n            \"gray_haze_delta_pp\": round_float(gray_haze_delta_pp, 2),\n            \"mean_luminance_delta\": round_float(mean_luminance_delta, 2),\n        },\n        \"exposure_index\": {\n            \"population\": round(population),\n            \"co_population_index\": round_float(co_population_index, 2),\n            \"compound_exposure_index\": round_float(compound_exposure_index, 2),\n        },\n        \"thresholds\": thresholds,\n        \"final_label\": final_label,\n    }\n\n    computed = {\n        \"schema_version\": \"1.0\",\n        \"task_id\": TASK_ID,\n        \"event_id\": EVENT_ID,\n        \"task_type\": \"numeric\",\n        \"target_family\": \"numeric_diagnosis\",\n        \"evaluation_mode\": \"hybrid\",\n        \"difficulty_level\": \"L3\",\n        \"primary_gt\": primary_answer,\n        \"answer_metadata\": {\n            \"answer_type\": \"numeric_haze_ledger\",\n            \"answer\": final_label,\n            \"metrics\": answer_metrics,\n            \"thresholds\": {\n                \"co_multiplier_min\": 10,\n                \"gray_haze_delta_pp_min\": 5,\n                \"compound_exposure_index_min\": 60,\n                \"rain_clearing_fraction_min\": 0.5,\n            },\n            \"meteo_span\": f\"{meteo['start_date']}_to_{meteo['end_date']}_{meteo['days']}_days\",\n            \"units\": \"CO ppb; fractions 0-1; gray haze in percentage points; exposure index unitless\",\n        },\n        \"numeric_tolerances\": {\n            \"co_multiplier\": {\"target\": 13.0, \"absolute_tolerance\": 0.1},\n            \"rain_clearing_fraction\": {\"target\": 0.674, \"absolute_tolerance\": 0.005},\n            \"weak_wind_fraction\": {\"target\": 0.761, \"absolute_tolerance\": 0.005},\n            \"dry_stagnation_fraction\": {\"target\": 0.261, \"absolute_tolerance\": 0.005},\n            \"gray_haze_delta_pp\": {\"target\": 7.86, \"absolute_tolerance\": 0.1},\n            \"mean_luminance_delta\": {\"target\": 6.09, \"absolute_tolerance\": 0.1},\n            \"co_population_index\": {\"target\": 53.42, \"absolute_tolerance\": 0.1},\n            \"compound_exposure_index\": {\"target\": 72.65, \"absolute_tolerance\": 0.15},\n        },\n        \"event\": {\n            \"event_name\": event[\"event_name\"],\n            \"hazard_family\": event[\"hazard_family\"],\n            \"event_window\": anchor[\"temporal_window\"],\n        },\n        \"key_values\": {\n            \"pollutant_load\": {\n                \"usual_co_ppb\": usual_co_ppb,\n                \"peak_co_ppb\": peak_co_ppb,\n                \"co_multiplier\": co_multiplier,\n                \"co_excess_ppb\": co_excess_ppb,\n            },\n            \"meteo_clearing\": {\n                \"daily_span_start\": meteo[\"start_date\"],\n                \"daily_span_end\": meteo[\"end_date\"],\n                \"meteo_days\": meteo[\"days\"],\n                \"rain_clearing_days\": meteo[\"rain_clearing_days\"],\n                \"weak_wind_days\": meteo[\"weak_wind_days\"],\n                \"dry_stagnation_days\": meteo[\"dry_stagnation_days\"],\n                \"rain_clearing_fraction\": meteo[\"rain_clearing_fraction\"],\n                \"weak_wind_fraction\": meteo[\"weak_wind_fraction\"],\n                \"dry_stagnation_fraction\": meteo[\"dry_stagnation_fraction\"],\n                \"total_precipitation_mm\": meteo[\"total_precipitation_mm\"],\n                \"max_daily_precipitation_mm\": meteo[\"max_daily_precipitation_mm\"],\n                \"mean_daily_wind_kmh\": meteo[\"mean_daily_wind_kmh\"],\n                \"max_daily_wind_kmh\": meteo[\"max_daily_wind_kmh\"],\n            },\n            \"visibility_proxy\": {\n                \"pre_image\": pre_image,\n                \"event_image\": event_image,\n                \"gray_haze_delta_pp\": gray_haze_delta_pp,\n                \"mean_luminance_delta\": mean_luminance_delta,\n            },\n            \"exposure_index\": {\n                \"population\": population,\n                \"co_population_index\": co_population_index,\n                \"compound_exposure_index\": compound_exposure_index,\n            },\n            \"thresholds\": thresholds,\n            \"final_label\": final_label,\n        },\n        \"answer_schema\": {\n            \"top_level_fields\": [\n                \"pollutant_load\",\n                \"meteo_clearing\",\n                \"visibility_proxy\",\n                \"exposure_index\",\n                \"thresholds\",\n                \"final_label\",\n            ],\n            \"rounding\": \"whole counts and ppb; three-decimal fractions; two-decimal image deltas and exposure indices\",\n        },\n        \"rubric\": build_rubric(),\n        \"provenance\": {\n            \"computed_by\": \"compute_gt.py\",\n            \"source_files\": SOURCE_FILES,\n            \"notes\": \"All values are derived from local CSX-209 event package data.\",\n        },\n    }\n\n    apply_deepened_task_frame(computed)\n    OUTPUT_PATH.write_text(json.dumps(computed, indent=2, sort_keys=False, ensure_ascii=True) + \"\\n\", encoding=\"utf-8\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "event": {
+    "package_id": "CSX-209",
+    "event_name": "September-October 2015 Singapore haze from Indonesian peat and forest fires",
+    "canonical_event_key": "september october 2015 singapore haze from indonesian peat and forest fires",
+    "hazard_family": "air_pollution_smoke_heat",
+    "hazard_label": "Air pollution, smoke, and heat exposure",
+    "scale": "metro_urban",
+    "region": "Southeast Asia",
+    "primary_evidence_url": "https://science.nasa.gov/earth/earth-observatory/fires-put-a-carbon-monoxide-cloud-over-indonesia-87119/",
+    "existence_verdict": "confirmed",
+    "temporal_match": "yes",
+    "spatial_match": "yes",
+    "hazard_match": "yes",
+    "source_reliability": "high_official_or_institutional",
+    "correspondence_score": "93",
+    "release_decision": "keep",
+    "benchmark_readiness": "ready_with_metadata_warnings",
+    "benchmark_readiness_label": "ready with metadata warnings",
+    "data_integrity": {
+      "local_files_checked": "23",
+      "image_files_checked": "4",
+      "valid_images": "4",
+      "formal_slice_files_checked": "7",
+      "hard_error_count": "0",
+      "metadata_warning_count": "0",
+      "final_data_score": "94",
+      "final_data_decision": "ready_with_minor_warnings",
+      "replacement_file_count": "0"
+    },
+    "file_inventory": {
+      "total_files": 30,
+      "categories": {
+        "event_catalogs": 4,
+        "event_reports": 6,
+        "exposure_impact": 5,
+        "geospatial_context": 2,
+        "other": 1,
+        "physical_hazard": 9,
+        "remote_sensing": 3
+      }
+    }
+  },
+  "event_files": [
+    {
+      "file_id": "F0001",
+      "relative_path": "data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html",
+      "category": "event_reports",
+      "layer_name": "event_anchor_report",
+      "source_id": "S001",
+      "source_name": "Locked anchor report (NASA Earth Observatory)",
+      "source_type": "resource_registry",
+      "source_url": "https://science.nasa.gov/earth/earth-observatory/fires-put-a-carbon-monoxide-cloud-over-indonesia-87119/",
+      "bytes": 281910,
+      "sha256_16": "647730714fdd1ecf",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0002",
+      "relative_path": "data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "category": "event_reports",
+      "layer_name": "text_reports",
+      "source_id": "S002",
+      "source_name": "HDX CKAN package_search",
+      "source_type": "resource_registry",
+      "source_url": "https://data.humdata.org/api/3/action/package_search?q=September-October%202015%20Singapore%20haze%20from%20Indonesian%20peat%20and%20forest%20fires%20Singapore%20%2F%20Southeast%20Asia%202015-09-01&rows=10",
+      "bytes": 294,
+      "sha256_16": "8b0409239393d27e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0003",
+      "relative_path": "data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S003",
+      "source_name": "NASA EONET v3 events/categories search",
+      "source_type": "resource_registry",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/categories/wildfires?start=2015-09-01&end=2015-10-31&status=all",
+      "bytes": 9000,
+      "sha256_16": "514aef3dfda53ee4",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0004",
+      "relative_path": "data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S004",
+      "source_name": "GDACS event list / feed search",
+      "source_type": "resource_registry",
+      "source_url": "https://www.gdacs.org/gdacsapi/api/events/geteventlist/MAP?fromDate=2015-09-01&toDate=2015-10-31&alertlevel=Green,Orange,Red",
+      "bytes": 75265,
+      "sha256_16": "aa048ce2df085b1d",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0005",
+      "relative_path": "data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S005",
+      "source_name": "OpenStreetMap Nominatim geocoding",
+      "source_type": "resource_registry",
+      "source_url": "https://nominatim.openstreetmap.org/search?q=Singapore%20and%20downwind%20maritime%20Southeast%20Asian%20cities%2C%20Singapore%20%2F%20Southeast%20Asia&format=json&limit=5",
+      "bytes": 2,
+      "sha256_16": "4f53cda18c2baa0c",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0006",
+      "relative_path": "data/remote_sensing/remote_sensing_001_MODIS_VIIRS_MAIAC_AOD_or_Worldview_aerosol_smoke_preview.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/remote_sensing/remote_sensing_001_MODIS_VIIRS_MAIAC_AOD_or_Worldview_aerosol_smoke_preview.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/remote_sensing/remote_sensing_001_MODIS_VIIRS_MAIAC_AOD_or_Worldview_aerosol_smoke_preview.html",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S006",
+      "source_name": "MODIS/VIIRS MAIAC AOD or Worldview aerosol/smoke preview",
+      "source_type": "resource_registry",
+      "source_url": "https://worldview.earthdata.nasa.gov/",
+      "bytes": 4315,
+      "sha256_16": "339136a38b7e0720",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0007",
+      "relative_path": "data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S007",
+      "source_name": "Open-Meteo daily weather fill",
+      "source_type": "resource_registry",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=6.0000&longitude=118.5000&start_date=2015-08-18&end_date=2015-10-16&daily=temperature_2m_max%2Ctemperature_2m_min%2Cprecipitation_sum%2Cwind_speed_10m_max&timezone=UTC",
+      "bytes": 2402,
+      "sha256_16": "5481512afb269ed6",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0008",
+      "relative_path": "data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S008",
+      "source_name": "NASA POWER daily weather fill",
+      "source_type": "resource_registry",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M%2CT2M_MAX%2CT2M_MIN%2CPRECTOTCORR%2CWS10M&community=RE&longitude=118.5000&latitude=6.0000&start=20150818&end=20151016&format=JSON",
+      "bytes": 5739,
+      "sha256_16": "ef91caf0b5a81981",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0009",
+      "relative_path": "data/exposure_impact/exposure_impact_001_Overpass_small_roads_and_critical_amenities.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/exposure_impact/exposure_impact_001_Overpass_small_roads_and_critical_amenities.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/exposure_impact/exposure_impact_001_Overpass_small_roads_and_critical_amenities.json",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S009",
+      "source_name": "Overpass small roads and critical amenities",
+      "source_type": "resource_registry",
+      "source_url": "https://overpass-api.de/api/interpreter",
+      "bytes": 1553,
+      "sha256_16": "4479ba4770915abd",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0010",
+      "relative_path": "data/event_catalogs/event_catalogs_003_NASA_EONET_wildfire_events.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/event_catalogs/event_catalogs_003_NASA_EONET_wildfire_events.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/event_catalogs/event_catalogs_003_NASA_EONET_wildfire_events.json",
+      "category": "event_catalogs",
+      "layer_name": "specialized_hazard_source",
+      "source_id": "S010",
+      "source_name": "NASA EONET wildfire events",
+      "source_type": "resource_registry",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events?category=wildfires&start=2015-09-01&end=2015-10-16&keyword=September-October%202015%20Singapore%20haze%20from%20Indonesian%20peat%20and%20forest%20fires",
+      "bytes": 145,
+      "sha256_16": "12120ad325218b8c",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0011",
+      "relative_path": "data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "category": "geospatial_context",
+      "layer_name": "aoi",
+      "source_id": "S011",
+      "source_name": "compact per-event AOI derived from event bbox",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 419,
+      "sha256_16": "4a93f503c899c4d4",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0012",
+      "relative_path": "data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S012",
+      "source_name": "ERA5-Land hourly aggregate stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 1003,
+      "sha256_16": "13591e7d9b1545cc",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0013",
+      "relative_path": "data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S013",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 321,
+      "sha256_16": "178f4895d3456136",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0014",
+      "relative_path": "data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S014",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 333,
+      "sha256_16": "5663f6bd5a67dbe4",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0015",
+      "relative_path": "data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S015",
+      "source_name": "WorldPop GP 100m population sum",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 125,
+      "sha256_16": "e5bb451241f5e20b",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0016",
+      "relative_path": "data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+      "category": "physical_hazard",
+      "layer_name": "sentinel2",
+      "source_id": "S016",
+      "source_name": "Sentinel-2 SR Harmonized dNBR",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 148,
+      "sha256_16": "e08b52f31e781b6f",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0017",
+      "relative_path": "data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "category": "exposure_impact",
+      "layer_name": "osm_exposure",
+      "source_id": "S017",
+      "source_name": "OpenStreetMap Overpass bounded AOI slice",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 211433,
+      "sha256_16": "67198e9db9d052f6",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0018",
+      "relative_path": "data/remote_sensing/remote_sensing_002_pre.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/remote_sensing/remote_sensing_002_pre.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/remote_sensing/remote_sensing_002_pre.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S018",
+      "source_name": "pre",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2015-08-02&BBOX=-11.5%2C101.0%2C23.5%2C136.0&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 206284,
+      "sha256_16": "6a20f4153a2fee82",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0019",
+      "relative_path": "data/remote_sensing/remote_sensing_003_event.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/remote_sensing/remote_sensing_003_event.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/remote_sensing/remote_sensing_003_event.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S019",
+      "source_name": "event",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2015-10-01&BBOX=-11.5%2C101.0%2C23.5%2C136.0&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 190428,
+      "sha256_16": "e815f4db107568e6",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0020",
+      "relative_path": "data/event_reports/event_reports_003_Locked_event_anchor_September-October_2015_Singapore_haze_from_Indonesian_peat_and_forest.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/event_reports/event_reports_003_Locked_event_anchor_September-October_2015_Singapore_haze_from_Indonesian_peat_and_forest.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/event_reports/event_reports_003_Locked_event_anchor_September-October_2015_Singapore_haze_from_Indonesian_peat_and_forest.json",
+      "category": "event_reports",
+      "layer_name": "package_locked_event_anchor / NASA Earth Observatory",
+      "source_id": "S020",
+      "source_name": "Locked event anchor: September-October 2015 Singapore haze from Indonesian peat and forest fires",
+      "source_type": "event_specific_sources",
+      "source_url": "https://science.nasa.gov/earth/earth-observatory/fires-put-a-carbon-monoxide-cloud-over-indonesia-87119/",
+      "bytes": 3381,
+      "sha256_16": "a1a7bfeeca71f6f6",
+      "status": "remote_verified",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0021",
+      "relative_path": "data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html",
+      "category": "event_reports",
+      "layer_name": "html",
+      "source_id": "S001",
+      "source_name": "Locked anchor report (NASA Earth Observatory)",
+      "source_type": "event_specific_sources",
+      "source_url": "https://science.nasa.gov/earth/earth-observatory/fires-put-a-carbon-monoxide-cloud-over-indonesia-87119/",
+      "bytes": 281881,
+      "sha256_16": "4f21cb7379d94fca",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0022",
+      "relative_path": "data/other/other_001_NASA_Earth_Observatory_Seeing_Through_the_Smoky_Pall_in_Indonesia.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/other/other_001_NASA_Earth_Observatory_Seeing_Through_the_Smoky_Pall_in_Indonesia.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/other/other_001_NASA_Earth_Observatory_Seeing_Through_the_Smoky_Pall_in_Indonesia.html",
+      "category": "other",
+      "layer_name": "html",
+      "source_id": "S021",
+      "source_name": "NASA Earth Observatory Seeing Through the Smoky Pall in Indonesia",
+      "source_type": "event_specific_sources",
+      "source_url": "https://science.nasa.gov/earth/earth-observatory/seeing-through-the-smoky-pall-observations-from-a-grim-indonesian-fire-season/",
+      "bytes": 325413,
+      "sha256_16": "3c703d8cd91057d4",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0023",
+      "relative_path": "data/event_reports/event_reports_005_112_CSX-209_01_Locked_anchor_report_NASA_Earth_Observatory.html.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/event_reports/event_reports_005_112_CSX-209_01_Locked_anchor_report_NASA_Earth_Observatory.html.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/event_reports/event_reports_005_112_CSX-209_01_Locked_anchor_report_NASA_Earth_Observatory.html.html",
+      "category": "event_reports",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S022",
+      "source_name": "112_CSX-209_01_Locked_anchor_report_NASA_Earth_Observatory.html",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 281642,
+      "sha256_16": "dc3030017824ac98",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0024",
+      "relative_path": "data/event_reports/event_reports_006_112_CSX-209_02_ReliefWeb_Reports_API_event_search.bin",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/event_reports/event_reports_006_112_CSX-209_02_ReliefWeb_Reports_API_event_search.bin",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/event_reports/event_reports_006_112_CSX-209_02_ReliefWeb_Reports_API_event_search.bin",
+      "category": "event_reports",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S023",
+      "source_name": "112_CSX-209_02_ReliefWeb_Reports_API_event_search",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 143,
+      "sha256_16": "16e210c3f8fefa1d",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0025",
+      "relative_path": "data/physical_hazard/physical_hazard_007_chirps_event_precip.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_007_chirps_event_precip.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_007_chirps_event_precip.zip.zip",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S024",
+      "source_name": "chirps_event_precip.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 1983,
+      "sha256_16": "527160684085fc87",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/f514abdbf883982d0ac8.png"
+    },
+    {
+      "file_id": "F0026",
+      "relative_path": "data/physical_hazard/physical_hazard_008_era5_land_event_stack.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_008_era5_land_event_stack.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_008_era5_land_event_stack.zip.zip",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S025",
+      "source_name": "era5_land_event_stack.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 2849,
+      "sha256_16": "922487b8ef7e5320",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/c223203c6b662030e095.png"
+    },
+    {
+      "file_id": "F0027",
+      "relative_path": "data/physical_hazard/physical_hazard_009_gpm_imerg_event_precip.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_009_gpm_imerg_event_precip.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/physical_hazard/physical_hazard_009_gpm_imerg_event_precip.zip.zip",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S026",
+      "source_name": "gpm_imerg_event_precip.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 2167,
+      "sha256_16": "4d277359467f926d",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/3f1f1a173184a7c16db6.png"
+    },
+    {
+      "file_id": "F0028",
+      "relative_path": "data/exposure_impact/exposure_impact_004_osm_overpass_exposure_slice.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/exposure_impact/exposure_impact_004_osm_overpass_exposure_slice.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/exposure_impact/exposure_impact_004_osm_overpass_exposure_slice.json.json",
+      "category": "exposure_impact",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S027",
+      "source_name": "osm_overpass_exposure_slice.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 211433,
+      "sha256_16": "d1ce6b568e45542f",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0029",
+      "relative_path": "data/exposure_impact/exposure_impact_005_worldpop_population_1km.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/exposure_impact/exposure_impact_005_worldpop_population_1km.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/exposure_impact/exposure_impact_005_worldpop_population_1km.zip.zip",
+      "category": "exposure_impact",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S028",
+      "source_name": "worldpop_population_1km.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 18083,
+      "sha256_16": "074e58c4e0a10f93",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/1cc5c737200bf69e5ccf.png"
+    },
+    {
+      "file_id": "F0030",
+      "relative_path": "data/event_catalogs/event_catalogs_004_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-209/data/event_catalogs/event_catalogs_004_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-209/data/event_catalogs/event_catalogs_004_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "category": "event_catalogs",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S029",
+      "source_name": "04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 50757,
+      "sha256_16": "a5a041abf59e2dc8",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    }
+  ]
+}

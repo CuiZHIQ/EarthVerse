@@ -1,0 +1,1979 @@
+{
+  "task_id": "CSX-256_Q2",
+  "model_id": "deepseek-v4-flash",
+  "model_name": "DeepSeek V4 Flash",
+  "scores": {
+    "overall": 41.5,
+    "answer": 38.0,
+    "rubric": 45.0,
+    "unit_accuracy": 38.24,
+    "answer_units_correct": 13,
+    "answer_units_total": 34,
+    "rubric_points_earned": 9.0,
+    "rubric_points_total": 20.0,
+    "verdict": "partial"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "round_limit",
+    "latency_s": 398.011,
+    "tool_calls": 48,
+    "model_rounds": 49,
+    "file_reads": 23,
+    "unique_evidence_files": 19,
+    "python_calls": 1,
+    "tool_errors": 1,
+    "prompt_tokens": 640429,
+    "completion_tokens": 26615,
+    "total_tokens": 667044
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "Discover all files in the event package to find evidence families for rainfall, burn scar, runout, exposure, and impact metrics.",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 35,\n  \"file_count_total\": 35,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_catalogs/event_catalogs_001_GDACS_disaster_alert_API.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_GDACS_disaster_alert_API.json\",\n      \"bytes\": 2955,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_catalogs/event_catalogs_002_NASA_EONET_v3_events.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_NASA_EONET_v3_events.xml\",\n      \"bytes\": 14185,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.json\",\n      \"bytes\": 145,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_catalogs/event_catalogs_004_CSX-256_03_event_catalog_api_GDACS_disaster_alert_API.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_004_CSX-256_03_event_catalog_api_GDACS_disaster_alert_API.json.json\",\n      \"bytes\": 130989,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"package_relative_path\": \"data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"bytes\": 112595,\n      \"suffix\": \".html\"\n    },\n    {\n      \"path\": \"event_packages/\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get event metadata: dates, event window, location, and key identifiers.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/metadata/event.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/metadata/event.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-256\\\",\\n  \\\"event_name\\\": \\\"2018 Montecito post-fire debris flows\\\",\\n  \\\"canonical_event_key\\\": \\\"2018 montecito post fire debris flows\\\",\\n  \\\"hazard_family\\\": \\\"compound_cascading_events\\\",\\n  \\\"hazard_label\\\": \\\"Compound and cascading event\\\",\\n  \\\"scale\\\": \\\"neighborhood_asset\\\",\\n  \\\"region\\\": \\\"Arid belts\\\",\\n  \\\"primary_evidence_url\\\": \\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\",\\n  \\\"existence_verdict\\\": \\\"confirmed\\\",\\n  \\\"temporal_match\\\": \\\"match\\\",\\n  \\\"spatial_match\\\": \\\"match\\\",\\n  \\\"hazard_match\\\": \\\"match\\\",\\n  \\\"source_reliability\\\": \\\"high_official_or_institutional\\\",\\n  \\\"correspondence_score\\\": \\\"97\\\",\\n  \\\"release_decision\\\": \\\"keep\\\",\\n  \\\"benchmark_readiness\\\": \\\"ready_with_metadata_warnings\\\",\\n  \\\"benchmark_readiness_label\\\": \\\"ready with metadata warnings\\\",\\n  \\\"data_integrity\\\": {\\n    \\\"local_files_checked\\\": \\\"23\\\",\\n    \\\"image_files_checked\\\": \\\"3\\\",\\n    \\\"valid_images\\\": \\\"3\\\",\\n    \\\"formal_slice_files_checked\\\": \\\"9\\\",\\n    \\\"hard_error_count\\\": \\\"0\\\",\\n    \\\"metadata_warning_count\\\": \\\"1\\\",\\n    \\\"final_data_score\\\": \\\"93\\\",\\n    \\\"final_data_decision\\\": \\\"ready_with_minor_warnings\\\",\\n    \\\"replacement_file_count\\\": \\\"0\\\"\\n  },\\n  \\\"file_inventory\\\": {\\n    \\\"total_files\\\": 31,\\n    \\\"categories\\\": {\\n      \\\"event_catalogs\\\": 4,\\n      \\\"event_reports\\\": 4,\\n      \\\"exposure_impact\\\": 6,\\n      \\\"geospatial_context\\\": 3,\\n      \\\"other\\\": 1,\\n      \\\"physical_hazard\\\": 8,\\n      \\\"remote_sensing\\\": 5\\n    }\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1678
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/event.json"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the core event anchor JSON which likely contains event dates, fire information, and impact metrics.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-256\\\",\\n  \\\"event_name\\\": \\\"2018 Montecito post-fire debris flows\\\",\\n  \\\"hazard_family\\\": \\\"compound_cascading_events\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2018-01-09\\\",\\n    \\\"end_date\\\": \\\"2018-01-09\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Montecito and Carpinteria, California\\\",\\n    \\\"country_or_region\\\": \\\"United States\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"2018 Montecito post-fire debris flows\\\",\\n    \\\"event_start_date\\\": \\\"2018-01-09\\\",\\n    \\\"event_end_date\\\": \\\"2018-01-09\\\",\\n    \\\"event_location\\\": \\\"Montecito and Carpinteria, California\\\",\\n    \\\"event_country_or_region\\\": \\\"United States\\\",\\n    \\\"event_scope\\\": \\\"repaired_anchor\\\",\\n    \\\"evidence_type\\\": \\\"USGS data release\\\",\\n    \\\"evidence_url\\\": \\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\",\\n    \\\"evidence_final_url\\\": \\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\",\\n    \\\"http_status\\\": \\\"\\\",\\n    \\\"lock_status\\\": \\\"event_locked_repaired_anchor_needs_url_probe\\\",\\n    \\\"lock_confidence\\\": \\\"high\\\",\\n    \\\"match_rule\\\": \\\"subagent_repair_replace_event\\\",\\n    \\\"web_search_query_used\\\": \\\"\\\",\\n    \\\"event_lock_notes\\\": \\\"Asset-scale compound post-fire rainfall/debris-flow case with downloadable i\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Extract fire lag, runout paths, fatalities, homes damaged, burn area, and other report claims from the USGS data release.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n  \"text\": \"<!DOCTYPE html>\\n<html lang=\\\"en\\\" dir=\\\"ltr\\\" prefix=\\\"og: https://ogp.me/ns#\\\">\\n<head>\\n  <!-- Google Tag Manager -->\\n  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\\n        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\\n      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=\\n      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\\n    })(window,document,'script','dataLayer', 'GTM-KWRSKS');</script>\\n  <!-- End Google Tag Manager -->\\n\\n  <meta charset=\\\"utf-8\\\" />\\n<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\\n<meta name=\\\"keywords\\\" content=\\\"Geomorphology\\\" />\\n<link rel=\\\"canonical\\\" href=\\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\" />\\n<meta property=\\\"og:site_name\\\" content=\\\"USGS\\\" />\\n<meta property=\\\"og:type\\\" content=\\\"website\\\" />\\n<meta property=\\\"og:url\\\" content=\\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\" />\\n<meta property=\\\"og:title\\\" content=\\\"Debris-flow inundation and damage data from the 9 Janua\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find fire-related information: area, date, burn lag in days.",
+      "args": {
+        "query": "Thomas Fire",
+        "glob": "**/*",
+        "max_matches": 10
+      },
+      "output": {
+        "text": "{\n  \"query\": \"Thomas Fire\",\n  \"match_count\": 3,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json\",\n      \"snippet\": \"\\\"amenity\\\": \\\"fire_station\\\",\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1553
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get gridded precipitation summary (GPM IMERG) for max, mean, and spatial concentration ratio.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"NASA/GPM_L3/IMERG_V07\\\",\\n  \\\"start\\\": \\\"2018-01-09\\\",\\n  \\\"end\\\": \\\"2018-01-09\\\",\\n  \\\"stats\\\": {\\n    \\\"gpm_event_precip_mm_max\\\": 68.19999875128269,\\n    \\\"gpm_event_precip_mm_mean\\\": 52.05046311458628,\\n    \\\"gpm_event_precip_mm_min\\\": 14.444999566301703,\\n    \\\"gpm_event_precip_mm_stdDev\\\": 14.74611484987706\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 519
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get CHIRPS gridded precipitation summary for another spatial concentration ratio candidate.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"UCSB-CHG/CHIRPS/DAILY\\\",\\n  \\\"start\\\": \\\"2018-01-09\\\",\\n  \\\"end\\\": \\\"2018-01-09\\\",\\n  \\\"stats\\\": {\\n    \\\"chirps_event_precip_mm_max\\\": 62.795555114746094,\\n    \\\"chirps_event_precip_mm_mean\\\": 13.890091793845958,\\n    \\\"chirps_event_precip_mm_min\\\": 0,\\n    \\\"chirps_event_precip_mm_stdDev\\\": 19.425461144530445\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 516
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get ERA5-Land gridded precipitation stats for max/mean ratio comparisons.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"ECMWF/ERA5_LAND/HOURLY\\\",\\n  \\\"start\\\": \\\"2018-01-09\\\",\\n  \\\"end\\\": \\\"2018-01-09\\\",\\n  \\\"stats\\\": {\\n    \\\"precipitation_sum_mm_max\\\": 53.26471030701896,\\n    \\\"precipitation_sum_mm_mean\\\": 51.38495390720323,\\n    \\\"precipitation_sum_mm_min\\\": 46.599078178303444,\\n    \\\"precipitation_sum_mm_stdDev\\\": 1.816111237047403,\\n    \\\"temperature_2m_max_c_max\\\": 15.344171142578148,\\n    \\\"temperature_2m_max_c_mean\\\": 13.147535148044355,\\n    \\\"temperature_2m_max_c_min\\\": 9.656671142578148,\\n    \\\"temperature_2m_max_c_stdDev\\\": 1.9270755912006667,\\n    \\\"u_component_of_wind_10m_max\\\": -1.040768305460612,\\n    \\\"u_component_of_wind_10m_mean\\\": -1.8986561387694751,\\n    \\\"u_component_of_wind_10m_min\\\": -2.404415766398112,\\n    \\\"u_component_of_wind_10m_stdDev\\\": 0.4377126881819571,\\n    \\\"v_component_of_wind_10m_max\\\": 2.404212315877279,\\n    \\\"v_component_of_wind_10m_mean\\\": 1.5722655195340287,\\n    \\\"v_component_of_wind_10m_min\\\": 1.0643482208251953,\\n    \\\"v_component_of_wind_10m_stdDev\\\": 0.3818536577409592\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1206
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json"
+      ]
+    },
+    {
+      "step": 9,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get point precipitation sample (Open-Meteo) for rainfall trigger floor/ceiling metrics.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_daily_point_sample.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_daily_point_sample.json\",\n  \"text\": \"{\\\"latitude\\\":34.411247,\\\"longitude\\\":-119.547165,\\\"generationtime_ms\\\":4.261493682861328,\\\"utc_offset_seconds\\\":0,\\\"timezone\\\":\\\"GMT\\\",\\\"timezone_abbreviation\\\":\\\"GMT\\\",\\\"elevation\\\":16.0,\\\"daily_units\\\":{\\\"time\\\":\\\"iso8601\\\",\\\"temperature_2m_max\\\":\\\"°C\\\",\\\"temperature_2m_min\\\":\\\"°C\\\",\\\"precipitation_sum\\\":\\\"mm\\\",\\\"wind_speed_10m_max\\\":\\\"km/h\\\"},\\\"daily\\\":{\\\"time\\\":[\\\"2018-01-09\\\"],\\\"temperature_2m_max\\\":[16.6],\\\"temperature_2m_min\\\":[11.5],\\\"precipitation_sum\\\":[62.40],\\\"wind_speed_10m_max\\\":[30.6]}}\"\n}",
+        "truncated": false,
+        "original_chars": 679
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_daily_point_sample.json"
+      ]
+    },
+    {
+      "step": 10,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get the second point precipitation sample (NASA POWER) for floor/ceiling metrics.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_point_sample.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_point_sample.json\",\n  \"text\": \"{\\\"type\\\":\\\"Feature\\\",\\\"geometry\\\":{\\\"type\\\":\\\"Point\\\",\\\"coordinates\\\":[-119.514,34.396,739.44]},\\\"properties\\\":{\\\"parameter\\\":{\\\"T2M_MAX\\\":{\\\"20180109\\\":12.2},\\\"T2M_MIN\\\":{\\\"20180109\\\":5.6},\\\"PRECTOTCORR\\\":{\\\"20180109\\\":38.99},\\\"WS10M\\\":{\\\"20180109\\\":3.64}}},\\\"header\\\":{\\\"title\\\":\\\"NASA/POWER Source Native Resolution Daily Data\\\",\\\"api\\\":{\\\"version\\\":\\\"v2.9.2\\\",\\\"name\\\":\\\"POWER Daily API\\\"},\\\"sources\\\":[\\\"MERRA2\\\",\\\"POWER\\\"],\\\"fill_value\\\":-999.0,\\\"time_standard\\\":\\\"LST\\\",\\\"start\\\":\\\"20180109\\\",\\\"end\\\":\\\"20180109\\\"},\\\"messages\\\":[],\\\"parameters\\\":{\\\"T2M_MAX\\\":{\\\"units\\\":\\\"C\\\",\\\"longname\\\":\\\"Temperature at 2 Meters Maximum\\\"},\\\"T2M_MIN\\\":{\\\"units\\\":\\\"C\\\",\\\"longname\\\":\\\"Temperature at 2 Meters Minimum\\\"},\\\"PRECTOTCORR\\\":{\\\"units\\\":\\\"mm/day\\\",\\\"longname\\\":\\\"Precipitation Corrected\\\"},\\\"WS10M\\\":{\\\"units\\\":\\\"m/s\\\",\\\"longname\\\":\\\"Wind Speed at 10 Meters\\\"}},\\\"times\\\":{\\\"data\\\":0.4,\\\"process\\\":0.01}}\"\n}",
+        "truncated": false,
+        "original_chars": 1068
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_point_sample.json"
+      ]
+    },
+    {
+      "step": 11,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find dNBR and annual change files for burn-scar conditioning metrics.",
+      "args": {
+        "query": "dnbr",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"dnbr\",\n  \"match_count\": 3,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json\",\n      \"snippet\": \"\\\"sentinel2_dnbr_max\\\": 1.5777777777777777,\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/metadata/files.csv\",\n      \"snippet\": \"F0018,CSX-256,data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json,physical_hazard,sentinel2,S018,Sentinel-2 SR Harmonized dNBR,resource_registry,,473,ac01d2b0473ca4ab,success\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/metadata/sources.csv\",\n      \"snippet\": \"S018,Sentinel-2 SR Harmonized dNBR,resource_registry,,success\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 796
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/files.csv",
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/sources.csv"
+      ]
+    },
+    {
+      "step": 12,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get dNBR mean, max values for burn-scar conditioning metrics.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"COPERNICUS/S2_SR_HARMONIZED\\\",\\n  \\\"windows\\\": {\\n    \\\"pre\\\": [\\n      \\\"2017-11-10\\\",\\n      \\\"2018-01-02\\\"\\n    ],\\n    \\\"post\\\": [\\n      \\\"2018-01-09\\\",\\n      \\\"2018-02-23\\\"\\n    ]\\n  },\\n  \\\"counts\\\": {\\n    \\\"pre_count\\\": 55,\\n    \\\"post_count\\\": 51\\n  },\\n  \\\"stats\\\": {\\n    \\\"sentinel2_dnbr_max\\\": 1.5777777777777777,\\n    \\\"sentinel2_dnbr_mean\\\": 0.2599454334813332,\\n    \\\"sentinel2_dnbr_min\\\": -0.657696466899161,\\n    \\\"sentinel2_dnbr_stdDev\\\": 0.24118687342394537\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 668
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json"
+      ]
+    },
+    {
+      "step": 13,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find annual surface change data file.",
+      "args": {
+        "query": "annual",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"annual\",\n  \"match_count\": 4,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json\",\n      \"snippet\": \"\\\"dataset\\\": \\\"GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL\\\",\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n      \"snippet\": \"\\\"dataset\\\": \\\"GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL\\\",\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/metadata/files.csv\",\n      \"snippet\": \"F0016,CSX-256,data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json,remote_sensing,alphaearth_embedding,S016,Google Satellite Embedding 64-band annual stats,resource_registry,,9872,70fb487e5cbf84d6,success\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/metadata/sources.csv\",\n      \"snippet\": \"S016,Google Satellite Embedding 64-band annual stats,resource_registry,,success\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1146
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json",
+        "event_packages/standard_event_packages/packages/CSX-256/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/files.csv",
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/sources.csv"
+      ]
+    },
+    {
+      "step": 14,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get annual surface change mean and max values for burn-scar conditioning ratios.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL\\\",\\n  \\\"pre_year\\\": 2017,\\n  \\\"post_year\\\": 2018,\\n  \\\"stats\\\": {\\n    \\\"alphaearth_1_minus_cosine_max\\\": 0.4117916092071766,\\n    \\\"alphaearth_1_minus_cosine_mean\\\": 0.08800374659086393,\\n    \\\"alphaearth_1_minus_cosine_min\\\": -0.0026871063254441108,\\n    \\\"alphaearth_1_minus_cosine_stdDev\\\": 0.092117520365784\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 560
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json"
+      ]
+    },
+    {
+      "step": 15,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find fire area km² for Thomas Fire from the event package.",
+      "args": {
+        "query": "Thomas Fire area",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"Thomas Fire area\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1335
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html"
+      ]
+    },
+    {
+      "step": 16,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get more details about Thomas Fire area, lag, and runout paths from the full report.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n  \"text\": \"<!DOCTYPE html>\\n<html lang=\\\"en\\\" dir=\\\"ltr\\\" prefix=\\\"og: https://ogp.me/ns#\\\">\\n<head>\\n  <!-- Google Tag Manager -->\\n  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\\n        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\\n      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=\\n      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\\n    })(window,document,'script','dataLayer', 'GTM-KWRSKS');</script>\\n  <!-- End Google Tag Manager -->\\n\\n  <meta charset=\\\"utf-8\\\" />\\n<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\\n<meta name=\\\"keywords\\\" content=\\\"Geomorphology\\\" />\\n<link rel=\\\"canonical\\\" href=\\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\" />\\n<meta property=\\\"og:site_name\\\" content=\\\"USGS\\\" />\\n<meta property=\\\"og:type\\\" content=\\\"website\\\" />\\n<meta property=\\\"og:url\\\" content=\\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\" />\\n<meta property=\\\"og:title\\\" content=\\\"Debris-flow inundation and\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html"
+      ]
+    },
+    {
+      "step": 17,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find population exposure data for exposed population metric.",
+      "args": {
+        "query": "population",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"population\",\n  \"match_count\": 3,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json\",\n      \"snippet\": \"\\\"population_sum\\\": {\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/metadata/files.csv\",\n      \"snippet\": \"F0015,CSX-256,data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json,exposure_impact,worldpop_population,S015,WorldPop GP 100m population sum,resource_registry,,125,e4e7031f1d0b8882,success\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/metadata/sources.csv\",\n      \"snippet\": \"S015,WorldPop GP 100m population sum,resource_registry,,success\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 798
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json",
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/files.csv",
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/sources.csv"
+      ]
+    },
+    {
+      "step": 18,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get population exposure sum value.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"WorldPop/GP/100m/pop\\\",\\n  \\\"year\\\": 2018,\\n  \\\"population_sum\\\": {\\n    \\\"population\\\": 120049.78693011642\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 298
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json"
+      ]
+    },
+    {
+      "step": 19,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Count critical facilities (school, fire_station, hospital, police, shelter) and highway roads.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json\",\n  \"text\": \"{\\n  \\\"version\\\": 0.6,\\n  \\\"generator\\\": \\\"Overpass API 0.7.62.11 87bfad18\\\",\\n  \\\"osm3s\\\": {\\n    \\\"timestamp_osm_base\\\": \\\"2026-05-22T08:33:13Z\\\",\\n    \\\"copyright\\\": \\\"The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.\\\"\\n  },\\n  \\\"elements\\\": [\\n\\n{\\n  \\\"type\\\": \\\"node\\\",\\n  \\\"id\\\": 358780070,\\n  \\\"lat\\\": 34.3075005,\\n  \\\"lon\\\": -119.2934456,\\n  \\\"tags\\\": {\\n    \\\"amenity\\\": \\\"school\\\",\\n    \\\"ele\\\": \\\"38\\\",\\n    \\\"gnis:feature_id\\\": \\\"238844\\\",\\n    \\\"name\\\": \\\"Avenue School\\\"\\n  }\\n},\\n{\\n  \\\"type\\\": \\\"node\\\",\\n  \\\"id\\\": 358784254,\\n  \\\"lat\\\": 34.2961120,\\n  \\\"lon\\\": -119.2965012,\\n  \\\"tags\\\": {\\n    \\\"amenity\\\": \\\"school\\\",\\n    \\\"ele\\\": \\\"21\\\",\\n    \\\"gnis:feature_id\\\": \\\"242398\\\",\\n    \\\"name\\\": \\\"E P Foster Elementary School\\\"\\n  }\\n},\\n{\\n  \\\"type\\\": \\\"node\\\",\\n  \\\"id\\\": 358784623,\\n  \\\"lat\\\": 34.4283307,\\n  \\\"lon\\\": -119.7198584,\\n  \\\"tags\\\": {\\n    \\\"amenity\\\": \\\"school\\\",\\n    \\\"ele\\\": \\\"40\\\",\\n    \\\"gnis:feature_id\\\": \\\"242624\\\",\\n    \\\"name\\\": \\\"Alice F Schott Continuing Education Center\\\"\\n  }\\n},\\n{\\n  \\\"type\\\": \\\"node\\\",\\n  \\\"id\\\": 358785439,\\n  \\\"lat\\\": 34.4163865,\\n  \\\"lon\\\": -119.7212470,\\n  \\\"tags\\\": {\\n    \\\"amenity\\\": \\\"school\\\",\\n    \\\"ele\\\": \\\"29\\\",\\n    \\\"gnis:feature_id\\\": \\\"243215\\\",\\n    \\\"name\\\": \\\"Harding Elementary School\\\"\\n  }\\n},\\n{\\n  \\\"type\\\": \\\"node\\\",\\n  \\\"id\\\": 358786578,\\n  \\\"lat\\\": 34.4369413,\\n  \\\"lon\\\": -119.6943014,\\n  \\\"tags\\\": {\\n    \\\"amenity\\\": \\\"school\\\",\\n    \\\"ele\\\": \\\"125\\\",\\n    \\\"gnis:feature_id\\\": \\\"244039\\\",\\n    \\\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json"
+      ]
+    },
+    {
+      "step": 20,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Count critical facilities and highway roads from the OSM data file.",
+      "args": {
+        "code_chars": 1214,
+        "code_sha1": "500778bec9db",
+        "code_preview": "import json\nwith open('event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json') as f:\n    data = json.load(f)\nelements = data['elements']\n\n# Count critical facilities\ncritical_tags = ['school', 'fire_station', 'hospital', 'police', 'shelter']\ncritical_count = 0\nfor el in elements:\n    if 'tags' in el:\n        tags = el['tags']\n        if 'amenity' in tags and tags['amenity'] in critical_tags:\n            critical_count += 1\n\n# C\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-256_Q2/python_snippets/step_20_500778bec9db.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-256_Q2/python_snippets/step_20_500778bec9db.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.154,\n  \"stdout\": \"Critical facilities count: 52\\nHighway ways count: 947\\nAmenity counts: {'school': 34, 'fire_station': 9, 'police': 1, 'shelter': 4, 'hospital': 4}\\nschool: 34\\nfire_station: 9\\nhospital: 4\\npolice: 1\\nshelter: 4\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 439
+      },
+      "code": {
+        "text": "import json\nwith open('event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json') as f:\n    data = json.load(f)\nelements = data['elements']\n\n# Count critical facilities\ncritical_tags = ['school', 'fire_station', 'hospital', 'police', 'shelter']\ncritical_count = 0\nfor el in elements:\n    if 'tags' in el:\n        tags = el['tags']\n        if 'amenity' in tags and tags['amenity'] in critical_tags:\n            critical_count += 1\n\n# C\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-256_Q2/python_snippets/step_20_500778bec9db.py"
+      ]
+    },
+    {
+      "step": 21,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find runout path count information.",
+      "args": {
+        "query": "runout paths",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"runout paths\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"snippet\": \"<div  class=\\\"field-text-with-media\\\"><div class=\\\"tex2jax_process\\\"><p>On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and dama\\n...[TRUNCATED]...\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"snippet\": \"<div  class=\\\"field-text-with-media\\\"><div class=\\\"tex2jax_process\\\"><p>On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and dama\\n...[TRUNCATED]...\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1343
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html"
+      ]
+    },
+    {
+      "step": 22,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find runout path count and debris flow specific details.",
+      "args": {
+        "query": "debris flow paths",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"debris flow paths\",\n  \"match_count\": 3,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/README.md\",\n      \"snippet\": \"# CSX-256 - 2018 Montecito post-fire debris flows\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1501
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html",
+        "event_packages/standard_event_packages/packages/CSX-256/README.md"
+      ]
+    },
+    {
+      "step": 23,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read README for event summary and runout path count.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/README.md",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/README.md\",\n  \"text\": \"# CSX-256 - 2018 Montecito post-fire debris flows\\n\\n- Hazard: Compound and cascading event\\n- Region: Arid belts\\n- Scale: neighborhood_asset\\n- Benchmark readiness: ready with metadata warnings\\n- Primary evidence URL: https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\n\\n## Package Layout\\n\\n- `metadata/event.json`: event-level metadata.\\n- `metadata/files.csv`: file-level manifest with paths relative to this package.\\n- `metadata/sources.csv`: source-level manifest.\\n- `data/`: downloaded evidence and data files grouped by data category.\\n\\n## Data Categories\\n- `physical_hazard`: 8 files\\n- `exposure_impact`: 6 files\\n- `remote_sensing`: 5 files\\n- `event_reports`: 4 files\\n- `event_catalogs`: 4 files\\n- `geospatial_context`: 3 files\\n- `other`: 1 files\\n\"\n}",
+        "truncated": false,
+        "original_chars": 922
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/README.md"
+      ]
+    },
+    {
+      "step": 24,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find homes damaged count from event reports.",
+      "args": {
+        "query": "homes",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"homes\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1324
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html"
+      ]
+    },
+    {
+      "step": 25,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for runout path count in the event package.",
+      "args": {
+        "query": "runout",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"runout\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"snippet\": \"<div  class=\\\"field-text-with-media\\\"><div class=\\\"tex2jax_process\\\"><p>On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and dama\\n...[TRUNCATED]...\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"snippet\": \"<div  class=\\\"field-text-with-media\\\"><div class=\\\"tex2jax_process\\\"><p>On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and dama\\n...[TRUNCATED]...\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1337
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html"
+      ]
+    },
+    {
+      "step": 26,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "List all exposure impact files to find homes damaged and fatalities data.",
+      "args": {
+        "subdir": "data/exposure_impact",
+        "max_files": 20
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 6,\n  \"file_count_total\": 6,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_001_HDX_CKAN_package_search.json\",\n      \"package_relative_path\": \"data/exposure_impact/exposure_impact_001_HDX_CKAN_package_search.json\",\n      \"bytes\": 294,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_002_OpenStreetMap_Overpass_small_AOI_sample.json\",\n      \"package_relative_path\": \"data/exposure_impact/exposure_impact_002_OpenStreetMap_Overpass_small_AOI_sample.json\",\n      \"bytes\": 56841,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json\",\n      \"package_relative_path\": \"data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json\",\n      \"bytes\": 125,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json\",\n      \"package_relative_path\": \"data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json\",\n      \"bytes\": 348125,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_005_004_exposure_or_impact_OpenStreetMap_Overpass_roads_buildings_critical_facilities.error.tx.txt\",\n      \"package_relative_path\": \"data/exposure_impact/exposure_impact_005_004_exposure_or_impact_OpenStre\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 27,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find fatalities data in the event package.",
+      "args": {
+        "query": "fatalities",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"fatalities\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 64
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 28,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find fatality count from event reports.",
+      "args": {
+        "query": "killing",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"killing\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1326
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html"
+      ]
+    },
+    {
+      "step": 29,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find number of catchments/paths for runout.",
+      "args": {
+        "query": "catchments",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"catchments\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1329
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html"
+      ]
+    },
+    {
+      "step": 30,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "List geospatial context files for runout path data.",
+      "args": {
+        "subdir": "data/geospatial_context",
+        "max_files": 20
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 3,\n  \"file_count_total\": 3,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json\",\n      \"package_relative_path\": \"data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json\",\n      \"bytes\": 528,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json\",\n      \"package_relative_path\": \"data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json\",\n      \"bytes\": 454,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/geospatial_context/geospatial_context_003_CSX-256_02_geocoding_or_aoi_OpenStreetMap_Nominatim_geocoding.json.json\",\n      \"package_relative_path\": \"data/geospatial_context/geospatial_context_003_CSX-256_02_geocoding_or_aoi_OpenStreetMap_Nominatim_geocoding.json.json\",\n      \"bytes\": 528,\n      \"suffix\": \".json\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1200
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 31,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read full HTML content to find runout paths count and more details.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n  \"text\": \"<!DOCTYPE html>\\n<html lang=\\\"en\\\" dir=\\\"ltr\\\" prefix=\\\"og: https://ogp.me/ns#\\\">\\n<head>\\n  <!-- Google Tag Manager -->\\n  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\\n        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\\n      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=\\n      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\\n    })(window,document,'script','dataLayer', 'GTM-KWRSKS');</script>\\n  <!-- End Google Tag Manager -->\\n\\n  <meta charset=\\\"utf-8\\\" />\\n<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\\n<meta name=\\\"keywords\\\" content=\\\"Geomorphology\\\" />\\n<link rel=\\\"canonical\\\" href=\\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\" />\\n<meta property=\\\"og:site_name\\\" content=\\\"USGS\\\" />\\n<meta property=\\\"og:type\\\" content=\\\"website\\\" />\\n<meta property=\\\"og:url\\\" content=\\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\" />\\n<meta property=\\\"og:title\\\" content=\\\"Debris-flow inundation and damage data from the 9 Janua\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html"
+      ]
+    },
+    {
+      "step": 32,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find runout paths count from event reports.",
+      "args": {
+        "query": "series of debris flows",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"series of debris flows\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1341
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html"
+      ]
+    },
+    {
+      "step": 33,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read AOI file for more context on runout paths.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+        "max_chars": 5000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json\",\n  \"text\": \"{\\n  \\\"type\\\": \\\"Feature\\\",\\n  \\\"properties\\\": {},\\n  \\\"geometry\\\": {\\n    \\\"type\\\": \\\"Polygon\\\",\\n    \\\"coordinates\\\": [\\n      [\\n        [\\n          -119.739,\\n          34.1713\\n        ],\\n        [\\n          -119.289,\\n          34.1713\\n        ],\\n        [\\n          -119.289,\\n          34.6213\\n        ],\\n        [\\n          -119.739,\\n          34.6213\\n        ],\\n        [\\n          -119.739,\\n          34.1713\\n        ]\\n      ]\\n    ]\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 651
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json"
+      ]
+    },
+    {
+      "step": 34,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the locked event anchor JSON for more specific metrics.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json",
+        "max_chars": 10000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-256\\\",\\n  \\\"event_name\\\": \\\"2018 Montecito post-fire debris flows\\\",\\n  \\\"hazard_family\\\": \\\"compound_cascading_events\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2018-01-09\\\",\\n    \\\"end_date\\\": \\\"2018-01-09\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Montecito and Carpinteria, California\\\",\\n    \\\"country_or_region\\\": \\\"United States\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"2018 Montecito post-fire debris flows\\\",\\n    \\\"event_start_date\\\": \\\"2018-01-09\\\",\\n    \\\"event_end_date\\\": \\\"2018-01-09\\\",\\n    \\\"event_location\\\": \\\"Montecito and Carpinteria, California\\\",\\n    \\\"event_country_or_region\\\": \\\"United States\\\",\\n    \\\"event_scope\\\": \\\"repaired_anchor\\\",\\n    \\\"evidence_type\\\": \\\"USGS data release\\\",\\n    \\\"evidence_url\\\": \\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\",\\n    \\\"evidence_final_url\\\": \\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\",\\n    \\\"http_status\\\": \\\"\\\",\\n    \\\"lock_status\\\": \\\"event_locked_repaired_anchor_needs_url_probe\\\",\\n    \\\"lock_confidence\\\": \\\"high\\\",\\n    \\\"match_rule\\\": \\\"subagent_repair_replace_event\\\",\\n    \\\"web_search_query_used\\\": \\\"\\\",\\n    \\\"event_lock_notes\\\": \\\"Asset-scale compound post-fire rainfall/debris-flow case with downloadable i\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json"
+      ]
+    },
+    {
+      "step": 35,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find catchment count which equals runout paths.",
+      "args": {
+        "query": "catchment",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"catchment\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1328
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html"
+      ]
+    },
+    {
+      "step": 36,
+      "tool": "read_text_file",
+      "ok": false,
+      "reason": "Read another event report for more details.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_003_Locked_anchor_2018_Montecito_post-fire_debris_flows.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "file not found: event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_003_Locked_anchor_2018_Montecito_post-fire_debris_flows.json",
+        "truncated": false,
+        "original_chars": 165
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [
+        "missing file"
+      ],
+      "evidence_files": []
+    },
+    {
+      "step": 37,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "List all event report files.",
+      "args": {
+        "subdir": "data/event_reports",
+        "max_files": 20
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 4,\n  \"file_count_total\": 4,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"package_relative_path\": \"data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"bytes\": 112595,\n      \"suffix\": \".html\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json\",\n      \"package_relative_path\": \"data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json\",\n      \"bytes\": 3033,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_003_CSX-256_01_text_reports_ReliefWeb_Reports_API_event_country_date_search.error.txt.txt\",\n      \"package_relative_path\": \"data/event_reports/event_reports_003_CSX-256_01_text_reports_ReliefWeb_Reports_API_event_country_date_search.error.txt.txt\",\n      \"bytes\": 143,\n      \"suffix\": \".txt\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"package_relative_path\": \"data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"bytes\": 112595,\n      \"suffix\": \".html\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1564
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 38,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read event metadata for more context and potential runout paths count.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/metadata/event.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/metadata/event.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-256\\\",\\n  \\\"event_name\\\": \\\"2018 Montecito post-fire debris flows\\\",\\n  \\\"canonical_event_key\\\": \\\"2018 montecito post fire debris flows\\\",\\n  \\\"hazard_family\\\": \\\"compound_cascading_events\\\",\\n  \\\"hazard_label\\\": \\\"Compound and cascading event\\\",\\n  \\\"scale\\\": \\\"neighborhood_asset\\\",\\n  \\\"region\\\": \\\"Arid belts\\\",\\n  \\\"primary_evidence_url\\\": \\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\",\\n  \\\"existence_verdict\\\": \\\"confirmed\\\",\\n  \\\"temporal_match\\\": \\\"match\\\",\\n  \\\"spatial_match\\\": \\\"match\\\",\\n  \\\"hazard_match\\\": \\\"match\\\",\\n  \\\"source_reliability\\\": \\\"high_official_or_institutional\\\",\\n  \\\"correspondence_score\\\": \\\"97\\\",\\n  \\\"release_decision\\\": \\\"keep\\\",\\n  \\\"benchmark_readiness\\\": \\\"ready_with_metadata_warnings\\\",\\n  \\\"benchmark_readiness_label\\\": \\\"ready with metadata warnings\\\",\\n  \\\"data_integrity\\\": {\\n    \\\"local_files_checked\\\": \\\"23\\\",\\n    \\\"image_files_checked\\\": \\\"3\\\",\\n    \\\"valid_images\\\": \\\"3\\\",\\n    \\\"formal_slice_files_checked\\\": \\\"9\\\",\\n    \\\"hard_error_count\\\": \\\"0\\\",\\n    \\\"metadata_warning_count\\\": \\\"1\\\",\\n    \\\"final_data_score\\\": \\\"93\\\",\\n    \\\"final_data_decision\\\": \\\"ready_with_minor_warnings\\\",\\n    \\\"replacement_file_count\\\": \\\"0\\\"\\n  },\\n  \\\"file_inventory\\\": {\\n    \\\"total_files\\\": 31,\\n    \\\"categories\\\": {\\n      \\\"event_catalogs\\\": 4,\\n      \\\"event_reports\\\": 4,\\n      \\\"exposure_impact\\\": 6,\\n      \\\"geospatial_context\\\": 3,\\n      \\\"other\\\": 1,\\n      \\\"physical_hazard\\\": 8,\\n      \\\"remote_sensing\\\": 5\\n    }\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1678
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/event.json"
+      ]
+    },
+    {
+      "step": 39,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for any mention of runout paths or specific count.",
+      "args": {
+        "query": "runout",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"runout\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"snippet\": \"<div  class=\\\"field-text-with-media\\\"><div class=\\\"tex2jax_process\\\"><p>On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and dama\\n...[TRUNCATED]...\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"snippet\": \"<div  class=\\\"field-text-with-media\\\"><div class=\\\"tex2jax_process\\\"><p>On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and dama\\n...[TRUNCATED]...\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1337
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html"
+      ]
+    },
+    {
+      "step": 40,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for catchment count in all files.",
+      "args": {
+        "query": "catchment",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"catchment\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and damaging over 400 homes. To understand the flow\\\" />\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1328
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html"
+      ]
+    },
+    {
+      "step": 41,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for inundation data which may contain runout path counts.",
+      "args": {
+        "query": "inundation",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"inundation\",\n  \"match_count\": 7,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"snippet\": \"<link rel=\\\"canonical\\\" href=\\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\" />\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json\",\n      \"snippet\": \"\\\"evidence_url\\\": \\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\",\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"snippet\": \"<link rel=\\\"canonical\\\" href=\\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\" />\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/metadata/event.json\",\n      \"snippet\": \"\\\"primary_evidence_url\\\": \\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\",\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/metadata/files.csv\",\n      \"snippet\": \"F0001,CSX-256,data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html,event_reports,event_anchor_report,S001,Locked anchor: USGS data release,resource_registry,https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html",
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/event.json",
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/files.csv",
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/sources.csv",
+        "event_packages/standard_event_packages/packages/CSX-256/README.md"
+      ]
+    },
+    {
+      "step": 42,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read full ERA5 stats to get precipitation_sum_mean.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+        "max_chars": 8000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"ECMWF/ERA5_LAND/HOURLY\\\",\\n  \\\"start\\\": \\\"2018-01-09\\\",\\n  \\\"end\\\": \\\"2018-01-09\\\",\\n  \\\"stats\\\": {\\n    \\\"precipitation_sum_mm_max\\\": 53.26471030701896,\\n    \\\"precipitation_sum_mm_mean\\\": 51.38495390720323,\\n    \\\"precipitation_sum_mm_min\\\": 46.599078178303444,\\n    \\\"precipitation_sum_mm_stdDev\\\": 1.816111237047403,\\n    \\\"temperature_2m_max_c_max\\\": 15.344171142578148,\\n    \\\"temperature_2m_max_c_mean\\\": 13.147535148044355,\\n    \\\"temperature_2m_max_c_min\\\": 9.656671142578148,\\n    \\\"temperature_2m_max_c_stdDev\\\": 1.9270755912006667,\\n    \\\"u_component_of_wind_10m_max\\\": -1.040768305460612,\\n    \\\"u_component_of_wind_10m_mean\\\": -1.8986561387694751,\\n    \\\"u_component_of_wind_10m_min\\\": -2.404415766398112,\\n    \\\"u_component_of_wind_10m_stdDev\\\": 0.4377126881819571,\\n    \\\"v_component_of_wind_10m_max\\\": 2.404212315877279,\\n    \\\"v_component_of_wind_10m_mean\\\": 1.5722655195340287,\\n    \\\"v_component_of_wind_10m_min\\\": 1.0643482208251953,\\n    \\\"v_component_of_wind_10m_stdDev\\\": 0.3818536577409592\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1206
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json"
+      ]
+    },
+    {
+      "step": 43,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read full GPM file to get max value.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "max_chars": 8000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"NASA/GPM_L3/IMERG_V07\\\",\\n  \\\"start\\\": \\\"2018-01-09\\\",\\n  \\\"end\\\": \\\"2018-01-09\\\",\\n  \\\"stats\\\": {\\n    \\\"gpm_event_precip_mm_max\\\": 68.19999875128269,\\n    \\\"gpm_event_precip_mm_mean\\\": 52.05046311458628,\\n    \\\"gpm_event_precip_mm_min\\\": 14.444999566301703,\\n    \\\"gpm_event_precip_mm_stdDev\\\": 14.74611484987706\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 519
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 44,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read full CHIRPS file to get precise max value.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+        "max_chars": 5000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"UCSB-CHG/CHIRPS/DAILY\\\",\\n  \\\"start\\\": \\\"2018-01-09\\\",\\n  \\\"end\\\": \\\"2018-01-09\\\",\\n  \\\"stats\\\": {\\n    \\\"chirps_event_precip_mm_max\\\": 62.795555114746094,\\n    \\\"chirps_event_precip_mm_mean\\\": 13.890091793845958,\\n    \\\"chirps_event_precip_mm_min\\\": 0,\\n    \\\"chirps_event_precip_mm_stdDev\\\": 19.425461144530445\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 516
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 45,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read NASA POWER daily point sample to get precipitation value.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_point_sample.json",
+        "max_chars": 5000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_point_sample.json\",\n  \"text\": \"{\\\"type\\\":\\\"Feature\\\",\\\"geometry\\\":{\\\"type\\\":\\\"Point\\\",\\\"coordinates\\\":[-119.514,34.396,739.44]},\\\"properties\\\":{\\\"parameter\\\":{\\\"T2M_MAX\\\":{\\\"20180109\\\":12.2},\\\"T2M_MIN\\\":{\\\"20180109\\\":5.6},\\\"PRECTOTCORR\\\":{\\\"20180109\\\":38.99},\\\"WS10M\\\":{\\\"20180109\\\":3.64}}},\\\"header\\\":{\\\"title\\\":\\\"NASA/POWER Source Native Resolution Daily Data\\\",\\\"api\\\":{\\\"version\\\":\\\"v2.9.2\\\",\\\"name\\\":\\\"POWER Daily API\\\"},\\\"sources\\\":[\\\"MERRA2\\\",\\\"POWER\\\"],\\\"fill_value\\\":-999.0,\\\"time_standard\\\":\\\"LST\\\",\\\"start\\\":\\\"20180109\\\",\\\"end\\\":\\\"20180109\\\"},\\\"messages\\\":[],\\\"parameters\\\":{\\\"T2M_MAX\\\":{\\\"units\\\":\\\"C\\\",\\\"longname\\\":\\\"Temperature at 2 Meters Maximum\\\"},\\\"T2M_MIN\\\":{\\\"units\\\":\\\"C\\\",\\\"longname\\\":\\\"Temperature at 2 Meters Minimum\\\"},\\\"PRECTOTCORR\\\":{\\\"units\\\":\\\"mm/day\\\",\\\"longname\\\":\\\"Precipitation Corrected\\\"},\\\"WS10M\\\":{\\\"units\\\":\\\"m/s\\\",\\\"longname\\\":\\\"Wind Speed at 10 Meters\\\"}},\\\"times\\\":{\\\"data\\\":0.4,\\\"process\\\":0.01}}\"\n}",
+        "truncated": false,
+        "original_chars": 1068
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_point_sample.json"
+      ]
+    },
+    {
+      "step": 46,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for the number of runout/debris flow paths.",
+      "args": {
+        "query": "paths",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"paths\",\n  \"match_count\": 3,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html\",\n      \"snippet\": \"<div  class=\\\"field-text-with-media\\\"><div class=\\\"tex2jax_process\\\"><p>On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and dama\\n...[TRUNCATED]...\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html\",\n      \"snippet\": \"<div  class=\\\"field-text-with-media\\\"><div class=\\\"tex2jax_process\\\"><p>On 9 January 2018, intense rain above Montecito, California triggered a series of debris flows from steep catchments in the Santa Ynez Mountains. These catchments were burned three weeks earlier by the 1140 km2 Thomas Fire. After exiting the mountain front, the debris flows traveled over 3 km down a series of alluvial fans, killing 23 people and dama\\n...[TRUNCATED]...\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/README.md\",\n      \"snippet\": \"- `metadata/files.csv`: file-level manifest with paths relative to this package.\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1532
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_004_001_event_anchor_report_Locked_anchor_USGS_data_release.html.html",
+        "event_packages/standard_event_packages/packages/CSX-256/README.md"
+      ]
+    },
+    {
+      "step": 47,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for debris flow counts in JSON files.",
+      "args": {
+        "query": "debris flow",
+        "glob": "**/*.json",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"debris flow\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json\",\n      \"snippet\": \"\\\"event_name\\\": \\\"2018 Montecito post-fire debris flows\\\",\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/metadata/event.json\",\n      \"snippet\": \"\\\"event_name\\\": \\\"2018 Montecito post-fire debris flows\\\",\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 515
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json",
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/event.json"
+      ]
+    },
+    {
+      "step": 48,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for debris-flow JSON files with counts.",
+      "args": {
+        "query": "debris-flow",
+        "glob": "**/*.json",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"debris-flow\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json\",\n      \"snippet\": \"\\\"evidence_url\\\": \\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\",\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-256/metadata/event.json\",\n      \"snippet\": \"\\\"primary_evidence_url\\\": \\\"https://www.usgs.gov/data/debris-flow-inundation-and-damage-data-9-january-2018-montecito-debris-flow-event\\\",\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 667
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json",
+        "event_packages/standard_event_packages/packages/CSX-256/metadata/event.json"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Event occurred on 9 January 2018, single-day window",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "GPM grid peak precipitation 68.20 mm, mean 52.05 mm",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "CHIRPS max 62.80 mm, mean 13.89 mm, giving max/mean ratio 4.52",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "ERA5-Land max 53.26 mm, mean 51.38 mm",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "Open-Meteo point sample 62.40 mm, NASA POWER point sample 38.99 mm",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_daily_point_sample.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "Thomas Fire area 1140 km2, burn-to-flow lag 3 weeks (21 days)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+      "support_type": "report_claim"
+    },
+    {
+      "claim": "dNBR mean 0.348, max 0.867",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "Annual surface-change mean 0.061, max 1.000",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-256/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "Debris flows traveled >3 km, 23 fatalities, >400 homes damaged",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+      "support_type": "report_claim"
+    },
+    {
+      "claim": "Exposed population 120,050 within AOI",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "Critical facilities count 52 (school 34, fire_station 9, hospital 4, police 1, shelter 4), highway ways 947",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Spatial concentration ratio 4.52 from CHIRPS max/mean",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+      "support_type": "derived_metric"
+    }
+  ],
+  "reasoning_summary": [
+    "Extracted event window from precipitation files (single day 2018-01-09)",
+    "Identified GPM IMERG as the highest gridded precipitation product (peak 68.2 mm, mean 52.1 mm)",
+    "Computed spatial concentration ratio as the largest max/mean among three gridded products (CHIRPS 4.52)",
+    "Extracted point precipitation floor (NASA POWER 39.0 mm) and ceiling (Open-Meteo 62.4 mm)",
+    "Extracted burn scar metrics from dNBR and annual remote sensing change files",
+    "Extracted Thomas Fire area (1140 km2) and lag (21 days) from USGS report",
+    "Extracted fatalities (23), homes damaged (400+), and runout distance (>3 km) from USGS report",
+    "Extracted population (120,050) and critical facilities (52) from exposure files",
+    "Runout_paths count is not available in any inspected file, blocking computation of norms, process index, response priority, and scenario deltas"
+  ],
+  "unsupported_or_unresolved": [
+    "runout_paths: no evidence file in the package specifies the number of debris flow runout paths. The USGS report describes 'a series of debris flows' without a countable number. Cannot compute runout_exposure_norm, process index, response priority, or scenario deltas without this value.",
+    "homes_damaged_per_path: requires runout_paths, which is unresolved.",
+    "All norm and score computations requiring runout_paths are marked UNRESOLVED.",
+    "The answer schema could not be fully populated; all computed_metrics and scenario_analysis fields that depend on runout_paths are explicitly marked UNRESOLVED per the round-limit instruction."
+  ],
+  "final_answer": {
+    "process_model": {
+      "event_window_days": 1,
+      "mechanism_chain": [
+        "Thomas Fire (Dec 2017) burned 1140 km2 of Santa Ynez Mountains watershed, creating hydrophobic burn scar and increasing runoff potential",
+        "21-day lag between fire containment and the 9 Jan 2018 debris-flow event",
+        "Intense short-duration rainfall (grid peak 68.2 mm, CHIRPS spatial concentration ratio 4.52) on 9 Jan 2018 triggered debris flows from steep catchments",
+        "Debris flows exited mountain front and traveled >3 km across alluvial fans, impacting Montecito and Carpinteria communities",
+        "Resulted in 23 fatalities and minimum 400 homes damaged, with 52 critical facilities and ~120,050 exposed population within the AOI"
+      ]
+    },
+    "computed_metrics": {
+      "rainfall_trigger": {
+        "grid_peak_mm": 68.2,
+        "grid_peak_mean_mm": 52.1,
+        "grid_peak_to_mean_ratio": 1.31,
+        "spatial_concentration_ratio": 4.52,
+        "point_precip_floor_mm": 39.0,
+        "point_precip_ceiling_mm": 62.4,
+        "grid_peak_to_point_floor_ratio": 1.75,
+        "rainfall_trigger_norm": 0.91
+      },
+      "burn_scar_conditioning": {
+        "fire_lag_days": 21,
+        "fire_area_km2": 1140,
+        "dnbr_mean": 0.348,
+        "dnbr_max": 0.867,
+        "annual_change_mean": 0.061,
+        "annual_change_max": 1.0,
+        "dnbr_mean_to_annual_change_mean_ratio": 5.7,
+        "dnbr_max_to_annual_change_max_ratio": 0.867,
+        "burn_conditioning_norm": 0.97
+      },
+      "runout_and_exposure": {
+        "runout_km_min": 3,
+        "runout_paths": "UNRESOLVED",
+        "fatalities": 23,
+        "homes_damaged_min": 400,
+        "population_exposed": 120050,
+        "critical_facilities": 52,
+        "highway_ways": 947,
+        "fatalities_per_100k_exposed": 19.16,
+        "critical_facilities_per_100k_exposed": 43.31,
+        "homes_damaged_per_path": "UNRESOLVED",
+        "runout_exposure_norm": "UNRESOLVED",
+        "impact_norm": 0.87
+      },
+      "process_scores": {
+        "post_fire_debris_flow_process_index": "UNRESOLVED",
+        "response_priority_score": "UNRESOLVED",
+        "process_index_label": "UNRESOLVED",
+        "response_priority_label": "UNRESOLVED"
+      }
+    },
+    "scenario_analysis": {
+      "baseline": {
+        "rainfall_trigger_norm": 0.91,
+        "burn_conditioning_norm": 0.97,
+        "runout_exposure_norm": "UNRESOLVED",
+        "impact_norm": 0.87,
+        "post_fire_debris_flow_process_index": "UNRESOLVED",
+        "response_priority_score": "UNRESOLVED",
+        "process_index_label": "UNRESOLVED",
+        "response_priority_label": "UNRESOLVED"
+      },
+      "stress_scenario": {
+        "rainfall_intensified_pct": 15,
+        "population_increase_pct": 20,
+        "critical_facilities_increase_pct": 25,
+        "rainfall_trigger_norm": "UNRESOLVED",
+        "burn_conditioning_norm": 0.97,
+        "runout_exposure_norm": "UNRESOLVED",
+        "impact_norm": 0.87,
+        "post_fire_debris_flow_process_index": "UNRESOLVED",
+        "response_priority_score": "UNRESOLVED",
+        "process_index_label": "UNRESOLVED",
+        "response_priority_label": "UNRESOLVED"
+      },
+      "deltas": {
+        "process_index_delta": "UNRESOLVED",
+        "response_priority_delta": "UNRESOLVED"
+      }
+    },
+    "source_paths": [
+      "event_packages/standard_event_packages/packages/CSX-256/metadata/event.json",
+      "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_001_Locked_anchor_USGS_data_release.html",
+      "event_packages/standard_event_packages/packages/CSX-256/data/event_reports/event_reports_002_Locked_event_anchor_2018_Montecito_post-fire_debris_flows.json",
+      "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_001_Open-Meteo_historical_daily_point_sample.json",
+      "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_point_sample.json",
+      "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+      "event_packages/standard_event_packages/packages/CSX-256/data/physical_hazard/physical_hazard_006_Sentinel-2_SR_Harmonized_dNBR.json",
+      "event_packages/standard_event_packages/packages/CSX-256/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json",
+      "event_packages/standard_event_packages/packages/CSX-256/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "event_packages/standard_event_packages/packages/CSX-256/README.md"
+    ],
+    "final_interpretation": "The 2018 Montecito post-fire debris flows represent a high-consequence compound event where Thomas Fire burn scar conditioning, intense short-duration rainfall, and exposed settlements created a severe response-priority situation. The package contains all required input metrics except the number of debris flow runout paths, which prevents computing the runout_exposure_norm, process index, response priority score, and their scenario deltas. All other values (rainfall, burn scar, exposure, impact) are successfully extracted from the local evidence package."
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "Model answered many individual numeric and count fields correctly, especially rainfall and exposure counts, but failed on key burn scar numerical values and crucially left several important runout metrics, normalization indices, final scores, and scenario computations unresolved, resulting in incomplete final answers and labels.",
+      "llm_rubric": "Model demonstrated successful data sourcing and partial computation of rainfall and exposure metrics, some correctness in burn scar conversion but with errors, yet it failed to perform and report final weighted calculations and scenario rescores, losing substantial rubric credit for incomplete and missing computations despite valid JSON formatting and reasonable interpretive prose."
+    },
+    "one_sentence_rationale": "While the model correctly extracted and computed many baseline rainfall and exposure metrics from the package, critical burn scar values and final integrative indices including runout-related and scenario analyses were missing or incorrect, yielding a partial and incomplete but valid JSON answer that lacked full task completion and numeric accuracy.",
+    "critical_errors": [
+      "missing_field: runout_paths unresolved",
+      "missing_field: runout_exposure_norm unresolved",
+      "missing_field: post_fire_debris_flow_process_index unresolved",
+      "missing_field: response_priority_score unresolved",
+      "missing_field: scenario computed deltas unresolved"
+    ],
+    "missing_answer_elements": [
+      "numeric_value: runout_paths",
+      "numeric_value: homes_damaged_per_runout_path",
+      "numeric_value: runout_exposure_norm",
+      "numeric_value: post_fire_debris_flow_process_index",
+      "numeric_value: response_priority_score",
+      "numeric_value: process_index_label",
+      "numeric_value: response_priority_label",
+      "numeric_value: scenario rainfall_trigger_norm",
+      "numeric_value: scenario_runout_exposure_norm",
+      "numeric_value: scenario_process_index",
+      "numeric_value: scenario_response_priority_score",
+      "numeric_label: priority_label_shift"
+    ]
+  },
+  "provenance": {
+    "task_id": "CSX-256_Q2",
+    "model_id": "deepseek-v4-flash",
+    "model_name": "DeepSeek V4 Flash",
+    "trajectory_path": "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-256_Q2/trajectory.json",
+    "judge_path": "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/judge_gpt41mini_final/per_task_judge_scores.jsonl"
+  }
+}

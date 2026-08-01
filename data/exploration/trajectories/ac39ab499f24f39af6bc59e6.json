@@ -1,0 +1,521 @@
+{
+  "task_id": "CSX-227_Q1",
+  "model_id": "deepseek-v4-flash",
+  "model_name": "DeepSeek V4 Flash",
+  "scores": {
+    "overall": 94.38,
+    "answer": 93.75,
+    "rubric": 95.0,
+    "unit_accuracy": 93.75,
+    "answer_units_correct": 15,
+    "answer_units_total": 16,
+    "rubric_points_earned": 19.0,
+    "rubric_points_total": 20.0,
+    "verdict": "correct"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 114.369,
+    "tool_calls": 11,
+    "model_rounds": 12,
+    "file_reads": 8,
+    "unique_evidence_files": 10,
+    "python_calls": 0,
+    "tool_errors": 0,
+    "prompt_tokens": 99992,
+    "completion_tokens": 4776,
+    "total_tokens": 104768
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "Discover available files in the event package to locate institutional report, Sentinel-1 data, precipitation data, WorldPop population, date window, etc.",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 44,\n  \"file_count_total\": 44,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-227/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events.xml\",\n      \"bytes\": 14084,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-227/data/event_catalogs/event_catalogs_002_USGS_publication_search_Taan_Fiord_landslide_tsunami.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_USGS_publication_search_Taan_Fiord_landslide_tsunami.json\",\n      \"bytes\": 34442,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-227/data/event_catalogs/event_catalogs_003_015_event_catalog_api_NASA_EONET_v3_events.error.txt.txt\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_015_event_catalog_api_NASA_EONET_v3_events.error.txt.txt\",\n      \"bytes\": 96,\n      \"suffix\": \".txt\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-227/data/event_catalogs/event_catalogs_004_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_004_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"bytes\": 26325,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-227/data/event_reports/event_reports_001_Locked_anchor_USGS_publication.html\",\n      \"package_relative_path\": \"data/event_reports/event_report\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-227/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for Sentinel-1 VV files to get pre/post statistics for s1_abs_change_db.",
+      "args": {
+        "query": "sentinel1",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"sentinel1\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-227/metadata/files.csv\",\n      \"snippet\": \"F0018,CSX-227,data/remote_sensing/remote_sensing_003_Sentinel-1_GRD_VV_pre_post_change.json,remote_sensing,sentinel1,S018,Sentinel-1 GRD VV pre/post change,resource_registry,,495,457e7f15a63d5f56,success\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-227/metadata/sources.csv\",\n      \"snippet\": \"S037,sentinel1_vv_change_250m.zip,auxiliary_local_files,,local_file_found\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 593
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-227/metadata/files.csv",
+        "event_packages/standard_event_packages/packages/CSX-227/metadata/sources.csv"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read Sentinel-1 VV pre/post change JSON to compute s1_abs_change_db.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-227/data/remote_sensing/remote_sensing_003_Sentinel-1_GRD_VV_pre_post_change.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-227/data/remote_sensing/remote_sensing_003_Sentinel-1_GRD_VV_pre_post_change.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"COPERNICUS/S1_GRD\\\",\\n  \\\"windows\\\": {\\n    \\\"pre\\\": [\\n      \\\"2015-08-18\\\",\\n      \\\"2015-10-10\\\"\\n    ],\\n    \\\"post\\\": [\\n      \\\"2015-10-17\\\",\\n      \\\"2015-12-01\\\"\\n    ]\\n  },\\n  \\\"counts\\\": {\\n    \\\"pre_count\\\": 7,\\n    \\\"post_count\\\": 5\\n  },\\n  \\\"stats\\\": {\\n    \\\"s1_vv_post_minus_pre_db_max\\\": 50.462659821515714,\\n    \\\"s1_vv_post_minus_pre_db_mean\\\": 3.2829160992012887,\\n    \\\"s1_vv_post_minus_pre_db_min\\\": -40.74393989401225,\\n    \\\"s1_vv_post_minus_pre_db_stdDev\\\": 4.581294561287956\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 692
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-227/data/remote_sensing/remote_sensing_003_Sentinel-1_GRD_VV_pre_post_change.json"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the institutional event report (USGS publication) to find rock_mass_million_tons and max_runup_m.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-227/data/event_reports/event_reports_001_Locked_anchor_USGS_publication.html",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-227/data/event_reports/event_reports_001_Locked_anchor_USGS_publication.html\",\n  \"text\": \"<!DOCTYPE html>\\n<html lang=\\\"en\\\" dir=\\\"ltr\\\" prefix=\\\"og: https://ogp.me/ns#\\\">\\n<head>\\n  <!-- Google Tag Manager -->\\n  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\\n        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\\n      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=\\n      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\\n    })(window,document,'script','dataLayer', 'GTM-KWRSKS');</script>\\n  <!-- End Google Tag Manager -->\\n\\n  <meta charset=\\\"utf-8\\\" />\\n<meta name=\\\"description\\\" content=\\\"Glacial retreat in recent decades has exposed unstable slopes and allowed deep water to extend beneath some of those slopes. Slope failure at the terminus of Tyndall Glacier on 17 October 2015 sent 180 million tons of rock into Taan Fiord, Alaska. The resulting tsunami reached elevations as high as 193 m, one of the highest tsunami runups ever documented worldwide. Precursory deformation began\\\" />\\n<meta name=\\\"keywords\\\" content=\\\"United States,Taan Ford,Alaska,taan fiord\\\" />\\n<link rel=\\\"canonical\\\" href=\\\"https://www.usgs.gov/publications/2015-landslide-and-tsunami-taan-fiord-alaska\\\" />\\n<meta property=\\\"og:site_name\\\" content=\\\"USGS\\\" />\\n<meta property=\\\"og:type\\\" content=\\\"website\\\" />\\n<meta property=\\\"og:url\\\" content=\\\"https://www.usgs.gov/publications/2015-landslide-and-tsunami-taan-fiord-alaska\\\" />\\n<meta property=\\\"og:title\\\" content=\\\"The 2015 landslide and tsunami in Taan Fiord, Alaska\\\" />\\n<meta property=\\\"og:descri\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-227/data/event_reports/event_reports_001_Locked_anchor_USGS_publication.html"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get population_sum for the event.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-227/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json",
+        "max_chars": 500
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-227/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"WorldPop/GP/100m/pop\\\",\\n  \\\"year\\\": 2015,\\n  \\\"population_sum\\\": {\\n    \\\"population\\\": 0.08824873471622935\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 299
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-227/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read Open-Meteo precipitation data.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_daily_point_sample.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_daily_point_sample.json\",\n  \"text\": \"{\\\"latitude\\\":60.070297,\\\"longitude\\\":-141.27907,\\\"generationtime_ms\\\":4.123806953430176,\\\"utc_offset_seconds\\\":0,\\\"timezone\\\":\\\"GMT\\\",\\\"timezone_abbreviation\\\":\\\"GMT\\\",\\\"elevation\\\":0.0,\\\"daily_units\\\":{\\\"time\\\":\\\"iso8601\\\",\\\"temperature_2m_max\\\":\\\"°C\\\",\\\"temperature_2m_min\\\":\\\"°C\\\",\\\"precipitation_sum\\\":\\\"mm\\\",\\\"wind_speed_10m_max\\\":\\\"km/h\\\"},\\\"daily\\\":{\\\"time\\\":[\\\"2015-10-17\\\"],\\\"temperature_2m_max\\\":[9.8],\\\"temperature_2m_min\\\":[8.0],\\\"precipitation_sum\\\":[45.70],\\\"wind_speed_10m_max\\\":[29.3]}}\"\n}",
+        "truncated": false,
+        "original_chars": 675
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_daily_point_sample.json"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read locked event anchor to get start and end dates for event_window_days.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-227/data/event_reports/event_reports_002_Locked_event_anchor_Taan_Fiord_landslide_tsunami.json",
+        "max_chars": 5000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-227/data/event_reports/event_reports_002_Locked_event_anchor_Taan_Fiord_landslide_tsunami.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-227\\\",\\n  \\\"event_name\\\": \\\"Taan Fiord landslide tsunami\\\",\\n  \\\"hazard_family\\\": \\\"landslide_mass_movement\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2015-10-17\\\",\\n    \\\"end_date\\\": \\\"2015-10-17\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Taan Fiord, Alaska\\\",\\n    \\\"country_or_region\\\": \\\"United States\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"Taan Fiord landslide tsunami\\\",\\n    \\\"event_start_date\\\": \\\"2015-10-17\\\",\\n    \\\"event_end_date\\\": \\\"2015-10-17\\\",\\n    \\\"event_location\\\": \\\"Taan Fiord, Alaska\\\",\\n    \\\"event_country_or_region\\\": \\\"United States\\\",\\n    \\\"event_scope\\\": \\\"subagent_region_locked\\\",\\n    \\\"evidence_type\\\": \\\"USGS publication\\\",\\n    \\\"evidence_url\\\": \\\"https://www.usgs.gov/publications/2015-landslide-and-tsunami-taan-fiord-alaska\\\",\\n    \\\"evidence_final_url\\\": \\\"https://www.usgs.gov/publications/2015-landslide-and-tsunami-taan-fiord-alaska\\\",\\n    \\\"http_status\\\": \\\"\\\",\\n    \\\"lock_status\\\": \\\"event_locked_subagent_candidate_needs_url_probe\\\",\\n    \\\"lock_confidence\\\": \\\"high\\\",\\n    \\\"match_rule\\\": \\\"subagent_exact_family_region_replacement\\\",\\n    \\\"web_search_query_used\\\": \\\"USGS Taan Fiord landslide tsunami\\\",\\n    \\\"event_lock_notes\\\": \\\"Coastal fjord slope failure generated a local tsunami.\\\",\\n    \\\"verification_error\\\": \\\"\\\",\\n    \\\"dual_anchor_if_applicable\\\": \\\"\\\",\\n    \\\"source\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-227/data/event_reports/event_reports_002_Locked_event_anchor_Taan_Fiord_landslide_tsunami.json"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get NASA POWER precipitation for event day.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_003_NASA_POWER_daily_point_sample.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_003_NASA_POWER_daily_point_sample.json\",\n  \"text\": \"{\\\"type\\\":\\\"Feature\\\",\\\"geometry\\\":{\\\"type\\\":\\\"Point\\\",\\\"coordinates\\\":[-141.304,60.078,419.12]},\\\"properties\\\":{\\\"parameter\\\":{\\\"T2M_MAX\\\":{\\\"20151017\\\":7.13},\\\"T2M_MIN\\\":{\\\"20151017\\\":5.53},\\\"PRECTOTCORR\\\":{\\\"20151017\\\":36.61},\\\"WS10M\\\":{\\\"20151017\\\":3.79}}},\\\"header\\\":{\\\"title\\\":\\\"NASA/POWER Source Native Resolution Daily Data\\\",\\\"api\\\":{\\\"version\\\":\\\"v2.9.2\\\",\\\"name\\\":\\\"POWER Daily API\\\"},\\\"sources\\\":[\\\"MERRA2\\\",\\\"POWER\\\"],\\\"fill_value\\\":-999.0,\\\"time_standard\\\":\\\"LST\\\",\\\"start\\\":\\\"20151017\\\",\\\"end\\\":\\\"20151017\\\"},\\\"messages\\\":[],\\\"parameters\\\":{\\\"T2M_MAX\\\":{\\\"units\\\":\\\"C\\\",\\\"longname\\\":\\\"Temperature at 2 Meters Maximum\\\"},\\\"T2M_MIN\\\":{\\\"units\\\":\\\"C\\\",\\\"longname\\\":\\\"Temperature at 2 Meters Minimum\\\"},\\\"PRECTOTCORR\\\":{\\\"units\\\":\\\"mm/day\\\",\\\"longname\\\":\\\"Precipitation Corrected\\\"},\\\"WS10M\\\":{\\\"units\\\":\\\"m/s\\\",\\\"longname\\\":\\\"Wind Speed at 10 Meters\\\"}},\\\"times\\\":{\\\"data\\\":0.68,\\\"process\\\":0.01}}\"\n}",
+        "truncated": false,
+        "original_chars": 1070
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_003_NASA_POWER_daily_point_sample.json"
+      ]
+    },
+    {
+      "step": 9,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get ERA5-Land mean precipitation for event day.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_004_ERA5-Land_hourly_aggregate_stats.json",
+        "max_chars": 3000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_004_ERA5-Land_hourly_aggregate_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"ECMWF/ERA5_LAND/HOURLY\\\",\\n  \\\"start\\\": \\\"2015-10-17\\\",\\n  \\\"end\\\": \\\"2015-10-17\\\",\\n  \\\"stats\\\": {\\n    \\\"precipitation_sum_mm_max\\\": 57.714696703612844,\\n    \\\"precipitation_sum_mm_mean\\\": 42.85689266262185,\\n    \\\"precipitation_sum_mm_min\\\": 32.53668147152666,\\n    \\\"precipitation_sum_mm_stdDev\\\": 5.517312556557427,\\n    \\\"temperature_2m_max_c_max\\\": 10.521722412109398,\\n    \\\"temperature_2m_max_c_mean\\\": 3.7056735545000627,\\n    \\\"temperature_2m_max_c_min\\\": -2.9639801025390398,\\n    \\\"temperature_2m_max_c_stdDev\\\": 4.0746199144481405,\\n    \\\"u_component_of_wind_10m_max\\\": -0.8444232940673828,\\n    \\\"u_component_of_wind_10m_mean\\\": -2.7747070000374423,\\n    \\\"u_component_of_wind_10m_min\\\": -6.854188919067383,\\n    \\\"u_component_of_wind_10m_stdDev\\\": 1.6505511071460162,\\n    \\\"v_component_of_wind_10m_max\\\": 1.8056316375732422,\\n    \\\"v_component_of_wind_10m_mean\\\": 0.3914921880104713,\\n    \\\"v_component_of_wind_10m_min\\\": -1.842398961385091,\\n    \\\"v_component_of_wind_10m_stdDev\\\": 0.910652651612599\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1209
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_004_ERA5-Land_hourly_aggregate_stats.json"
+      ]
+    },
+    {
+      "step": 10,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find GPM IMERG precipitation file to get mean value.",
+      "args": {
+        "query": "imerg",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"imerg\",\n  \"match_count\": 3,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n      \"snippet\": \"\\\"dataset\\\": \\\"NASA/GPM_L3/IMERG_V07\\\",\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-227/metadata/files.csv\",\n      \"snippet\": \"F0015,CSX-227,data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json,physical_hazard,gpm_imerg,S015,GPM IMERG V07 event accumulated precipitation,resource_registry,,320,7002cf5b158925cf,success\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-227/metadata/sources.csv\",\n      \"snippet\": \"S015,GPM IMERG V07 event accumulated precipitation,resource_registry,,success\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 857
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "event_packages/standard_event_packages/packages/CSX-227/metadata/files.csv",
+        "event_packages/standard_event_packages/packages/CSX-227/metadata/sources.csv"
+      ]
+    },
+    {
+      "step": 11,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Get GPM IMERG mean precipitation for event day.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"NASA/GPM_L3/IMERG_V07\\\",\\n  \\\"start\\\": \\\"2015-10-17\\\",\\n  \\\"end\\\": \\\"2015-10-17\\\",\\n  \\\"stats\\\": {\\n    \\\"gpm_event_precip_mm_max\\\": 64.70499839261174,\\n    \\\"gpm_event_precip_mm_mean\\\": 30.69864303299409,\\n    \\\"gpm_event_precip_mm_min\\\": 8.994999815709889,\\n    \\\"gpm_event_precip_mm_stdDev\\\": 13.604211677169248\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 519
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "rock_mass_million_tons = 180 from USGS publication meta description",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-227/data/event_reports/event_reports_001_Locked_anchor_USGS_publication.html",
+      "support_type": "report_claim"
+    },
+    {
+      "claim": "max_runup_m = 193 from USGS publication meta description",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-227/data/event_reports/event_reports_001_Locked_anchor_USGS_publication.html",
+      "support_type": "report_claim"
+    },
+    {
+      "claim": "s1_abs_change_db = max(abs(50.46), abs(-40.74)) = 50.46 from Sentinel-1 VV pre/post stats",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-227/data/remote_sensing/remote_sensing_003_Sentinel-1_GRD_VV_pre_post_change.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "precip_median_mm = 39.73 from median of Open-Meteo (45.70), NASA POWER (36.61), ERA5-Land mean (42.86), GPM IMERG mean (30.70)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-227/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_daily_point_sample.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "population_sum = 0.088 from 2015 WorldPop",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-227/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "event_window_days = 1 from start_date and end_date both 2015-10-17",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-227/data/event_reports/event_reports_002_Locked_event_anchor_Taan_Fiord_landslide_tsunami.json",
+      "support_type": "metadata"
+    },
+    {
+      "claim": "sentinel1_pre_count = 7, post_count = 5 from Sentinel-1 metadata",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-227/data/remote_sensing/remote_sensing_003_Sentinel-1_GRD_VV_pre_post_change.json",
+      "support_type": "direct_metric"
+    }
+  ],
+  "reasoning_summary": [
+    "Extracted rock_mass and max_runup from USGS publication meta description (180 million tons, 193 m).",
+    "Computed s1_abs_change_db = max(|50.4626|,|−40.7439|) = 50.46.",
+    "Computed precip_median_mm = median of four non-null sources: (36.61+42.8569)/2 = 39.73.",
+    "Population sum = 0.088, event window = 1 day.",
+    "Applied threshold flags and computed four candidate scores.",
+    "landslide_displacement_tsunami scored 9, runner-up radar_change_standalone scored 2, gap = 7."
+  ],
+  "unsupported_or_unresolved": [
+    "No unresolved issues; all required indices present in package files."
+  ],
+  "final_answer": {
+    "winning_label": "landslide_displacement_tsunami",
+    "score_summary": {
+      "winning_score": 9,
+      "runner_up_label": "radar_change_standalone",
+      "score_gap": 7
+    },
+    "diagnostic_indices": {
+      "rock_mass_million_tons": 180,
+      "max_runup_m": 193,
+      "s1_abs_change_db": 50.46,
+      "precip_median_mm": 39.73,
+      "population_sum": 0.088
+    },
+    "threshold_flags": {
+      "mass_ge_100": true,
+      "runup_ge_100": true,
+      "radar_abs_ge_30": true,
+      "precip_median_ge_50": false,
+      "population_lt_1": true,
+      "event_window_eq_1_day": true
+    },
+    "candidate_scores": {
+      "landslide_displacement_tsunami": 9,
+      "rain_flood_pulse": 0,
+      "radar_change_standalone": 2,
+      "population_broad_impact": 1
+    },
+    "window_ledger": {
+      "event_window_days": 1,
+      "sentinel1_pre_count": 7,
+      "sentinel1_post_count": 5
+    },
+    "computed_interpretation": "landslide_displacement_tsunami wins by 7 points, driven by large rock mass, extreme runup, radar change, single-day window, and negligible population."
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "The model answer matches the ground truth fully in all key numeric fields, thresholds, candidate scores, and final winner label. Minor numeric rounding difference in radar change (50.46 vs 50.5) is negligible. The computed interpretation is slightly less detailed but still correctly tied to score gap and drivers.",
+      "llm_rubric": "Almost all rubric criteria are fully met with exact values and correct derivations. Only the final interpretation earns slightly less credit for less explicit linkage to all decisive thresholds, resulting in a 1-point deduction. The model shows strong evidential grounding and correct schema application."
+    },
+    "one_sentence_rationale": "The model answer is comprehensive and accurate in all major fields with only minor numeric rounding and slightly less detailed interpretation, yielding very high correctness and rubric credit.",
+    "critical_errors": [],
+    "missing_answer_elements": []
+  },
+  "provenance": {
+    "task_id": "CSX-227_Q1",
+    "model_id": "deepseek-v4-flash",
+    "model_name": "DeepSeek V4 Flash",
+    "trajectory_path": "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-227_Q1/trajectory.json",
+    "judge_path": "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/judge_gpt41mini_final/per_task_judge_scores.jsonl"
+  }
+}

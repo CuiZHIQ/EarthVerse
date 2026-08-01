@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="https://mesonet.agron.iastate.edu/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IEM LSR App</title>
+    <script type="module" crossorigin src="/lsr/assets/index-DiAYhmd3.js"></script>
+    <link rel="stylesheet" crossorigin href="/lsr/assets/index-GgdXPfwg.css">
+  </head>
+  <body>
+    <!-- Map Container -->
+    <div id="map">
+      <div id="branding-overlay" data-mode="archive">IEM LSR App</div>
+    </div>
+
+    <!-- Right Side Container -->
+    <sl-drawer id="right-container" placement="end" contained class="right-container" no-modal>
+      <!-- Right Side Pane -->
+      <div id="right-pane" class="right-pane">
+        <!-- Tab Headers -->
+        <div class="tab-headers">
+          <button class="tab-btn active" data-tab="settings">Settings</button>
+          <button class="tab-btn" data-tab="lsr">LSRs</button>
+          <button class="tab-btn" data-tab="sbw">Warnings</button>
+          <button class="tab-btn" data-tab="help">Help</button>
+        </div>
+        <!-- Settings Tab Content -->
+        <div class="tab-content" id="settings-tab">
+          <!-- Data Controls Section -->
+          <div class="data-controls-section">
+            <div class="control-group">
+              <label>Filter by:</label>
+              <div class="radio-group">
+                <label>
+                  <input type="radio" name="by" value="wfo" checked>
+                  NWS Forecast Office
+                </label>
+              </div>
+              <div class="radio-group">
+                <label>
+                  <input type="radio" name="by" value="state">
+                  State
+                </label>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label for="wfo">WFO:</label>
+              <select id="wfo" class="input-field" multiple></select>
+            </div>
+
+            <div class="control-group">
+              <label for="state">State:</label>
+              <select id="state" class="input-field" multiple></select>
+            </div>
+
+            <div class="control-group">
+              <label for="sts">Start Time:</label>
+              <input type="datetime-local" class="input-field" id="sts">
+            </div>
+
+            <div class="control-group">
+              <label for="ets">End Time:</label>
+              <input type="datetime-local" class="input-field" id="ets">
+            </div>
+
+            <div class="control-group">
+              <div class="checkbox-group">
+                <label>
+                  <input type="checkbox" id="realtime"> Auto-Refresh
+                </label>
+              </div>
+            </div>
+
+            <div class="control-group load-button-container">
+              <button id="load" class="button primary load-button">Load Data</button>
+            </div>
+          </div>
+
+          <!-- Map Controls -->
+          <div class="map-controls-section">
+            <h4>Map Settings</h4>
+            <!-- Base Maps -->
+            <div class="layer-group">
+              <label>Base Map:</label>
+              <select id="baseLayer" class="input-field">
+                <option value="0">OpenStreetMap</option>
+                <option value="1">Stadia Alidade Smooth</option>
+                <option value="2">MapTiler Davaviz</option>
+                <option value="4">MapTiler Toner v2</option>
+              </select>
+            </div>
+            
+            <!-- Overlay Layers -->
+            <div class="layer-group">
+              <label>Overlays:</label>
+              <div class="checkbox-group">
+                <label>
+                  <input type="checkbox" id="layer-nexrad" checked> NEXRAD Reflectivity
+                </label>
+              </div>
+              <div class="checkbox-group">
+                <label>
+                  <input type="checkbox" id="layer-states" checked> US States
+                </label>
+              </div>
+              <div class="checkbox-group">
+                <label>
+                  <input type="checkbox" id="layer-counties"> US Counties
+                </label>
+              </div>
+              <div class="checkbox-group">
+                <label>
+                  <input type="checkbox" id="layer-lsr" checked> Local Storm Reports
+                </label>
+                <div class="layer-option">
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="lsr-label-mode">
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-label">Use Icons (instead of Magnitude)</span>
+                  </label>
+                </div>
+              </div>
+              <div class="checkbox-group">
+                <label>
+                  <input type="checkbox" id="layer-sbw" checked> Storm Based Warnings
+                </label>
+              </div>
+            </div>
+
+            <!-- Layer Opacity Controls -->
+            <div class="layer-group">
+              <label>Layer Opacity:</label>
+              <div class="opacity-control">
+                <label for="nexrad-opacity">NEXRAD:</label>
+                <input type="range" id="nexrad-opacity" min="0" max="100" value="100">
+              </div>
+              <div class="opacity-control">
+                <label for="lsr-opacity">Storm Reports:</label>
+                <input type="range" id="lsr-opacity" min="0" max="100" value="100">
+              </div>
+              <div class="opacity-control">
+                <label for="sbw-opacity">Warnings:</label>
+                <input type="range" id="sbw-opacity" min="0" max="100" value="100">
+              </div>
+              <div class="opacity-control">
+                <label for="sbw-width">Warning Line Width: <span id="sbw-width-value">1×</span></label>
+                <input type="range" id="sbw-width" min="1" max="100" value="50" step="1">
+              </div>
+            </div>
+          </div>
+
+          <!-- Time Slider -->
+          <div class="control-group">
+            <label>RADAR Time: <span id="radartime"></span></label>
+            <div id="timeslider"></div>
+          </div>
+        </div>
+        
+        <!-- LSR Tab Content -->
+        <div class="tab-content" id="lsr-tab">
+          <div class="filter-options">
+            <label for="lsrtypefilter">Filter LSRs by Type:</label>
+            <select id="lsrtypefilter" class="input-field" multiple></select>
+            
+            <label for="lsrmagnitudefilter">Filter LSRs by Magnitude:</label>
+            <div class="magnitude-filter-container">
+              <select id="lsrmagnitudeoperator" class="input-field magnitude-operator">
+                <option value="gte">≥ (Greater than or equal)</option>
+                <option value="lte">≤ (Less than or equal)</option>
+              </select>
+              <input type="number" id="lsrmagnitudevalue" class="input-field magnitude-value" step="0.1" placeholder="Enter magnitude">
+            </div>
+          </div>
+          <div class="action-buttons">
+            <p>The <a href="/request/gis/lsrs.phtml" target="_blank">LSR Request Form</a>
+            offers more download options.  The buttons below are for quick access.</p>
+            <button id="lsrexcel" class="button secondary">LSR Excel</button>
+            <button id="lsrkml" class="button secondary">LSR KML</button>
+            <button id="lsrshapefile" class="button secondary">LSR Shapefile</button>
+            <button id="lsrgeojson" class="button secondary">LSR GeoJSON</button>
+          </div>
+          <div class="table-container">
+            <table id="lsrtable" class="data-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>WFO</th>
+                  <th>Time</th>
+                  <th>Type</th>
+                  <th>Magnitude</th>
+                  <th>City</th>
+                  <th>County</th>
+                  <th>State</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SBW Tab Content -->
+        <div class="tab-content" id="sbw-tab">
+          <div class="filter-options">
+            <label for="sbwtypefilter">Filter SBWs by Type:</label>
+            <select id="sbwtypefilter" class="input-field" multiple></select>
+          </div>
+          <div class="action-buttons">
+            <p>The <a href="/request/gis/watchwarn.phtml" target="_blank">WaWA Request Form</a>
+            offers more download options.  The buttons below are for quick access.</p>
+            <button id="warnexcel" class="button secondary">Warning Excel</button>
+            <button id="warnshapefile" class="button secondary">Warning Shapefile</button>
+            <button id="sbwshapefile" class="button secondary">SBW Shapefile</button>
+            <button id="sbwgeojson" class="button secondary">SBW GeoJSON</button>
+          </div>
+          <div class="table-container">
+            <table id="sbwtable" class="data-table">
+              <thead>
+                <tr>
+                  <th>WFO</th>
+                  <th>Phenomena</th>
+                  <th>Significance</th>
+                  <th>Event ID</th>
+                  <th>Issue</th>
+                  <th>Expire</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Help Tab Content -->
+        <div class="tab-content" id="help-tab">
+            <p>Welcome to the IEM Local Storm Report (LSR) App! The
+            <a href="old.phtml">old version</a> of this app is still available for
+            use, but this new version is the way forward. It is built using
+            modern web technologies and is designed to be mobile friendly.</p>
+
+            <p>Please provide <a href="/info/contacts.php" target="_blank">feedback</a> on
+            this app. It is a work in progress and your input is valuable.</p>
+
+            <p>This app displays National Weather Service (NWS) Local Storm Reports
+                (LSR)s for a given time period of your choice.  Additionally, NWS
+                Storm Based Warnings (SBW) are also displayed for events
+                <strong>Issued</strong> between the start and end time of your
+                choice.</p>
+
+            <h3>Web Services</h3>
+
+            <p>This app uses to main GeoJSON web services to provide the data
+                displayed here. <a href="/geojson/lsr.py?help" target="_blank">LSR</a> and
+                <a href="/geojson/sbw.py?help" target="_blank">SBW</a>.  You are
+                welcome to use these services in your own applications.</p>
+
+            <h3>URL Parameters</h3>
+            <p>You can use the following URL parameters to customize your experience:</p>
+            <ul>
+              <li><strong>by</strong>: Filter by either "wfo" (default) or "state".</li>
+              <li><strong>wfo</strong>: Comma-separated list of WFOs to filter by.</li>
+              <li><strong>state</strong>: Comma-separated list of states to filter by.</li>
+              <li><strong>seconds</strong>: Puts the app into an auto-refreshing
+               mode that loads the previous number of seconds worth of LSRs
+               and warnings issued.</li>
+              <li><strong>settings</strong>: This is crude sequence of 0 (off)
+               and 1 (on) values that control the following settings:
+                <ol>
+                  <li>NEXRAD Reflectivity Visibility</li>
+                  <li>Local Storm Reports Visibility</li>
+                  <li>Storm Based Warnings Visibility</li>
+                  <li>Is the app in real-time / auto refreshing mode</li>
+                  <li>States Layer Visibility</li>
+                  <li>Counties Layer Visibility</li>
+                  <li>LSR Label Mode (Icons [0] vs Magnitude [1])</li>
+                </ol>
+              </li>
+            </ul>
+
+            <h3>Changelog</h3>
+            <ul>
+                <li><strong>2025-07-21</strong>: Added an option to filter LSRs
+                by their magnitude.</li>
+                <li><strong>2025-06-06</strong>: Fixed a bug with sorting of
+                 timestamp values in the LSR/SBW tables.</li>
+                <li><strong>2025-05-27</strong>: Fixed a bug where the LSR
+                 type filter would remove all LSRs.</li>
+                <li><strong>2025-05-22</strong>: Added a scale control for
+                 Storm Based Warnings polygon outline width.  You can find this
+                 within the Settings tab.</li>
+                <li><strong>2025-05-22</strong>: Changed SBW polygon plotting
+                priority to show Tornado then Severe Thunderstorm Warnings
+                then others.</li>
+                <li><strong>2025-05-21</strong>: Initial release.</li>
+            </ul>
+        </div>
+      </div>
+    </sl-drawer>
+
+    <!-- Right drawer toggle button -->
+    <sl-button class="drawer-toggle-right" id="right-pane-toggle" size="large">▶</sl-button>
+
+  </body>
+</html>

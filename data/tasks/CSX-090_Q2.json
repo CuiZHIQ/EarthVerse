@@ -1,0 +1,1360 @@
+{
+  "task_id": "CSX-090_Q2",
+  "event_id": "CSX-090",
+  "title": "Derna Flood-Wave Amplification Chain Diagnosis",
+  "event_name": "Storm Daniel Derna flood",
+  "hazard_family": "river_coastal_flood",
+  "hazard_label": "River and coastal flooding",
+  "region": "Arid belts",
+  "scale": "neighborhood_asset",
+  "difficulty": "L3_process_mechanism_reasoning",
+  "difficulty_rationale": "Manual review: \"Derna Flood-Wave Amplification Chain Diagnosis\" requires using quantitative evidence to explain a physical process, phase/timing pattern, routing/transport pathway, or mechanism diagnosis beyond a simple numeric ledger.",
+  "primary_dimension": "causal_chain",
+  "dimensions": [
+    "causal_chain",
+    "physical_mechanism",
+    "spatiotemporal_process"
+  ],
+  "dimension_rationale": "Derna flood-wave amplification chain diagnosis connecting rainfall routing to flood-wave impact.",
+  "task_type": "structured_reasoning",
+  "target_family": "derna_flood_wave_amplification_chain_diagnosis",
+  "file_count": 41,
+  "category_counts": {
+    "air_quality": 1,
+    "event_catalogs": 2,
+    "event_reports": 5,
+    "exposure_impact": 7,
+    "geospatial_context": 3,
+    "other": 2,
+    "physical_hazard": 12,
+    "remote_sensing": 9
+  },
+  "question": "# Derna Flood-Wave Amplification Chain Diagnosis\n\nYou are a dam-area flood cascade analyst preparing a final mechanism diagnosis for Storm Daniel Derna flood. Use the local package as the only evidence source. The task is to connect rainfall or report anchors to a localized dam-area cascade and downstream flood-wave pathway.\n\nWork as an interactive tool-agent: inspect the package root, choose the files that contain the event anchor and quantitative evidence, read or search those files, run calculations when needed, and record the evidence that supports each intermediate value. Do not rely on web search or hidden answers.\n\nRequired reasoning:\n\n1. Establish the event window and the physical process being tested.\n2. Recompute the package-derived evidence fields needed for the final answer, including:\n- `derivation_evidence_synthesis`\n- `rejected_overreads`\n- `final_process_alignment_label`\n3. Organize the result as a causal mechanism, not as a pass/fail table. The chain must cover: storm or rainfall loading; dam-area pathway or storage release; downstream flood-wave amplification; regional-rainfall-only rejection.\n4. Compare the dominant explanation with at least two simpler alternatives and reject the alternatives using computed values.\n5. State what the package evidence can and cannot prove.\n\nInclude a short physical derivation in the final JSON: When amplification is used, express it as a ratio or difference between upstream forcing and downstream response indicators.\n\nReturn exactly one JSON object with this top-level structure:\n\n```json\n{\n  \"answer\": \"<compact mechanism diagnosis>\",\n  \"task_mode\": \"deep_mechanism_diagnosis\",\n  \"mechanism_question\": \"<one sentence framing the physical question>\",\n  \"computed_evidence\": {},\n  \"mechanism_chain\": [\n    \"<ordered physical or impact step>\",\n    \"...\"\n  ],\n  \"decisive_evidence\": \"<which evidence carries the decision and why>\",\n  \"rejected_simplifications\": \"<which simpler explanation fails and why>\",\n  \"bounded_interpretation\": \"<what the evidence does not prove>\",\n  \"formula_derivation\": \"<brief physical formula or scaling argument used in the diagnosis>\"\n}\n```\n",
+  "solution": "# Correct Answer\n\n```json\n{\n  \"answer\": \"derna_flood_wave_amplification_supported\",\n  \"task_mode\": \"deep_mechanism_diagnosis\",\n  \"mechanism_question\": \"connect rainfall or report anchors to a localized dam-area cascade and downstream flood-wave pathway\",\n  \"computed_evidence\": {\n    \"derivation_evidence_synthesis\": [\n      {\n        \"row_id\": \"rainfall_persistence\",\n        \"formula\": \"local_wettest_24h_mm/local_hourly_total_mm; local_wettest_6h_mm/local_hourly_total_mm; local_longest_wet_run_hours/local_wet_hours_ge_0p1mm\",\n        \"computed_value\": {\n          \"wettest_24h_share_of_local_total\": 0.976,\n          \"wettest_6h_share_of_local_total\": 0.547,\n          \"longest_wet_run_share_of_wet_hours\": 0.906\n        },\n        \"diagnostic_diagnostic_test_or_test\": \"24h share near-total, 6h share above one-half, wet-run share above 0.9\",\n        \"result\": \"local rainfall was concentrated and persistent enough to support a rainfall trigger\"\n      },\n      {\n        \"row_id\": \"cross_source_rainfall_support\",\n        \"formula\": \"regional_gridded_max_mm/contrasting_gridded_max_mm; regional_gridded_mean_mm/reanalysis_mean_mm; independent_daily_total_mm/local_hourly_total_mm; regional_gridded_max_mm/local_wettest_24h_mm\",\n        \"computed_value\": {\n          \"regional_to_contrasting_max_ratio\": 24.95,\n          \"regional_to_reanalysis_mean_ratio\": 1.41,\n          \"independent_daily_to_local_total_ratio\": 1.6,\n          \"regional_max_to_local_24h_ratio\": 2.05,\n          \"reported_rainfall_range_mm\": [\n            150,\n            240\n          ],\n          \"reported_al_bayda_daily_record_mm\": 414.1\n        },\n        \"diagnostic_diagnostic_test_or_test\": \"independent and regional rainfall support exceed local-only and contrasting-grid explanations\",\n        \"result\": \"multiple rainfall sources support a severe regional rainfall trigger, but regional rain alone does not prove neighborhood losses\"\n      },\n      {\n        \"row_id\": \"flood_wave_depth_amplification\",\n        \"formula\": \"regional_gridded_max_mm/1000; reported_wave_height_m_min/regional_rain_depth_m to reported_wave_height_m_max/regional_rain_depth_m\",\n        \"computed_value\": {\n          \"regional_rain_depth_m\": 0.15044,\n          \"wave_to_regional_rain_depth_ratio_range\": [\n            19.94,\n            46.53\n          ],\n          \"independent_daily_depth_m\": 0.12033,\n          \"wave_to_independent_daily_depth_ratio_range\": [\n            24.93,\n            58.17\n          ]\n        },\n        \"diagnostic_diagnostic_test_or_test\": \"reported 3-7 m wave is tens of times the event rainfall depth\",\n        \"result\": \"direct rainfall depth or urban ponding alone is not sufficient; flood-wave amplification through dam failure is required\"\n      },\n      {\n        \"row_id\": \"wadi_dam_exposure_coupling\",\n        \"formula\": \"bridge_features + destroyed_highway_features + waterway_features; exposed_population/linear_infrastructure_marker_count\",\n        \"computed_value\": {\n          \"long_narrow_wadi_reported\": true,\n          \"two_dams_collapsed\": true,\n          \"second_dam_distance_km\": 1,\n          \"linear_infrastructure_marker_count\": 12,\n          \"exposure_context_per_linear_marker\": 4676.1,\n          \"exposed_population\": 56113.05,\n          \"reported_derna_population_context\": 90000\n        },\n        \"diagnostic_diagnostic_test_or_test\": \"routing and dam facts true, with nonzero linear infrastructure and population context\",\n        \"result\": \"the confined wadi, nearby second dam, and exposed infrastructure context support a routed flood-wave pathway\"\n      },\n      {\n        \"row_id\": \"remote_disturbance_context\",\n        \"formula\": \"radar pre/post counts and post-minus-pre VV mean; annual embedding change maximum\",\n        \"computed_value\": {\n          \"radar_pre_count\": 18,\n          \"radar_post_count\": 14,\n          \"radar_vv_post_minus_pre_db_mean\": -1.108,\n          \"radar_vv_post_minus_pre_db_min\": -10.254,\n          \"radar_vv_post_minus_pre_db_max\": 8.505,\n          \"embedding_annual_change_mean\": 0.0175,\n          \"embedding_annual_change_max\": 0.2047\n        },\n        \"diagnostic_diagnostic_test_or_test\": \"surface-change context may support disturbance but cannot replace the hydraulic process alignment check\",\n        \"result\": \"remote metrics are supporting context only\"\n      }\n    ],\n    \"rejected_overreads\": [\n      \"direct pluvial or urban ponding alone cannot explain a 3-7 m wave that is tens of times the rainfall depth\",\n      \"coastal setting or exposure alone does not supply the upstream wadi and two-dam amplification chain\",\n      \"regional rainfall maxima cannot be transferred directly into neighborhood loss ranks\",\n      \"image summaries do not establish exact breach time, outflow hydrograph, parcel depth, casualty attribution, final death toll, or building-by-building structural loss\"\n    ],\n    \"final_process_alignment_label\": \"rainfall_triggered_dam_breach_flood_wave_supported\"\n  },\n  \"mechanism_chain\": [\n    \"storm or rainfall loading\",\n    \"dam-area pathway or storage release\",\n    \"downstream flood-wave amplification\",\n    \"regional-rainfall-only rejection\"\n  ],\n  \"decisive_evidence\": \"The mechanism must connect forcing with pathway amplification; rainfall magnitude alone is not a complete explanation.\",\n  \"rejected_simplifications\": \"Reject regional-rainfall-only or exposure-only explanations if they do not explain the cascade pathway.\",\n  \"bounded_interpretation\": \"Do not estimate breach hydrographs, exact wave heights, engineering fault, or complete loss totals unless sourced.\",\n  \"formula_derivation\": \"When amplification is used, express it as a ratio or difference between upstream forcing and downstream response indicators.\"\n}\n```\n\n# Solving Path\n\n1. Inspect the local package root and identify the event metadata/report plus the quantitative products needed for the mechanism diagnosis.\n2. Recompute the required evidence fields rather than copying a table label. The most important fields to recover are: `derivation_evidence_synthesis`, `rejected_overreads`, `final_process_alignment_label`.\n3. Use the computed values to build the ordered mechanism chain: storm or rainfall loading -> dam-area pathway or storage release -> downstream flood-wave amplification -> regional-rainfall-only rejection.\n4. Weight decisive evidence against alternatives: The mechanism must connect forcing with pathway amplification; rainfall magnitude alone is not a complete explanation.\n5. Reject simpler explanations: Reject regional-rainfall-only or exposure-only explanations if they do not explain the cascade pathway.\n6. Keep the interpretation bounded: Do not estimate breach hydrographs, exact wave heights, engineering fault, or complete loss totals unless sourced.\n\nFormula/scaling note: When amplification is used, express it as a ratio or difference between upstream forcing and downstream response indicators.\n\nKey computed anchors from the package:\n\n- `rainfall` = `{\"local_hourly_total_mm\": 75.2, \"local_wettest_1h_mm\": 9.3, \"local_wettest_6h_mm\": 41.1, \"local_wettest_24h_mm\": 73.4, \"local_wet_hours_ge_0p1mm\": 32, \"local_longest_wet_run_hours\": 29, \"local_hourly_record_hours\": 48, \"independent_daily_to`\n- `reported` = `{\"wmo_rainfall_range_mm\": [150, 240], \"wmo_al_bayda_daily_record_mm\": 414.1, \"two_dams_collapsed\": true, \"long_narrow_wadi\": true, \"second_dam_distance_km\": 1, \"flood_wave_height_m_range\": [3, 7], \"derna_population_context\": 90000}`\n- `exposure_context` = `{\"exposed_population\": 56113.05, \"linear_features\": {\"elements\": 1000, \"highway_features\": 968, \"major_road_features\": 57, \"destroyed_highway_features\": 3, \"bridge_features\": 6, \"amenity_features\": 6, \"school_features\": 2, \"police_features\"`\n- `remote_sensing` = `{\"radar_pre_count\": 18, \"radar_post_count\": 14, \"radar_vv_post_minus_pre_db_mean\": -1.108, \"radar_vv_post_minus_pre_db_min\": -10.254, \"radar_vv_post_minus_pre_db_max\": 8.505, \"embedding_annual_change_mean\": 0.0175, \"embedding_annual_change_`\n\n# Source Paths\n\n- `metadata/event.json`\n- `data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json`\n- `data/event_reports/event_reports_001_Locked_package_evidence_report.html`\n- `data/event_reports/event_reports_003_Locked_event_anchor_Storm_Daniel_Derna_flood.json`\n- `data/event_reports/event_reports_004_NASA_Earth_Observatory_-_Storm_aftermath_in_Derna_Libya.html`\n- `data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json`\n- `data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json`\n- `data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json`\n- `data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json`\n- `data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json`\n- `data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json`\n- `data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json`\n- `data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json`\n\n# Scoring Rubric\n\nTotal: 20 points.\n\n- 3 points: `mechanism_diagnosis` - Identifies the dominant physical process and gives the correct compact mechanism label or equivalent diagnosis.\n- 4 points: `computed_evidence` - Recomputes the package-derived quantitative evidence with correct units, signs, ratios, dates, and rounding.\n- 3 points: `formula_derivation` - Shows the requested physical formula, scaling relation, or timing relation and connects it to the computed values.\n- 3 points: `evidence_weighting` - Explains which evidence streams are decisive and which are contextual or weaker proxies.\n- 3 points: `counterfactual_rejection` - Rejects tempting simplified explanations using computed values rather than assertion.\n- 2 points: `bounded_interpretation` - States scale, timing, proxy, or uncertainty limits without adding unsupported losses or impacts.\n- 2 points: `json_contract` - Returns the requested structured mechanism-diagnosis JSON without reducing the answer to a row-only table.\n",
+  "ground_truth": {
+    "schema_version": "1.0",
+    "task_id": "CSX-090_Q2",
+    "event_id": "CSX-090",
+    "task_type": "structured_reasoning",
+    "evaluation_mode": "hybrid",
+    "difficulty_level": "L3",
+    "target_family": "derna_flood_wave_amplification_chain_diagnosis",
+    "primary_gt": {
+      "answer": "derna_flood_wave_amplification_supported",
+      "task_mode": "deep_mechanism_diagnosis",
+      "mechanism_question": "connect rainfall or report anchors to a localized dam-area cascade and downstream flood-wave pathway",
+      "computed_evidence": {
+        "derivation_evidence_synthesis": [
+          {
+            "row_id": "rainfall_persistence",
+            "formula": "local_wettest_24h_mm/local_hourly_total_mm; local_wettest_6h_mm/local_hourly_total_mm; local_longest_wet_run_hours/local_wet_hours_ge_0p1mm",
+            "computed_value": {
+              "wettest_24h_share_of_local_total": 0.976,
+              "wettest_6h_share_of_local_total": 0.547,
+              "longest_wet_run_share_of_wet_hours": 0.906
+            },
+            "diagnostic_diagnostic_test_or_test": "24h share near-total, 6h share above one-half, wet-run share above 0.9",
+            "result": "local rainfall was concentrated and persistent enough to support a rainfall trigger"
+          },
+          {
+            "row_id": "cross_source_rainfall_support",
+            "formula": "regional_gridded_max_mm/contrasting_gridded_max_mm; regional_gridded_mean_mm/reanalysis_mean_mm; independent_daily_total_mm/local_hourly_total_mm; regional_gridded_max_mm/local_wettest_24h_mm",
+            "computed_value": {
+              "regional_to_contrasting_max_ratio": 24.95,
+              "regional_to_reanalysis_mean_ratio": 1.41,
+              "independent_daily_to_local_total_ratio": 1.6,
+              "regional_max_to_local_24h_ratio": 2.05,
+              "reported_rainfall_range_mm": [
+                150,
+                240
+              ],
+              "reported_al_bayda_daily_record_mm": 414.1
+            },
+            "diagnostic_diagnostic_test_or_test": "independent and regional rainfall support exceed local-only and contrasting-grid explanations",
+            "result": "multiple rainfall sources support a severe regional rainfall trigger, but regional rain alone does not prove neighborhood losses"
+          },
+          {
+            "row_id": "flood_wave_depth_amplification",
+            "formula": "regional_gridded_max_mm/1000; reported_wave_height_m_min/regional_rain_depth_m to reported_wave_height_m_max/regional_rain_depth_m",
+            "computed_value": {
+              "regional_rain_depth_m": 0.15044,
+              "wave_to_regional_rain_depth_ratio_range": [
+                19.94,
+                46.53
+              ],
+              "independent_daily_depth_m": 0.12033,
+              "wave_to_independent_daily_depth_ratio_range": [
+                24.93,
+                58.17
+              ]
+            },
+            "diagnostic_diagnostic_test_or_test": "reported 3-7 m wave is tens of times the event rainfall depth",
+            "result": "direct rainfall depth or urban ponding alone is not sufficient; flood-wave amplification through dam failure is required"
+          },
+          {
+            "row_id": "wadi_dam_exposure_coupling",
+            "formula": "bridge_features + destroyed_highway_features + waterway_features; exposed_population/linear_infrastructure_marker_count",
+            "computed_value": {
+              "long_narrow_wadi_reported": true,
+              "two_dams_collapsed": true,
+              "second_dam_distance_km": 1,
+              "linear_infrastructure_marker_count": 12,
+              "exposure_context_per_linear_marker": 4676.1,
+              "exposed_population": 56113.05,
+              "reported_derna_population_context": 90000
+            },
+            "diagnostic_diagnostic_test_or_test": "routing and dam facts true, with nonzero linear infrastructure and population context",
+            "result": "the confined wadi, nearby second dam, and exposed infrastructure context support a routed flood-wave pathway"
+          },
+          {
+            "row_id": "remote_disturbance_context",
+            "formula": "radar pre/post counts and post-minus-pre VV mean; annual embedding change maximum",
+            "computed_value": {
+              "radar_pre_count": 18,
+              "radar_post_count": 14,
+              "radar_vv_post_minus_pre_db_mean": -1.108,
+              "radar_vv_post_minus_pre_db_min": -10.254,
+              "radar_vv_post_minus_pre_db_max": 8.505,
+              "embedding_annual_change_mean": 0.0175,
+              "embedding_annual_change_max": 0.2047
+            },
+            "diagnostic_diagnostic_test_or_test": "surface-change context may support disturbance but cannot replace the hydraulic process alignment check",
+            "result": "remote metrics are supporting context only"
+          }
+        ],
+        "rejected_overreads": [
+          "direct pluvial or urban ponding alone cannot explain a 3-7 m wave that is tens of times the rainfall depth",
+          "coastal setting or exposure alone does not supply the upstream wadi and two-dam amplification chain",
+          "regional rainfall maxima cannot be transferred directly into neighborhood loss ranks",
+          "image summaries do not establish exact breach time, outflow hydrograph, parcel depth, casualty attribution, final death toll, or building-by-building structural loss"
+        ],
+        "final_process_alignment_label": "rainfall_triggered_dam_breach_flood_wave_supported"
+      },
+      "mechanism_chain": [
+        "storm or rainfall loading",
+        "dam-area pathway or storage release",
+        "downstream flood-wave amplification",
+        "regional-rainfall-only rejection"
+      ],
+      "decisive_evidence": "The mechanism must connect forcing with pathway amplification; rainfall magnitude alone is not a complete explanation.",
+      "rejected_simplifications": "Reject regional-rainfall-only or exposure-only explanations if they do not explain the cascade pathway.",
+      "bounded_interpretation": "Do not estimate breach hydrographs, exact wave heights, engineering fault, or complete loss totals unless sourced.",
+      "formula_derivation": "When amplification is used, express it as a ratio or difference between upstream forcing and downstream response indicators."
+    },
+    "event": {
+      "package_id": "CSX-090",
+      "event_name": "Storm Daniel Derna flood",
+      "hazard_family": "river_coastal_flood",
+      "event_date_or_window": "2023-09-10 to 2023-09-11"
+    },
+    "key_values": {
+      "rainfall": {
+        "local_hourly_total_mm": 75.2,
+        "local_wettest_1h_mm": 9.3,
+        "local_wettest_6h_mm": 41.1,
+        "local_wettest_24h_mm": 73.4,
+        "local_wet_hours_ge_0p1mm": 32,
+        "local_longest_wet_run_hours": 29,
+        "local_hourly_record_hours": 48,
+        "independent_daily_total_mm": 120.33,
+        "independent_wettest_day_mm": 89.81,
+        "regional_gridded_mean_mm": 108.63,
+        "regional_gridded_max_mm": 150.44,
+        "reanalysis_mean_mm": 77.29,
+        "reanalysis_max_mm": 94.64,
+        "contrasting_gridded_mean_mm": 1.31,
+        "contrasting_gridded_max_mm": 6.03,
+        "regional_to_contrasting_max_ratio": 24.95,
+        "regional_to_reanalysis_mean_ratio": 1.41
+      },
+      "reported": {
+        "wmo_rainfall_range_mm": [
+          150,
+          240
+        ],
+        "wmo_al_bayda_daily_record_mm": 414.1,
+        "two_dams_collapsed": true,
+        "long_narrow_wadi": true,
+        "second_dam_distance_km": 1,
+        "flood_wave_height_m_range": [
+          3,
+          7
+        ],
+        "derna_population_context": 90000
+      },
+      "exposure_context": {
+        "exposed_population": 56113.05,
+        "linear_features": {
+          "elements": 1000,
+          "highway_features": 968,
+          "major_road_features": 57,
+          "destroyed_highway_features": 3,
+          "bridge_features": 6,
+          "amenity_features": 6,
+          "school_features": 2,
+          "police_features": 2,
+          "waterway_features": 3,
+          "storm_damage_text_mentions": 2
+        }
+      },
+      "remote_sensing": {
+        "radar_pre_count": 18,
+        "radar_post_count": 14,
+        "radar_vv_post_minus_pre_db_mean": -1.108,
+        "radar_vv_post_minus_pre_db_min": -10.254,
+        "radar_vv_post_minus_pre_db_max": 8.505,
+        "embedding_annual_change_mean": 0.0175,
+        "embedding_annual_change_max": 0.2047
+      }
+    },
+    "derived_metrics": {
+      "rainfall_persistence": {
+        "wettest_24h_share_of_local_total": 0.976,
+        "wettest_6h_share_of_local_total": 0.547,
+        "longest_wet_run_share_of_wet_hours": 0.906
+      },
+      "cross_source_rainfall_support": {
+        "regional_to_contrasting_max_ratio": 24.95,
+        "regional_to_reanalysis_mean_ratio": 1.41,
+        "independent_daily_to_local_total_ratio": 1.6,
+        "regional_max_to_local_24h_ratio": 2.05
+      },
+      "flood_wave_depth_amplification": {
+        "regional_rain_depth_m": 0.15044,
+        "wave_to_regional_rain_depth_ratio_range": [
+          19.94,
+          46.53
+        ],
+        "independent_daily_depth_m": 0.12033,
+        "wave_to_independent_daily_depth_ratio_range": [
+          24.93,
+          58.17
+        ]
+      },
+      "wadi_dam_exposure_coupling": {
+        "long_narrow_wadi_reported": true,
+        "two_dams_collapsed": true,
+        "second_dam_distance_km": 1,
+        "linear_infrastructure_marker_count": 12,
+        "exposure_context_per_linear_marker": 4676.1
+      },
+      "remote_disturbance_context": {
+        "radar_pre_count": 18,
+        "radar_post_count": 14,
+        "radar_vv_post_minus_pre_db_mean": -1.108,
+        "radar_vv_post_minus_pre_db_min": -10.254,
+        "radar_vv_post_minus_pre_db_max": 8.505,
+        "embedding_annual_change_mean": 0.0175,
+        "embedding_annual_change_max": 0.2047
+      }
+    },
+    "derivation_ledger": [
+      {
+        "row_id": "rainfall_persistence",
+        "formula": "local_wettest_24h_mm/local_hourly_total_mm; local_wettest_6h_mm/local_hourly_total_mm; local_longest_wet_run_hours/local_wet_hours_ge_0p1mm",
+        "computed_value": {
+          "wettest_24h_share_of_local_total": 0.976,
+          "wettest_6h_share_of_local_total": 0.547,
+          "longest_wet_run_share_of_wet_hours": 0.906
+        },
+        "threshold_or_test": "24h share near-total, 6h share above one-half, wet-run share above 0.9",
+        "result": "local rainfall was concentrated and persistent enough to support a rainfall trigger"
+      },
+      {
+        "row_id": "cross_source_rainfall_support",
+        "formula": "regional_gridded_max_mm/contrasting_gridded_max_mm; regional_gridded_mean_mm/reanalysis_mean_mm; independent_daily_total_mm/local_hourly_total_mm; regional_gridded_max_mm/local_wettest_24h_mm",
+        "computed_value": {
+          "regional_to_contrasting_max_ratio": 24.95,
+          "regional_to_reanalysis_mean_ratio": 1.41,
+          "independent_daily_to_local_total_ratio": 1.6,
+          "regional_max_to_local_24h_ratio": 2.05,
+          "reported_rainfall_range_mm": [
+            150,
+            240
+          ],
+          "reported_al_bayda_daily_record_mm": 414.1
+        },
+        "threshold_or_test": "independent and regional rainfall support exceed local-only and contrasting-grid explanations",
+        "result": "multiple rainfall sources support a severe regional rainfall trigger, but regional rain alone does not prove neighborhood losses"
+      },
+      {
+        "row_id": "flood_wave_depth_amplification",
+        "formula": "regional_gridded_max_mm/1000; reported_wave_height_m_min/regional_rain_depth_m to reported_wave_height_m_max/regional_rain_depth_m",
+        "computed_value": {
+          "regional_rain_depth_m": 0.15044,
+          "wave_to_regional_rain_depth_ratio_range": [
+            19.94,
+            46.53
+          ],
+          "independent_daily_depth_m": 0.12033,
+          "wave_to_independent_daily_depth_ratio_range": [
+            24.93,
+            58.17
+          ]
+        },
+        "threshold_or_test": "reported 3-7 m wave is tens of times the event rainfall depth",
+        "result": "direct rainfall depth or urban ponding alone is not sufficient; flood-wave amplification through dam failure is required"
+      },
+      {
+        "row_id": "wadi_dam_exposure_coupling",
+        "formula": "bridge_features + destroyed_highway_features + waterway_features; exposed_population/linear_infrastructure_marker_count",
+        "computed_value": {
+          "long_narrow_wadi_reported": true,
+          "two_dams_collapsed": true,
+          "second_dam_distance_km": 1,
+          "linear_infrastructure_marker_count": 12,
+          "exposure_context_per_linear_marker": 4676.1,
+          "exposed_population": 56113.05,
+          "reported_derna_population_context": 90000
+        },
+        "threshold_or_test": "routing and dam facts true, with nonzero linear infrastructure and population context",
+        "result": "the confined wadi, nearby second dam, and exposed infrastructure context support a routed flood-wave pathway"
+      },
+      {
+        "row_id": "remote_disturbance_context",
+        "formula": "radar pre/post counts and post-minus-pre VV mean; annual embedding change maximum",
+        "computed_value": {
+          "radar_pre_count": 18,
+          "radar_post_count": 14,
+          "radar_vv_post_minus_pre_db_mean": -1.108,
+          "radar_vv_post_minus_pre_db_min": -10.254,
+          "radar_vv_post_minus_pre_db_max": 8.505,
+          "embedding_annual_change_mean": 0.0175,
+          "embedding_annual_change_max": 0.2047
+        },
+        "threshold_or_test": "surface-change context may support disturbance but cannot replace the hydraulic consistency check",
+        "result": "remote metrics are supporting context only"
+      }
+    ],
+    "rejected_overreads": [
+      "direct pluvial or urban ponding alone cannot explain a 3-7 m wave that is tens of times the rainfall depth",
+      "coastal setting or exposure alone does not supply the upstream wadi and two-dam amplification chain",
+      "regional rainfall maxima cannot be transferred directly into neighborhood loss ranks",
+      "image summaries do not establish exact breach time, outflow hydrograph, parcel depth, casualty attribution, final death toll, or building-by-building structural loss"
+    ],
+    "supporting_metrics": {
+      "catalog_context": {
+        "red_flood_alert": true,
+        "country": "Libya",
+        "window_start": "2023-09-08T01:00:00",
+        "window_end": "2023-09-14T00:00:00"
+      },
+      "not_estimated_from_this_ledger": [
+        "exact breach time of each dam",
+        "dam outflow hydrograph or flood-wave velocity",
+        "parcel-level flood depth",
+        "casualty attribution",
+        "final death toll",
+        "building-by-building structural loss"
+      ]
+    },
+    "rubric": {
+      "total_points": 20,
+      "criteria": [
+        {
+          "name": "mechanism_diagnosis",
+          "points": 3,
+          "description": "Identifies the dominant physical process and gives the correct compact mechanism label or equivalent diagnosis."
+        },
+        {
+          "name": "computed_evidence",
+          "points": 4,
+          "description": "Recomputes the package-derived quantitative evidence with correct units, signs, ratios, dates, and rounding."
+        },
+        {
+          "name": "formula_derivation",
+          "points": 3,
+          "description": "Shows the requested physical formula, scaling relation, or timing relation and connects it to the computed values."
+        },
+        {
+          "name": "evidence_weighting",
+          "points": 3,
+          "description": "Explains which evidence streams are decisive and which are contextual or weaker proxies."
+        },
+        {
+          "name": "counterfactual_rejection",
+          "points": 3,
+          "description": "Rejects tempting simplified explanations using computed values rather than assertion."
+        },
+        {
+          "name": "bounded_interpretation",
+          "points": 2,
+          "description": "States scale, timing, proxy, or uncertainty limits without adding unsupported losses or impacts."
+        },
+        {
+          "name": "json_contract",
+          "points": 2,
+          "description": "Returns the requested structured mechanism-diagnosis JSON without reducing the answer to a row-only table."
+        }
+      ]
+    },
+    "provenance": {
+      "computed_by": "compute_gt.py",
+      "source_files": [
+        "metadata/event.json",
+        "data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json",
+        "data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "data/event_reports/event_reports_003_Locked_event_anchor_Storm_Daniel_Derna_flood.json",
+        "data/event_reports/event_reports_004_NASA_Earth_Observatory_-_Storm_aftermath_in_Derna_Libya.html",
+        "data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json",
+        "data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json",
+        "data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+        "data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+        "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+        "data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+        "data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json"
+      ]
+    },
+    "subtype": "deep_mechanism_diagnosis",
+    "deepened_reframe": {
+      "group": "deepened_remaining_39",
+      "replaces_table_only_task": true,
+      "new_title": "Derna Flood-Wave Amplification Chain Diagnosis"
+    },
+    "answer_guidance": {
+      "structured_answer": {
+        "answer": "derna_flood_wave_amplification_supported",
+        "task_mode": "deep_mechanism_diagnosis",
+        "mechanism_question": "connect rainfall or report anchors to a localized dam-area cascade and downstream flood-wave pathway",
+        "computed_evidence": {
+          "derivation_evidence_synthesis": [
+            {
+              "row_id": "rainfall_persistence",
+              "formula": "local_wettest_24h_mm/local_hourly_total_mm; local_wettest_6h_mm/local_hourly_total_mm; local_longest_wet_run_hours/local_wet_hours_ge_0p1mm",
+              "computed_value": {
+                "wettest_24h_share_of_local_total": 0.976,
+                "wettest_6h_share_of_local_total": 0.547,
+                "longest_wet_run_share_of_wet_hours": 0.906
+              },
+              "diagnostic_diagnostic_test_or_test": "24h share near-total, 6h share above one-half, wet-run share above 0.9",
+              "result": "local rainfall was concentrated and persistent enough to support a rainfall trigger"
+            },
+            {
+              "row_id": "cross_source_rainfall_support",
+              "formula": "regional_gridded_max_mm/contrasting_gridded_max_mm; regional_gridded_mean_mm/reanalysis_mean_mm; independent_daily_total_mm/local_hourly_total_mm; regional_gridded_max_mm/local_wettest_24h_mm",
+              "computed_value": {
+                "regional_to_contrasting_max_ratio": 24.95,
+                "regional_to_reanalysis_mean_ratio": 1.41,
+                "independent_daily_to_local_total_ratio": 1.6,
+                "regional_max_to_local_24h_ratio": 2.05,
+                "reported_rainfall_range_mm": [
+                  150,
+                  240
+                ],
+                "reported_al_bayda_daily_record_mm": 414.1
+              },
+              "diagnostic_diagnostic_test_or_test": "independent and regional rainfall support exceed local-only and contrasting-grid explanations",
+              "result": "multiple rainfall sources support a severe regional rainfall trigger, but regional rain alone does not prove neighborhood losses"
+            },
+            {
+              "row_id": "flood_wave_depth_amplification",
+              "formula": "regional_gridded_max_mm/1000; reported_wave_height_m_min/regional_rain_depth_m to reported_wave_height_m_max/regional_rain_depth_m",
+              "computed_value": {
+                "regional_rain_depth_m": 0.15044,
+                "wave_to_regional_rain_depth_ratio_range": [
+                  19.94,
+                  46.53
+                ],
+                "independent_daily_depth_m": 0.12033,
+                "wave_to_independent_daily_depth_ratio_range": [
+                  24.93,
+                  58.17
+                ]
+              },
+              "diagnostic_diagnostic_test_or_test": "reported 3-7 m wave is tens of times the event rainfall depth",
+              "result": "direct rainfall depth or urban ponding alone is not sufficient; flood-wave amplification through dam failure is required"
+            },
+            {
+              "row_id": "wadi_dam_exposure_coupling",
+              "formula": "bridge_features + destroyed_highway_features + waterway_features; exposed_population/linear_infrastructure_marker_count",
+              "computed_value": {
+                "long_narrow_wadi_reported": true,
+                "two_dams_collapsed": true,
+                "second_dam_distance_km": 1,
+                "linear_infrastructure_marker_count": 12,
+                "exposure_context_per_linear_marker": 4676.1,
+                "exposed_population": 56113.05,
+                "reported_derna_population_context": 90000
+              },
+              "diagnostic_diagnostic_test_or_test": "routing and dam facts true, with nonzero linear infrastructure and population context",
+              "result": "the confined wadi, nearby second dam, and exposed infrastructure context support a routed flood-wave pathway"
+            },
+            {
+              "row_id": "remote_disturbance_context",
+              "formula": "radar pre/post counts and post-minus-pre VV mean; annual embedding change maximum",
+              "computed_value": {
+                "radar_pre_count": 18,
+                "radar_post_count": 14,
+                "radar_vv_post_minus_pre_db_mean": -1.108,
+                "radar_vv_post_minus_pre_db_min": -10.254,
+                "radar_vv_post_minus_pre_db_max": 8.505,
+                "embedding_annual_change_mean": 0.0175,
+                "embedding_annual_change_max": 0.2047
+              },
+              "diagnostic_diagnostic_test_or_test": "surface-change context may support disturbance but cannot replace the hydraulic process alignment check",
+              "result": "remote metrics are supporting context only"
+            }
+          ],
+          "rejected_overreads": [
+            "direct pluvial or urban ponding alone cannot explain a 3-7 m wave that is tens of times the rainfall depth",
+            "coastal setting or exposure alone does not supply the upstream wadi and two-dam amplification chain",
+            "regional rainfall maxima cannot be transferred directly into neighborhood loss ranks",
+            "image summaries do not establish exact breach time, outflow hydrograph, parcel depth, casualty attribution, final death toll, or building-by-building structural loss"
+          ],
+          "final_process_alignment_label": "rainfall_triggered_dam_breach_flood_wave_supported"
+        },
+        "mechanism_chain": [
+          "storm or rainfall loading",
+          "dam-area pathway or storage release",
+          "downstream flood-wave amplification",
+          "regional-rainfall-only rejection"
+        ],
+        "decisive_evidence": "The mechanism must connect forcing with pathway amplification; rainfall magnitude alone is not a complete explanation.",
+        "rejected_simplifications": "Reject regional-rainfall-only or exposure-only explanations if they do not explain the cascade pathway.",
+        "bounded_interpretation": "Do not estimate breach hydrographs, exact wave heights, engineering fault, or complete loss totals unless sourced.",
+        "formula_derivation": "When amplification is used, express it as a ratio or difference between upstream forcing and downstream response indicators."
+      },
+      "answer": "derna_flood_wave_amplification_supported"
+    }
+  },
+  "compute_gt_py": "#!/usr/bin/env python3\n\"\"\"Compute short-answer ground truth for CSX-090_Q2.\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nimport re\nfrom pathlib import Path\nfrom typing import Any\n\n\nTASK_ID = \"CSX-090_Q2\"\nEVENT_ID = \"CSX-090\"\nTARGET_FAMILY = \"derna_flood_wave_amplification_consistency_proof\"\nFINAL_LABEL = \"rainfall_triggered_dam_breach_flood_wave_supported\"\n\n\n\nDEEPENED_TASK_FRAME = {'answer_override': 'derna_flood_wave_amplification_supported',\n 'bounded_prompt': 'Do not estimate breach hydrographs, exact wave heights, engineering fault, or complete loss totals '\n                   'unless sourced.',\n 'decisive_evidence_prompt': 'The mechanism must connect forcing with pathway amplification; rainfall magnitude alone '\n                             'is not a complete explanation.',\n 'formula_prompt': 'When amplification is used, express it as a ratio or difference between upstream forcing and '\n                   'downstream response indicators.',\n 'group': 'deepened_remaining_39',\n 'mechanism_chain': ['storm or rainfall loading',\n                     'dam-area pathway or storage release',\n                     'downstream flood-wave amplification',\n                     'regional-rainfall-only rejection'],\n 'mechanism_question': 'connect rainfall or report anchors to a localized dam-area cascade and downstream flood-wave '\n                       'pathway',\n 'new_title': 'Derna Flood-Wave Amplification Chain Diagnosis',\n 'rejected_prompt': 'Reject regional-rainfall-only or exposure-only explanations if they do not explain the cascade '\n                    'pathway.',\n 'target_family': 'derna_flood_wave_amplification_chain_diagnosis',\n 'task_mode': 'deep_mechanism_diagnosis'}\n\ndef _deep_rename_key(key):\n    replacements = [\n        (\"score_ledger\", \"evidence_rows\"),\n        (\"ledger_rows\", \"evidence_rows\"),\n        (\"ledger\", \"evidence_synthesis\"),\n        (\"Ledger\", \"EvidenceSynthesis\"),\n        (\"consistency\", \"process_alignment\"),\n        (\"Consistency\", \"ProcessAlignment\"),\n        (\"threshold\", \"diagnostic_gate\"),\n        (\"Threshold\", \"DiagnosticGate\"),\n        (\"gate\", \"diagnostic_test\"),\n        (\"Gate\", \"DiagnosticTest\"),\n        (\"score_breakdown\", \"evidence_score_breakdown\"),\n        (\"score\", \"evidence_score\"),\n        (\"Score\", \"EvidenceScore\"),\n    ]\n    out = str(key)\n    for old, new in replacements:\n        out = out.replace(old, new)\n    return out\n\n\ndef _deep_rename_obj(value, parent_key=None):\n    protected_value_keys = {\n        \"answer\",\n        \"final_label\",\n        \"classification\",\n        \"label\",\n        \"diagnosis\",\n        \"result\",\n        \"answer_type\",\n        \"task_family\",\n        \"target_family\",\n    }\n    if isinstance(value, dict):\n        return {_deep_rename_key(k): _deep_rename_obj(v, k) for k, v in value.items()}\n    if isinstance(value, list):\n        return [_deep_rename_obj(v, parent_key) for v in value]\n    if isinstance(value, str):\n        if parent_key in protected_value_keys:\n            return value\n        out = value\n        replacements = [\n            (\"ledger\", \"evidence synthesis\"),\n            (\"Ledger\", \"Evidence synthesis\"),\n            (\"consistency\", \"process alignment\"),\n            (\"Consistency\", \"Process alignment\"),\n            (\"threshold\", \"diagnostic gate\"),\n            (\"Threshold\", \"Diagnostic gate\"),\n        ]\n        for old, new in replacements:\n            out = out.replace(old, new)\n        return out\n    return value\n\ndef _deep_extract_answer(value):\n    if isinstance(value, dict):\n        for key in (\"final_label\", \"answer\", \"classification\", \"label\", \"final_interpretation\", \"diagnosis\"):\n            if key in value and isinstance(value[key], (str, int, float, bool)):\n                return str(value[key])\n        for key in (\"classification\", \"threshold_result\", \"result\"):\n            if key in value and isinstance(value[key], dict):\n                nested = _deep_extract_answer(value[key])\n                if nested:\n                    return nested\n    return \"deep_mechanism_diagnosis\"\n\n\ndef apply_deepened_task_frame(result):\n    frame = dict(DEEPENED_TASK_FRAME)\n    old_primary = result.get(\"primary_gt\")\n    if not isinstance(old_primary, dict):\n        old_primary = {\"value\": old_primary}\n    transformed = {\n        \"answer\": frame.get(\"answer_override\", _deep_extract_answer(old_primary)),\n        \"task_mode\": frame[\"task_mode\"],\n        \"mechanism_question\": frame[\"mechanism_question\"],\n        \"computed_evidence\": _deep_rename_obj(old_primary),\n        \"mechanism_chain\": list(frame[\"mechanism_chain\"]),\n        \"decisive_evidence\": frame[\"decisive_evidence_prompt\"],\n        \"rejected_simplifications\": frame[\"rejected_prompt\"],\n        \"bounded_interpretation\": frame[\"bounded_prompt\"],\n    }\n    if frame.get(\"formula_prompt\"):\n        transformed[\"formula_derivation\"] = frame[\"formula_prompt\"]\n    if isinstance(transformed.get(\"computed_evidence\"), dict):\n        for stale_key in (\"answer\", \"answer_type\", \"target_family\", \"task_family\"):\n            transformed[\"computed_evidence\"].pop(stale_key, None)\n    result[\"primary_gt\"] = transformed\n    result[\"task_type\"] = \"structured_reasoning\"\n    result[\"evaluation_mode\"] = \"hybrid\"\n    result[\"subtype\"] = frame[\"task_mode\"]\n    result[\"target_family\"] = frame.get(\"target_family\", frame[\"task_mode\"])\n    result[\"deepened_reframe\"] = {\n        \"group\": frame[\"group\"],\n        \"replaces_table_only_task\": True,\n        \"new_title\": frame[\"new_title\"],\n    }\n    guidance = result.get(\"answer_guidance\")\n    if isinstance(guidance, dict):\n        guidance[\"structured_answer\"] = transformed\n        guidance[\"answer\"] = transformed[\"answer\"]\n    else:\n        result[\"answer_guidance\"] = {\"structured_answer\": transformed, \"answer\": transformed[\"answer\"]}\n    result[\"rubric\"] = {\n        \"total_points\": 20,\n        \"criteria\": [\n            {\"name\": \"mechanism_diagnosis\", \"points\": 4, \"description\": \"Identifies the dominant physical process and gives the correct compact answer label or an equivalent diagnosis.\"},\n            {\"name\": \"computed_evidence\", \"points\": 5, \"description\": \"Recomputes the quantitative evidence inherited from the original task and preserves units, signs, ratios, and key values.\"},\n            {\"name\": \"evidence_weighting\", \"points\": 4, \"description\": \"Explains which evidence streams are decisive and which are contextual or weaker proxies.\"},\n            {\"name\": \"counterfactual_rejection\", \"points\": 3, \"description\": \"Rejects at least one tempting simplified explanation using the computed values rather than assertion.\"},\n            {\"name\": \"bounded_interpretation\", \"points\": 2, \"description\": \"States scale, timing, proxy, or uncertainty limits without adding unsupported losses or impacts.\"},\n            {\"name\": \"json_contract\", \"points\": 2, \"description\": \"Returns the requested structured mechanism-diagnosis JSON without reducing the answer to a row-only table or same-scale checklist.\"},\n        ],\n    }\n    if frame.get(\"formula_prompt\"):\n        result[\"rubric\"] = {\n            \"total_points\": 20,\n            \"criteria\": [\n                {\"name\": \"mechanism_diagnosis\", \"points\": 3, \"description\": \"Identifies the dominant physical process and gives the correct compact mechanism label or equivalent diagnosis.\"},\n                {\"name\": \"computed_evidence\", \"points\": 4, \"description\": \"Recomputes the package-derived quantitative evidence with correct units, signs, ratios, dates, and rounding.\"},\n                {\"name\": \"formula_derivation\", \"points\": 3, \"description\": \"Shows the requested physical formula, scaling relation, or timing relation and connects it to the computed values.\"},\n                {\"name\": \"evidence_weighting\", \"points\": 3, \"description\": \"Explains which evidence streams are decisive and which are contextual or weaker proxies.\"},\n                {\"name\": \"counterfactual_rejection\", \"points\": 3, \"description\": \"Rejects tempting simplified explanations using computed values rather than assertion.\"},\n                {\"name\": \"bounded_interpretation\", \"points\": 2, \"description\": \"States scale, timing, proxy, or uncertainty limits without adding unsupported losses or impacts.\"},\n                {\"name\": \"json_contract\", \"points\": 2, \"description\": \"Returns the requested structured mechanism-diagnosis JSON without reducing the answer to a row-only table.\"},\n            ],\n        }\n\n    return result\n\ndef project_root() -> Path:\n    return Path(__file__).resolve().parents[3]\n\n\nROOT = project_root()\nPKG = ROOT / \"event_packages\" / \"standard_event_packages\" / \"packages\" / EVENT_ID\n\n\nSOURCE_FILES = [\n    \"metadata/event.json\",\n    \"data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json\",\n    \"data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n    \"data/event_reports/event_reports_003_Locked_event_anchor_Storm_Daniel_Derna_flood.json\",\n    \"data/event_reports/event_reports_004_NASA_Earth_Observatory_-_Storm_aftermath_in_Derna_Libya.html\",\n    \"data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json\",\n    \"data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json\",\n    \"data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json\",\n    \"data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n    \"data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json\",\n    \"data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json\",\n    \"data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n    \"data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json\",\n]\n\n\nREQUIRED_ROWS = [\n    \"rainfall_persistence\",\n    \"cross_source_rainfall_support\",\n    \"flood_wave_depth_amplification\",\n    \"wadi_dam_exposure_coupling\",\n    \"remote_disturbance_context\",\n]\n\n\nREJECTED_OVERREADS = [\n    \"direct pluvial or urban ponding alone cannot explain a 3-7 m wave that is tens of times the rainfall depth\",\n    \"coastal setting or exposure alone does not supply the upstream wadi and two-dam amplification chain\",\n    \"regional rainfall maxima cannot be transferred directly into neighborhood loss ranks\",\n    \"image summaries do not establish exact breach time, outflow hydrograph, parcel depth, casualty attribution, final death toll, or building-by-building structural loss\",\n]\n\n\nRUBRIC = {\n    \"total_points\": 20,\n    \"criteria\": [\n        {\n            \"name\": \"JSON structure and row coverage\",\n            \"points\": 3,\n            \"description\": \"Returns the requested JSON structure with target family, all five row IDs, rejected overreads, and final label.\",\n            \"partial_credit\": \"Award 1-2 points if the final label is present but rows are missing, malformed, or incomplete.\",\n        },\n        {\n            \"name\": \"Rainfall persistence ratios\",\n            \"points\": 3,\n            \"description\": \"Computes wettest-24h share 0.976, wettest-6h share 0.547, and longest-wet-run share 0.906 within tolerance.\",\n            \"partial_credit\": \"Award 1-2 points for one or two correct ratios or minor rounding errors.\",\n        },\n        {\n            \"name\": \"Cross-source rainfall ratios\",\n            \"points\": 3,\n            \"description\": \"Computes regional-to-contrasting max ratio 24.95, regional-to-reanalysis mean ratio 1.41, independent-daily-to-local ratio 1.60, and regional-max-to-local-24h ratio about 2.05.\",\n            \"partial_credit\": \"Award 1-2 points if most ratios are correct but one source or one arithmetic step is missing.\",\n        },\n        {\n            \"name\": \"Flood-wave amplification check\",\n            \"points\": 4,\n            \"description\": \"Converts 150.44 mm to 0.15044 m and computes the 3-7 m wave/rain-depth ratio range as 19.94-46.53, plus 24.93-58.17 from the independent daily depth.\",\n            \"partial_credit\": \"Award 2-3 points if the regional range is correct but the independent range or unit conversion is incomplete; award 1 point for a correct tens-of-times contrast without reliable arithmetic.\",\n        },\n        {\n            \"name\": \"Wadi, dam, and exposure coupling\",\n            \"points\": 3,\n            \"description\": \"Verifies long/narrow wadi, two collapsed dams, 1 km second-dam distance, marker count 12, and 4676.1 people per marker as context.\",\n            \"partial_credit\": \"Award 1-2 points if the dam facts are correct but marker arithmetic or the context ratio is missing.\",\n        },\n        {\n            \"name\": \"Rejected readings and final label\",\n            \"points\": 3,\n            \"description\": \"Rejects at least three weaker readings using computed values and returns rainfall_triggered_dam_breach_flood_wave_supported.\",\n            \"partial_credit\": \"Award 1-2 points if the label is right but only one or two alternatives are rejected with calculations.\",\n        },\n        {\n            \"name\": \"Remote-disturbance interpretation\",\n            \"points\": 1,\n            \"description\": \"Keeps radar and embedding metrics as supporting context and avoids exact hydraulic, casualty, death-toll, or building-level loss reconstruction.\",\n            \"partial_credit\": \"Award 0 points if remote metrics are treated as sufficient for exact loss reconstruction.\",\n        },\n    ],\n}\n\n\ndef load_json(relative_path: str) -> Any:\n    with (PKG / relative_path).open(\"r\", encoding=\"utf-8-sig\") as handle:\n        return json.load(handle)\n\n\ndef read_text(relative_path: str) -> str:\n    return (PKG / relative_path).read_text(encoding=\"utf-8-sig\", errors=\"ignore\")\n\n\ndef openstreetmap_path() -> Path:\n    return next((PKG / \"data\" / \"exposure_impact\").glob(\"exposure_impact_005_OpenStreetMap_Overpass_bounded_*_slice.json\"))\n\n\ndef load_openstreetmap() -> Any:\n    with openstreetmap_path().open(\"r\", encoding=\"utf-8-sig\") as handle:\n        return json.load(handle)\n\n\ndef clean_html_text(html: str) -> str:\n    text = re.sub(r\"<script\\b.*?</script>\", \" \", html, flags=re.I | re.S)\n    text = re.sub(r\"<style\\b.*?</style>\", \" \", text, flags=re.I | re.S)\n    text = re.sub(r\"<[^>]+>\", \" \", text)\n    text = text.replace(\"&nbsp;\", \" \").replace(\"&ndash;\", \"-\").replace(\"&mdash;\", \"-\")\n    return re.sub(r\"\\s+\", \" \", text)\n\n\ndef rolling_sum(values: list[float], window: int) -> float:\n    if len(values) <= window:\n        return round(sum(values), 3)\n    return round(max(sum(values[index : index + window]) for index in range(len(values) - window + 1)), 3)\n\n\ndef longest_wet_run(values: list[float], threshold: float = 0.1) -> int:\n    best = current = 0\n    for value in values:\n        if value >= threshold:\n            current += 1\n            best = max(best, current)\n        else:\n            current = 0\n    return best\n\n\ndef osm_counts(osm: dict[str, Any]) -> dict[str, int]:\n    counts = {\n        \"elements\": 0,\n        \"highway_features\": 0,\n        \"major_road_features\": 0,\n        \"destroyed_highway_features\": 0,\n        \"bridge_features\": 0,\n        \"amenity_features\": 0,\n        \"school_features\": 0,\n        \"police_features\": 0,\n        \"waterway_features\": 0,\n        \"storm_damage_text_mentions\": 0,\n    }\n    major_roads = {\"motorway\", \"trunk\", \"primary\", \"secondary\"}\n    for feature in osm.get(\"elements\", []):\n        counts[\"elements\"] += 1\n        tags = feature.get(\"tags\") or {}\n        highway = tags.get(\"highway\")\n        if highway:\n            counts[\"highway_features\"] += 1\n        if highway in major_roads:\n            counts[\"major_road_features\"] += 1\n        if \"destroyed:highway\" in tags:\n            counts[\"destroyed_highway_features\"] += 1\n        if tags.get(\"bridge\") in {\"yes\", \"viaduct\", \"aqueduct\"}:\n            counts[\"bridge_features\"] += 1\n        if \"amenity\" in tags:\n            counts[\"amenity_features\"] += 1\n        if tags.get(\"amenity\") == \"school\":\n            counts[\"school_features\"] += 1\n        if tags.get(\"amenity\") == \"police\":\n            counts[\"police_features\"] += 1\n        if \"waterway\" in tags:\n            counts[\"waterway_features\"] += 1\n        joined_tags = \" \".join(str(value).lower() for value in tags.values())\n        if any(term in joined_tags for term in [\"heavy rainfall\", \"storm daniel\", \"destroyed\", \"flood\"]):\n            counts[\"storm_damage_text_mentions\"] += 1\n    return counts\n\n\ndef report_facts() -> dict[str, Any]:\n    wmo = clean_html_text(read_text(\"data/event_reports/event_reports_001_Locked_package_evidence_report.html\"))\n    nasa = clean_html_text(\n        read_text(\"data/event_reports/event_reports_004_NASA_Earth_Observatory_-_Storm_aftermath_in_Derna_Libya.html\")\n    )\n    return {\n        \"wmo_rainfall_range_mm\": [150, 240] if \"150 - 240 mm\" in wmo else None,\n        \"wmo_al_bayda_daily_record_mm\": 414.1 if \"414.1 mm\" in wmo else None,\n        \"wmo_two_dams_collapsed\": \"two ageing dams collapsed\" in wmo,\n        \"nasa_derna_population_context\": 90000 if \"home to about 90,000 people\" in nasa else None,\n        \"nasa_long_narrow_wadi\": \"long, narrow valley\" in nasa and \"wadi\" in nasa,\n        \"nasa_two_dams_collapsed\": \"two dams\" in nasa and \"collapse\" in nasa,\n        \"nasa_second_dam_distance_km\": 1 if \"one kilometer inland\" in nasa else None,\n        \"nasa_flood_wave_height_m_range\": [3, 7] if \"3- to 7-meter-high\" in nasa else None,\n    }\n\n\ndef build_rainfall_metrics(\n    openmeteo: dict[str, Any],\n    power: dict[str, Any],\n    era5: dict[str, Any],\n    gpm: dict[str, Any],\n    chirps: dict[str, Any],\n) -> dict[str, float | int]:\n    precip = [float(value) for value in openmeteo[\"hourly\"][\"precipitation\"]]\n    power_values = [float(value) for _, value in sorted(power[\"properties\"][\"parameter\"][\"PRECTOTCORR\"].items())]\n    gpm_stats = gpm[\"stats\"]\n    era5_stats = era5[\"stats\"]\n    chirps_stats = chirps[\"stats\"]\n\n    rainfall: dict[str, float | int] = {\n        \"local_hourly_total_mm\": round(sum(precip), 1),\n        \"local_wettest_1h_mm\": round(max(precip), 1),\n        \"local_wettest_6h_mm\": rolling_sum(precip, 6),\n        \"local_wettest_24h_mm\": rolling_sum(precip, 24),\n        \"local_wet_hours_ge_0p1mm\": sum(1 for value in precip if value >= 0.1),\n        \"local_longest_wet_run_hours\": longest_wet_run(precip),\n        \"local_hourly_record_hours\": len(precip),\n        \"independent_daily_total_mm\": round(sum(power_values), 2),\n        \"independent_wettest_day_mm\": round(max(power_values), 2),\n        \"regional_gridded_mean_mm\": round(gpm_stats[\"gpm_event_precip_mm_mean\"], 2),\n        \"regional_gridded_max_mm\": round(gpm_stats[\"gpm_event_precip_mm_max\"], 2),\n        \"reanalysis_mean_mm\": round(era5_stats[\"precipitation_sum_mm_mean\"], 2),\n        \"reanalysis_max_mm\": round(era5_stats[\"precipitation_sum_mm_max\"], 2),\n        \"contrasting_gridded_mean_mm\": round(chirps_stats[\"chirps_event_precip_mm_mean\"], 2),\n        \"contrasting_gridded_max_mm\": round(chirps_stats[\"chirps_event_precip_mm_max\"], 2),\n    }\n    rainfall[\"regional_to_contrasting_max_ratio\"] = round(\n        rainfall[\"regional_gridded_max_mm\"] / max(rainfall[\"contrasting_gridded_max_mm\"], 0.001), 2\n    )\n    rainfall[\"regional_to_reanalysis_mean_ratio\"] = round(\n        rainfall[\"regional_gridded_mean_mm\"] / rainfall[\"reanalysis_mean_mm\"], 2\n    )\n    return rainfall\n\n\ndef build_remote_metrics(alpha: dict[str, Any], sentinel: dict[str, Any]) -> dict[str, float | int]:\n    return {\n        \"radar_pre_count\": sentinel[\"counts\"][\"pre_count\"],\n        \"radar_post_count\": sentinel[\"counts\"][\"post_count\"],\n        \"radar_vv_post_minus_pre_db_mean\": round(sentinel[\"stats\"][\"s1_vv_post_minus_pre_db_mean\"], 3),\n        \"radar_vv_post_minus_pre_db_min\": round(sentinel[\"stats\"][\"s1_vv_post_minus_pre_db_min\"], 3),\n        \"radar_vv_post_minus_pre_db_max\": round(sentinel[\"stats\"][\"s1_vv_post_minus_pre_db_max\"], 3),\n        \"embedding_annual_change_mean\": round(alpha[\"stats\"][\"alphaearth_1_minus_cosine_mean\"], 4),\n        \"embedding_annual_change_max\": round(alpha[\"stats\"][\"alphaearth_1_minus_cosine_max\"], 4),\n    }\n\n\ndef build_derivations(\n    rainfall: dict[str, float | int],\n    facts: dict[str, Any],\n    osm_metric: dict[str, int],\n    exposed_population: float,\n    remote_sensing: dict[str, float | int],\n) -> tuple[dict[str, Any], list[dict[str, Any]]]:\n    wettest_24h_share = round(rainfall[\"local_wettest_24h_mm\"] / rainfall[\"local_hourly_total_mm\"], 3)\n    wettest_6h_share = round(rainfall[\"local_wettest_6h_mm\"] / rainfall[\"local_hourly_total_mm\"], 3)\n    longest_wet_run_share = round(\n        rainfall[\"local_longest_wet_run_hours\"] / rainfall[\"local_wet_hours_ge_0p1mm\"], 3\n    )\n    independent_daily_to_local_total_ratio = round(\n        rainfall[\"independent_daily_total_mm\"] / rainfall[\"local_hourly_total_mm\"], 3\n    )\n    regional_max_to_local_24h_ratio = round(\n        rainfall[\"regional_gridded_max_mm\"] / rainfall[\"local_wettest_24h_mm\"], 3\n    )\n    regional_rain_depth_m = round(rainfall[\"regional_gridded_max_mm\"] / 1000, 5)\n    independent_daily_depth_m = round(rainfall[\"independent_daily_total_mm\"] / 1000, 5)\n    wave_min, wave_max = facts[\"nasa_flood_wave_height_m_range\"]\n    wave_to_regional = [\n        round(wave_min / regional_rain_depth_m, 2),\n        round(wave_max / regional_rain_depth_m, 2),\n    ]\n    wave_to_independent = [\n        round(wave_min / independent_daily_depth_m, 2),\n        round(wave_max / independent_daily_depth_m, 2),\n    ]\n    linear_marker_count = (\n        osm_metric[\"bridge_features\"] + osm_metric[\"destroyed_highway_features\"] + osm_metric[\"waterway_features\"]\n    )\n    exposure_per_marker = round(exposed_population / linear_marker_count, 1)\n    reported_two_dams_collapsed = bool(facts[\"wmo_two_dams_collapsed\"] and facts[\"nasa_two_dams_collapsed\"])\n\n    derived_metrics = {\n        \"rainfall_persistence\": {\n            \"wettest_24h_share_of_local_total\": wettest_24h_share,\n            \"wettest_6h_share_of_local_total\": wettest_6h_share,\n            \"longest_wet_run_share_of_wet_hours\": longest_wet_run_share,\n        },\n        \"cross_source_rainfall_support\": {\n            \"regional_to_contrasting_max_ratio\": rainfall[\"regional_to_contrasting_max_ratio\"],\n            \"regional_to_reanalysis_mean_ratio\": rainfall[\"regional_to_reanalysis_mean_ratio\"],\n            \"independent_daily_to_local_total_ratio\": independent_daily_to_local_total_ratio,\n            \"regional_max_to_local_24h_ratio\": regional_max_to_local_24h_ratio,\n        },\n        \"flood_wave_depth_amplification\": {\n            \"regional_rain_depth_m\": regional_rain_depth_m,\n            \"wave_to_regional_rain_depth_ratio_range\": wave_to_regional,\n            \"independent_daily_depth_m\": independent_daily_depth_m,\n            \"wave_to_independent_daily_depth_ratio_range\": wave_to_independent,\n        },\n        \"wadi_dam_exposure_coupling\": {\n            \"long_narrow_wadi_reported\": facts[\"nasa_long_narrow_wadi\"],\n            \"two_dams_collapsed\": reported_two_dams_collapsed,\n            \"second_dam_distance_km\": facts[\"nasa_second_dam_distance_km\"],\n            \"linear_infrastructure_marker_count\": linear_marker_count,\n            \"exposure_context_per_linear_marker\": exposure_per_marker,\n        },\n        \"remote_disturbance_context\": remote_sensing,\n    }\n\n    derivation_ledger = [\n        {\n            \"row_id\": \"rainfall_persistence\",\n            \"formula\": \"local_wettest_24h_mm/local_hourly_total_mm; local_wettest_6h_mm/local_hourly_total_mm; local_longest_wet_run_hours/local_wet_hours_ge_0p1mm\",\n            \"computed_value\": derived_metrics[\"rainfall_persistence\"],\n            \"threshold_or_test\": \"24h share near-total, 6h share above one-half, wet-run share above 0.9\",\n            \"result\": \"local rainfall was concentrated and persistent enough to support a rainfall trigger\",\n        },\n        {\n            \"row_id\": \"cross_source_rainfall_support\",\n            \"formula\": \"regional_gridded_max_mm/contrasting_gridded_max_mm; regional_gridded_mean_mm/reanalysis_mean_mm; independent_daily_total_mm/local_hourly_total_mm; regional_gridded_max_mm/local_wettest_24h_mm\",\n            \"computed_value\": {\n                **derived_metrics[\"cross_source_rainfall_support\"],\n                \"reported_rainfall_range_mm\": facts[\"wmo_rainfall_range_mm\"],\n                \"reported_al_bayda_daily_record_mm\": facts[\"wmo_al_bayda_daily_record_mm\"],\n            },\n            \"threshold_or_test\": \"independent and regional rainfall support exceed local-only and contrasting-grid explanations\",\n            \"result\": \"multiple rainfall sources support a severe regional rainfall trigger, but regional rain alone does not prove neighborhood losses\",\n        },\n        {\n            \"row_id\": \"flood_wave_depth_amplification\",\n            \"formula\": \"regional_gridded_max_mm/1000; reported_wave_height_m_min/regional_rain_depth_m to reported_wave_height_m_max/regional_rain_depth_m\",\n            \"computed_value\": derived_metrics[\"flood_wave_depth_amplification\"],\n            \"threshold_or_test\": \"reported 3-7 m wave is tens of times the event rainfall depth\",\n            \"result\": \"direct rainfall depth or urban ponding alone is not sufficient; flood-wave amplification through dam failure is required\",\n        },\n        {\n            \"row_id\": \"wadi_dam_exposure_coupling\",\n            \"formula\": \"bridge_features + destroyed_highway_features + waterway_features; exposed_population/linear_infrastructure_marker_count\",\n            \"computed_value\": {\n                **derived_metrics[\"wadi_dam_exposure_coupling\"],\n                \"exposed_population\": round(exposed_population, 2),\n                \"reported_derna_population_context\": facts[\"nasa_derna_population_context\"],\n            },\n            \"threshold_or_test\": \"routing and dam facts true, with nonzero linear infrastructure and population context\",\n            \"result\": \"the confined wadi, nearby second dam, and exposed infrastructure context support a routed flood-wave pathway\",\n        },\n        {\n            \"row_id\": \"remote_disturbance_context\",\n            \"formula\": \"radar pre/post counts and post-minus-pre VV mean; annual embedding change maximum\",\n            \"computed_value\": derived_metrics[\"remote_disturbance_context\"],\n            \"threshold_or_test\": \"surface-change context may support disturbance but cannot replace the hydraulic consistency check\",\n            \"result\": \"remote metrics are supporting context only\",\n        },\n    ]\n    return derived_metrics, derivation_ledger\n\n\ndef build_gt() -> dict[str, Any]:\n    event = load_json(\"metadata/event.json\")\n    anchor = load_json(\"data/event_reports/event_reports_003_Locked_event_anchor_Storm_Daniel_Derna_flood.json\")\n    gdacs = load_json(\"data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json\")\n    openmeteo = load_json(\"data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json\")\n    power = load_json(\"data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json\")\n    era5 = load_json(\"data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json\")\n    gpm = load_json(\"data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json\")\n    chirps = load_json(\"data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json\")\n    worldpop = load_json(\"data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json\")\n    osm = load_openstreetmap()\n    alpha = load_json(\"data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json\")\n    sentinel = load_json(\"data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json\")\n\n    rainfall = build_rainfall_metrics(openmeteo, power, era5, gpm, chirps)\n    facts = report_facts()\n    osm_metric = osm_counts(osm)\n    exposed_population = float(worldpop[\"population_sum\"][\"population\"])\n    remote_sensing = build_remote_metrics(alpha, sentinel)\n    derived_metrics, derivation_ledger = build_derivations(\n        rainfall, facts, osm_metric, exposed_population, remote_sensing\n    )\n\n    gdacs_libya = None\n    for feature in gdacs.get(\"features\", []):\n        props = feature.get(\"properties\", {})\n        if props.get(\"eventtype\") == \"FL\" and props.get(\"iso3\") == \"LBY\":\n            gdacs_libya = props\n            break\n\n    primary_gt = {\n        \"target_family\": TARGET_FAMILY,\n        \"derivation_ledger\": derivation_ledger,\n        \"rejected_overreads\": REJECTED_OVERREADS,\n        \"final_consistency_label\": FINAL_LABEL,\n    }\n\n    return {\n        \"schema_version\": \"1.0\",\n        \"task_id\": TASK_ID,\n        \"event_id\": EVENT_ID,\n        \"task_type\": \"short_answer\",\n        \"evaluation_mode\": \"hybrid\",\n        \"difficulty_level\": \"L3\",\n        \"target_family\": TARGET_FAMILY,\n        \"primary_gt\": primary_gt,\n        \"event\": {\n            \"package_id\": event[\"package_id\"],\n            \"event_name\": event[\"event_name\"],\n            \"hazard_family\": event[\"hazard_family\"],\n            \"event_date_or_window\": f\"{anchor['temporal_window']['start_date']} to {anchor['temporal_window']['end_date']}\",\n        },\n        \"key_values\": {\n            \"rainfall\": rainfall,\n            \"reported\": {\n                \"wmo_rainfall_range_mm\": facts[\"wmo_rainfall_range_mm\"],\n                \"wmo_al_bayda_daily_record_mm\": facts[\"wmo_al_bayda_daily_record_mm\"],\n                \"two_dams_collapsed\": bool(facts[\"wmo_two_dams_collapsed\"] and facts[\"nasa_two_dams_collapsed\"]),\n                \"long_narrow_wadi\": facts[\"nasa_long_narrow_wadi\"],\n                \"second_dam_distance_km\": facts[\"nasa_second_dam_distance_km\"],\n                \"flood_wave_height_m_range\": facts[\"nasa_flood_wave_height_m_range\"],\n                \"derna_population_context\": facts[\"nasa_derna_population_context\"],\n            },\n            \"exposure_context\": {\n                \"exposed_population\": round(exposed_population, 2),\n                \"linear_features\": osm_metric,\n            },\n            \"remote_sensing\": remote_sensing,\n        },\n        \"derived_metrics\": derived_metrics,\n        \"derivation_ledger\": derivation_ledger,\n        \"rejected_overreads\": REJECTED_OVERREADS,\n        \"supporting_metrics\": {\n            \"catalog_context\": {\n                \"red_flood_alert\": bool(gdacs_libya and gdacs_libya.get(\"alertlevel\") == \"Red\"),\n                \"country\": gdacs_libya.get(\"country\") if gdacs_libya else None,\n                \"window_start\": gdacs_libya.get(\"fromdate\") if gdacs_libya else None,\n                \"window_end\": gdacs_libya.get(\"todate\") if gdacs_libya else None,\n            },\n            \"not_estimated_from_this_ledger\": [\n                \"exact breach time of each dam\",\n                \"dam outflow hydrograph or flood-wave velocity\",\n                \"parcel-level flood depth\",\n                \"casualty attribution\",\n                \"final death toll\",\n                \"building-by-building structural loss\",\n            ],\n        },\n        \"rubric\": RUBRIC,\n        \"provenance\": {\n            \"computed_by\": \"compute_gt.py\",\n            \"source_files\": SOURCE_FILES,\n        },\n    }\n\n\ndef main() -> None:\n    output = build_gt()\n    out_path = Path(__file__).with_name(\"computed_gt.json\")\n    apply_deepened_task_frame(output)\n    out_path.write_text(json.dumps(output, indent=2, ensure_ascii=False) + \"\\n\", encoding=\"utf-8\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "event": {
+    "package_id": "CSX-090",
+    "event_name": "Storm Daniel Derna flood",
+    "canonical_event_key": "storm daniel derna flood",
+    "hazard_family": "river_coastal_flood",
+    "hazard_label": "River and coastal flooding",
+    "scale": "neighborhood_asset",
+    "region": "Arid belts",
+    "primary_evidence_url": "https://public.wmo.int/media/news/storm-daniel-leads-extreme-rain-and-floods-mediterranean-heavy-loss-of-life-libya",
+    "existence_verdict": "confirmed",
+    "temporal_match": "match",
+    "spatial_match": "match",
+    "hazard_match": "match",
+    "source_reliability": "high_official_or_institutional",
+    "correspondence_score": "96",
+    "release_decision": "keep",
+    "benchmark_readiness": "ready_with_metadata_warnings",
+    "benchmark_readiness_label": "ready with metadata warnings",
+    "data_integrity": {
+      "local_files_checked": "28",
+      "image_files_checked": "3",
+      "valid_images": "3",
+      "formal_slice_files_checked": "9",
+      "hard_error_count": "0",
+      "metadata_warning_count": "0",
+      "final_data_score": "91",
+      "final_data_decision": "ready_with_minor_warnings",
+      "replacement_file_count": "0"
+    },
+    "file_inventory": {
+      "total_files": 41,
+      "categories": {
+        "air_quality": 1,
+        "event_catalogs": 2,
+        "event_reports": 5,
+        "exposure_impact": 7,
+        "geospatial_context": 3,
+        "other": 2,
+        "physical_hazard": 12,
+        "remote_sensing": 9
+      }
+    }
+  },
+  "event_files": [
+    {
+      "file_id": "F0001",
+      "relative_path": "data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "category": "event_reports",
+      "layer_name": "event_anchor_report",
+      "source_id": "S001",
+      "source_name": "Locked package evidence report",
+      "source_type": "resource_registry",
+      "source_url": "https://public.wmo.int/media/news/storm-daniel-leads-extreme-rain-and-floods-mediterranean-heavy-loss-of-life-libya",
+      "bytes": 129423,
+      "sha256_16": "299b44d6b23f67fa",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0002",
+      "relative_path": "data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "category": "event_reports",
+      "layer_name": "text_reports",
+      "source_id": "S002",
+      "source_name": "HDX CKAN package search",
+      "source_type": "resource_registry",
+      "source_url": "https://data.humdata.org/api/3/action/package_search?q=Storm%20Daniel%20Derna%20flood&rows=10",
+      "bytes": 54908,
+      "sha256_16": "6c49eef570bd706d",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0003",
+      "relative_path": "data/exposure_impact/exposure_impact_001_WorldPop_population_grids.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/exposure_impact/exposure_impact_001_WorldPop_population_grids.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/exposure_impact/exposure_impact_001_WorldPop_population_grids.html",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S003",
+      "source_name": "WorldPop population grids",
+      "source_type": "resource_registry",
+      "source_url": "https://hub.worldpop.org/geodata/listing?id=29&iso3=Libya",
+      "bytes": 21464,
+      "sha256_16": "ff8c2c8bf4ea909b",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0004",
+      "relative_path": "data/exposure_impact/exposure_impact_002_GHSL_built-up_and_settlement_layers.php",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/exposure_impact/exposure_impact_002_GHSL_built-up_and_settlement_layers.php",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/exposure_impact/exposure_impact_002_GHSL_built-up_and_settlement_layers.php",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S004",
+      "source_name": "GHSL built-up and settlement layers",
+      "source_type": "resource_registry",
+      "source_url": "https://ghsl.jrc.ec.europa.eu/download.php",
+      "bytes": 26368,
+      "sha256_16": "f1a201f3cf984c62",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0005",
+      "relative_path": "data/exposure_impact/exposure_impact_003_OpenStreetMap_Geofabrik_extracts.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/exposure_impact/exposure_impact_003_OpenStreetMap_Geofabrik_extracts.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/exposure_impact/exposure_impact_003_OpenStreetMap_Geofabrik_extracts.json",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S005",
+      "source_name": "OpenStreetMap Geofabrik extracts",
+      "source_type": "resource_registry",
+      "source_url": "https://download.geofabrik.de/index-v1-nogeom.json",
+      "bytes": 513446,
+      "sha256_16": "0dcfa9a61091cf55",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0006",
+      "relative_path": "data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json",
+      "category": "air_quality",
+      "layer_name": "city_feedback_or_air_quality",
+      "source_id": "S006",
+      "source_name": "Open-Meteo Air Quality API",
+      "source_type": "resource_registry",
+      "source_url": "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=32.7670&longitude=22.6367&start_date=2023-09-10&end_date=2023-09-11&hourly=pm10,pm2_5,ozone,nitrogen_dioxide",
+      "bytes": 2170,
+      "sha256_16": "32b65031fb774985",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0007",
+      "relative_path": "data/geospatial_context/geospatial_context_001_Natural_Earth_Admin-0_physical_basemap.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/geospatial_context/geospatial_context_001_Natural_Earth_Admin-0_physical_basemap.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/geospatial_context/geospatial_context_001_Natural_Earth_Admin-0_physical_basemap.zip",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S007",
+      "source_name": "Natural Earth Admin-0/physical basemap",
+      "source_type": "resource_registry",
+      "source_url": "https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip",
+      "bytes": 214976,
+      "sha256_16": "0f243aeac8ac6cf2",
+      "status": "success",
+      "preview_type": "archive",
+      "mime_type": "application/zip",
+      "format": "archive",
+      "archive_manifest": {
+        "entry_count": 7,
+        "entries": [
+          {
+            "name": "ne_110m_admin_0_countries.README.html",
+            "bytes": 41905,
+            "compressed_bytes": 9171,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.VERSION.txt",
+            "bytes": 7,
+            "compressed_bytes": 7,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.cpg",
+            "bytes": 5,
+            "compressed_bytes": 5,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.dbf",
+            "bytes": 531808,
+            "compressed_bytes": 69191,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.prj",
+            "bytes": 147,
+            "compressed_bytes": 122,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.shp",
+            "bytes": 180924,
+            "compressed_bytes": 134214,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.shx",
+            "bytes": 1516,
+            "compressed_bytes": 910,
+            "is_directory": false
+          }
+        ],
+        "truncated": false,
+        "error": null
+      }
+    },
+    {
+      "file_id": "F0008",
+      "relative_path": "data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S008",
+      "source_name": "GDACS event list GeoJSON API",
+      "source_type": "resource_registry",
+      "source_url": "https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventtype=FL&fromDate=2023-09-10&toDate=2023-09-11",
+      "bytes": 2975,
+      "sha256_16": "8e34f832f92fa342",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0009",
+      "relative_path": "data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_precipitation_via_CMR_Earthdata.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_precipitation_via_CMR_Earthdata.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_precipitation_via_CMR_Earthdata.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S009",
+      "source_name": "NASA GPM IMERG precipitation via CMR/Earthdata",
+      "source_type": "resource_registry",
+      "source_url": "https://cmr.earthdata.nasa.gov/search/collections.json?keyword=GPM%20IMERG&page_size=5",
+      "bytes": 181119,
+      "sha256_16": "29f0968d7d1dc8cf",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0010",
+      "relative_path": "data/physical_hazard/physical_hazard_002_CHIRPS_daily_precipitation.0",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_002_CHIRPS_daily_precipitation.0",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_002_CHIRPS_daily_precipitation.0",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S010",
+      "source_name": "CHIRPS daily precipitation",
+      "source_type": "resource_registry",
+      "source_url": "https://data.chc.ucsb.edu/products/CHIRPS-2.0/",
+      "bytes": 7005,
+      "sha256_16": "ca7af0f62bd4d261",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0011",
+      "relative_path": "data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S011",
+      "source_name": "Open-Meteo historical weather point API",
+      "source_type": "resource_registry",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=32.7670&longitude=22.6367&start_date=2023-09-10&end_date=2023-09-11&hourly=precipitation,wind_speed_10m&timezone=UTC",
+      "bytes": 1697,
+      "sha256_16": "1043b20a2a7fb62b",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0012",
+      "relative_path": "data/remote_sensing/remote_sensing_001_Copernicus_EMS_Rapid_Mapping_EMSR_archive.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_001_Copernicus_EMS_Rapid_Mapping_EMSR_archive.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_001_Copernicus_EMS_Rapid_Mapping_EMSR_archive.html",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S012",
+      "source_name": "Copernicus EMS Rapid Mapping / EMSR archive",
+      "source_type": "resource_registry",
+      "source_url": "https://rapidmapping.emergency.copernicus.eu/",
+      "bytes": 15729,
+      "sha256_16": "6af5a906ad7922e8",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0013",
+      "relative_path": "data/geospatial_context/geospatial_context_002_Nominatim_event_location_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/geospatial_context/geospatial_context_002_Nominatim_event_location_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/geospatial_context/geospatial_context_002_Nominatim_event_location_search.json",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S013",
+      "source_name": "Nominatim event location search",
+      "source_type": "resource_registry",
+      "source_url": "https://nominatim.openstreetmap.org/search?q=Derna+Libya&format=jsonv2&limit=5",
+      "bytes": 826,
+      "sha256_16": "2b26082cc06692db",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0014",
+      "relative_path": "data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S014",
+      "source_name": "NASA POWER daily point weather API",
+      "source_type": "resource_registry",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR%2CT2M%2CWS10M&community=AG&longitude=22.6367&latitude=32.7670&start=20230910&end=20230911&format=JSON",
+      "bytes": 727,
+      "sha256_16": "46bfbaf476886068",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0015",
+      "relative_path": "data/remote_sensing/remote_sensing_002_NASA_Worldview_GIBS_MODIS_thumbnail.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_002_NASA_Worldview_GIBS_MODIS_thumbnail.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_002_NASA_Worldview_GIBS_MODIS_thumbnail.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S015",
+      "source_name": "NASA Worldview/GIBS MODIS thumbnail",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2023-09-10&BBOX=30.2670%2C20.1367%2C35.2670%2C25.1367&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 139247,
+      "sha256_16": "a248f2f157805acd",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0016",
+      "relative_path": "data/geospatial_context/geospatial_context_003_compact_per-event_AOI_derived_from_event_bbox.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/geospatial_context/geospatial_context_003_compact_per-event_AOI_derived_from_event_bbox.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/geospatial_context/geospatial_context_003_compact_per-event_AOI_derived_from_event_bbox.json",
+      "category": "geospatial_context",
+      "layer_name": "aoi",
+      "source_id": "S016",
+      "source_name": "compact per-event AOI derived from event bbox",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 449,
+      "sha256_16": "025b9445b8004948",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0017",
+      "relative_path": "data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S017",
+      "source_name": "ERA5-Land hourly aggregate stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 1000,
+      "sha256_16": "9fd1e9f3d65ed697",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0018",
+      "relative_path": "data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S018",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 322,
+      "sha256_16": "b4b984a416cb7628",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0019",
+      "relative_path": "data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S019",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 317,
+      "sha256_16": "d994df9360bd9b6c",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0020",
+      "relative_path": "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S020",
+      "source_name": "WorldPop GP 100m population sum",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 125,
+      "sha256_16": "880df1101c88f5af",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0021",
+      "relative_path": "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S021",
+      "source_name": "Google Satellite Embedding 64-band annual stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 9889,
+      "sha256_16": "00d36508f7d647d5",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0022",
+      "relative_path": "data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S022",
+      "source_name": "Google Satellite Embedding annual cosine-change stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 363,
+      "sha256_16": "fd930e3ec8c1ed65",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0023",
+      "relative_path": "data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json",
+      "category": "remote_sensing",
+      "layer_name": "sentinel1",
+      "source_id": "S023",
+      "source_name": "Sentinel-1 GRD VV pre/post change",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 499,
+      "sha256_16": "130b049840f0bf4e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0024",
+      "relative_path": "data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "category": "exposure_impact",
+      "layer_name": "osm_exposure",
+      "source_id": "S024",
+      "source_name": "OpenStreetMap Overpass bounded AOI slice",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 164441,
+      "sha256_16": "2310a2fc27cbeecb",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0025",
+      "relative_path": "data/remote_sensing/remote_sensing_006_pre.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_006_pre.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_006_pre.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S025",
+      "source_name": "pre",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2023-08-11&BBOX=32.2658%2C22.1205%2C33.2658%2C23.1205&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 63514,
+      "sha256_16": "ce9efb5e3e21861f",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0026",
+      "relative_path": "data/remote_sensing/remote_sensing_007_event.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_007_event.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_007_event.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S026",
+      "source_name": "event",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2023-09-10&BBOX=32.2658%2C22.1205%2C33.2658%2C23.1205&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 46107,
+      "sha256_16": "f513498a664aed19",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0027",
+      "relative_path": "data/event_reports/event_reports_003_Locked_event_anchor_Storm_Daniel_Derna_flood.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/event_reports/event_reports_003_Locked_event_anchor_Storm_Daniel_Derna_flood.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/event_reports/event_reports_003_Locked_event_anchor_Storm_Daniel_Derna_flood.json",
+      "category": "event_reports",
+      "layer_name": "package_locked_event_anchor / WMO event article",
+      "source_id": "S027",
+      "source_name": "Locked event anchor: Storm Daniel Derna flood",
+      "source_type": "event_specific_sources",
+      "source_url": "https://public.wmo.int/media/news/storm-daniel-leads-extreme-rain-and-floods-mediterranean-heavy-loss-of-life-libya",
+      "bytes": 2976,
+      "sha256_16": "ad012e13281d0487",
+      "status": "remote_verified",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0028",
+      "relative_path": "data/event_reports/event_reports_004_NASA_Earth_Observatory_-_Storm_aftermath_in_Derna_Libya.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/event_reports/event_reports_004_NASA_Earth_Observatory_-_Storm_aftermath_in_Derna_Libya.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/event_reports/event_reports_004_NASA_Earth_Observatory_-_Storm_aftermath_in_Derna_Libya.html",
+      "category": "event_reports",
+      "layer_name": "satellite_event_article",
+      "source_id": "S028",
+      "source_name": "NASA Earth Observatory - Storm aftermath in Derna, Libya",
+      "source_type": "event_specific_sources",
+      "source_url": "https://science.nasa.gov/earth/earth-observatory/storm-aftermath-in-derna-libya-151851/",
+      "bytes": 321515,
+      "sha256_16": "17f636e918f041d8",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0029",
+      "relative_path": "data/event_reports/event_reports_005_01_event_anchor_report_Locked_package_evidence_report.html.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/event_reports/event_reports_005_01_event_anchor_report_Locked_package_evidence_report.html.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/event_reports/event_reports_005_01_event_anchor_report_Locked_package_evidence_report.html.html",
+      "category": "event_reports",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S029",
+      "source_name": "01_event_anchor_report_Locked_package_evidence_report.html",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 129423,
+      "sha256_16": "e644e08ebe129f6b",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0030",
+      "relative_path": "data/physical_hazard/physical_hazard_008_04_physical_hazard_api_Open-Meteo_historical_weather_point_API.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_008_04_physical_hazard_api_Open-Meteo_historical_weather_point_API.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_008_04_physical_hazard_api_Open-Meteo_historical_weather_point_API.json.json",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S030",
+      "source_name": "04_physical_hazard_api_Open-Meteo_historical_weather_point_API.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 1696,
+      "sha256_16": "3a899ff02def8dc1",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0031",
+      "relative_path": "data/remote_sensing/remote_sensing_008_alphaearth_change_1km.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_008_alphaearth_change_1km.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_008_alphaearth_change_1km.zip.zip",
+      "category": "remote_sensing",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S031",
+      "source_name": "alphaearth_change_1km.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 20895,
+      "sha256_16": "81259f3b37e9a41f",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/6b352dc1d4135fce3982.png"
+    },
+    {
+      "file_id": "F0032",
+      "relative_path": "data/physical_hazard/physical_hazard_009_chirps_event_precip.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_009_chirps_event_precip.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_009_chirps_event_precip.zip.zip",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S032",
+      "source_name": "chirps_event_precip.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 1060,
+      "sha256_16": "77e6eb5686f33765",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/8eb2317125cc430ba802.png"
+    },
+    {
+      "file_id": "F0033",
+      "relative_path": "data/physical_hazard/physical_hazard_010_era5_land_event_stack.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_010_era5_land_event_stack.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_010_era5_land_event_stack.zip.zip",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S033",
+      "source_name": "era5_land_event_stack.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 2662,
+      "sha256_16": "b77277ca66197648",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/9eb6f30d03d20fd6636e.png"
+    },
+    {
+      "file_id": "F0034",
+      "relative_path": "data/physical_hazard/physical_hazard_011_gpm_imerg_event_precip.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_011_gpm_imerg_event_precip.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_011_gpm_imerg_event_precip.zip.zip",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S034",
+      "source_name": "gpm_imerg_event_precip.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 1191,
+      "sha256_16": "5fcc39c124f730b4",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/086bd00102b7595425da.png"
+    },
+    {
+      "file_id": "F0035",
+      "relative_path": "data/exposure_impact/exposure_impact_006_osm_overpass_exposure_slice.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/exposure_impact/exposure_impact_006_osm_overpass_exposure_slice.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/exposure_impact/exposure_impact_006_osm_overpass_exposure_slice.json.json",
+      "category": "exposure_impact",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S035",
+      "source_name": "osm_overpass_exposure_slice.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 164441,
+      "sha256_16": "71d0ffff5515f0c6",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0036",
+      "relative_path": "data/remote_sensing/remote_sensing_009_sentinel1_vv_change_250m.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_009_sentinel1_vv_change_250m.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/remote_sensing/remote_sensing_009_sentinel1_vv_change_250m.zip.zip",
+      "category": "remote_sensing",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S036",
+      "source_name": "sentinel1_vv_change_250m.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 306286,
+      "sha256_16": "fa944deff98ac103",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/6b8478dcfc1ab6f0d6de.png"
+    },
+    {
+      "file_id": "F0037",
+      "relative_path": "data/exposure_impact/exposure_impact_007_worldpop_population_1km.zip.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/exposure_impact/exposure_impact_007_worldpop_population_1km.zip.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/exposure_impact/exposure_impact_007_worldpop_population_1km.zip.zip",
+      "category": "exposure_impact",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S037",
+      "source_name": "worldpop_population_1km.zip",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 6193,
+      "sha256_16": "2f4fc9e308ae5ac3",
+      "status": "local_file_found",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/ad1068a86590fb52ae10.png"
+    },
+    {
+      "file_id": "F0038",
+      "relative_path": "data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S038",
+      "source_name": "01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 2243,
+      "sha256_16": "9f5d99e0c447d1e5",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0039",
+      "relative_path": "data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S039",
+      "source_name": "02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 76,
+      "sha256_16": "7c121f15d79fef5d",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0040",
+      "relative_path": "data/physical_hazard/physical_hazard_012_03_event_specific_news_search_GDELT_article_search_near_event_window.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_012_03_event_specific_news_search_GDELT_article_search_near_event_window.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/physical_hazard/physical_hazard_012_03_event_specific_news_search_GDELT_article_search_near_event_window.json.json",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S040",
+      "source_name": "03_event_specific_news_search_GDELT_article_search_near_event_window.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 2,
+      "sha256_16": "44136fa355b3678a",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0041",
+      "relative_path": "data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-090/data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-090/data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "category": "event_catalogs",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S041",
+      "source_name": "05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 24004,
+      "sha256_16": "b9091b4bd3f869f4",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    }
+  ]
+}

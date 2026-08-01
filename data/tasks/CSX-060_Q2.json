@@ -1,0 +1,1036 @@
+{
+  "task_id": "CSX-060_Q2",
+  "event_id": "CSX-060",
+  "title": "Nepal 2024 Flood-Landslide Anchor Diagnostic",
+  "event_name": "September 2024 Nepal floods and landslides",
+  "hazard_family": "extreme_precip_pluvial_flood",
+  "hazard_label": "Extreme precipitation and pluvial flooding",
+  "region": "Mountain regions",
+  "scale": "regional_basin",
+  "difficulty": "L3_process_mechanism_reasoning",
+  "difficulty_rationale": "Manual review: \"Nepal 2024 Flood-Landslide Anchor Diagnostic\" requires using quantitative evidence to explain a physical process, phase/timing pattern, routing/transport pathway, or mechanism diagnosis beyond a simple numeric ledger.",
+  "primary_dimension": "multi_source_evidence",
+  "dimensions": [
+    "multi_source_evidence",
+    "physical_mechanism",
+    "quantitative_calculation"
+  ],
+  "dimension_rationale": "Anchor diagnostic connecting station, river, and slope evidence for Nepal flood-landslide event.",
+  "task_type": "short_answer",
+  "target_family": "station_river_slope_anchor_diagnostic",
+  "file_count": 35,
+  "category_counts": {
+    "event_catalogs": 4,
+    "event_reports": 4,
+    "exposure_impact": 5,
+    "geospatial_context": 2,
+    "other": 2,
+    "physical_hazard": 7,
+    "remote_sensing": 11
+  },
+  "question": "# Nepal 2024 Flood-Landslide Anchor Diagnostic\n\nA hydrometeorology review team is checking the September 27-29, 2024 Nepal floods and landslides. The question is whether the quantitative diagnosis should rest on a joined local rainfall, river-stage, and record-station-cluster signal, or whether gridded rainfall, public warning volume, or image change should be treated as the leading anchor.\n\nCompute the threshold diagnostic using inclusive dates for the event window. For the station rainfall weighted mean, use the midpoint of each PDF precipitation bin multiplied by that bin's station count, including 550 mm as the representative midpoint for the open-ended `More than 500 mm` bin. Return only compact JSON with the fields shown below.\n\nUse these pass rules:\n\n- `station_rainfall_cluster`: pass when `station_max_to_weighted_mean_ratio >= 2.0`, `three_day_share_above_200mm >= 0.50`, and `three_day_station_count >= 150`.\n- `river_historic_exceedance`: pass when `rivers_above_historic_count / rivers_checked >= 0.60` and `max_river_exceedance_m >= 2.0`.\n- `record_station_cluster`: pass when `record_stations_in_approx_1000km2 >= 15`, `record_station_density_per_1000km2 >= 15`, and `approx_record_station_spacing_km <= 8.5`.\n- `gridded_rainfall_primary`: pass when `GPM_max / station_max >= 0.50` and at least one gridded rainfall maximum reaches half the station maximum.\n- `public_warning_volume_primary`: pass when `sms_alerts_per_1000_worldpop >= 1000`.\n- `image_change_primary`: pass when `abs(mean_Sentinel1_VV_change_db) >= 3.0` and `AlphaEarth_change_max >= 0.8`.\n\nSet `final_label` to `station_river_slope_joint_anchor` when the first three tests pass and the last three tests fail. Otherwise set it to `mixed_or_secondary_anchor`.\n\n```json\n{\n  \"score_ledger\": {\n    \"<test_id>\": {\n      \"pass\": true,\n      \"supporting_values\": {\"<metric>\": 0},\n      \"reason\": \"<one sentence tied to the threshold>\"\n    }\n  },\n  \"final_label\": \"<derived label>\",\n  \"failed_primary_candidates\": [\n    {\n      \"test_id\": \"<test_id>\",\n      \"deciding_value\": \"<number or compact object>\",\n      \"reason\": \"<one sentence tied to the threshold>\"\n    }\n  ],\n  \"computed_interpretation\": \"<one sentence>\"\n}\n```\n",
+  "solution": "# Final Answer\n\nThe correct answer is `station_river_slope_joint_anchor`.\n\n```json\n{\n  \"score_ledger\": {\n    \"station_rainfall_cluster\": {\n      \"pass\": true,\n      \"supporting_values\": {\n        \"station_max_to_weighted_mean_ratio\": 2.333,\n        \"three_day_share_above_200mm\": 0.574,\n        \"three_day_station_count\": 183\n      },\n      \"reason\": \"All three station-rainfall thresholds are met.\"\n    },\n    \"river_historic_exceedance\": {\n      \"pass\": true,\n      \"supporting_values\": {\n        \"river_historic_exceedance_share\": 0.714,\n        \"max_river_exceedance_m\": 3.52\n      },\n      \"reason\": \"Five of seven checked rivers exceeded historic levels, and the largest exceedance is above 2 m.\"\n    },\n    \"record_station_cluster\": {\n      \"pass\": true,\n      \"supporting_values\": {\n        \"record_stations_in_approx_1000km2\": 16,\n        \"record_station_density_per_1000km2\": 16.0,\n        \"approx_record_station_spacing_km\": 7.906\n      },\n      \"reason\": \"The record-station cluster clears the count, density, and spacing thresholds.\"\n    },\n    \"gridded_rainfall_primary\": {\n      \"pass\": false,\n      \"supporting_values\": {\n        \"gpm_max_share_of_station_max\": 0.142,\n        \"chirps_max_share_of_station_max\": 0.122,\n        \"era5_max_share_of_station_max\": 0.094\n      },\n      \"reason\": \"The gridded maxima are all below one half of the station maximum.\"\n    },\n    \"public_warning_volume_primary\": {\n      \"pass\": false,\n      \"supporting_values\": {\n        \"sms_alerts_per_1000_worldpop\": 816.7\n      },\n      \"reason\": \"The normalized warning count is below the 1000 per 1000 people threshold.\"\n    },\n    \"image_change_primary\": {\n      \"pass\": false,\n      \"supporting_values\": {\n        \"sentinel1_vv_change_mean_db\": 0.546,\n        \"alphaearth_change_max\": 0.599\n      },\n      \"reason\": \"Neither the mean radar-change threshold nor the embedding-change threshold is met.\"\n    }\n  },\n  \"final_label\": \"station_river_slope_joint_anchor\",\n  \"failed_primary_candidates\": [\n    {\n      \"test_id\": \"gridded_rainfall_primary\",\n      \"deciding_value\": {\"gpm\": 0.142, \"chirps\": 0.122, \"era5_land\": 0.094},\n      \"reason\": \"All gridded maxima are below one half of the station maximum.\"\n    },\n    {\n      \"test_id\": \"public_warning_volume_primary\",\n      \"deciding_value\": 816.7,\n      \"reason\": \"Warning volume per 1000 people is below the stated threshold.\"\n    },\n    {\n      \"test_id\": \"image_change_primary\",\n      \"deciding_value\": {\"sentinel1_vv_change_mean_db\": 0.546, \"alphaearth_change_max\": 0.599},\n      \"reason\": \"The radar and embedding changes both miss the primary-signal thresholds.\"\n    }\n  ],\n  \"computed_interpretation\": \"The event is best anchored by concentrated station rainfall, historic river exceedance, and a dense cluster of record rainfall stations rather than by gridded rainfall, warning volume, or image-change maxima.\"\n}\n```\n\n# Key Computations\n\nThe event window from 2024-09-27 through 2024-09-29 is 3 inclusive days.\n\nStation rainfall distribution:\n\n- Weighted mean three-day station rainfall from the binned station distribution, using bin midpoints and 550 mm for the open-ended `More than 500 mm` bin: `221.585 mm`.\n- Maximum three-day station rainfall: `517.0 mm`.\n- Maximum-to-weighted-mean ratio: `517.0 / 221.585 = 2.333`.\n- Station count: `183`.\n- Share above 200 mm: `105 / 183 = 0.574`.\n- Share above 300 mm: `37 / 183 = 0.202`.\n- Share above 400 mm: `6 / 183 = 0.033`.\n\nRiver and record-station cluster:\n\n- Historic river exceedance share: `5 / 7 = 0.714`.\n- Maximum river exceedance: `3.52 m`.\n- Record stations in the approximately 1000 km2 cluster: `16`.\n- Record-station density: `16 / 1000 * 1000 = 16.0 per 1000 km2`.\n- Approximate record-station spacing: `sqrt(1000 / 16) = 7.906 km`.\n\nSecondary signal checks:\n\n- Gridded-to-station maximum ratios: GPM `73.33 / 517.0 = 0.142`, CHIRPS `63.067 / 517.0 = 0.122`, ERA5-Land `48.637 / 517.0 = 0.094`.\n- Warning normalization: `4,093,795 / 5,013,000 * 1000 = 816.7` SMS messages per 1000 people.\n- Image-change metrics: Sentinel-1 VV mean post-minus-pre change `0.546 dB`, Sentinel-1 VV range `34.4 dB`, AlphaEarth mean `0.025`, AlphaEarth maximum `0.599`.\n\n# Reasoning Path\n\nThe station-rainfall test passes because the max-to-weighted-mean ratio is above `2.0`, the share of stations above 200 mm is above `0.50`, and the station count is above `150`. This shows a strong local rainfall concentration rather than a single isolated value.\n\nThe river test passes because `0.714` of checked rivers exceeded historic levels and the largest exceedance is `3.52 m`, which is above the `2.0 m` threshold. The record-station cluster also passes: `16` record stations in about `1000 km2` gives density `16.0`, and the spacing proxy of `7.906 km` is below `8.5 km`.\n\nThe three alternative primary signals fail their threshold tests. GPM, CHIRPS, and ERA5-Land maxima are only `0.142`, `0.122`, and `0.094` of the station maximum, so no gridded maximum reaches one half of the station maximum. The SMS warning normalization is `816.7`, below `1000`. The image-change test fails because `abs(0.546) < 3.0` and `0.599 < 0.8`.\n\nSince the first three tests pass and the last three fail, the deterministic label is `station_river_slope_joint_anchor`.\n\n# Computed Interpretation\n\nThe numbers point to a joined local rainfall, river-stage, and record-station-cluster diagnosis. The gridded rainfall, warning-volume, and image-change signals are useful supporting context, but their threshold values are too weak to become the leading quantitative anchor for this event.\n\n# Scoring Rubric\n\n- 4 points: Final label and diagnostic structure. Full credit for returning `score_ledger`, `final_label`, `failed_primary_candidates`, and `computed_interpretation`, with `final_label` equal to `station_river_slope_joint_anchor`. Partial credit: award 1 point for each required field that is present and usable; withhold the final-label point if the label is wrong.\n- 4 points: Station rainfall calculations. Full credit for `517.0 mm`, `221.585 mm`, ratio `2.333`, station count `183`, and shares `0.574`, `0.202`, and `0.033`. Partial credit: award up to 4 points in proportion to the correctly computed station values within tolerance.\n- 3 points: River exceedance calculations. Full credit for `5 / 7 = 0.714` and maximum exceedance `3.52 m`. Partial credit: award 1.5 points for the correct exceedance share and 1.5 points for the correct maximum exceedance.\n- 3 points: Record-station cluster calculations. Full credit for count `16`, density `16.0 per 1000 km2`, and spacing `7.906 km`. Partial credit: award 1 point for each correct cluster value within tolerance.\n- 3 points: Secondary signal calculations. Full credit for gridded ratios `0.142`, `0.122`, and `0.094`, warning normalization `816.7`, Sentinel-1 mean `0.546 dB`, and AlphaEarth max `0.599`. Partial credit: award up to 3 points for correctly computing most of these values within tolerance.\n- 2 points: Threshold logic. Full credit for marking the station, river, and record-station tests as passing and the gridded, warning-volume, and image-change tests as failing. Partial credit: award 1 point for the correct three passing tests and 1 point for the correct three failing tests.\n- 1 point: Concise computed interpretation. Full credit for a one-sentence interpretation tied to the computed diagnostic and no extra claims beyond the calculated event diagnosis. Partial credit: award 0.5 points if the interpretation is directionally correct but too broad.\n",
+  "ground_truth": {
+    "schema_version": "1.0",
+    "task_id": "CSX-060_Q2",
+    "event_id": "CSX-060",
+    "task_type": "short_answer",
+    "target_family": "station_river_slope_anchor_diagnostic",
+    "evaluation_mode": "hybrid",
+    "difficulty_level": "L3",
+    "primary_gt": {
+      "score_ledger": {
+        "station_rainfall_cluster": {
+          "pass": true,
+          "supporting_values": {
+            "station_max_to_weighted_mean_ratio": 2.333,
+            "three_day_share_above_200mm": 0.574,
+            "three_day_station_count": 183
+          },
+          "reason": "All three station-rainfall thresholds are met."
+        },
+        "river_historic_exceedance": {
+          "pass": true,
+          "supporting_values": {
+            "river_historic_exceedance_share": 0.714,
+            "max_river_exceedance_m": 3.52
+          },
+          "reason": "Five of seven checked rivers exceeded historic levels, and the largest exceedance is above 2 m."
+        },
+        "record_station_cluster": {
+          "pass": true,
+          "supporting_values": {
+            "record_stations_in_approx_1000km2": 16,
+            "record_station_density_per_1000km2": 16.0,
+            "approx_record_station_spacing_km": 7.906
+          },
+          "reason": "The record-station cluster clears the count, density, and spacing thresholds."
+        },
+        "gridded_rainfall_primary": {
+          "pass": false,
+          "supporting_values": {
+            "gpm_max_share_of_station_max": 0.142,
+            "chirps_max_share_of_station_max": 0.122,
+            "era5_max_share_of_station_max": 0.094
+          },
+          "reason": "The gridded maxima are all below one half of the station maximum."
+        },
+        "public_warning_volume_primary": {
+          "pass": false,
+          "supporting_values": {
+            "sms_alerts_per_1000_worldpop": 816.7
+          },
+          "reason": "The normalized warning count is below the 1000 per 1000 people threshold."
+        },
+        "image_change_primary": {
+          "pass": false,
+          "supporting_values": {
+            "sentinel1_vv_change_mean_db": 0.546,
+            "alphaearth_change_max": 0.599
+          },
+          "reason": "Neither the mean radar-change threshold nor the embedding-change threshold is met."
+        }
+      },
+      "final_label": "station_river_slope_joint_anchor",
+      "failed_primary_candidates": [
+        {
+          "test_id": "gridded_rainfall_primary",
+          "deciding_value": {
+            "gpm": 0.142,
+            "chirps": 0.122,
+            "era5_land": 0.094
+          },
+          "reason": "All gridded maxima are below one half of the station maximum."
+        },
+        {
+          "test_id": "public_warning_volume_primary",
+          "deciding_value": 816.7,
+          "reason": "Warning volume per 1000 people is below the stated threshold."
+        },
+        {
+          "test_id": "image_change_primary",
+          "deciding_value": {
+            "sentinel1_vv_change_mean_db": 0.546,
+            "alphaearth_change_max": 0.599
+          },
+          "reason": "The radar and embedding changes both miss the primary-signal thresholds."
+        }
+      ],
+      "computed_interpretation": "The event is best anchored by concentrated station rainfall, historic river exceedance, and a dense cluster of record rainfall stations rather than by gridded rainfall, warning volume, or image-change maxima."
+    },
+    "event": {
+      "event_name": "September 2024 Nepal floods and landslides",
+      "hazard_family": "extreme_precip_pluvial_flood",
+      "event_date_or_window": "2024-09-27 to 2024-09-29",
+      "region": "Nepal, with emphasis on Kathmandu Valley and affected river basins"
+    },
+    "key_values": {
+      "judge_anchors": [
+        "Score the six threshold tests from numeric values; first three pass and last three fail.",
+        "The final label must follow the pass/fail pattern, not a broad mechanism narrative."
+      ],
+      "required_metrics": {
+        "event_name": "September 2024 Nepal floods and landslides",
+        "hazard_family": "extreme_precip_pluvial_flood",
+        "start_date": "2024-09-27",
+        "end_date": "2024-09-29",
+        "event_window_days": 3,
+        "max_3day_station_mm": 517.0,
+        "three_day_station_count": 183,
+        "three_day_weighted_mean_mm": 221.585,
+        "stations_above_200mm": 105,
+        "stations_above_300mm": 37,
+        "stations_above_400mm": 6,
+        "three_day_share_above_200mm": 0.574,
+        "three_day_share_above_300mm": 0.202,
+        "three_day_share_above_400mm": 0.033,
+        "record_24h_station_count": 25,
+        "record_24h_district_count": 14,
+        "record_stations_in_kathmandu_valley": 11,
+        "record_stations_in_approx_1000km2": 16,
+        "record_station_density_per_1000km2": 16.0,
+        "approx_record_station_spacing_km": 7.906,
+        "max_24h_record_mm": 410.0,
+        "mean_24h_record_mm": 244.808,
+        "max_record_ratio": 2.788,
+        "largest_record_ratio_station": "Baldyanggadi",
+        "rivers_checked": 7,
+        "rivers_above_historic_count": 5,
+        "max_river_exceedance_m": 3.52,
+        "max_river_exceedance_station": "Narayani River at Devghat",
+        "max_river_level_ratio": 1.349,
+        "max_river_level_ratio_station": "Narayani River at Devghat",
+        "gpm_event_mean_mm": 21.42,
+        "gpm_event_max_mm": 73.33,
+        "chirps_event_mean_mm": 16.991,
+        "chirps_event_max_mm": 63.067,
+        "era5_land_precip_mean_mm": 18.6,
+        "era5_land_precip_max_mm": 48.637,
+        "station_max_to_weighted_mean_ratio": 2.333,
+        "river_historic_exceedance_share": 0.714,
+        "gpm_max_share_of_station_max": 0.142,
+        "chirps_max_share_of_station_max": 0.122,
+        "era5_max_share_of_station_max": 0.094,
+        "worldpop_population_rounded": 5013000,
+        "sms_alerts": 4093795,
+        "sms_alerts_per_1000_worldpop": 816.7,
+        "sentinel1_pre_count": 27,
+        "sentinel1_post_count": 24,
+        "sentinel1_vv_change_mean_db": 0.546,
+        "sentinel1_vv_change_range_db": 34.4,
+        "alphaearth_change_mean": 0.025,
+        "alphaearth_change_max": 0.599
+      },
+      "score_ledger": {
+        "station_rainfall_cluster": {
+          "pass": true,
+          "supporting_values": {
+            "station_max_to_weighted_mean_ratio": 2.333,
+            "three_day_share_above_200mm": 0.574,
+            "three_day_station_count": 183
+          },
+          "reason": "All three station-rainfall thresholds are met."
+        },
+        "river_historic_exceedance": {
+          "pass": true,
+          "supporting_values": {
+            "river_historic_exceedance_share": 0.714,
+            "max_river_exceedance_m": 3.52
+          },
+          "reason": "Five of seven checked rivers exceeded historic levels, and the largest exceedance is above 2 m."
+        },
+        "record_station_cluster": {
+          "pass": true,
+          "supporting_values": {
+            "record_stations_in_approx_1000km2": 16,
+            "record_station_density_per_1000km2": 16.0,
+            "approx_record_station_spacing_km": 7.906
+          },
+          "reason": "The record-station cluster clears the count, density, and spacing thresholds."
+        },
+        "gridded_rainfall_primary": {
+          "pass": false,
+          "supporting_values": {
+            "gpm_max_share_of_station_max": 0.142,
+            "chirps_max_share_of_station_max": 0.122,
+            "era5_max_share_of_station_max": 0.094
+          },
+          "reason": "The gridded maxima are all below one half of the station maximum."
+        },
+        "public_warning_volume_primary": {
+          "pass": false,
+          "supporting_values": {
+            "sms_alerts_per_1000_worldpop": 816.7
+          },
+          "reason": "The normalized warning count is below the 1000 per 1000 people threshold."
+        },
+        "image_change_primary": {
+          "pass": false,
+          "supporting_values": {
+            "sentinel1_vv_change_mean_db": 0.546,
+            "alphaearth_change_max": 0.599
+          },
+          "reason": "Neither the mean radar-change threshold nor the embedding-change threshold is met."
+        }
+      },
+      "failed_primary_candidates": [
+        {
+          "test_id": "gridded_rainfall_primary",
+          "deciding_value": {
+            "gpm": 0.142,
+            "chirps": 0.122,
+            "era5_land": 0.094
+          },
+          "reason": "All gridded maxima are below one half of the station maximum."
+        },
+        {
+          "test_id": "public_warning_volume_primary",
+          "deciding_value": 816.7,
+          "reason": "Warning volume per 1000 people is below the stated threshold."
+        },
+        {
+          "test_id": "image_change_primary",
+          "deciding_value": {
+            "sentinel1_vv_change_mean_db": 0.546,
+            "alphaearth_change_max": 0.599
+          },
+          "reason": "The radar and embedding changes both miss the primary-signal thresholds."
+        }
+      ]
+    },
+    "decision_rule": {
+      "final_label_rule": "station_river_slope_joint_anchor when station_rainfall_cluster, river_historic_exceedance, and record_station_cluster pass while gridded_rainfall_primary, public_warning_volume_primary, and image_change_primary fail; otherwise mixed_or_secondary_anchor.",
+      "thresholds": {
+        "station_rainfall_cluster": {
+          "station_max_to_weighted_mean_ratio_min": 2.0,
+          "three_day_share_above_200mm_min": 0.5,
+          "three_day_station_count_min": 150
+        },
+        "river_historic_exceedance": {
+          "historic_exceedance_share_min": 0.6,
+          "max_river_exceedance_m_min": 2.0
+        },
+        "record_station_cluster": {
+          "record_count_min": 15,
+          "density_per_1000km2_min": 15,
+          "spacing_km_max": 8.5
+        },
+        "gridded_rainfall_primary": {
+          "gpm_station_share_min": 0.5,
+          "any_gridded_station_share_min": 0.5
+        },
+        "public_warning_volume_primary": {
+          "alerts_per_1000_min": 1000
+        },
+        "image_change_primary": {
+          "sentinel1_mean_abs_db_min": 3.0,
+          "alphaearth_max_min": 0.8
+        }
+      }
+    },
+    "rubric": {
+      "total_points": 20,
+      "criteria": [
+        {
+          "name": "Final label and diagnostic structure",
+          "points": 4,
+          "description": "Returns score_ledger, final_label, failed_primary_candidates, and computed_interpretation, with final_label equal to station_river_slope_joint_anchor.",
+          "partial_credit": "Award 1 point for each required field that is present and usable; withhold the final-label point if the label is wrong."
+        },
+        {
+          "name": "Station rainfall calculations",
+          "points": 4,
+          "description": "Computes station maximum, weighted mean, max-to-mean ratio, station count, and rainfall-threshold shares correctly.",
+          "partial_credit": "Award up to 4 points in proportion to the correctly computed station values within tolerance."
+        },
+        {
+          "name": "River exceedance calculations",
+          "points": 3,
+          "description": "Computes 5 of 7 historic river exceedances, share 0.714, and maximum exceedance 3.52 m.",
+          "partial_credit": "Award 1.5 points for the correct exceedance share and 1.5 points for the correct maximum exceedance."
+        },
+        {
+          "name": "Record-station cluster calculations",
+          "points": 3,
+          "description": "Computes cluster count 16, density 16.0 per 1000 km2, and spacing 7.906 km.",
+          "partial_credit": "Award 1 point for each correct cluster value within tolerance."
+        },
+        {
+          "name": "Secondary signal calculations",
+          "points": 3,
+          "description": "Computes gridded-to-station ratios, warning normalization, Sentinel-1 mean change, and AlphaEarth maximum.",
+          "partial_credit": "Award up to 3 points for correctly computing most secondary values within tolerance."
+        },
+        {
+          "name": "Threshold logic",
+          "points": 2,
+          "description": "Marks station, river, and record-station tests as passing and gridded, warning-volume, and image-change tests as failing.",
+          "partial_credit": "Award 1 point for the correct three passing tests and 1 point for the correct three failing tests."
+        },
+        {
+          "name": "Concise computed interpretation",
+          "points": 1,
+          "description": "Gives a one-sentence interpretation tied to the computed diagnostic without adding claims beyond the event diagnosis.",
+          "partial_credit": "Award 0.5 points if the interpretation is directionally correct but too broad."
+        }
+      ]
+    },
+    "provenance": {
+      "computed_by": "compute_gt.py",
+      "source_files": [
+        "metadata/event.json",
+        "data/event_reports/event_reports_001_Locked_package_evidence_report.pdf",
+        "data/event_reports/event_reports_003_Locked_event_anchor_September_2024_Nepal_floods_and_landslides.json",
+        "data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json",
+        "data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json",
+        "data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json",
+        "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+        "data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json"
+      ],
+      "notes": "Report-derived station-rainfall, record-station, river, and SMS anchors are parsed from the local PDF; gridded, exposure, and remote-sensing metrics are read from local JSON summaries."
+    }
+  },
+  "compute_gt_py": "#!/usr/bin/env python3\n\"\"\"Compute ground truth for CSX-060_Q2.\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nimport math\nimport re\nimport warnings\nfrom datetime import date\nfrom pathlib import Path\nfrom statistics import mean\n\nwarnings.filterwarnings(\"ignore\")\nfrom pypdf import PdfReader\n\n\nTASK_DIR = Path(__file__).resolve().parent\nREPO_ROOT = TASK_DIR.parents[2]\nPACKAGE_ROOT = REPO_ROOT / \"event_packages\" / \"standard_event_packages\" / \"packages\" / \"CSX-060\"\n\nSOURCE_FILES = [\n    \"metadata/event.json\",\n    \"data/event_reports/event_reports_001_Locked_package_evidence_report.pdf\",\n    \"data/event_reports/event_reports_003_Locked_event_anchor_September_2024_Nepal_floods_and_landslides.json\",\n    \"data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json\",\n    \"data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n    \"data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json\",\n    \"data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json\",\n    \"data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n    \"data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json\",\n]\n\nRUBRIC = {\n    \"total_points\": 20,\n    \"criteria\": [\n        {\n            \"name\": \"Final label and diagnostic structure\",\n            \"points\": 4,\n            \"description\": \"Returns score_ledger, final_label, failed_primary_candidates, and computed_interpretation, with final_label equal to station_river_slope_joint_anchor.\",\n            \"partial_credit\": \"Award 1 point for each required field that is present and usable; withhold the final-label point if the label is wrong.\",\n        },\n        {\n            \"name\": \"Station rainfall calculations\",\n            \"points\": 4,\n            \"description\": \"Computes station maximum, weighted mean, max-to-mean ratio, station count, and rainfall-threshold shares correctly.\",\n            \"partial_credit\": \"Award up to 4 points in proportion to the correctly computed station values within tolerance.\",\n        },\n        {\n            \"name\": \"River exceedance calculations\",\n            \"points\": 3,\n            \"description\": \"Computes 5 of 7 historic river exceedances, share 0.714, and maximum exceedance 3.52 m.\",\n            \"partial_credit\": \"Award 1.5 points for the correct exceedance share and 1.5 points for the correct maximum exceedance.\",\n        },\n        {\n            \"name\": \"Record-station cluster calculations\",\n            \"points\": 3,\n            \"description\": \"Computes cluster count 16, density 16.0 per 1000 km2, and spacing 7.906 km.\",\n            \"partial_credit\": \"Award 1 point for each correct cluster value within tolerance.\",\n        },\n        {\n            \"name\": \"Secondary signal calculations\",\n            \"points\": 3,\n            \"description\": \"Computes gridded-to-station ratios, warning normalization, Sentinel-1 mean change, and AlphaEarth maximum.\",\n            \"partial_credit\": \"Award up to 3 points for correctly computing most secondary values within tolerance.\",\n        },\n        {\n            \"name\": \"Threshold logic\",\n            \"points\": 2,\n            \"description\": \"Marks station, river, and record-station tests as passing and gridded, warning-volume, and image-change tests as failing.\",\n            \"partial_credit\": \"Award 1 point for the correct three passing tests and 1 point for the correct three failing tests.\",\n        },\n        {\n            \"name\": \"Concise computed interpretation\",\n            \"points\": 1,\n            \"description\": \"Gives a one-sentence interpretation tied to the computed diagnostic without adding claims beyond the event diagnosis.\",\n            \"partial_credit\": \"Award 0.5 points if the interpretation is directionally correct but too broad.\",\n        },\n    ],\n}\n\n\ndef read_json(rel_path: str) -> dict:\n    return json.loads((PACKAGE_ROOT / rel_path).read_text(encoding=\"utf-8\", errors=\"replace\"))\n\n\ndef read_pdf_text(rel_path: str) -> str:\n    reader = PdfReader(str(PACKAGE_ROOT / rel_path))\n    return \"\\n\".join(page.extract_text() or \"\" for page in reader.pages)\n\n\ndef normalized_text(text: str) -> str:\n    return re.sub(r\"\\s+\", \" \", text).strip()\n\n\ndef require_match(pattern: str, text: str, flags: int = 0) -> re.Match[str]:\n    match = re.search(pattern, text, flags)\n    if not match:\n        raise ValueError(f\"Pattern not found: {pattern}\")\n    return match\n\n\ndef parse_int_text(value: str) -> int:\n    return int(value.replace(\",\", \"\"))\n\n\ndef parse_precip_bins(report_text: str) -> list[tuple[float, float, int]]:\n    text = normalized_text(report_text)\n    patterns = [\n        (50.0, 100.0, r\"50 mm\\s*.\\s*100 mm\\s+(\\d+)\"),\n        (100.0, 200.0, r\"100 mm\\s*.\\s*200 mm\\s+(\\d+)\"),\n        (200.0, 300.0, r\"200 mm\\s*.\\s*300 mm\\s+(\\d+)\"),\n        (300.0, 400.0, r\"300 mm\\s*.\\s*400 mm\\s+(\\d+)\"),\n        (400.0, 500.0, r\"400 mm\\s*.\\s*500 mm\\s+(\\d+)\"),\n        (500.0, 600.0, r\"More than 500 mm\\s+(\\d+)\"),\n    ]\n    return [(low, high, int(require_match(pattern, text).group(1))) for low, high, pattern in patterns]\n\n\ndef parse_record_stations(report_text: str) -> list[tuple[str, str, float, float]]:\n    rows: list[tuple[str, str, float, float]] = []\n    row_pattern = re.compile(\n        r\"^\\s*(\\d+)\\s+(.+?)\\s+([A-Za-z][A-Za-z()]+)\\s+([0-9.]+)\\s+([0-9.]+)\\s+\\d{1,2}-[A-Za-z]{3}-\\d{4}\"\n    )\n    for line in report_text.splitlines():\n        match = row_pattern.match(line)\n        if not match:\n            continue\n        row_number = int(match.group(1))\n        if 1 <= row_number <= 25:\n            rows.append((match.group(2), match.group(3), float(match.group(4)), float(match.group(5))))\n    if len(rows) != 25:\n        raise ValueError(f\"Expected 25 record-station rows, found {len(rows)}\")\n    return rows\n\n\ndef parse_river_gauge_rows(report_text: str) -> list[tuple[str, float, float]]:\n    text = normalized_text(report_text)\n    start = text.find(\"Table 4:\")\n    end = text.find(\"The flood verification result\", start)\n    if start < 0 or end < 0:\n        raise ValueError(\"Could not isolate river gauge table\")\n    block = text[start:end]\n    rows = re.findall(\n        r\"\\b\\d+\\s+[0-9.]+\\s+(.+?)\\s+\\d{1,2}-[A-Za-z]{3}-\\d{4}\\s+([0-9.]+)\\s+([0-9.]+)(?=\\s+\\d+\\s+[0-9.]+\\s+|\\s*$)\",\n        block,\n    )\n    if len(rows) != 7:\n        raise ValueError(f\"Expected 7 river gauge rows, found {len(rows)}\")\n    return [(name, float(historic), float(observed)) for name, historic, observed in rows]\n\n\ndef parse_report_scalar_metrics(report_text: str) -> dict[str, int | float]:\n    text = normalized_text(report_text)\n    sms_raw = require_match(r\"SMS\\s*-\\s*([0-9,]+)\", text).group(1)\n    return {\n        \"max_3day_station_mm\": float(\n            require_match(r\"Daman recorded the highest three-day accumulated precipitation of ([0-9.]+) mm\", text).group(1)\n        ),\n        \"record_cluster_area_km2\": float(\n            require_match(r\"(\\d+) of these record breaking stations were located within a small area of approximately ([0-9,]+) square kilometers\", text).group(2)\n        ),\n        \"record_cluster_count\": int(\n            require_match(r\"(\\d+) of these record breaking stations were located within a small area of approximately\", text).group(1)\n        ),\n        \"sms_alerts\": parse_int_text(sms_raw),\n    }\n\n\ndef round_float(value: float, digits: int = 3) -> float:\n    return round(float(value), digits)\n\n\ndef inclusive_days(start_date: str, end_date: str) -> int:\n    return (date.fromisoformat(end_date) - date.fromisoformat(start_date)).days + 1\n\n\ndef station_bin_metrics(precip_bins: list[tuple[float, float, int]]) -> dict:\n    total = sum(count for _, _, count in precip_bins)\n    weighted = sum(((low + high) / 2.0) * count for low, high, count in precip_bins) / total\n    above_200 = sum(count for low, _, count in precip_bins if low >= 200.0)\n    above_300 = sum(count for low, _, count in precip_bins if low >= 300.0)\n    above_400 = sum(count for low, _, count in precip_bins if low >= 400.0)\n    return {\n        \"three_day_station_count\": total,\n        \"three_day_weighted_mean_mm\": round_float(weighted),\n        \"stations_above_200mm\": above_200,\n        \"stations_above_300mm\": above_300,\n        \"stations_above_400mm\": above_400,\n        \"three_day_share_above_200mm\": round_float(above_200 / total),\n        \"three_day_share_above_300mm\": round_float(above_300 / total),\n        \"three_day_share_above_400mm\": round_float(above_400 / total),\n    }\n\n\ndef record_station_metrics(rows: list[tuple[str, str, float, float]], cluster_count: int, cluster_area_km2: float) -> dict:\n    current_values = [row[2] for row in rows]\n    ratios = [row[2] / row[3] for row in rows]\n    kathmandu_valley_districts = {\"Kathmandu\", \"Lalitpur\", \"Bhaktapur\"}\n    return {\n        \"record_24h_station_count\": len(rows),\n        \"record_24h_district_count\": len({row[1] for row in rows}),\n        \"record_stations_in_kathmandu_valley\": sum(1 for row in rows if row[1] in kathmandu_valley_districts),\n        \"record_stations_in_approx_1000km2\": cluster_count,\n        \"record_station_density_per_1000km2\": round_float(cluster_count / cluster_area_km2 * 1000.0),\n        \"approx_record_station_spacing_km\": round_float(math.sqrt(cluster_area_km2 / cluster_count)),\n        \"max_24h_record_mm\": round_float(max(current_values), 1),\n        \"mean_24h_record_mm\": round_float(mean(current_values)),\n        \"max_record_ratio\": round_float(max(ratios)),\n        \"largest_record_ratio_station\": rows[ratios.index(max(ratios))][0],\n    }\n\n\ndef river_metrics(river_gauge_rows: list[tuple[str, float, float]]) -> dict:\n    exceedances = []\n    for name, historic, observed in river_gauge_rows:\n        exceedance = observed - historic\n        ratio = observed / historic\n        if observed > historic:\n            exceedances.append((name, exceedance, ratio))\n    max_by_m = max(exceedances, key=lambda item: item[1])\n    max_by_ratio = max(exceedances, key=lambda item: item[2])\n    return {\n        \"rivers_checked\": len(river_gauge_rows),\n        \"rivers_above_historic_count\": len(exceedances),\n        \"max_river_exceedance_m\": round_float(max_by_m[1]),\n        \"max_river_exceedance_station\": max_by_m[0],\n        \"max_river_level_ratio\": round_float(max_by_ratio[2]),\n        \"max_river_level_ratio_station\": max_by_ratio[0],\n    }\n\n\ndef build_metrics() -> dict:\n    report_text = read_pdf_text(\"data/event_reports/event_reports_001_Locked_package_evidence_report.pdf\")\n    report_scalars = parse_report_scalar_metrics(report_text)\n    precip_bins = parse_precip_bins(report_text)\n    record_station_rows = parse_record_stations(report_text)\n    river_gauge_rows = parse_river_gauge_rows(report_text)\n\n    event_meta = read_json(\"metadata/event.json\")\n    anchor = read_json(\"data/event_reports/event_reports_003_Locked_event_anchor_September_2024_Nepal_floods_and_landslides.json\")\n    era5 = read_json(\"data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json\")\n    gpm = read_json(\"data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\")\n    chirps = read_json(\"data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json\")\n    worldpop = read_json(\"data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json\")\n    alpha = read_json(\"data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json\")\n    s1 = read_json(\"data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json\")\n\n    station_bins = station_bin_metrics(precip_bins)\n    record = record_station_metrics(\n        record_station_rows,\n        int(report_scalars[\"record_cluster_count\"]),\n        float(report_scalars[\"record_cluster_area_km2\"]),\n    )\n    river = river_metrics(river_gauge_rows)\n    gpm_event_max_mm = gpm[\"stats\"][\"gpm_event_precip_mm_max\"]\n    chirps_event_max_mm = chirps[\"stats\"][\"chirps_event_precip_mm_max\"]\n    era5_event_max_mm = era5[\"stats\"][\"precipitation_sum_mm_max\"]\n    worldpop_population = worldpop[\"population_sum\"][\"population\"]\n\n    metrics = {\n        \"event_name\": event_meta[\"event_name\"],\n        \"hazard_family\": event_meta[\"hazard_family\"],\n        \"start_date\": anchor[\"temporal_window\"][\"start_date\"],\n        \"end_date\": anchor[\"temporal_window\"][\"end_date\"],\n        \"event_window_days\": inclusive_days(anchor[\"temporal_window\"][\"start_date\"], anchor[\"temporal_window\"][\"end_date\"]),\n        \"max_3day_station_mm\": report_scalars[\"max_3day_station_mm\"],\n        **station_bins,\n        **record,\n        **river,\n        \"gpm_event_mean_mm\": round_float(gpm[\"stats\"][\"gpm_event_precip_mm_mean\"]),\n        \"gpm_event_max_mm\": round_float(gpm_event_max_mm),\n        \"chirps_event_mean_mm\": round_float(chirps[\"stats\"][\"chirps_event_precip_mm_mean\"]),\n        \"chirps_event_max_mm\": round_float(chirps_event_max_mm),\n        \"era5_land_precip_mean_mm\": round_float(era5[\"stats\"][\"precipitation_sum_mm_mean\"]),\n        \"era5_land_precip_max_mm\": round_float(era5_event_max_mm),\n        \"station_max_to_weighted_mean_ratio\": round_float(\n            float(report_scalars[\"max_3day_station_mm\"]) / station_bins[\"three_day_weighted_mean_mm\"]\n        ),\n        \"river_historic_exceedance_share\": round_float(river[\"rivers_above_historic_count\"] / river[\"rivers_checked\"]),\n        \"gpm_max_share_of_station_max\": round_float(gpm_event_max_mm / float(report_scalars[\"max_3day_station_mm\"])),\n        \"chirps_max_share_of_station_max\": round_float(chirps_event_max_mm / float(report_scalars[\"max_3day_station_mm\"])),\n        \"era5_max_share_of_station_max\": round_float(era5_event_max_mm / float(report_scalars[\"max_3day_station_mm\"])),\n        \"worldpop_population_rounded\": int(round(worldpop_population / 1000) * 1000),\n        \"sms_alerts\": report_scalars[\"sms_alerts\"],\n        \"sms_alerts_per_1000_worldpop\": round_float(float(report_scalars[\"sms_alerts\"]) / worldpop_population * 1000.0, 1),\n        \"sentinel1_pre_count\": s1[\"counts\"][\"pre_count\"],\n        \"sentinel1_post_count\": s1[\"counts\"][\"post_count\"],\n        \"sentinel1_vv_change_mean_db\": round_float(s1[\"stats\"][\"s1_vv_post_minus_pre_db_mean\"]),\n        \"sentinel1_vv_change_range_db\": round_float(\n            s1[\"stats\"][\"s1_vv_post_minus_pre_db_max\"] - s1[\"stats\"][\"s1_vv_post_minus_pre_db_min\"]\n        ),\n        \"alphaearth_change_mean\": round_float(alpha[\"stats\"][\"alphaearth_1_minus_cosine_mean\"]),\n        \"alphaearth_change_max\": round_float(alpha[\"stats\"][\"alphaearth_1_minus_cosine_max\"]),\n    }\n    return metrics\n\n\ndef score_ledger(metrics: dict) -> dict:\n    station_pass = (\n        metrics[\"station_max_to_weighted_mean_ratio\"] >= 2.0\n        and metrics[\"three_day_share_above_200mm\"] >= 0.50\n        and metrics[\"three_day_station_count\"] >= 150\n    )\n    river_pass = (\n        metrics[\"river_historic_exceedance_share\"] >= 0.60\n        and metrics[\"max_river_exceedance_m\"] >= 2.0\n    )\n    record_pass = (\n        metrics[\"record_stations_in_approx_1000km2\"] >= 15\n        and metrics[\"record_station_density_per_1000km2\"] >= 15\n        and metrics[\"approx_record_station_spacing_km\"] <= 8.5\n    )\n    gridded_pass = (\n        metrics[\"gpm_max_share_of_station_max\"] >= 0.50\n        and max(\n            metrics[\"gpm_max_share_of_station_max\"],\n            metrics[\"chirps_max_share_of_station_max\"],\n            metrics[\"era5_max_share_of_station_max\"],\n        )\n        >= 0.50\n    )\n    warning_pass = metrics[\"sms_alerts_per_1000_worldpop\"] >= 1000\n    image_pass = (\n        abs(metrics[\"sentinel1_vv_change_mean_db\"]) >= 3.0\n        and metrics[\"alphaearth_change_max\"] >= 0.8\n    )\n    return {\n        \"station_rainfall_cluster\": {\n            \"pass\": station_pass,\n            \"supporting_values\": {\n                \"station_max_to_weighted_mean_ratio\": metrics[\"station_max_to_weighted_mean_ratio\"],\n                \"three_day_share_above_200mm\": metrics[\"three_day_share_above_200mm\"],\n                \"three_day_station_count\": metrics[\"three_day_station_count\"],\n            },\n            \"reason\": \"All three station-rainfall thresholds are met.\"\n            if station_pass\n            else \"At least one station-rainfall threshold is not met.\",\n        },\n        \"river_historic_exceedance\": {\n            \"pass\": river_pass,\n            \"supporting_values\": {\n                \"river_historic_exceedance_share\": metrics[\"river_historic_exceedance_share\"],\n                \"max_river_exceedance_m\": metrics[\"max_river_exceedance_m\"],\n            },\n            \"reason\": \"Five of seven checked rivers exceeded historic levels, and the largest exceedance is above 2 m.\"\n            if river_pass\n            else \"River exceedance share or maximum exceedance is below threshold.\",\n        },\n        \"record_station_cluster\": {\n            \"pass\": record_pass,\n            \"supporting_values\": {\n                \"record_stations_in_approx_1000km2\": metrics[\"record_stations_in_approx_1000km2\"],\n                \"record_station_density_per_1000km2\": metrics[\"record_station_density_per_1000km2\"],\n                \"approx_record_station_spacing_km\": metrics[\"approx_record_station_spacing_km\"],\n            },\n            \"reason\": \"The record-station cluster clears the count, density, and spacing thresholds.\"\n            if record_pass\n            else \"The record-station cluster does not clear the count, density, and spacing thresholds together.\",\n        },\n        \"gridded_rainfall_primary\": {\n            \"pass\": gridded_pass,\n            \"supporting_values\": {\n                \"gpm_max_share_of_station_max\": metrics[\"gpm_max_share_of_station_max\"],\n                \"chirps_max_share_of_station_max\": metrics[\"chirps_max_share_of_station_max\"],\n                \"era5_max_share_of_station_max\": metrics[\"era5_max_share_of_station_max\"],\n            },\n            \"reason\": \"At least one gridded maximum reaches one half of the station maximum.\"\n            if gridded_pass\n            else \"The gridded maxima are all below one half of the station maximum.\",\n        },\n        \"public_warning_volume_primary\": {\n            \"pass\": warning_pass,\n            \"supporting_values\": {\n                \"sms_alerts_per_1000_worldpop\": metrics[\"sms_alerts_per_1000_worldpop\"],\n            },\n            \"reason\": \"The normalized warning count reaches the threshold.\"\n            if warning_pass\n            else \"The normalized warning count is below the 1000 per 1000 people threshold.\",\n        },\n        \"image_change_primary\": {\n            \"pass\": image_pass,\n            \"supporting_values\": {\n                \"sentinel1_vv_change_mean_db\": metrics[\"sentinel1_vv_change_mean_db\"],\n                \"alphaearth_change_max\": metrics[\"alphaearth_change_max\"],\n            },\n            \"reason\": \"The radar and embedding metrics both clear the primary-signal thresholds.\"\n            if image_pass\n            else \"Neither the mean radar-change threshold nor the embedding-change threshold is met.\",\n        },\n    }\n\n\ndef failed_primary_candidates(metrics: dict) -> list[dict]:\n    return [\n        {\n            \"test_id\": \"gridded_rainfall_primary\",\n            \"deciding_value\": {\n                \"gpm\": metrics[\"gpm_max_share_of_station_max\"],\n                \"chirps\": metrics[\"chirps_max_share_of_station_max\"],\n                \"era5_land\": metrics[\"era5_max_share_of_station_max\"],\n            },\n            \"reason\": \"All gridded maxima are below one half of the station maximum.\",\n        },\n        {\n            \"test_id\": \"public_warning_volume_primary\",\n            \"deciding_value\": metrics[\"sms_alerts_per_1000_worldpop\"],\n            \"reason\": \"Warning volume per 1000 people is below the stated threshold.\",\n        },\n        {\n            \"test_id\": \"image_change_primary\",\n            \"deciding_value\": {\n                \"sentinel1_vv_change_mean_db\": metrics[\"sentinel1_vv_change_mean_db\"],\n                \"alphaearth_change_max\": metrics[\"alphaearth_change_max\"],\n            },\n            \"reason\": \"The radar and embedding changes both miss the primary-signal thresholds.\",\n        },\n    ]\n\n\ndef main() -> None:\n    metrics = build_metrics()\n    ledger = score_ledger(metrics)\n    final_label = (\n        \"station_river_slope_joint_anchor\"\n        if (\n            ledger[\"station_rainfall_cluster\"][\"pass\"]\n            and ledger[\"river_historic_exceedance\"][\"pass\"]\n            and ledger[\"record_station_cluster\"][\"pass\"]\n            and not ledger[\"gridded_rainfall_primary\"][\"pass\"]\n            and not ledger[\"public_warning_volume_primary\"][\"pass\"]\n            and not ledger[\"image_change_primary\"][\"pass\"]\n        )\n        else \"mixed_or_secondary_anchor\"\n    )\n    computed_interpretation = (\n        \"The event is best anchored by concentrated station rainfall, historic river exceedance, and a dense cluster of record rainfall stations rather than by gridded rainfall, warning volume, or image-change maxima.\"\n        if final_label == \"station_river_slope_joint_anchor\"\n        else \"The event has a mixed or secondary-anchor pattern because the six threshold tests do not isolate the station-river-record cluster.\"\n    )\n    primary_gt = {\n        \"score_ledger\": ledger,\n        \"final_label\": final_label,\n        \"failed_primary_candidates\": failed_primary_candidates(metrics),\n        \"computed_interpretation\": computed_interpretation,\n    }\n\n    output = {\n        \"schema_version\": \"1.0\",\n        \"task_id\": \"CSX-060_Q2\",\n        \"event_id\": \"CSX-060\",\n        \"task_type\": \"short_answer\",\n        \"target_family\": \"station_river_slope_anchor_diagnostic\",\n        \"evaluation_mode\": \"hybrid\",\n        \"difficulty_level\": \"L3\",\n        \"primary_gt\": primary_gt,\n        \"event\": {\n            \"event_name\": metrics[\"event_name\"],\n            \"hazard_family\": metrics[\"hazard_family\"],\n            \"event_date_or_window\": f\"{metrics['start_date']} to {metrics['end_date']}\",\n            \"region\": \"Nepal, with emphasis on Kathmandu Valley and affected river basins\",\n        },\n        \"key_values\": {\n            \"judge_anchors\": [\n                \"Score the six threshold tests from numeric values; first three pass and last three fail.\",\n                \"The final label must follow the pass/fail pattern, not a broad mechanism narrative.\",\n            ],\n            \"required_metrics\": metrics,\n            \"score_ledger\": ledger,\n            \"failed_primary_candidates\": failed_primary_candidates(metrics),\n        },\n        \"decision_rule\": {\n            \"final_label_rule\": \"station_river_slope_joint_anchor when station_rainfall_cluster, river_historic_exceedance, and record_station_cluster pass while gridded_rainfall_primary, public_warning_volume_primary, and image_change_primary fail; otherwise mixed_or_secondary_anchor.\",\n            \"thresholds\": {\n                \"station_rainfall_cluster\": {\n                    \"station_max_to_weighted_mean_ratio_min\": 2.0,\n                    \"three_day_share_above_200mm_min\": 0.5,\n                    \"three_day_station_count_min\": 150,\n                },\n                \"river_historic_exceedance\": {\n                    \"historic_exceedance_share_min\": 0.6,\n                    \"max_river_exceedance_m_min\": 2.0,\n                },\n                \"record_station_cluster\": {\n                    \"record_count_min\": 15,\n                    \"density_per_1000km2_min\": 15,\n                    \"spacing_km_max\": 8.5,\n                },\n                \"gridded_rainfall_primary\": {\n                    \"gpm_station_share_min\": 0.5,\n                    \"any_gridded_station_share_min\": 0.5,\n                },\n                \"public_warning_volume_primary\": {\n                    \"alerts_per_1000_min\": 1000,\n                },\n                \"image_change_primary\": {\n                    \"sentinel1_mean_abs_db_min\": 3.0,\n                    \"alphaearth_max_min\": 0.8,\n                },\n            },\n        },\n        \"rubric\": RUBRIC,\n        \"provenance\": {\n            \"computed_by\": \"compute_gt.py\",\n            \"source_files\": SOURCE_FILES,\n            \"notes\": \"Report-derived station-rainfall, record-station, river, and SMS anchors are parsed from the local PDF; gridded, exposure, and remote-sensing metrics are read from local JSON summaries.\",\n        },\n    }\n    (TASK_DIR / \"computed_gt.json\").write_text(\n        json.dumps(output, indent=2, ensure_ascii=True) + \"\\n\",\n        encoding=\"utf-8\",\n    )\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "event": {
+    "package_id": "CSX-060",
+    "event_name": "September 2024 Nepal floods and landslides",
+    "canonical_event_key": "2024 nepal floods landslides",
+    "hazard_family": "extreme_precip_pluvial_flood",
+    "hazard_label": "Extreme precipitation and pluvial flooding",
+    "scale": "regional_basin",
+    "region": "Mountain regions",
+    "primary_evidence_url": "https://global-flood.emergency.copernicus.eu/news/181-Floods%20and%20landslides%20in%20Nepal%2C%20late%20September%202024/",
+    "existence_verdict": "confirmed",
+    "temporal_match": "match",
+    "spatial_match": "match",
+    "hazard_match": "match",
+    "source_reliability": "high_official_or_institutional",
+    "correspondence_score": "92",
+    "release_decision": "keep",
+    "benchmark_readiness": "ready_with_metadata_warnings",
+    "benchmark_readiness_label": "ready with metadata warnings",
+    "data_integrity": {
+      "local_files_checked": "49",
+      "image_files_checked": "2",
+      "valid_images": "2",
+      "formal_slice_files_checked": "30",
+      "hard_error_count": "0",
+      "metadata_warning_count": "25",
+      "final_data_score": "65",
+      "final_data_decision": "ready_with_minor_warnings",
+      "replacement_file_count": "0"
+    },
+    "file_inventory": {
+      "total_files": 35,
+      "categories": {
+        "event_catalogs": 4,
+        "event_reports": 4,
+        "exposure_impact": 5,
+        "geospatial_context": 2,
+        "other": 2,
+        "physical_hazard": 7,
+        "remote_sensing": 11
+      }
+    }
+  },
+  "event_files": [
+    {
+      "file_id": "F0001",
+      "relative_path": "data/event_reports/event_reports_001_Locked_package_evidence_report.pdf",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/event_reports/event_reports_001_Locked_package_evidence_report.pdf",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/event_reports/event_reports_001_Locked_package_evidence_report.pdf",
+      "category": "event_reports",
+      "layer_name": "event_anchor_report",
+      "source_id": "S001",
+      "source_name": "Locked package evidence report",
+      "source_type": "resource_registry",
+      "source_url": "https://dhm.gov.np/uploads/dhm/downloads/Situational_Report_on_Extreme_Precipitation_and_Flooding_Event_of_27-29_September_2024.pdf",
+      "bytes": 1977959,
+      "sha256_16": "6a60666cb7c131a2",
+      "status": "downloaded",
+      "preview_type": "pdf",
+      "mime_type": "application/pdf",
+      "format": "pdf"
+    },
+    {
+      "file_id": "F0002",
+      "relative_path": "data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/event_catalogs/event_catalogs_001_GDACS_public_event_feeds_and_archive.json",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S002",
+      "source_name": "GDACS public event feeds and archive",
+      "source_type": "resource_registry",
+      "source_url": "https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventtype=FL%2CTC%2CEQ%2CVO&fromdate=2024-09-27&todate=2024-09-29",
+      "bytes": 8502,
+      "sha256_16": "a49ec174280ec9e1",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0003",
+      "relative_path": "data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/event_catalogs/event_catalogs_002_GDACS_public_event_feeds_and_archive.xml",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S003",
+      "source_name": "GDACS public event feeds and archive",
+      "source_type": "resource_registry",
+      "source_url": "https://www.gdacs.org/xml/rss.xml",
+      "bytes": 225166,
+      "sha256_16": "3ce6904decd46109",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "xml"
+    },
+    {
+      "file_id": "F0004",
+      "relative_path": "data/exposure_impact/exposure_impact_001_OSM_Nominatim_fallback_package_location.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/exposure_impact/exposure_impact_001_OSM_Nominatim_fallback_package_location.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/exposure_impact/exposure_impact_001_OSM_Nominatim_fallback_package_location.json",
+      "category": "exposure_impact",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S004",
+      "source_name": "OSM Nominatim fallback package location",
+      "source_type": "resource_registry",
+      "source_url": "https://nominatim.openstreetmap.org/search?q=Kathmandu+Valley+and+21+districts%2C+Nepal&format=jsonv2&limit=1",
+      "bytes": 2,
+      "sha256_16": "4f53cda18c2baa0c",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0005",
+      "relative_path": "data/geospatial_context/geospatial_context_001_geoBoundaries_administrative_boundaries.bin",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/geospatial_context/geospatial_context_001_geoBoundaries_administrative_boundaries.bin",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/geospatial_context/geospatial_context_001_geoBoundaries_administrative_boundaries.bin",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S005",
+      "source_name": "geoBoundaries administrative boundaries",
+      "source_type": "resource_registry",
+      "source_url": "https://www.geoboundaries.org/api/current/gbOpen/NPL/ADM1/",
+      "bytes": 1797,
+      "sha256_16": "7eeb4cc49e1d0849",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0006",
+      "relative_path": "data/physical_hazard/physical_hazard_001_CHIRPS_daily_precipitation_and_climatology.0",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/physical_hazard/physical_hazard_001_CHIRPS_daily_precipitation_and_climatology.0",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/physical_hazard/physical_hazard_001_CHIRPS_daily_precipitation_and_climatology.0",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S006",
+      "source_name": "CHIRPS daily precipitation and climatology",
+      "source_type": "resource_registry",
+      "source_url": "https://data.chc.ucsb.edu/products/CHIRPS-2.0/",
+      "bytes": 7005,
+      "sha256_16": "ca7af0f62bd4d261",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0007",
+      "relative_path": "data/remote_sensing/remote_sensing_001_NASA_Worldview_GIBS_snapshot.bin",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_001_NASA_Worldview_GIBS_snapshot.bin",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_001_NASA_Worldview_GIBS_snapshot.bin",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S007",
+      "source_name": "NASA Worldview/GIBS snapshot",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2024-09-27&BBOX=84.00000%2C26.50000%2C86.50000%2C29.00000&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=512&HEIGHT=512",
+      "bytes": 4992,
+      "sha256_16": "2127805ced58341d",
+      "status": "downloaded",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0008",
+      "relative_path": "data/event_reports/event_reports_002_HDX_CKAN_package_search.bin",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/event_reports/event_reports_002_HDX_CKAN_package_search.bin",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/event_reports/event_reports_002_HDX_CKAN_package_search.bin",
+      "category": "event_reports",
+      "layer_name": "text_reports",
+      "source_id": "S008",
+      "source_name": "HDX CKAN package search",
+      "source_type": "resource_registry",
+      "source_url": "https://data.humdata.org/api/3/action/package_search?q=September+2024+Nepal+floods+and+landslides+Nepal&rows=10",
+      "bytes": 125015,
+      "sha256_16": "bf03a06a3f48589c",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0009",
+      "relative_path": "data/exposure_impact/exposure_impact_002_Overpass_small_roads_and_critical_amenities.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/exposure_impact/exposure_impact_002_Overpass_small_roads_and_critical_amenities.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/exposure_impact/exposure_impact_002_Overpass_small_roads_and_critical_amenities.json",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S009",
+      "source_name": "Overpass small roads and critical amenities",
+      "source_type": "resource_registry",
+      "source_url": "https://overpass-api.de/api/interpreter",
+      "bytes": 3510,
+      "sha256_16": "fae74a8b2991d2a0",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0010",
+      "relative_path": "data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "category": "geospatial_context",
+      "layer_name": "aoi",
+      "source_id": "S010",
+      "source_name": "compact per-event AOI derived from event bbox",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 412,
+      "sha256_16": "b7ccf7439b461e33",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0011",
+      "relative_path": "data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/physical_hazard/physical_hazard_002_ERA5-Land_hourly_aggregate_stats.json",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S011",
+      "source_name": "ERA5-Land hourly aggregate stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 997,
+      "sha256_16": "55654dccd784d888",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0012",
+      "relative_path": "data/physical_hazard/physical_hazard_003_ERA5-Land_temperature_precipitation_wind_stack.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/physical_hazard/physical_hazard_003_ERA5-Land_temperature_precipitation_wind_stack.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/physical_hazard/physical_hazard_003_ERA5-Land_temperature_precipitation_wind_stack.zip",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S012",
+      "source_name": "ERA5-Land temperature precipitation wind stack",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 7082,
+      "sha256_16": "040eab36ceb65cbb",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/7fad17e53712a778fd7a.png"
+    },
+    {
+      "file_id": "F0013",
+      "relative_path": "data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S013",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 304,
+      "sha256_16": "d79263408dd53b07",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0014",
+      "relative_path": "data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.zip",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S013",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 7201,
+      "sha256_16": "d7d7eb4b89878d4d",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/460efd28a85bceab42f5.png"
+    },
+    {
+      "file_id": "F0015",
+      "relative_path": "data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/physical_hazard/physical_hazard_006_CHIRPS_daily_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S014",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 317,
+      "sha256_16": "91cbb9e422f49067",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0016",
+      "relative_path": "data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.zip",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S014",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 14876,
+      "sha256_16": "6faf28c09287bedd",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/0efe3c27958180bece54.png"
+    },
+    {
+      "file_id": "F0017",
+      "relative_path": "data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_sum.json",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S015",
+      "source_name": "WorldPop GP 100m population sum",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 124,
+      "sha256_16": "2ba0a920a5d2d4a2",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0018",
+      "relative_path": "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_resampled_1km_AOI.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_resampled_1km_AOI.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_resampled_1km_AOI.zip",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S016",
+      "source_name": "WorldPop GP 100m population resampled 1km AOI",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 389403,
+      "sha256_16": "f69d926e411ea2c1",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/d145979b7b04eaae0778.png"
+    },
+    {
+      "file_id": "F0019",
+      "relative_path": "data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S017",
+      "source_name": "Google Satellite Embedding 64-band annual stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 9889,
+      "sha256_16": "88a77551c04a14f1",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0020",
+      "relative_path": "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S018",
+      "source_name": "Google Satellite Embedding annual cosine-change stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 362,
+      "sha256_16": "c1d4fd9f5f80cfd6",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0021",
+      "relative_path": "data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_raster.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_raster.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_raster.zip",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S019",
+      "source_name": "Google Satellite Embedding annual cosine-change raster",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 819791,
+      "sha256_16": "d4b000a768a4fd1e",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/ea9e9384d88521904aee.png"
+    },
+    {
+      "file_id": "F0022",
+      "relative_path": "data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_005_Sentinel-1_GRD_VV_pre_post_change.json",
+      "category": "remote_sensing",
+      "layer_name": "sentinel1",
+      "source_id": "S020",
+      "source_name": "Sentinel-1 GRD VV pre/post change",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 499,
+      "sha256_16": "c970fcd108052032",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0023",
+      "relative_path": "data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change_raster.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change_raster.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change_raster.zip",
+      "category": "remote_sensing",
+      "layer_name": "sentinel1",
+      "source_id": "S021",
+      "source_name": "Sentinel-1 GRD VV pre/post change raster",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 13456715,
+      "sha256_16": "8ad393049d4f6974",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/e442a085a1b02111034a.png"
+    },
+    {
+      "file_id": "F0024",
+      "relative_path": "data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/exposure_impact/exposure_impact_005_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "category": "exposure_impact",
+      "layer_name": "osm_exposure",
+      "source_id": "S022",
+      "source_name": "OpenStreetMap Overpass bounded AOI slice",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 175396,
+      "sha256_16": "e1c4967b7e02b9a9",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0025",
+      "relative_path": "data/remote_sensing/remote_sensing_007_Sentinel-1_GRD_VV_pre_post_change_raster.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_007_Sentinel-1_GRD_VV_pre_post_change_raster.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_007_Sentinel-1_GRD_VV_pre_post_change_raster.zip",
+      "category": "remote_sensing",
+      "layer_name": "sentinel1",
+      "source_id": "S021",
+      "source_name": "Sentinel-1 GRD VV pre/post change raster",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 13457221,
+      "sha256_16": "24fbca0d3a3a7d7b",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/0cfe31a19c9b8e2b011d.png"
+    },
+    {
+      "file_id": "F0026",
+      "relative_path": "data/remote_sensing/remote_sensing_008_pre.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_008_pre.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_008_pre.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S023",
+      "source_name": "pre",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2024-08-28&BBOX=-10.0%2C-17.5%2C25.0%2C17.5&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 135401,
+      "sha256_16": "087447d8559b527c",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0027",
+      "relative_path": "data/remote_sensing/remote_sensing_009_event.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_009_event.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_009_event.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S024",
+      "source_name": "event",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2024-09-28&BBOX=-10.0%2C-17.5%2C25.0%2C17.5&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 151486,
+      "sha256_16": "57e81f7ca27693e0",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0028",
+      "relative_path": "data/event_reports/event_reports_003_Locked_event_anchor_September_2024_Nepal_floods_and_landslides.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/event_reports/event_reports_003_Locked_event_anchor_September_2024_Nepal_floods_and_landslides.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/event_reports/event_reports_003_Locked_event_anchor_September_2024_Nepal_floods_and_landslides.json",
+      "category": "event_reports",
+      "layer_name": "package_locked_event_anchor / National hydrometeorological agency",
+      "source_id": "S025",
+      "source_name": "Locked event anchor: September 2024 Nepal floods and landslides",
+      "source_type": "event_specific_sources",
+      "source_url": "https://dhm.gov.np/uploads/dhm/downloads/Situational_Report_on_Extreme_Precipitation_and_Flooding_Event_of_27-29_September_2024.pdf",
+      "bytes": 3269,
+      "sha256_16": "94b94965c002d168",
+      "status": "remote_verified",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0029",
+      "relative_path": "data/event_reports/event_reports_004_01_Locked_package_evidence_report.pdf.pdf",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/event_reports/event_reports_004_01_Locked_package_evidence_report.pdf.pdf",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/event_reports/event_reports_004_01_Locked_package_evidence_report.pdf.pdf",
+      "category": "event_reports",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S026",
+      "source_name": "01_Locked_package_evidence_report.pdf",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 1000000,
+      "sha256_16": "71ecd57f16b68ea9",
+      "status": "local_file_found",
+      "preview_type": "pdf",
+      "mime_type": "application/pdf",
+      "format": "pdf"
+    },
+    {
+      "file_id": "F0030",
+      "relative_path": "data/event_catalogs/event_catalogs_003_04_NASA_EONET_v3_events.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/event_catalogs/event_catalogs_003_04_NASA_EONET_v3_events.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/event_catalogs/event_catalogs_003_04_NASA_EONET_v3_events.json.json",
+      "category": "event_catalogs",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S027",
+      "source_name": "04_NASA_EONET_v3_events.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 14084,
+      "sha256_16": "f4f50fc454038bf4",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0031",
+      "relative_path": "data/remote_sensing/remote_sensing_010_event_2024-09-28_modis_truecolor.jpg.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_010_event_2024-09-28_modis_truecolor.jpg.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_010_event_2024-09-28_modis_truecolor.jpg.jpg",
+      "category": "remote_sensing",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S028",
+      "source_name": "event_2024-09-28_modis_truecolor.jpg",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 31803,
+      "sha256_16": "5b8cb01f29ba2574",
+      "status": "local_file_found",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0032",
+      "relative_path": "data/remote_sensing/remote_sensing_011_pre_2024-08-28_modis_truecolor.jpg.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_011_pre_2024-08-28_modis_truecolor.jpg.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/remote_sensing/remote_sensing_011_pre_2024-08-28_modis_truecolor.jpg.jpg",
+      "category": "remote_sensing",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S029",
+      "source_name": "pre_2024-08-28_modis_truecolor.jpg",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 117445,
+      "sha256_16": "3179642b0ea581c9",
+      "status": "local_file_found",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0033",
+      "relative_path": "data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S030",
+      "source_name": "01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 2508,
+      "sha256_16": "a075c51a1c52b129",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0034",
+      "relative_path": "data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S031",
+      "source_name": "02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 94,
+      "sha256_16": "6b5c8ee20232dbb8",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0035",
+      "relative_path": "data/event_catalogs/event_catalogs_004_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-060/data/event_catalogs/event_catalogs_004_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-060/data/event_catalogs/event_catalogs_004_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "category": "event_catalogs",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S032",
+      "source_name": "05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 6885,
+      "sha256_16": "8d521d620c75a20e",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    }
+  ]
+}

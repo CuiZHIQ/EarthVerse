@@ -1,0 +1,811 @@
+{
+  "task_id": "CSX-147_Q1",
+  "event_id": "CSX-147",
+  "title": "Bangladesh Storm-Flood Process Evidence Ledger",
+  "event_name": "April 2004 Bangladesh severe storms and floods",
+  "hazard_family": "extratropical_storm_severe_convection",
+  "hazard_label": "Extratropical storm and severe convection",
+  "region": "Southeast Asia",
+  "scale": "regional_basin",
+  "difficulty": "L3_process_mechanism_reasoning",
+  "difficulty_rationale": "Manual review: \"Bangladesh Storm-Flood Process Evidence Ledger\" requires using quantitative evidence to explain a physical process, phase/timing pattern, routing/transport pathway, or mechanism diagnosis beyond a simple numeric ledger.",
+  "primary_dimension": "causal_chain",
+  "dimensions": [
+    "causal_chain",
+    "multi_source_evidence",
+    "quantitative_calculation"
+  ],
+  "dimension_rationale": "Bangladesh storm-flood process evidence ledger.",
+  "task_type": "short_answer",
+  "target_family": "bangladesh_2004_storm_flood_process_score_ledger",
+  "file_count": 30,
+  "category_counts": {
+    "event_catalogs": 4,
+    "event_reports": 7,
+    "exposure_impact": 4,
+    "geospatial_context": 2,
+    "other": 2,
+    "physical_hazard": 9,
+    "remote_sensing": 2
+  },
+  "question": "# Bangladesh Storm-Flood Process Evidence Ledger\n\nA hydrometeorology analyst is checking the April 2004 severe storms and floods in northern and northeastern Bangladesh. The question is whether the record supports a multi-day storm-driven flood process ledger, rather than a single-day storm label, a storm-unlinked flood interpretation, or a pure snapshot-timing label.\n\nBuild a five-test score ledger for the 2004-04-09 through 2004-04-22 event window. Return one compact JSON object with this structure:\n\n```json\n{\n  \"target_family\": \"bangladesh_2004_storm_flood_process_score_ledger\",\n  \"tests\": {\n    \"sequence_persistence\": {\"pass\": true, \"values\": {}},\n    \"storm_flood_causation_text\": {\"pass\": true, \"values\": {}},\n    \"displacement_anchor\": {\"pass\": true, \"values\": {}},\n    \"terrain_text\": {\"pass\": true, \"values\": {}},\n    \"image_timing\": {\"pass\": true, \"values\": {}}\n  },\n  \"score\": 5,\n  \"answer\": \"multi_day_storm_flood_process_ledger_pass\",\n  \"rejected_alternatives\": [\"single_day_storm\", \"storm_unlinked_flood_case\", \"snapshot_timing_label\"],\n  \"interpretation\": \"one concise sentence tied to the computed ledger\"\n}\n```\n\nUse these deterministic tests:\n\n- `sequence_persistence`: compute the inclusive storm-sequence length, the inclusive event-window length, and the storm-window coverage ratio. Pass if the storm sequence lasts at least 10 days and covers at least 0.75 of the event window.\n- `storm_flood_causation_text`: check whether the report ties the flood to a series of intense thunderstorms, places the flooding after that storm sequence, and describes runoff from uplands as a direct flood cause. Pass only when all three causal text anchors are present.\n- `displacement_anchor`: extract the Bangladesh displacement count expressed as about half a million people. Pass if the count is at least 400,000.\n- `terrain_text`: check whether the event text ties the most prominent flood area to water from the Khasi Hills and the India-Bangladesh border area. Pass only when both text anchors are present.\n- `image_timing`: compute the follow-up image lag after the storm-sequence end and after the event-window end, and extract the image resolution. Pass if the image is after the storm sequence, within 7 days after the event window, and has 250 m per pixel resolution.\n\nRound ratios to three decimals and day counts to integers.\n",
+  "solution": "# Final Answer\n\n```json\n{\n  \"target_family\": \"bangladesh_2004_storm_flood_process_score_ledger\",\n  \"tests\": {\n    \"sequence_persistence\": {\n      \"pass\": true,\n      \"values\": {\n        \"storm_start\": \"2004-04-09\",\n        \"storm_end\": \"2004-04-19\",\n        \"storm_days\": 11,\n        \"event_days\": 14,\n        \"storm_window_coverage_ratio\": 0.786\n      }\n    },\n    \"storm_flood_causation_text\": {\n      \"pass\": true,\n      \"values\": {\n        \"intense_thunderstorms_text\": true,\n        \"floods_followed_storms_text\": true,\n        \"upland_runoff_cause_text\": true\n      }\n    },\n    \"displacement_anchor\": {\n      \"pass\": true,\n      \"values\": {\n        \"reported_displaced_people\": 500000\n      }\n    },\n    \"terrain_text\": {\n      \"pass\": true,\n      \"values\": {\n        \"khasi_hills_text\": true,\n        \"india_bangladesh_border_text\": true\n      }\n    },\n    \"image_timing\": {\n      \"pass\": true,\n      \"values\": {\n        \"image_date\": \"2004-04-26\",\n        \"event_snapshot_date\": \"2004-04-15\",\n        \"lag_after_storm_end_days\": 7,\n        \"lag_after_event_end_days\": 4,\n        \"resolution_m_per_pixel\": 250\n      }\n    }\n  },\n  \"score\": 5,\n  \"answer\": \"multi_day_storm_flood_process_ledger_pass\",\n  \"rejected_alternatives\": [\"single_day_storm\", \"storm_unlinked_flood_case\", \"snapshot_timing_label\"],\n  \"interpretation\": \"The ledger supports a multi-day storm-flood process because an 11-day storm sequence is text-linked to upland runoff, cross-border flooding, 500000 displaced people, and a timely 250 m follow-up image.\"\n}\n```\n\n# Key Computations\n\nThe event window is inclusive from 2004-04-09 to 2004-04-22, so `event_days = 14`. The storm sequence runs from 2004-04-09 through 2004-04-19, so `storm_days = 11` and `storm_window_coverage_ratio = 11 / 14 = 0.786`.\n\nThe report text supplies the process link: it describes a series of intense thunderstorms, states that the floods followed that sequence, and says the most obvious flooding was caused by water rushing out of the Khasi Hills. Those three text anchors make `storm_flood_causation_text.pass = true`.\n\nReport and image anchors:\n\n- Bangladesh displacement count: about half a million people, encoded as `500000`.\n- The event text links the most prominent flood area to water from the Khasi Hills and the India-Bangladesh border area.\n- The follow-up image date is `2004-04-26`, which is `7` days after the storm-sequence end and `4` days after the event-window end.\n- The package metadata records an event snapshot date of `2004-04-15`.\n- The image resolution is `250 m per pixel`.\n\n# Reasoning Path\n\nFirst, the sequence test rules out a single-day storm label: the storm period lasts `11` inclusive days and covers `0.786` of the `14`-day event window, passing both persistence conditions.\n\nSecond, the report text rules out a storm-unlinked flood label. The same source connects the storm sequence, subsequent flooding, and upland runoff from the Khasi Hills into one process chain.\n\nThird, the displacement and terrain tests confirm that the process chain is tied to the Bangladesh flood impact and the India-Bangladesh border area, not only to a generic regional image.\n\nFourth, the image timing test places the follow-up observation after the storm sequence and close to the event window, with the required `250 m` resolution. With all five tests passing, the score is `5/5` and the answer is `multi_day_storm_flood_process_ledger_pass`.\n\n# Computed Interpretation\n\nThe computed ledger supports a multi-day storm-flood process for April 2004 Bangladesh; the single-day storm, storm-unlinked flood case, and snapshot-timing label all fail against the combined timing, causal-text, displacement, terrain, and image-date checks.\n\n# Scoring Rubric\n\n- 3 points: Final ledger and answer. Full credit requires the target family, all five tests marked true, score `5`, answer `multi_day_storm_flood_process_ledger_pass`, and the three rejected alternatives. Partial credit: 1-2 points if the answer label is close but one test status, the score, or one rejected alternative is missing.\n- 3 points: Sequence arithmetic. Full credit requires `storm_days = 11`, `event_days = 14`, `storm_window_coverage_ratio = 0.786`, and correct application of the 10-day and 0.75 thresholds. Partial credit: 1-2 points for correct dates but one missing inclusive-day or ratio calculation.\n- 4 points: Storm-flood causation text. Full credit requires all three causal text anchors: series of intense thunderstorms, floods following that storm sequence, and upland runoff from the Khasi Hills as the flood cause. Partial credit: 2-3 points for two correct causal anchors; 1 point for only one anchor.\n- 3 points: Displacement extraction. Full credit requires extracting about half a million displaced people in Bangladesh as `500000` and applying the `>= 400000` test. Partial credit: 1-2 points for a correct qualitative half-million reading without the numeric threshold.\n- 2 points: Terrain text anchors. Full credit requires both the Khasi Hills and India-Bangladesh border area text anchors. Partial credit: 1 point for naming only one of the two anchors.\n- 3 points: Image timing and resolution. Full credit requires `2004-04-26`, `7` days after storm end, `4` days after event end, `250 m per pixel`, and the correct pass state. Partial credit: 1-2 points for the correct image date and resolution but one missing lag calculation.\n- 2 points: Compact computed interpretation. Full credit keeps the interpretation tied to the five calculations and does not add extra loss counts beyond the ledger. Partial credit: 1 point if the interpretation is broadly consistent but weakly tied to the computed values.\n",
+  "ground_truth": {
+    "schema_version": "1.0",
+    "task_id": "CSX-147_Q1",
+    "event_id": "CSX-147",
+    "task_type": "short_answer",
+    "evaluation_mode": "hybrid",
+    "difficulty_level": "L3",
+    "target_family": "bangladesh_2004_storm_flood_process_score_ledger",
+    "primary_gt": {
+      "target_family": "bangladesh_2004_storm_flood_process_score_ledger",
+      "tests": {
+        "sequence_persistence": {
+          "pass": true,
+          "values": {
+            "storm_start": "2004-04-09",
+            "storm_end": "2004-04-19",
+            "storm_days": 11,
+            "event_days": 14,
+            "storm_window_coverage_ratio": 0.786
+          }
+        },
+        "storm_flood_causation_text": {
+          "pass": true,
+          "values": {
+            "intense_thunderstorms_text": true,
+            "floods_followed_storms_text": true,
+            "upland_runoff_cause_text": true
+          }
+        },
+        "displacement_anchor": {
+          "pass": true,
+          "values": {
+            "reported_displaced_people": 500000
+          }
+        },
+        "terrain_text": {
+          "pass": true,
+          "values": {
+            "khasi_hills_text": true,
+            "india_bangladesh_border_text": true
+          }
+        },
+        "image_timing": {
+          "pass": true,
+          "values": {
+            "image_date": "2004-04-26",
+            "event_snapshot_date": "2004-04-15",
+            "lag_after_storm_end_days": 7,
+            "lag_after_event_end_days": 4,
+            "resolution_m_per_pixel": 250
+          }
+        }
+      },
+      "score": 5,
+      "answer": "multi_day_storm_flood_process_ledger_pass",
+      "rejected_alternatives": [
+        "single_day_storm",
+        "storm_unlinked_flood_case",
+        "snapshot_timing_label"
+      ],
+      "interpretation": "The ledger supports a multi-day storm-flood process because an 11-day storm sequence is text-linked to upland runoff, cross-border flooding, 500000 displaced people, and a timely 250 m follow-up image."
+    },
+    "numeric_tolerances": {
+      "ratio": 0.001,
+      "days": 0,
+      "people": 0
+    },
+    "key_values": {
+      "event_name": "April 2004 Bangladesh severe storms and floods",
+      "event_window": {
+        "start": "2004-04-09",
+        "end": "2004-04-22",
+        "days": 14
+      },
+      "storm_sequence": {
+        "start": "2004-04-09",
+        "end": "2004-04-19",
+        "days": 11
+      },
+      "tests": {
+        "sequence_persistence": {
+          "pass": true,
+          "values": {
+            "storm_start": "2004-04-09",
+            "storm_end": "2004-04-19",
+            "storm_days": 11,
+            "event_days": 14,
+            "storm_window_coverage_ratio": 0.786
+          }
+        },
+        "storm_flood_causation_text": {
+          "pass": true,
+          "values": {
+            "intense_thunderstorms_text": true,
+            "floods_followed_storms_text": true,
+            "upland_runoff_cause_text": true
+          }
+        },
+        "displacement_anchor": {
+          "pass": true,
+          "values": {
+            "reported_displaced_people": 500000
+          }
+        },
+        "terrain_text": {
+          "pass": true,
+          "values": {
+            "khasi_hills_text": true,
+            "india_bangladesh_border_text": true
+          }
+        },
+        "image_timing": {
+          "pass": true,
+          "values": {
+            "image_date": "2004-04-26",
+            "event_snapshot_date": "2004-04-15",
+            "lag_after_storm_end_days": 7,
+            "lag_after_event_end_days": 4,
+            "resolution_m_per_pixel": 250
+          }
+        }
+      },
+      "rejected_alternatives": [
+        "single_day_storm",
+        "storm_unlinked_flood_case",
+        "snapshot_timing_label"
+      ]
+    },
+    "rubric": {
+      "total_points": 20,
+      "criteria": [
+        {
+          "name": "Final ledger and answer",
+          "points": 3,
+          "description": "Reports target_family, all five true tests, score 5, answer multi_day_storm_flood_process_ledger_pass, and the three rejected alternatives.",
+          "partial_credit": "Give 1-2 points if the answer label is close but one test status, the score, or one rejected alternative is missing."
+        },
+        {
+          "name": "Sequence arithmetic",
+          "points": 3,
+          "description": "Computes 11 storm days, 14 event days, 0.786 coverage ratio, and applies the 10-day and 0.75 thresholds correctly.",
+          "partial_credit": "Give 1-2 points for correct dates but one missing inclusive-day or ratio calculation."
+        },
+        {
+          "name": "Storm-flood causation text",
+          "points": 4,
+          "description": "Finds the series of intense thunderstorms, the statement that floods followed that sequence, and the upland runoff cause text.",
+          "partial_credit": "Give 2-3 points for two correct causal text anchors; give 1 point for only one anchor."
+        },
+        {
+          "name": "Displacement extraction",
+          "points": 3,
+          "description": "Extracts about half a million displaced people in Bangladesh as 500000 and applies the >=400000 test.",
+          "partial_credit": "Give 1-2 points for a correct qualitative half-million reading without the numeric threshold."
+        },
+        {
+          "name": "Terrain text anchors",
+          "points": 2,
+          "description": "Finds both the Khasi Hills and India-Bangladesh border area text anchors.",
+          "partial_credit": "Give 1 point for naming only one of the two anchors."
+        },
+        {
+          "name": "Image timing and resolution",
+          "points": 3,
+          "description": "Computes 2004-04-26, 7 days after storm end, 4 days after event end, 250 m per pixel, and the true pass state.",
+          "partial_credit": "Give 1-2 points for the correct image date and resolution but one missing lag calculation."
+        },
+        {
+          "name": "Compact computed interpretation",
+          "points": 2,
+          "description": "Keeps the interpretation tied to the five calculations and avoids extra loss counts beyond the ledger.",
+          "partial_credit": "Give 1 point if the interpretation is broadly consistent but weakly tied to the computed values."
+        }
+      ]
+    },
+    "provenance": {
+      "computed_by": "compute_gt.py",
+      "source_files": [
+        "metadata/event.json",
+        "metadata/files.csv",
+        "data/event_reports/event_reports_004_Locked_event_anchor_April_2004_Bangladesh_severe_storms_and_floods.json",
+        "data/other/other_001_NASA_Earth_Observatory_Bangladesh_flood_follow-up_image.html"
+      ],
+      "notes": [
+        "Off-event gridded precipitation products are not used in this ground truth.",
+        "The scored evidence comes from the declared event anchor, NASA Earth Observatory text, and package metadata."
+      ]
+    }
+  },
+  "compute_gt_py": "#!/usr/bin/env python3\n\"\"\"Compute the CSX-147_Q1 score-ledger ground truth from local event files.\"\"\"\n\nfrom __future__ import annotations\n\nimport csv\nimport datetime as dt\nimport html\nimport json\nimport re\nfrom pathlib import Path\nfrom typing import Any\nfrom urllib.parse import parse_qs, urlparse\n\n\nTASK_ID = \"CSX-147_Q1\"\nEVENT_ID = \"CSX-147\"\nTARGET_FAMILY = \"bangladesh_2004_storm_flood_process_score_ledger\"\nTASK_DIR = Path(__file__).resolve().parent\nREPO_ROOT = TASK_DIR.parents[2]\nEVENT_DIR = REPO_ROOT / \"event_packages\" / \"standard_event_packages\" / \"packages\" / EVENT_ID\n\nANCHOR_JSON = \"data/event_reports/event_reports_004_Locked_event_anchor_April_2004_Bangladesh_severe_storms_and_floods.json\"\nARTICLE_HTML = \"data/other/other_001_NASA_Earth_Observatory_Bangladesh_flood_follow-up_image.html\"\n\n\ndef load_json(rel_path: str) -> Any:\n    with (EVENT_DIR / rel_path).open(\"r\", encoding=\"utf-8-sig\") as handle:\n        return json.load(handle)\n\n\ndef read_text(rel_path: str) -> str:\n    return (EVENT_DIR / rel_path).read_text(encoding=\"utf-8\", errors=\"ignore\")\n\n\ndef clean_html_text(text: str) -> str:\n    text = re.sub(r\"<script[\\s\\S]*?</script>\", \" \", text, flags=re.I)\n    text = re.sub(r\"<style[\\s\\S]*?</style>\", \" \", text, flags=re.I)\n    text = re.sub(r\"<[^>]+>\", \" \", text)\n    return re.sub(r\"\\s+\", \" \", html.unescape(text)).strip()\n\n\ndef inclusive_days(start: str, end: str) -> int:\n    return (dt.date.fromisoformat(end) - dt.date.fromisoformat(start)).days + 1\n\n\ndef day_lag(start: str, end: str) -> int:\n    return (dt.date.fromisoformat(end) - dt.date.fromisoformat(start)).days\n\n\ndef article_text() -> str:\n    raw = read_text(ARTICLE_HTML)\n    paragraphs = re.findall(r\"<p>(.*?)</p>\", raw, flags=re.I | re.S)\n    return \" \".join(clean_html_text(paragraph) for paragraph in paragraphs)\n\n\ndef remote_event_snapshot_date() -> str:\n    with (EVENT_DIR / \"metadata\" / \"files.csv\").open(newline=\"\", encoding=\"utf-8\") as handle:\n        for row in csv.DictReader(handle):\n            if row.get(\"source_name\") != \"event\":\n                continue\n            query = parse_qs(urlparse(row[\"url\"]).query)\n            return query[\"TIME\"][0]\n    raise ValueError(\"event snapshot row not found\")\n\n\ndef first_int(pattern: str, text: str, label: str) -> int:\n    match = re.search(pattern, text, flags=re.I)\n    if not match:\n        raise ValueError(f\"missing {label}\")\n    return int(match.group(1))\n\n\ndef build_ground_truth() -> dict[str, Any]:\n    event = load_json(\"metadata/event.json\")\n    anchor = load_json(ANCHOR_JSON)\n    text = article_text()\n\n    event_start = anchor[\"temporal_window\"][\"start_date\"]\n    event_end = anchor[\"temporal_window\"][\"end_date\"]\n    event_days = inclusive_days(event_start, event_end)\n\n    storm_match = re.search(r\"began on April ([0-9]+) and lasted through April ([0-9]+)\", text, flags=re.I)\n    if not storm_match:\n        raise ValueError(\"missing storm sequence\")\n    storm_start = f\"2004-04-{int(storm_match.group(1)):02d}\"\n    storm_end = f\"2004-04-{int(storm_match.group(2)):02d}\"\n    storm_days = inclusive_days(storm_start, storm_end)\n    storm_window_coverage_ratio = round(storm_days / event_days, 3)\n\n    intense_thunderstorms_text = bool(re.search(r\"series of intense thunderstorms\", text, flags=re.I))\n    floods_followed_storms_text = bool(re.search(r\"floods followed on the heels\", text, flags=re.I))\n    upland_runoff_cause_text = bool(re.search(r\"caused by water rushing out of the Khasi Hills\", text, flags=re.I))\n    displacement = 500000 if re.search(r\"half a million people in Bangladesh\", text, flags=re.I) else 0\n    khasi_hills_text = bool(re.search(r\"Khasi Hills\", text, flags=re.I))\n    border_text = bool(re.search(r\"border between India and Bangladesh\", text, flags=re.I))\n    image_day = first_int(r\"On April ([0-9]+), 2004, the clouds cleared\", text, \"image date\")\n    image_date = f\"2004-04-{image_day:02d}\"\n    resolution = first_int(r\"resolution of ([0-9]+) meters per pixel\", text, \"resolution\")\n    event_snapshot_date = remote_event_snapshot_date()\n\n    tests = {\n        \"sequence_persistence\": {\n            \"pass\": storm_days >= 10 and storm_window_coverage_ratio >= 0.75,\n            \"values\": {\n                \"storm_start\": storm_start,\n                \"storm_end\": storm_end,\n                \"storm_days\": storm_days,\n                \"event_days\": event_days,\n                \"storm_window_coverage_ratio\": storm_window_coverage_ratio,\n            },\n        },\n        \"storm_flood_causation_text\": {\n            \"pass\": intense_thunderstorms_text and floods_followed_storms_text and upland_runoff_cause_text,\n            \"values\": {\n                \"intense_thunderstorms_text\": intense_thunderstorms_text,\n                \"floods_followed_storms_text\": floods_followed_storms_text,\n                \"upland_runoff_cause_text\": upland_runoff_cause_text,\n            },\n        },\n        \"displacement_anchor\": {\n            \"pass\": displacement >= 400000,\n            \"values\": {\n                \"reported_displaced_people\": displacement,\n            },\n        },\n        \"terrain_text\": {\n            \"pass\": khasi_hills_text and border_text,\n            \"values\": {\n                \"khasi_hills_text\": khasi_hills_text,\n                \"india_bangladesh_border_text\": border_text,\n            },\n        },\n        \"image_timing\": {\n            \"pass\": day_lag(storm_end, image_date) > 0 and day_lag(event_end, image_date) <= 7 and resolution == 250,\n            \"values\": {\n                \"image_date\": image_date,\n                \"event_snapshot_date\": event_snapshot_date,\n                \"lag_after_storm_end_days\": day_lag(storm_end, image_date),\n                \"lag_after_event_end_days\": day_lag(event_end, image_date),\n                \"resolution_m_per_pixel\": resolution,\n            },\n        },\n    }\n    score = sum(1 for test in tests.values() if test[\"pass\"])\n    answer = \"multi_day_storm_flood_process_ledger_pass\" if score == 5 else \"storm_flood_process_ledger_incomplete\"\n    rejected = [\"single_day_storm\", \"storm_unlinked_flood_case\", \"snapshot_timing_label\"]\n    interpretation = (\n        \"The ledger supports a multi-day storm-flood process because an 11-day storm sequence is text-linked \"\n        \"to upland runoff, cross-border flooding, 500000 displaced people, and a timely 250 m follow-up image.\"\n    )\n\n    rubric = [\n        {\n            \"name\": \"Final ledger and answer\",\n            \"points\": 3,\n            \"description\": \"Reports target_family, all five true tests, score 5, answer multi_day_storm_flood_process_ledger_pass, and the three rejected alternatives.\",\n            \"partial_credit\": \"Give 1-2 points if the answer label is close but one test status, the score, or one rejected alternative is missing.\",\n        },\n        {\n            \"name\": \"Sequence arithmetic\",\n            \"points\": 3,\n            \"description\": \"Computes 11 storm days, 14 event days, 0.786 coverage ratio, and applies the 10-day and 0.75 thresholds correctly.\",\n            \"partial_credit\": \"Give 1-2 points for correct dates but one missing inclusive-day or ratio calculation.\",\n        },\n        {\n            \"name\": \"Storm-flood causation text\",\n            \"points\": 4,\n            \"description\": \"Finds the series of intense thunderstorms, the statement that floods followed that sequence, and the upland runoff cause text.\",\n            \"partial_credit\": \"Give 2-3 points for two correct causal text anchors; give 1 point for only one anchor.\",\n        },\n        {\n            \"name\": \"Displacement extraction\",\n            \"points\": 3,\n            \"description\": \"Extracts about half a million displaced people in Bangladesh as 500000 and applies the >=400000 test.\",\n            \"partial_credit\": \"Give 1-2 points for a correct qualitative half-million reading without the numeric threshold.\",\n        },\n        {\n            \"name\": \"Terrain text anchors\",\n            \"points\": 2,\n            \"description\": \"Finds both the Khasi Hills and India-Bangladesh border area text anchors.\",\n            \"partial_credit\": \"Give 1 point for naming only one of the two anchors.\",\n        },\n        {\n            \"name\": \"Image timing and resolution\",\n            \"points\": 3,\n            \"description\": \"Computes 2004-04-26, 7 days after storm end, 4 days after event end, 250 m per pixel, and the true pass state.\",\n            \"partial_credit\": \"Give 1-2 points for the correct image date and resolution but one missing lag calculation.\",\n        },\n        {\n            \"name\": \"Compact computed interpretation\",\n            \"points\": 2,\n            \"description\": \"Keeps the interpretation tied to the five calculations and avoids extra loss counts beyond the ledger.\",\n            \"partial_credit\": \"Give 1 point if the interpretation is broadly consistent but weakly tied to the computed values.\",\n        },\n    ]\n\n    return {\n        \"schema_version\": \"1.0\",\n        \"task_id\": TASK_ID,\n        \"event_id\": EVENT_ID,\n        \"task_type\": \"short_answer\",\n        \"evaluation_mode\": \"hybrid\",\n        \"difficulty_level\": \"L3\",\n        \"target_family\": TARGET_FAMILY,\n        \"primary_gt\": {\n            \"target_family\": TARGET_FAMILY,\n            \"tests\": tests,\n            \"score\": score,\n            \"answer\": answer,\n            \"rejected_alternatives\": rejected,\n            \"interpretation\": interpretation,\n        },\n        \"numeric_tolerances\": {\n            \"ratio\": 0.001,\n            \"days\": 0,\n            \"people\": 0,\n        },\n        \"key_values\": {\n            \"event_name\": event.get(\"event_name\", \"April 2004 Bangladesh severe storms and floods\"),\n            \"event_window\": {\"start\": event_start, \"end\": event_end, \"days\": event_days},\n            \"storm_sequence\": {\"start\": storm_start, \"end\": storm_end, \"days\": storm_days},\n            \"tests\": tests,\n            \"rejected_alternatives\": rejected,\n        },\n        \"rubric\": {\"total_points\": 20, \"criteria\": rubric},\n        \"provenance\": {\n            \"computed_by\": \"compute_gt.py\",\n            \"source_files\": [\n                \"metadata/event.json\",\n                \"metadata/files.csv\",\n                ANCHOR_JSON,\n                ARTICLE_HTML,\n            ],\n            \"notes\": [\n                \"Off-event gridded precipitation products are not used in this ground truth.\",\n                \"The scored evidence comes from the declared event anchor, NASA Earth Observatory text, and package metadata.\",\n            ],\n        },\n    }\n\n\ndef main() -> None:\n    output = TASK_DIR / \"computed_gt.json\"\n    output.write_text(json.dumps(build_ground_truth(), indent=2, ensure_ascii=True) + \"\\n\", encoding=\"utf-8\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "event": {
+    "package_id": "CSX-147",
+    "event_name": "April 2004 Bangladesh severe storms and floods",
+    "canonical_event_key": "april 2004 bangladesh severe storms and floods",
+    "hazard_family": "extratropical_storm_severe_convection",
+    "hazard_label": "Extratropical storm and severe convection",
+    "scale": "regional_basin",
+    "region": "Southeast Asia",
+    "primary_evidence_url": "https://www.earthobservatory.nasa.gov/images/13057/severe-storms-trigger-floods-in-bangladesh",
+    "existence_verdict": "confirmed",
+    "temporal_match": "yes",
+    "spatial_match": "yes",
+    "hazard_match": "yes",
+    "source_reliability": "high_official_or_institutional",
+    "correspondence_score": "92",
+    "release_decision": "keep",
+    "benchmark_readiness": "ready_with_metadata_warnings",
+    "benchmark_readiness_label": "ready with metadata warnings",
+    "data_integrity": {
+      "local_files_checked": "25",
+      "image_files_checked": "4",
+      "valid_images": "4",
+      "formal_slice_files_checked": "10",
+      "hard_error_count": "0",
+      "metadata_warning_count": "5",
+      "final_data_score": "80",
+      "final_data_decision": "ready_with_minor_warnings",
+      "replacement_file_count": "0"
+    },
+    "file_inventory": {
+      "total_files": 30,
+      "categories": {
+        "event_catalogs": 4,
+        "event_reports": 7,
+        "exposure_impact": 4,
+        "geospatial_context": 2,
+        "other": 2,
+        "physical_hazard": 9,
+        "remote_sensing": 2
+      }
+    }
+  },
+  "event_files": [
+    {
+      "file_id": "F0001",
+      "relative_path": "data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory_event_article.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory_event_article.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory_event_article.html",
+      "category": "event_reports",
+      "layer_name": "event_anchor_report",
+      "source_id": "S001",
+      "source_name": "Locked anchor report (NASA Earth Observatory event article)",
+      "source_type": "resource_registry",
+      "source_url": "https://www.earthobservatory.nasa.gov/images/13057/severe-storms-trigger-floods-in-bangladesh",
+      "bytes": 297210,
+      "sha256_16": "711c89c43438169e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0002",
+      "relative_path": "data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "category": "event_reports",
+      "layer_name": "text_reports",
+      "source_id": "S002",
+      "source_name": "HDX CKAN package_search",
+      "source_type": "resource_registry",
+      "source_url": "https://data.humdata.org/api/3/action/package_search?q=April%202004%20Bangladesh%20severe%20storms%20and%20floods%20Bangladesh%202004-04-09&rows=10",
+      "bytes": 294,
+      "sha256_16": "8b0409239393d27e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0003",
+      "relative_path": "data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S003",
+      "source_name": "NASA EONET v3 events/categories search",
+      "source_type": "resource_registry",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/categories/severeStorms?start=2004-04-09&end=2004-04-22&status=all",
+      "bytes": 13904,
+      "sha256_16": "ab234449efa233f3",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0004",
+      "relative_path": "data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S004",
+      "source_name": "GDACS event list / feed search",
+      "source_type": "resource_registry",
+      "source_url": "https://www.gdacs.org/gdacsapi/api/events/geteventlist/MAP?fromDate=2004-04-09&toDate=2004-04-22&alertlevel=Green,Orange,Red",
+      "bytes": 75265,
+      "sha256_16": "aa048ce2df085b1d",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0005",
+      "relative_path": "data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S005",
+      "source_name": "OpenStreetMap Nominatim geocoding",
+      "source_type": "resource_registry",
+      "source_url": "https://nominatim.openstreetmap.org/search?q=Northern%20and%20northeastern%20Bangladesh%2C%20Bangladesh&format=json&limit=5",
+      "bytes": 2,
+      "sha256_16": "4f53cda18c2baa0c",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0006",
+      "relative_path": "data/physical_hazard/physical_hazard_001_NOAA_NASA_Worldview_true-color_and_precipitation_overlays.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_001_NOAA_NASA_Worldview_true-color_and_precipitation_overlays.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_001_NOAA_NASA_Worldview_true-color_and_precipitation_overlays.html",
+      "category": "physical_hazard",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S006",
+      "source_name": "NOAA/NASA Worldview true-color and precipitation overlays",
+      "source_type": "resource_registry",
+      "source_url": "https://worldview.earthdata.nasa.gov/?t=2004-04-09",
+      "bytes": 4315,
+      "sha256_16": "339136a38b7e0720",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0007",
+      "relative_path": "data/event_reports/event_reports_003_event_package.json_source_plan.locked_event_anchor.evidence_url.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/event_reports/event_reports_003_event_package.json_source_plan.locked_event_anchor.evidence_url.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/event_reports/event_reports_003_event_package.json_source_plan.locked_event_anchor.evidence_url.html",
+      "category": "event_reports",
+      "layer_name": "event_package_report_url",
+      "source_id": "S007",
+      "source_name": "event_package.json source_plan.locked_event_anchor.evidence_url",
+      "source_type": "resource_registry",
+      "source_url": "https://www.earthobservatory.nasa.gov/images/13057/severe-storms-trigger-floods-in-bangladesh",
+      "bytes": 297215,
+      "sha256_16": "c81cc790f608bdba",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0008",
+      "relative_path": "data/physical_hazard/physical_hazard_002_Open-Meteo_daily_weather_fill.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_002_Open-Meteo_daily_weather_fill.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_002_Open-Meteo_daily_weather_fill.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S008",
+      "source_name": "Open-Meteo daily weather fill",
+      "source_type": "resource_registry",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=6.0000&longitude=118.5000&start_date=2004-03-26&end_date=2004-04-22&daily=temperature_2m_max%2Ctemperature_2m_min%2Cprecipitation_sum%2Cwind_speed_10m_max&timezone=UTC",
+      "bytes": 1343,
+      "sha256_16": "4449d2a83bb69be8",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0009",
+      "relative_path": "data/physical_hazard/physical_hazard_003_NASA_POWER_daily_weather_fill.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_003_NASA_POWER_daily_weather_fill.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_003_NASA_POWER_daily_weather_fill.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S009",
+      "source_name": "NASA POWER daily weather fill",
+      "source_type": "resource_registry",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M%2CT2M_MAX%2CT2M_MIN%2CPRECTOTCORR%2CWS10M&community=RE&longitude=118.5000&latitude=6.0000&start=20040326&end=20040422&format=JSON",
+      "bytes": 3092,
+      "sha256_16": "ecf40f39e3edeed7",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0010",
+      "relative_path": "data/exposure_impact/exposure_impact_001_Overpass_small_roads_and_critical_amenities.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/exposure_impact/exposure_impact_001_Overpass_small_roads_and_critical_amenities.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/exposure_impact/exposure_impact_001_Overpass_small_roads_and_critical_amenities.json",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S010",
+      "source_name": "Overpass small roads and critical amenities",
+      "source_type": "resource_registry",
+      "source_url": "https://overpass-api.de/api/interpreter",
+      "bytes": 1553,
+      "sha256_16": "525ecf308f577939",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0011",
+      "relative_path": "data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "category": "geospatial_context",
+      "layer_name": "aoi",
+      "source_id": "S011",
+      "source_name": "compact per-event AOI derived from event bbox",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 419,
+      "sha256_16": "91d8139bd3921a28",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0012",
+      "relative_path": "data/physical_hazard/physical_hazard_004_ERA5-Land_hourly_aggregate_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_004_ERA5-Land_hourly_aggregate_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_004_ERA5-Land_hourly_aggregate_stats.json",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S012",
+      "source_name": "ERA5-Land hourly aggregate stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 1000,
+      "sha256_16": "886c3ec9ceca3192",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0013",
+      "relative_path": "data/physical_hazard/physical_hazard_005_ERA5-Land_temperature_precipitation_wind_stack.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_005_ERA5-Land_temperature_precipitation_wind_stack.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_005_ERA5-Land_temperature_precipitation_wind_stack.zip",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S013",
+      "source_name": "ERA5-Land temperature precipitation wind stack",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 3445,
+      "sha256_16": "5090c8bfba5fd86a",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/7375e31b9fb42764ecbf.png"
+    },
+    {
+      "file_id": "F0014",
+      "relative_path": "data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S014",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 323,
+      "sha256_16": "0720259b0de92d83",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0015",
+      "relative_path": "data/physical_hazard/physical_hazard_007_GPM_IMERG_V07_event_accumulated_precipitation.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_007_GPM_IMERG_V07_event_accumulated_precipitation.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_007_GPM_IMERG_V07_event_accumulated_precipitation.zip",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S014",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 3950,
+      "sha256_16": "a654bc78a3be24e3",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/49478fa18155e9a7f7ae.png"
+    },
+    {
+      "file_id": "F0016",
+      "relative_path": "data/physical_hazard/physical_hazard_008_CHIRPS_daily_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_008_CHIRPS_daily_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_008_CHIRPS_daily_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S015",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 331,
+      "sha256_16": "2b4af3b500e351ff",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0017",
+      "relative_path": "data/physical_hazard/physical_hazard_009_CHIRPS_daily_event_accumulated_precipitation.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_009_CHIRPS_daily_event_accumulated_precipitation.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/physical_hazard/physical_hazard_009_CHIRPS_daily_event_accumulated_precipitation.zip",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S015",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 4438,
+      "sha256_16": "f2cfbc6b254d4c6a",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/282ff02275f90220d9ba.png"
+    },
+    {
+      "file_id": "F0018",
+      "relative_path": "data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S016",
+      "source_name": "WorldPop GP 100m population sum",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 124,
+      "sha256_16": "2625b3ae0c6b273d",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0019",
+      "relative_path": "data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_resampled_1km_AOI.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_resampled_1km_AOI.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/exposure_impact/exposure_impact_003_WorldPop_GP_100m_population_resampled_1km_AOI.zip",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S017",
+      "source_name": "WorldPop GP 100m population resampled 1km AOI",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 63908,
+      "sha256_16": "6a6d61791ffbddbd",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/0c91e250901483341a6d.png"
+    },
+    {
+      "file_id": "F0020",
+      "relative_path": "data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "category": "exposure_impact",
+      "layer_name": "osm_exposure",
+      "source_id": "S018",
+      "source_name": "OpenStreetMap Overpass bounded AOI slice",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 200087,
+      "sha256_16": "19a7598042eed2f1",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0021",
+      "relative_path": "data/remote_sensing/remote_sensing_001_pre.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/remote_sensing/remote_sensing_001_pre.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/remote_sensing/remote_sensing_001_pre.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S019",
+      "source_name": "pre",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2004-03-10&BBOX=-11.5%2C101.0%2C23.5%2C136.0&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 213442,
+      "sha256_16": "a743cc701e754455",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0022",
+      "relative_path": "data/remote_sensing/remote_sensing_002_event.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/remote_sensing/remote_sensing_002_event.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/remote_sensing/remote_sensing_002_event.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S020",
+      "source_name": "event",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2004-04-15&BBOX=-11.5%2C101.0%2C23.5%2C136.0&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 186449,
+      "sha256_16": "9f9364f43372cda8",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0023",
+      "relative_path": "data/event_reports/event_reports_004_Locked_event_anchor_April_2004_Bangladesh_severe_storms_and_floods.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/event_reports/event_reports_004_Locked_event_anchor_April_2004_Bangladesh_severe_storms_and_floods.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/event_reports/event_reports_004_Locked_event_anchor_April_2004_Bangladesh_severe_storms_and_floods.json",
+      "category": "event_reports",
+      "layer_name": "package_locked_event_anchor / NASA Earth Observatory event article",
+      "source_id": "S021",
+      "source_name": "Locked event anchor: April 2004 Bangladesh severe storms and floods",
+      "source_type": "event_specific_sources",
+      "source_url": "https://www.earthobservatory.nasa.gov/images/13057/severe-storms-trigger-floods-in-bangladesh",
+      "bytes": 3226,
+      "sha256_16": "e58f1ce5fa1901b1",
+      "status": "remote_verified",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0024",
+      "relative_path": "data/event_reports/event_reports_005_Locked_anchor_report_NASA_Earth_Observatory_event_article.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/event_reports/event_reports_005_Locked_anchor_report_NASA_Earth_Observatory_event_article.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/event_reports/event_reports_005_Locked_anchor_report_NASA_Earth_Observatory_event_article.html",
+      "category": "event_reports",
+      "layer_name": "html",
+      "source_id": "S001",
+      "source_name": "Locked anchor report (NASA Earth Observatory event article)",
+      "source_type": "event_specific_sources",
+      "source_url": "https://www.earthobservatory.nasa.gov/images/13057/severe-storms-trigger-floods-in-bangladesh",
+      "bytes": 297254,
+      "sha256_16": "67bdbfa42a50db3d",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0025",
+      "relative_path": "data/other/other_001_NASA_Earth_Observatory_Bangladesh_flood_follow-up_image.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/other/other_001_NASA_Earth_Observatory_Bangladesh_flood_follow-up_image.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/other/other_001_NASA_Earth_Observatory_Bangladesh_flood_follow-up_image.html",
+      "category": "other",
+      "layer_name": "html",
+      "source_id": "S022",
+      "source_name": "NASA Earth Observatory Bangladesh flood follow-up image",
+      "source_type": "event_specific_sources",
+      "source_url": "https://science.nasa.gov/earth/earth-observatory/severe-storms-trigger-floods-in-bangladesh-13061/",
+      "bytes": 284368,
+      "sha256_16": "4749a766b2c3e6d6",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0026",
+      "relative_path": "data/event_reports/event_reports_006_085_CSX-147_01_Locked_anchor_report_NASA_Earth_Observatory_event_article.html.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/event_reports/event_reports_006_085_CSX-147_01_Locked_anchor_report_NASA_Earth_Observatory_event_article.html.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/event_reports/event_reports_006_085_CSX-147_01_Locked_anchor_report_NASA_Earth_Observatory_event_article.html.html",
+      "category": "event_reports",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S023",
+      "source_name": "085_CSX-147_01_Locked_anchor_report_NASA_Earth_Observatory_event_article.html",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 296905,
+      "sha256_16": "586c6782c8919b1b",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0027",
+      "relative_path": "data/event_reports/event_reports_007_085_CSX-147_02_ReliefWeb_Reports_API_event_search.bin",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/event_reports/event_reports_007_085_CSX-147_02_ReliefWeb_Reports_API_event_search.bin",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/event_reports/event_reports_007_085_CSX-147_02_ReliefWeb_Reports_API_event_search.bin",
+      "category": "event_reports",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S024",
+      "source_name": "085_CSX-147_02_ReliefWeb_Reports_API_event_search",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 143,
+      "sha256_16": "16e210c3f8fefa1d",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0028",
+      "relative_path": "data/other/other_002_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/other/other_002_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/other/other_002_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S025",
+      "source_name": "01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 2383,
+      "sha256_16": "44d9fcee10c0e040",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0029",
+      "relative_path": "data/event_catalogs/event_catalogs_003_04_event_specific_disaster_catalog_GDACS_event_list_for_package_time_window.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/event_catalogs/event_catalogs_003_04_event_specific_disaster_catalog_GDACS_event_list_for_package_time_window.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/event_catalogs/event_catalogs_003_04_event_specific_disaster_catalog_GDACS_event_list_for_package_time_window.json.json",
+      "category": "event_catalogs",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S026",
+      "source_name": "04_event_specific_disaster_catalog_GDACS_event_list_for_package_time_window.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 2690,
+      "sha256_16": "98216850005d53b7",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0030",
+      "relative_path": "data/event_catalogs/event_catalogs_004_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-147/data/event_catalogs/event_catalogs_004_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-147/data/event_catalogs/event_catalogs_004_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json",
+      "category": "event_catalogs",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S027",
+      "source_name": "05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 15031,
+      "sha256_16": "1af6a3c74c22522a",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    }
+  ]
+}

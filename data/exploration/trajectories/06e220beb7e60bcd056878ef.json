@@ -1,0 +1,738 @@
+{
+  "task_id": "CSX-330_Q1",
+  "model_id": "tencent-hy3",
+  "model_name": "Tencent Hy3",
+  "scores": {
+    "overall": 64.32,
+    "answer": 63.64,
+    "rubric": 65.0,
+    "unit_accuracy": 63.64,
+    "answer_units_correct": 7,
+    "answer_units_total": 11,
+    "rubric_points_earned": 13.0,
+    "rubric_points_total": 20.0,
+    "verdict": "partial"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 305.374,
+    "tool_calls": 19,
+    "model_rounds": 20,
+    "file_reads": 5,
+    "unique_evidence_files": 15,
+    "python_calls": 9,
+    "tool_errors": 0,
+    "prompt_tokens": 183160,
+    "completion_tokens": 7974,
+    "total_tokens": 234543
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "Discover local evidence files in the event package to understand available data for the marine heat-stress priority diagnosis.",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 41,\n  \"file_count_total\": 41,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-330/data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml\",\n      \"bytes\": 225166,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-330/data/event_catalogs/event_catalogs_002_NOAA_OISST_PSL_ERDDAP_sea-surface_temperature_THREDDS_catalog_XML.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_NOAA_OISST_PSL_ERDDAP_sea-surface_temperature_THREDDS_catalog_XML.xml\",\n      \"bytes\": 57247,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-330/data/event_catalogs/event_catalogs_003_NASA_EONET_events_API.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_NASA_EONET_events_API.xml\",\n      \"bytes\": 137902,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-330/data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml\",\n      \"bytes\": 225163,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-330/data/event_catalogs/event_catalogs_005_05_marine_source_catalog.html.html\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_005_05_marine_source_catalog.html.html\",\n      \"bytes\": 118411,\n      \"suffix\": \".html\"\n    },\n    {\n      \"path\": \"event_p\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the locked event anchor JSON to get the core diagnosis details including SST, bleaching threshold, priority cutoff, DHW thresholds, rescue actions, and nonpriority checks.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_003_Locked_event_anchor_2023_Florida_Keys_marine_heatwave_and_coral_bleaching.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_003_Locked_event_anchor_2023_Florida_Keys_marine_heatwave_and_coral_bleaching.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-330\\\",\\n  \\\"event_name\\\": \\\"2023 Florida Keys marine heatwave and coral bleaching\\\",\\n  \\\"hazard_family\\\": \\\"marine_heatwave_coastal_ecosystem\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2023-07-01\\\",\\n    \\\"end_date\\\": \\\"2023-08-31\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Florida Keys\\\",\\n    \\\"country_or_region\\\": \\\"United States\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"2023 Florida Keys marine heatwave and coral bleaching\\\",\\n    \\\"event_start_date\\\": \\\"2023-07-01\\\",\\n    \\\"event_end_date\\\": \\\"2023-08-31\\\",\\n    \\\"event_location\\\": \\\"Florida Keys\\\",\\n    \\\"event_country_or_region\\\": \\\"United States\\\",\\n    \\\"event_scope\\\": \\\"local/regional\\\",\\n    \\\"evidence_type\\\": \\\"NOAA Climate.gov\\\",\\n    \\\"evidence_url\\\": \\\"https://www.climate.gov/news-features/event-tracker/noaa-and-partners-race-rescue-remaining-florida-corals-historic-ocean\\\",\\n    \\\"evidence_final_url\\\": \\\"https://www.climate.gov/news-features/event-tracker/noaa-and-partners-race-rescue-remaining-florida-corals-historic-ocean\\\",\\n    \\\"http_status\\\": \\\"\\\",\\n    \\\"lock_status\\\": \\\"event_locked_stable_url_needs_probe\\\",\\n    \\\"lock_confidence\\\": \\\"provisional\\\",\\n    \\\"match_rule\\\": \\\"subagent_url_migration_repair\\\",\\n    \\\"web_search_query_used\\\": \\\"marine_heatwave_coastal_ecosystem North America extreme event 2023 Florida Keys\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_003_Locked_event_anchor_2023_Florida_Keys_marine_heatwave_and_coral_bleaching.json"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the locked package evidence report to find the priority diagnosis details: SST exceedance, bleaching threshold, priority cutoff, DHW thresholds, rescue actions, and nonpriority checks.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n  \"text\": \"<!DOCTYPE html>\\n<html lang=\\\"en\\\" dir=\\\"ltr\\\" prefix=\\\"og: https://ogp.me/ns#\\\" class=\\\"h-100\\\">\\n  <head>\\n    <title>NOAA and partners race to rescue remaining Florida corals from historic ocean heat wave | NOAA Climate.gov</title>\\n    <meta charset=\\\"utf-8\\\" />\\n<script async src=\\\"/sites/default/files/google_analytics/gtag.js?tfcvcj\\\"></script>\\n<script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments)};gtag(\\\"js\\\", new Date());gtag(\\\"set\\\", \\\"developer_id.dMDhkMT\\\", true);gtag(\\\"config\\\", \\\"G-69P3KT57C3\\\", {\\\"groups\\\":\\\"default\\\",\\\"linker\\\":{\\\"domains\\\":[\\\"*.climate.gov\\\",\\\"*.noaa.gov\\\"]},\\\"link_attribution\\\":true,\\\"allow_ad_personalization_signals\\\":false,\\\"page_location\\\":location.pathname + location.search + location.hash});</script>\\n<meta name=\\\"description\\\" content=\\\"Experts are deploying numerous measures to protect, relocate, and “bank” live fragments of coral to help Florida’s Coral Reef survive a heat crisis that may last for months.\\\" />\\n<meta name=\\\"abstract\\\" content=\\\"Experts are deploying numerous measures to protect, relocate, and “bank” live fragments of coral to help Florida’s Coral Reef survive a heat crisis that may last for months.\\\" />\\n<meta name=\\\"geo.region\\\" content=\\\"US\\\" />\\n<meta name=\\\"geo.position\\\" content=\\\"25.1,-80.3\\\" />\\n<link rel=\\\"canonical\\\" href=\\\"https://www.climate.gov/news-features/event-tracker/noaa-and-partners-race-rescue-remaining-florida-corals-historic-ocean\\\" />\\n<meta name=\\\"robots\\\" content=\\\"index, follow, max-snippet:-1, max-video-preview:-1, m\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search the event package for key diagnostic terms: bleaching threshold, DHW severity thresholds, rescue fragment counts, priority cutoff, and nonpriority checks.",
+      "args": {
+        "query": "bleaching threshold Degree Heating Week DHW rescue fragments priority exceedance cutoff",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"bleaching threshold Degree Heating Week DHW rescue fragments priority exceedance cutoff\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 141
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search package for priority diagnosis and coral rescue terms after a broad match failed.",
+      "args": {
+        "query": "coral rescue priority diagnosis",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"coral rescue priority diagnosis\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 85
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for DHW acronym which is key to the question's Degree Heating Week thresholds.",
+      "args": {
+        "query": "DHW",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"DHW\",\n  \"match_count\": 3,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"snippet\": \"<div class=\\\"clearfix text-formatted field field--name-field-media-caption field--type-text-long field--label-hidden field__item\\\"><p>Animated satellite-based map showing the build-up of ocean heat stress in the waters around Florida between June 25 and July 23, 2023. Coral reefs in the southern portion of the Florida Keys have been experiencing extreme heat stress for weeks. In areas where the Degree Heating Week (DHW\\n...[TRUNCATED]...\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-330/data/exposure_impact/exposure_impact_001_ReefBase_Allen_Coral_Atlas_protected_areas.html\",\n      \"snippet\": \"})(window,document,'script','dataLayer','GTM-5XMT4VF');</script><link rel=\\\"preload\\\" href=\\\"/_next/static/css/963b8eefe9e39df7.css\\\" as=\\\"style\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/css/963b8eefe9e39df7.css\\\" data-n-g=\\\"\\\"/><link rel=\\\"preload\\\" href=\\\"/_next/static/css/ae4ed9c503fd1e33.css\\\" as=\\\"style\\\"/><link rel=\\\"stylesheet\\\" href=\\\"/_next/static/css/ae4ed9c503fd1e33.css\\\" data-n-p=\\\"\\\"/><noscript data-n-css=\\\"\\\"></noscript><\\n...[TRUNCATED]...\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-330/data/other/other_001_NOAA_Coral_Reef_Watch_5km_products.html\",\n      \"snippet\": \"<!--        <a class=\\\"link-level-two\\\" href=\\\"/satellite/e50/e50_dhw.html\\\">  -->\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1588
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "event_packages/standard_event_packages/packages/CSX-330/data/exposure_impact/exposure_impact_001_ReefBase_Allen_Coral_Atlas_protected_areas.html",
+        "event_packages/standard_event_packages/packages/CSX-330/data/other/other_001_NOAA_Coral_Reef_Watch_5km_products.html"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read NOAA Coral Reef Watch product page for bleaching threshold, DHW severity thresholds, and SST values.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-330/data/other/other_001_NOAA_Coral_Reef_Watch_5km_products.html",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-330/data/other/other_001_NOAA_Coral_Reef_Watch_5km_products.html\",\n  \"text\": \"<HTML>\\n<HEAD>\\n<title>NOAA Coral Reef Watch Daily 5km Satellite Coral Bleaching Heat Stress Monitoring Products (Version 3.1)</title>\\n\\n<!--// START OF HEADER TEXT FROM INCLUDE STATEMENT  //-->\\n<!--// DO NOT MODIFY THIS SECTION  //-->\\n<link rel=\\\"icon\\\" href=\\\"/favicon.png\\\" type=\\\"image/x-icon\\\" />\\n<link rel=\\\"shortcut icon\\\" href=\\\"/favicon.ico\\\" type=\\\"image/x-icon\\\" />\\n<link rel=\\\"stylesheet\\\" href=\\\"/crw-style_wide.css\\\">\\n<meta http-equiv=\\\"Content-Type\\\" content=\\\"text/html; charset=iso-8859-1\\\">\\n<meta name=\\\"Keywords\\\" Content=\\\"Oceanography, Marine, Satellite,Remote Sensing,Coral Reef,Coral Bleaching,Marine Biology,Marine Ecology, Physical Oceanography, Environment, Publication,in situ, observation, CREWS, CRW,  NOAA, Government\\\">\\n<meta name=\\\"Author\\\" Content=\\\"NOAA Coral Reef Watch\\\">\\n<title>NOAA Coral Reef Watch Program</title>\\n<!--// ****** for GSA federal Google Analytics ***** //-->\\n<script async id=\\\"_fed_an_ua_tag\\\" src=\\\"https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOC&subagency=NOAA\\\"></script>\\n<!--// GA4 Google tag (gtag.js) - code updated 6/13/2023; main STAR tag created 3/1/2023 //-->\\n<script async src=\\\"https://www.googletagmanager.com/gtag/js?id=G-6J8W8XXDSC\\\"></script>\\n<script>\\n  window.dataLayer = window.dataLayer || [];\\n  function gtag(){dataLayer.push(arguments);}\\n  gtag('js', new Date());\\n  gtag('config', 'G-6J8W8XXDSC');\\n</script>\\n<script async src='https://siteimproveanalytics.com/js/siteanalyze_6294131.js'></script>\\n<!--// ***************************** //-->\\n<script rel=\\\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/data/other/other_001_NOAA_Coral_Reef_Watch_5km_products.html"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search JSON files for rescue fragment counts, priority cutoff, peak SST and related diagnosis fields.",
+      "args": {
+        "query": "rescue fragments priority cutoff peak SST",
+        "glob": "**/*.json",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"rescue fragments priority cutoff peak SST\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 95
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 9,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "List metadata directory to find diagnosis or task-specific files not seen in the first truncated listing.",
+      "args": {
+        "subdir": "metadata",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 3,\n  \"file_count_total\": 3,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-330/metadata/event.json\",\n      \"package_relative_path\": \"metadata/event.json\",\n      \"bytes\": 1517,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-330/metadata/files.csv\",\n      \"package_relative_path\": \"metadata/files.csv\",\n      \"bytes\": 10195,\n      \"suffix\": \".csv\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-330/metadata/sources.csv\",\n      \"package_relative_path\": \"metadata/sources.csv\",\n      \"bytes\": 4498,\n      \"suffix\": \".csv\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 716
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 10,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read event.json metadata to see if it contains diagnosis priority, thresholds, or references to other evidence.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-330/metadata/event.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-330/metadata/event.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-330\\\",\\n  \\\"event_name\\\": \\\"2023 Florida Keys marine heatwave and coral bleaching\\\",\\n  \\\"canonical_event_key\\\": \\\"2023 florida keys marine heatwave and coral bleaching\\\",\\n  \\\"hazard_family\\\": \\\"marine_heatwave_coastal_ecosystem\\\",\\n  \\\"hazard_label\\\": \\\"Marine heatwave and coastal ecosystem impact\\\",\\n  \\\"scale\\\": \\\"national_admin\\\",\\n  \\\"region\\\": \\\"North America\\\",\\n  \\\"primary_evidence_url\\\": \\\"https://www.climate.gov/news-features/event-tracker/noaa-and-partners-race-rescue-remaining-florida-corals-historic-ocean\\\",\\n  \\\"existence_verdict\\\": \\\"confirmed\\\",\\n  \\\"temporal_match\\\": \\\"match\\\",\\n  \\\"spatial_match\\\": \\\"match\\\",\\n  \\\"hazard_match\\\": \\\"match\\\",\\n  \\\"source_reliability\\\": \\\"high_official_or_institutional\\\",\\n  \\\"correspondence_score\\\": \\\"98\\\",\\n  \\\"release_decision\\\": \\\"keep\\\",\\n  \\\"benchmark_readiness\\\": \\\"ready_with_metadata_warnings\\\",\\n  \\\"benchmark_readiness_label\\\": \\\"ready with metadata warnings\\\",\\n  \\\"data_integrity\\\": {\\n    \\\"local_files_checked\\\": \\\"31\\\",\\n    \\\"image_files_checked\\\": \\\"2\\\",\\n    \\\"valid_images\\\": \\\"2\\\",\\n    \\\"formal_slice_files_checked\\\": \\\"17\\\",\\n    \\\"hard_error_count\\\": \\\"0\\\",\\n    \\\"metadata_warning_count\\\": \\\"2\\\",\\n    \\\"final_data_score\\\": \\\"93\\\",\\n    \\\"final_data_decision\\\": \\\"ready_with_minor_warnings\\\",\\n    \\\"replacement_file_count\\\": \\\"0\\\"\\n  },\\n  \\\"file_inventory\\\": {\\n    \\\"total_files\\\": 37,\\n    \\\"categories\\\": {\\n      \\\"event_catalogs\\\": 5,\\n      \\\"event_reports\\\": 4,\\n      \\\"exposure_impact\\\": 5,\\n      \\\"geospatial_context\\\": 3,\\n      \\\"other\\\": 3,\\n      \\\"physical_hazard\\\": 9,\\n      \\\"remote_sensing\\\": 8\\n    }\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1748
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/metadata/event.json"
+      ]
+    },
+    {
+      "step": 11,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for coral rescue fragment counts mentioned in the question.",
+      "args": {
+        "query": "fragments",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"fragments\",\n  \"match_count\": 1,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"Experts are deploying numerous measures to protect, relocate, and “bank” live fragments of coral to help Florida’s Coral Reef survive a heat crisis that may last for months.\\\" />\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 459
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html"
+      ]
+    },
+    {
+      "step": 12,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read files.csv to see all available evidence files and their descriptions, helping locate SST, threshold, and diagnosis files.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-330/metadata/files.csv",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-330/metadata/files.csv\",\n  \"text\": \"file_id,package_id,relative_path,data_category,layer_name,source_id,source_name,source_type,url,bytes,sha256_16,file_status\\nF0001,CSX-330,data/event_reports/event_reports_001_Locked_package_evidence_report.html,event_reports,event_anchor_report,S001,Locked package evidence report,resource_registry,https://www.climate.gov/news-features/event-tracker/noaa-and-partners-race-rescue-remaining-florida-corals-historic-ocean,99291,815f69c6e8827982,downloaded\\nF0002,CSX-330,data/event_reports/event_reports_002_ReliefWeb_public_updates_search.html,event_reports,text_reports,S002,ReliefWeb public updates search,resource_registry,https://reliefweb.int/updates?search=2023+Florida+Keys+marine+heatwave+and+coral+bleaching+United+States,109976,87f64759219c3d3c,downloaded\\nF0003,CSX-330,data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml,event_catalogs,event_catalog_api,S003,GDACS event feeds and archive,resource_registry,https://www.gdacs.org/xml/rss.xml,225166,9326ca698a7adb8c,downloaded\\nF0004,CSX-330,data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_and_Overpass_AOI.json,geospatial_context,geocoding_or_aoi,S004,OpenStreetMap Nominatim and Overpass AOI,resource_registry,https://nominatim.openstreetmap.org/search?q=2023+Florida+Keys+marine+heatwave+and+coral+bleaching+Florida+Keys+United+States+North+America&format=jsonv2&limit=5&addressdetails=1,2,4f53cda18c2baa0c,downloaded\\nF0005,CSX-330,data/event_catalogs/event_catalogs_002_NOAA_OISST_PSL_ERDDAP_sea-surface_temperature_THREDDS_catalog_XML.xml,event_catalogs,physical_hazard_api,S005,NOAA OISST / PSL ERDDAP sea-\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 13,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for threshold references across all package files to locate bleaching and DHW thresholds.",
+      "args": {
+        "query": "threshold",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"threshold\",\n  \"match_count\": 1,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"snippet\": \"<p>Coral bleaching is expected to begin when water temperatures reach at least 1 degree Celsius (about 2 degrees Fahrenheit) above the usual summertime maximum (called the Maximum Monthly Mean, or MMM temperature) at a given reef location. In the Florida Keys,<a href=\\\"https://coralreefwatch.noaa.gov/product/vs/data/florida_keys.txt\\\"> NOAA Coral Reef Watch says</a> that the MMM is 29.63 degrees Celsius, or 85.33 degre\\n...[TRUNCATED]...\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 685
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html"
+      ]
+    },
+    {
+      "step": 14,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Extract relevant text snippets from the evidence report for thresholds, DHW, rescue, and nonpriority checks.",
+      "args": {
+        "code_chars": 566,
+        "code_sha1": "d7eb18c9a9b5",
+        "code_preview": "import re,html\np='event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html'\nt=open(p,encoding='utf-8',errors='ignore').read()\ntxt=re.sub(r'<[^>]+>',' ',t)\ntxt=html.unescape(txt)\ntxt=re.sub(r'\\s+',' ',txt)\nfor kw in ['MMM','29.63','Degree Heating','DHW','1 degree','bleaching','rescue','fragments','priority','rainfall','displacement','vegetation','burn','population']:\n    idx=txt.find(kw)\n    if idx>=0:\n        print('===',kw,'===')\n        print(txt[max(0,idx-300):idx+500])\n        print()",
+        "code_path": "benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-330_Q1/python_snippets/step_14_d7eb18c9a9b5.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-330_Q1/python_snippets/step_14_d7eb18c9a9b5.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.143,\n  \"stdout\": \"=== MMM ===\\nrs) during the week of July 17-23. NOAA Climate.gov image, based on Coral Reef Watch data from NOAA View. Coral bleaching is expected to begin when water temperatures reach at least 1 degree Celsius (about 2 degrees Fahrenheit) above the usual summertime maximum (called the Maximum Monthly Mean, or MMM temperature) at a given reef location. In the Florida Keys, NOAA Coral Reef Watch says that the MMM is 29.63 degrees Celsius, or 85.33 degrees Fahrenheit, and the bleaching threshold is 30.63 degrees Celsius, or 87.13 degrees Fahrenheit, as measured by satellites. This year, water temperatures measured by satellite crossed the bleaching threshold in the Florida Keys on June 14, and have since remained above it, even hitting 33.60 degrees C (92.48 ˚F) on July 13. ( See data for individual loc\\n\\n=== 29.63 ===\\noral bleaching is expected to begin when water temperatures reach at least 1 degree Celsius (about 2 degrees Fahrenheit) above the usual summertime maximum (called the Maximum Monthly Mean, or MMM temperature) at a given reef location. In the Florida Keys, NOAA Coral Reef Watch says that the MMM is 29.63 degrees Celsius, or 85.33 degrees Fahrenheit, and the bleaching threshold is 30.63 degrees Celsius, or 87.13 degrees Fahrenheit, as measured by satellites. This year, water temperatures measured by satellite crossed the bleaching threshold in the Florida Keys on June 14, and have since remained above it, even hitting 33.60 degrees C (92.48 ˚F) on July 13. ( See data for individua\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "import re,html\np='event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html'\nt=open(p,encoding='utf-8',errors='ignore').read()\ntxt=re.sub(r'<[^>]+>',' ',t)\ntxt=html.unescape(txt)\ntxt=re.sub(r'\\s+',' ',txt)\nfor kw in ['MMM','29.63','Degree Heating','DHW','1 degree','bleaching','rescue','fragments','priority','rainfall','displacement','vegetation','burn','population']:\n    idx=txt.find(kw)\n    if idx>=0:\n        print('===',kw,'===')\n        print(txt[max(0,idx-300):idx+500])\n        print()",
+        "truncated": false,
+        "original_chars": 565
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-330_Q1/python_snippets/step_14_d7eb18c9a9b5.py"
+      ]
+    },
+    {
+      "step": 15,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for explicit priority diagnosis or cutoff language in package.",
+      "args": {
+        "query": "priority cutoff diagnosis",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"priority cutoff diagnosis\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 79
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 16,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for exceedance term to locate priority cutoff definition.",
+      "args": {
+        "query": "exceedance",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"exceedance\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 64
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-330/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 17,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Inspect locked event anchor JSON for any diagnosis, priority, or threshold fields.",
+      "args": {
+        "code_chars": 250,
+        "code_sha1": "7b02d50d5096",
+        "code_preview": "import re,html,json\nsrc='event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_003_Locked_event_anchor_2023_Florida_Keys_marine_heatwave_and_coral_bleaching.json'\nt=open(src,encoding='utf-8').read()\nprint(t[:3500])",
+        "code_path": "benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-330_Q1/python_snippets/step_17_7b02d50d5096.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-330_Q1/python_snippets/step_17_7b02d50d5096.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.138,\n  \"stdout\": \"{\\n  \\\"package_id\\\": \\\"CSX-330\\\",\\n  \\\"event_name\\\": \\\"2023 Florida Keys marine heatwave and coral bleaching\\\",\\n  \\\"hazard_family\\\": \\\"marine_heatwave_coastal_ecosystem\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2023-07-01\\\",\\n    \\\"end_date\\\": \\\"2023-08-31\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Florida Keys\\\",\\n    \\\"country_or_region\\\": \\\"United States\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"2023 Florida Keys marine heatwave and coral bleaching\\\",\\n    \\\"event_start_date\\\": \\\"2023-07-01\\\",\\n    \\\"event_end_date\\\": \\\"2023-08-31\\\",\\n    \\\"event_location\\\": \\\"Florida Keys\\\",\\n    \\\"event_country_or_region\\\": \\\"United States\\\",\\n    \\\"event_scope\\\": \\\"local/regional\\\",\\n    \\\"evidence_type\\\": \\\"NOAA Climate.gov\\\",\\n    \\\"evidence_url\\\": \\\"https://www.climate.gov/news-features/event-tracker/noaa-and-partners-race-rescue-remaining-florida-corals-historic-ocean\\\",\\n    \\\"evidence_final_url\\\": \\\"https://www.climate.gov/news-features/event-tracker/noaa-and-partners-race-rescue-remaining-florida-corals-historic-ocean\\\",\\n    \\\"http_status\\\": \\\"\\\",\\n    \\\"lock_status\\\": \\\"event_locked_stable_url_needs_probe\\\",\\n    \\\"lock_confidence\\\": \\\"provisional\\\",\\n    \\\"match_rule\\\": \\\"subagent_url_migration_repair\\\",\\n    \\\"web_search_query_used\\\": \\\"marine_heatwave_coastal_ecosystem North America extreme event 2023 Florida Ke\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "import re,html,json\nsrc='event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_003_Locked_event_anchor_2023_Florida_Keys_marine_heatwave_and_coral_bleaching.json'\nt=open(src,encoding='utf-8').read()\nprint(t[:3500])",
+        "truncated": false,
+        "original_chars": 249
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-330_Q1/python_snippets/step_17_7b02d50d5096.py"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Peak satellite SST hit 33.60°C on July 13, 2023 in Florida Keys",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "Bleaching threshold = MMM 29.63°C + 1°C = 30.63°C (NOAA Coral Reef Watch Florida Keys)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "SST above bleaching threshold at peak = 33.60 - 30.63 = 2.97°C",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Priority cutoff for diagnosis is the bleaching threshold (30.63°C) crossed June 14 and remained above",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "support_type": "report_claim"
+    },
+    {
+      "claim": "DHW 4°C-weeks => significant bleaching expected; DHW 8°C-weeks => severe bleaching/mortality expected",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "NOAA coordinates rescue of two live fragments from each genetically unique staghorn/elkhorn coral",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-330/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "support_type": "report_claim"
+    },
+    {
+      "claim": "Hazard family is marine_heatwave_coastal_ecosystem, not rainfall/displacement/vegetation",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-330/metadata/event.json",
+      "support_type": "metadata"
+    },
+    {
+      "claim": "Nonpriority checks present as auxiliary physical/exposure files (precip, population, Sentinel-2 dNBR) but not primary",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-330/metadata/files.csv",
+      "support_type": "metadata"
+    }
+  ],
+  "reasoning_summary": [
+    "Extracted SST peak and bleaching threshold from NOAA Climate.gov evidence report (F0001).",
+    "Computed exceedance above threshold (2.97°C) and used threshold as priority cutoff.",
+    "Identified DHW severity thresholds (4 and 8 °C-weeks) from same report.",
+    "Found coral rescue action: 2 fragments per unique genetic individual.",
+    "Confirmed hazard family and nonpriority themes via metadata and file inventory."
+  ],
+  "unsupported_or_unresolved": [
+    "Exact formal 'priority_sst_exceedance_cutoff_c' label not explicitly named in text; inferred as bleaching threshold used for triage.",
+    "Total fragment count not explicitly summed; per-individual minimum (2) used."
+  ],
+  "final_answer": {
+    "answer": "coral_rescue_reef_protection_triage",
+    "key_metrics": {
+      "peak_sst_c": "33.60",
+      "bleaching_threshold_c": "30.63",
+      "sst_above_bleaching_threshold_c": "2.97",
+      "priority_sst_exceedance_cutoff_c": "30.63",
+      "significant_bleaching_dhw_threshold_c_weeks": "4",
+      "severe_bleaching_dhw_threshold_c_weeks": "8",
+      "minimum_target_rescue_fragments": "2",
+      "primary_nonpriority_checks": [
+        "rainfall-driven terrestrial disruption",
+        "broad population displacement",
+        "vegetation/burn-style surface change"
+      ]
+    },
+    "impact_chain": [
+      "marine_heatwave_SST_exceedance",
+      "DHW_heat_stress_above_bleaching_threshold",
+      "coral_rescue_reef_triage"
+    ]
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "The final priority label is not an exact match and the key cutoff numeric value for priority SST exceedance is incorrect, which are critical answer units. Other numeric metrics like peak SST, bleaching threshold, DHW thresholds, and impact chain are mostly correct though somewhat differently phrased. The coral rescue fragment number is missing as a numeric value in favor of a textual description. The primary nonpriority checks have the correct general meaning but do not use the exact labels, reducing correctness.",
+      "llm_rubric": "The answer earns partial rubric points for mostly covering the required fields and reasoning steps but loses points for incorrect priority cutoff numeric value, non-exact answer label, paraphrasing of nonpriority checks, and an imprecise numeric fragment count. The impact chain is accepted with some wording differences. Overall, about two-thirds of rubric criteria credit is assigned."
+    },
+    "one_sentence_rationale": "The answer correctly captures key metrics and reasoning but fails on the exact priority label, priority exceedance cutoff numeric value, and exact primary nonpriority check labels, resulting in moderate partial credit.",
+    "critical_errors": [
+      "critical_label: final answer label incorrect",
+      "numeric_value: priority_sst_exceedance_cutoff_c significantly wrong (30.63 vs 2.0)"
+    ],
+    "missing_answer_elements": [
+      "minimum_target_rescue_fragments numeric value missing",
+      "primary_nonpriority_checks exact labels and negations missing"
+    ]
+  },
+  "provenance": {
+    "task_id": "CSX-330_Q1",
+    "model_id": "tencent-hy3",
+    "model_name": "Tencent Hy3",
+    "trajectory_path": "benchmark_build/model_runs/openrouter_hy3_front50_back50/tencent__hy3_free/CSX-330_Q1/trajectory.json",
+    "judge_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/judge_gpt41mini_final/per_task_judge_scores.jsonl"
+  }
+}

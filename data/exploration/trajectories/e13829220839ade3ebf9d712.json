@@ -1,0 +1,434 @@
+{
+  "task_id": "CSX-110_Q3",
+  "model_id": "gemini-3-1-flash-lite",
+  "model_name": "Gemini 3.1 Flash Lite",
+  "scores": {
+    "overall": 70.0,
+    "answer": 70.0,
+    "rubric": 70.0,
+    "unit_accuracy": 70.37,
+    "answer_units_correct": 19,
+    "answer_units_total": 27,
+    "rubric_points_earned": 14.0,
+    "rubric_points_total": 20.0,
+    "verdict": "mostly_correct"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 26.171,
+    "tool_calls": 9,
+    "model_rounds": 10,
+    "file_reads": 7,
+    "unique_evidence_files": 9,
+    "python_calls": 1,
+    "tool_errors": 0,
+    "prompt_tokens": 103184,
+    "completion_tokens": 2380,
+    "total_tokens": 105564
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "List package files to identify relevant data for storm lifecycle, rainfall/wind observations, GPM/CHIRPS grids, and exposure files.",
+      "args": {
+        "subdir": "."
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 37,\n  \"file_count_total\": 37,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-110/data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json\",\n      \"package_relative_path\": \"data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json\",\n      \"bytes\": 34645,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-110/data/event_catalogs/event_catalogs_001_GDACS_tropical_cyclone_event_API.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_GDACS_tropical_cyclone_event_API.json\",\n      \"bytes\": 16579,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-110/data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"bytes\": 69433,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-110/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"package_relative_path\": \"data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"bytes\": 118790,\n      \"suffix\": \".html\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-110/data/event_reports/event_reports_002_HDX_CKAN_package_search.json\",\n      \"package_relative_path\": \"data/event_reports/event_reports_002_HDX_CKAN_package_search.json\",\n      \"bytes\": 15661,\n      \"suffix\": \".json\"\n  \n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-110/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "summarize_table_or_json",
+      "ok": true,
+      "reason": "Inspect Open-Meteo data for point rainfall, wind, and pressure metrics required for diagnosis.",
+      "args": {
+        "path": "data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json"
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-110/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json\",\n  \"type\": \"json\",\n  \"shape\": {\n    \"latitude\": \"float\",\n    \"longitude\": \"float\",\n    \"generationtime_ms\": \"float\",\n    \"utc_offset_seconds\": \"int\",\n    \"timezone\": \"str\",\n    \"timezone_abbreviation\": \"str\",\n    \"elevation\": \"float\",\n    \"hourly_units\": {\n      \"time\": \"str\",\n      \"wind_speed_10m\": \"str\",\n      \"wind_gusts_10m\": \"str\",\n      \"precipitation\": \"str\",\n      \"pressure_msl\": \"str\"\n    },\n    \"hourly\": {\n      \"time\": {\n        \"type\": \"list\",\n        \"length\": 912,\n        \"sample\": \"str\"\n      },\n      \"wind_speed_10m\": {\n        \"type\": \"list\",\n        \"length\": 912,\n        \"sample\": \"float\"\n      },\n      \"wind_gusts_10m\": {\n        \"type\": \"list\",\n        \"length\": 912,\n        \"sample\": \"float\"\n      },\n      \"precipitation\": {\n        \"type\": \"list\",\n        \"length\": 912,\n        \"sample\": \"float\"\n      },\n      \"pressure_msl\": {\n        \"type\": \"list\",\n        \"length\": 912,\n        \"sample\": \"float\"\n      }\n    }\n  },\n  \"numeric_list_summaries\": {\n    \"hourly.wind_speed_10m\": {\n      \"count\": 912,\n      \"min\": 0.4,\n      \"max\": 31.5,\n      \"mean\": 6.7472587719298245,\n      \"p95\": 18.5\n    },\n    \"hourly.wind_gusts_10m\": {\n      \"count\": 912,\n      \"min\": 2.5,\n      \"max\": 65.9,\n      \"mean\": 18.376206140350874,\n      \"p95\": 40.7\n    },\n    \"hourly.precipitation\": {\n      \"count\": 912,\n      \"min\": 0.0,\n      \"max\": 10.5,\n      \"mean\": 0.43157894736842106,\n      \"p95\": 2.6\n    },\n    \"hourly.pressure_msl\": {\n      \"count\": 912,\n      \"min\": 1005.3,\n      \"max\": 1016.7,\n      \"mean\": 1011.5023026315789,\n      \"p95\"\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-110/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Calculate rainfall metrics (total, 1-15 March, wet hours, 72h window, continuous wet run) from the hourly observation data.",
+      "args": {
+        "code_chars": 1040,
+        "code_sha1": "327af96c563f",
+        "code_preview": "import json\n\nwith open('event_packages/standard_event_packages/packages/CSX-110/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json', 'r') as f:\n    data = json.load(f)\n\nprecip = data['hourly']['precipitation']\ntimes = data['hourly']['time']\n\ntotal_rain = sum(precip)\nrain_1_15_march = sum(p for t, p in zip(times, precip) if '2023-03-01' <= t <= '2023-03-15')\nwet_hours = sum(1 for p in precip if p > 0)\nwet_hour_fraction = wet_hours / len(precip)\n\nmax_72h = 0\nfor i in range(len(pre\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/final_multimodel_full405/gemini-3.1-flash-lite/CSX-110_Q3/python_snippets/step_03_327af96c563f.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/final_multimodel_full405/gemini-3.1-flash-lite/CSX-110_Q3/python_snippets/step_03_327af96c563f.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.178,\n  \"stdout\": \"Total Rain: 393.6\\n1-15 March Rain: 154.5\\nWet hour fraction: 0.4605263157894737\\nMax 72h window: 112.4\\nLongest wet run: 62\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 342
+      },
+      "code": {
+        "text": "import json\n\nwith open('event_packages/standard_event_packages/packages/CSX-110/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json', 'r') as f:\n    data = json.load(f)\n\nprecip = data['hourly']['precipitation']\ntimes = data['hourly']['time']\n\ntotal_rain = sum(precip)\nrain_1_15_march = sum(p for t, p in zip(times, precip) if '2023-03-01' <= t <= '2023-03-15')\nwet_hours = sum(1 for p in precip if p > 0)\nwet_hour_fraction = wet_hours / len(precip)\n\nmax_72h = 0\nfor i in range(len(pre\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/final_multimodel_full405/gemini-3.1-flash-lite/CSX-110_Q3/python_snippets/step_03_327af96c563f.py"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "summarize_table_or_json",
+      "ok": true,
+      "reason": "Examine GPM and CHIRPS precipitation summary files for grid-based rainfall metrics.",
+      "args": {
+        "path": "data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_storm_precipitation_via_CMR.json"
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-110/data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_storm_precipitation_via_CMR.json\",\n  \"type\": \"json\",\n  \"shape\": {\n    \"feed\": {\n      \"updated\": \"str\",\n      \"id\": \"str\",\n      \"title\": \"str\",\n      \"entry\": {\n        \"type\": \"list\",\n        \"length\": 5,\n        \"sample\": {\n          \"processing_level_id\": \"str\",\n          \"cloud_hosted\": \"bool\",\n          \"boxes\": \"list\",\n          \"has_combine\": \"bool\",\n          \"time_start\": \"str\",\n          \"version_id\": \"str\",\n          \"updated\": \"str\",\n          \"dataset_id\": \"str\",\n          \"entry_id\": \"str\",\n          \"has_spatial_subsetting\": \"bool\",\n          \"has_transforms\": \"bool\",\n          \"associations\": \"dict\",\n          \"has_variables\": \"bool\",\n          \"data_center\": \"str\",\n          \"short_name\": \"str\",\n          \"organizations\": \"list\",\n          \"title\": \"str\",\n          \"coordinate_system\": \"str\",\n          \"summary\": \"str\",\n          \"service_features\": \"dict\",\n          \"orbit_parameters\": \"dict\",\n          \"id\": \"str\",\n          \"has_formats\": \"bool\",\n          \"score\": \"float\",\n          \"consortiums\": \"list\",\n          \"original_format\": \"str\",\n          \"archive_center\": \"str\",\n          \"has_temporal_subsetting\": \"bool\",\n          \"browse_flag\": \"bool\",\n          \"platforms\": \"list\"\n        }\n      }\n    }\n  },\n  \"numeric_list_summaries\": {},\n  \"text_preview\": \"{\\n  \\\"feed\\\": {\\n    \\\"updated\\\": \\\"2026-05-21T20:53:48.104Z\\\",\\n    \\\"id\\\": \\\"https://cmr.earthdata.nasa.gov:443/search/collections.json?keyword=GPM%20IMERG&page_size=5\\\",\\n    \\\"title\\\": \\\"ECHO dataset metadata\\\",\\n    \\\"entry\\\": [\\n      {\\n        \\\"processing_level_id\\\": \\\"3\\\",\\n       \n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-110/data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_storm_precipitation_via_CMR.json"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "summarize_table_or_json",
+      "ok": true,
+      "reason": "Inspect the actual GPM accumulation data.",
+      "args": {
+        "path": "data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json"
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-110/data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n  \"type\": \"json\",\n  \"shape\": {\n    \"dataset\": \"str\",\n    \"start\": \"str\",\n    \"end\": \"str\",\n    \"stats\": {\n      \"gpm_event_precip_mm_max\": \"float\",\n      \"gpm_event_precip_mm_mean\": \"float\",\n      \"gpm_event_precip_mm_min\": \"float\",\n      \"gpm_event_precip_mm_stdDev\": \"float\"\n    }\n  },\n  \"numeric_list_summaries\": {},\n  \"text_preview\": \"{\\n  \\\"dataset\\\": \\\"NASA/GPM_L3/IMERG_V07\\\",\\n  \\\"start\\\": \\\"2023-02-06\\\",\\n  \\\"end\\\": \\\"2023-03-15\\\",\\n  \\\"stats\\\": {\\n    \\\"gpm_event_precip_mm_max\\\": 389.3979917354882,\\n    \\\"gpm_event_precip_mm_mean\\\": 115.28391032545272,\\n    \\\"gpm_event_precip_mm_min\\\": 5.168999876827002,\\n    \\\"gpm_event_precip_mm_stdDev\\\": 62.18646795948963\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 847
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-110/data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "summarize_table_or_json",
+      "ok": true,
+      "reason": "Inspect CHIRPS event precipitation data.",
+      "args": {
+        "path": "data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json"
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-110/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json\",\n  \"type\": \"json\",\n  \"shape\": {\n    \"dataset\": \"str\",\n    \"start\": \"str\",\n    \"end\": \"str\",\n    \"stats\": {\n      \"chirps_event_precip_mm_max\": \"float\",\n      \"chirps_event_precip_mm_mean\": \"float\",\n      \"chirps_event_precip_mm_min\": \"float\",\n      \"chirps_event_precip_mm_stdDev\": \"float\"\n    }\n  },\n  \"numeric_list_summaries\": {},\n  \"text_preview\": \"{\\n  \\\"dataset\\\": \\\"UCSB-CHG/CHIRPS/DAILY\\\",\\n  \\\"start\\\": \\\"2023-02-06\\\",\\n  \\\"end\\\": \\\"2023-03-15\\\",\\n  \\\"stats\\\": {\\n    \\\"chirps_event_precip_mm_max\\\": 328.8473482131958,\\n    \\\"chirps_event_precip_mm_mean\\\": 120.9416107010824,\\n    \\\"chirps_event_precip_mm_min\\\": 21.84754776954651,\\n    \\\"chirps_event_precip_mm_stdDev\\\": 52.69350695098969\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 869
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-110/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "summarize_table_or_json",
+      "ok": true,
+      "reason": "Inspect Sentinel-1 VV absolute extreme change metrics.",
+      "args": {
+        "path": "data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json"
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-110/data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json\",\n  \"type\": \"json\",\n  \"shape\": {\n    \"dataset\": \"str\",\n    \"windows\": {\n      \"pre\": {\n        \"type\": \"list\",\n        \"length\": 2,\n        \"sample\": \"str\"\n      },\n      \"post\": {\n        \"type\": \"list\",\n        \"length\": 2,\n        \"sample\": \"str\"\n      }\n    },\n    \"counts\": {\n      \"pre_count\": \"int\",\n      \"post_count\": \"int\"\n    },\n    \"stats\": {\n      \"s1_vv_post_minus_pre_db_max\": \"float\",\n      \"s1_vv_post_minus_pre_db_mean\": \"float\",\n      \"s1_vv_post_minus_pre_db_min\": \"float\",\n      \"s1_vv_post_minus_pre_db_stdDev\": \"float\"\n    }\n  },\n  \"numeric_list_summaries\": {},\n  \"text_preview\": \"{\\n  \\\"dataset\\\": \\\"COPERNICUS/S1_GRD\\\",\\n  \\\"windows\\\": {\\n    \\\"pre\\\": [\\n      \\\"2022-12-08\\\",\\n      \\\"2023-01-30\\\"\\n    ],\\n    \\\"post\\\": [\\n      \\\"2023-02-06\\\",\\n      \\\"2023-04-29\\\"\\n    ]\\n  },\\n  \\\"counts\\\": {\\n    \\\"pre_count\\\": 126,\\n    \\\"post_count\\\": 196\\n  },\\n  \\\"stats\\\": {\\n    \\\"s1_vv_post_minus_pre_db_max\\\": 14.847011480955937,\\n    \\\"s1_vv_post_minus_pre_db_mean\\\": -0.08593404041643801,\\n    \\\"s1_vv_post_minus_pre_db_min\\\": -13.680992004699387,\\n    \\\"s1_vv_post_minus_pre_db_stdDev\\\": 0.5454916224633296\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1291
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-110/data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "summarize_table_or_json",
+      "ok": true,
+      "reason": "Get exposure data for the humanitarian impact summary.",
+      "args": {
+        "path": "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json"
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-110/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json\",\n  \"type\": \"json\",\n  \"shape\": {\n    \"dataset\": \"str\",\n    \"year\": \"int\",\n    \"population_sum\": {\n      \"population\": \"float\"\n    }\n  },\n  \"numeric_list_summaries\": {},\n  \"text_preview\": \"{\\n  \\\"dataset\\\": \\\"WorldPop/GP/100m/pop\\\",\\n  \\\"year\\\": 2020,\\n  \\\"population_sum\\\": {\\n    \\\"population\\\": 701660.8121475752\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 472
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-110/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json"
+      ]
+    },
+    {
+      "step": 9,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Extract report-stated impacts for the cyclone Freddy event.",
+      "args": {
+        "path": "data/event_reports/event_reports_004_Locked_event_anchor_Cyclone_Freddy.json"
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-110/data/event_reports/event_reports_004_Locked_event_anchor_Cyclone_Freddy.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-110\\\",\\n  \\\"event_name\\\": \\\"Cyclone Freddy\\\",\\n  \\\"hazard_family\\\": \\\"tropical_cyclone\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2023-02-06\\\",\\n    \\\"end_date\\\": \\\"2023-03-15\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Madagascar, Mozambique and Malawi\\\",\\n    \\\"country_or_region\\\": \\\"Southern Africa\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"Cyclone Freddy\\\",\\n    \\\"event_start_date\\\": \\\"2023-02-06\\\",\\n    \\\"event_end_date\\\": \\\"2023-03-15\\\",\\n    \\\"event_location\\\": \\\"Madagascar, Mozambique and Malawi\\\",\\n    \\\"event_country_or_region\\\": \\\"Southern Africa\\\",\\n    \\\"event_scope\\\": \\\"regional\\\",\\n    \\\"evidence_type\\\": \\\"WMO news\\\",\\n    \\\"evidence_url\\\": \\\"https://wmo.int/media/news/tropical-cyclone-freddy-may-set-new-record\\\",\\n    \\\"evidence_final_url\\\": \\\"https://wmo.int/media/news/tropical-cyclone-freddy-may-set-new-record\\\",\\n    \\\"http_status\\\": \\\"200\\\",\\n    \\\"lock_status\\\": \\\"event_locked_web_source_reachable\\\",\\n    \\\"lock_confidence\\\": \\\"high\\\",\\n    \\\"match_rule\\\": \\\"exact_family_region\\\",\\n    \\\"web_search_query_used\\\": \\\"tropical_cyclone Africa extreme event Cyclone Freddy 2023\\\",\\n    \\\"event_lock_notes\\\": \\\"Long-lived tropical cyclone.\\\",\\n    \\\"verification_error\\\": \\\"\\\",\\n    \\\"dual_anchor_if_applicable\\\": \\\"\\\",\\n    \\\"source_table\\\": \\\"package_event_lock_targeted_refined_v4_repaired.csv\\\",\\n    \\\"requires_url_pr\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-110/data/event_reports/event_reports_004_Locked_event_anchor_Cyclone_Freddy.json"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "The event represents a long-duration, high-rainfall accumulation hazard rather than a short-term wind event.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-110/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Sentinel-1 data indicates significant surface alteration (max 14.85 dB) following the saturation period.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-110/data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json",
+      "support_type": "table_metric"
+    }
+  ],
+  "reasoning_summary": [
+    "Cyclone Freddy exhibited extreme duration, resulting in a decoupling of cyclone-track wind impacts from inland flood hazards.",
+    "The 62-hour continuous wet run and total event precipitation exceeding 390mm underscore a saturation-driven disaster process.",
+    "The 20% rainfall stress scenario highlights the exponential increase in risk for access-constrained areas."
+  ],
+  "unsupported_or_unresolved": [
+    "Precise humanitarian access road/hospital counts were not explicitly linked to the population grid in the provided files."
+  ],
+  "final_answer": {
+    "answer": "prolonged_hydrometeorological_lag",
+    "source_files_used": [
+      "data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json",
+      "data/physical_hazard/physical_hazard_006_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+      "data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json",
+      "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json"
+    ],
+    "storm_lifecycle": {
+      "wmo_reported_status": "Long-lived tropical cyclone",
+      "gdacs_tc_timing": "2023-02-06 to 2023-03-15",
+      "malawi_flood_start_lag_h": 168
+    },
+    "rain_wind_pressure_diagnosis": {
+      "event_total_point_rain_mm": 393.6,
+      "march_1_15_rain_mm": 154.5,
+      "wet_hour_fraction": 0.46,
+      "wettest_72h_mm": 112.4,
+      "longest_continuous_wet_run_h": 62,
+      "max_hourly_rain_mm": 10.5,
+      "max_wind_kmh": 31.5,
+      "max_gust_kmh": 65.9,
+      "min_pressure_hpa": 1005.3
+    },
+    "grid_and_surface_context": {
+      "gpm_peak_precip_mm": 389.4,
+      "chirps_peak_precip_mm": 328.8,
+      "peak_ratio": 1.18,
+      "s1_vv_absolute_extreme_db": 14.85
+    },
+    "reported_impact_and_exposure": {
+      "exposed_population_approx": 701661,
+      "context": "High saturation leads to delayed flood emergence, where persistent rainfall over 38+ days (Feb-Mar) compounds structural vulnerability of human settlements."
+    },
+    "stress_scenario_plus_20pct_rain": {
+      "projected_wettest_72h_mm": 134.88,
+      "projected_march_1_15_rain_mm": 185.4
+    },
+    "recommended_reasoning_path": [
+      "Analyze synoptic cyclone data as a multi-stage event.",
+      "Identify rain-flood lag by correlating 62-hour persistent wet spells with post-cyclone soil saturation.",
+      "Use Sentinel-1 extreme change indices to quantify physical surface impact.",
+      "Conclude that access stress is driven by the temporal accumulation of rainfall rather than wind intensity."
+    ]
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "The model provides a mostly correct quantitative and qualitative assessment of cyclone Freddy's long-duration rainfall and humanitarian impact with reasonable metrics and reasoning. However, errors in final answer label, flood lag timing, source files used, and missing impact details limit correctness to about 70%.",
+      "llm_rubric": "The model meets most rubric criteria with partial credit lost for incomplete source file usage, imprecise timing, some numeric deviations, and incomplete exposure-impact reporting, resulting in a 70% rubric score."
+    },
+    "one_sentence_rationale": "The answer is a largely correct but incomplete and imprecise quantitative model with partial missing fields and key label/timing errors, deserving a partial credit assessment.",
+    "critical_errors": [
+      "final answer label differs from GT",
+      "storm lifecycle gdacs_tc_end date incorrect",
+      "flood lag timing off by factor ~5",
+      "missing key impact and exposure fields (deaths, affected, schools, hospitals, roads)",
+      "source_files_used missing key files"
+    ],
+    "missing_answer_elements": [
+      "exact wmo_record_duration_days field",
+      "reported impact count fields (malawi_dead_or_missing_reported_min, mozambique_affected_reported_min, madagascar_affected_reported_nearly, damage_estimate_usd_million)",
+      "sampled_schools, sampled_hospitals, sampled_major_roads fields",
+      "stress_scenario_plus_20pct_rain scenario_interpretation field"
+    ]
+  },
+  "provenance": {
+    "task_id": "CSX-110_Q3",
+    "model_id": "gemini-3-1-flash-lite",
+    "model_name": "Gemini 3.1 Flash Lite",
+    "trajectory_path": "benchmark_build/model_runs/final_multimodel_full405/gemini-3.1-flash-lite/CSX-110_Q3/trajectory.json",
+    "judge_path": "benchmark_build/model_runs/final_multimodel_full405/gemini-3.1-flash-lite/judge_gpt41mini/per_task_judge_scores.jsonl"
+  }
+}

@@ -1,0 +1,605 @@
+{
+  "task_id": "CSX-317_Q1",
+  "event_id": "CSX-317",
+  "title": "Lake Palcacocha Rapid-Impact Priority",
+  "event_name": "Lake Palcacocha GLOF / Huaraz flood",
+  "hazard_family": "cryosphere_avalanche_glof_snowmelt",
+  "hazard_label": "Cryosphere, avalanche, GLOF, and snowmelt",
+  "region": "South America",
+  "scale": "neighborhood_asset",
+  "difficulty": "L4_earth_system_causal_reasoning",
+  "difficulty_rationale": "Manual review: \"Lake Palcacocha Rapid-Impact Priority\" requires Earth-system causal judgement such as mechanism competition, response/priority ranking, counterfactual or scenario reasoning, or a trigger-to-impact causal chain.",
+  "primary_dimension": "ranking_decision",
+  "dimensions": [
+    "ranking_decision",
+    "causal_chain",
+    "physical_mechanism"
+  ],
+  "dimension_rationale": "Lake Palcacocha rapid-impact priority.",
+  "task_type": "short_answer",
+  "target_family": "unknown",
+  "file_count": 19,
+  "category_counts": {
+    "event_catalogs": 4,
+    "event_reports": 5,
+    "exposure_impact": 1,
+    "geospatial_context": 3,
+    "other": 4,
+    "physical_hazard": 1,
+    "remote_sensing": 1
+  },
+  "question": "# Lake Palcacocha Rapid-Impact Priority\n\nA mountain-hazards team in Ancash, Peru, is preparing a rapid briefing for\nHuaraz based on the Lake Palcacocha glacial-lake flood record. The team needs a\ncompact mechanism diagnosis and a downstream emergency-planning priority class,\nwith enough numerical support to distinguish a glacier/lake outburst threat from\nweather-driven flooding.\n\nUse the incident record's supported values for threatened city population,\nestimated flood travel time to Huaraz, historical fatalities from the earlier\nlake-overflow disaster, and same-day precipitation context. Compute:\n\n`priority_index = log10(threatened_city_population) + historical_fatalities / 1000 + max(0, 60 - flood_arrival_minutes) / 10`\n\nAssign `priority_class` as `critical` if the index is at least 15, `high` if it\nis at least 10, `moderate` if it is at least 5, and `low` otherwise. Choose the\nbest compact mechanism label from:\n\n- `glacier_collapse_lake_outburst_downvalley_flood`\n- `rainfall_only_river_flood`\n- `wind_driven_coastal_surge`\n- `slow_seasonal_snowmelt_rise`\n\nReturn your answer as:\n\n```json\n{\n  \"answer\": \"<compact_mechanism_label>\",\n  \"priority_class\": \"<class>\",\n  \"priority_index\": \"<value rounded to 2 decimals>\",\n  \"key_metrics\": {\n    \"threatened_city_population\": \"<value>\",\n    \"flood_arrival_minutes\": \"<value>\",\n    \"historical_fatalities\": \"<value>\",\n    \"event_precipitation_mm\": \"<value>\"\n  },\n  \"impact_chain\": [\"<trigger>\", \"<process>\", \"<impact>\"]\n}\n```\n\nBase the response on the incident record and do not add unsupported modern\ncasualty, inundation-depth, or discharge estimates.\n",
+  "solution": "# Final Answer\n\nThe correct structured core is:\n\n```json\n{\n  \"answer\": \"glacier_collapse_lake_outburst_downvalley_flood\",\n  \"priority_class\": \"critical\",\n  \"priority_index\": 16.28,\n  \"key_metrics\": {\n    \"threatened_city_population\": 60000,\n    \"flood_arrival_minutes\": 15,\n    \"historical_fatalities\": 7000,\n    \"event_precipitation_mm\": 18.2\n  },\n  \"impact_chain\": [\n    \"glacier_collapse_or_icefall\",\n    \"lake_outburst_flood\",\n    \"rapid_downvalley_city_impact\"\n  ]\n}\n```\n\nThis is a hybrid-scored short answer: the mechanism label, priority class, index,\nand key metrics are exact targets, while the explanation is judged against the\nevent-specific reasoning anchors.\n\n# Key Computations\n\nThe decisive package evidence is in\n`data/event_reports/event_reports_001_Locked_package_evidence_report.html`,\nwith supporting identity and context from `metadata/event.json`,\n`data/event_reports/event_reports_004_Locked_event_anchor_Lake_Palcacocha_GLOF_Huaraz_flood.json`,\nand `data/physical_hazard/physical_hazard_001_Open-Meteo_archive_point_sample.json`.\n\nSupported text and numeric anchors:\n\n- The record describes a chunk of glacier threatening to fall into Lake\n  Palcacocha and produce major flooding in Huaraz.\n- The threatened city population is 60,000.\n- The potential flood travel time to Huaraz is 15 minutes.\n- The earlier lake overflow killed 7,000 people.\n- Same-day precipitation context is 18.2 mm, which is not the dominant mechanism.\n\nThe specified priority index is:\n\n```text\npriority_index = log10(threatened_city_population)\n                 + historical_fatalities / 1000\n                 + max(0, 60 - flood_arrival_minutes) / 10\n```\n\nIntermediate values:\n\n```json\n{\n  \"log10_population\": 4.7782,\n  \"fatality_component\": 7.0,\n  \"rapid_arrival_component\": 4.5,\n  \"priority_index\": 16.28,\n  \"priority_class\": \"critical\"\n}\n```\n\nThe class is `critical` because 16.28 is at least 15.\n\n# Reasoning Path\n\n1. The hazard family and event name place the case in a cryosphere and\n   glacial-lake setting, but the mechanism should be justified from the event\n   text, not from the label alone.\n2. The direct mechanism anchor is glacier instability above Lake Palcacocha: a\n   glacier chunk or icefall can enter the lake and displace water.\n3. The displaced lake water produces a glacial-lake outburst or overflow flood\n   that travels rapidly down-valley toward Huaraz.\n4. The 15-minute arrival estimate makes the event a rapid-impact emergency, not\n   a slow seasonal snowmelt rise.\n5. The 18.2 mm precipitation value is weather context and does not overturn the\n   glacier/lake mechanism; a rainfall-only river-flood interpretation would\n   ignore the decisive icefall-into-lake process.\n6. Coastal surge is physically incompatible with inland Huaraz in the Peruvian\n   Andes.\n\n# Disaster Interpretation\n\nFor emergency planning, the dominant concern is a low-warning-time GLOF impact\nchain: glacier collapse or icefall into Lake Palcacocha, rapid lake outburst or\noverflow, and fast down-valley flooding into Huaraz. The high threatened\npopulation, the 7,000-fatality historical impact anchor, and the 15-minute travel\ntime push the priority index into the critical class.\n\nA strong answer should avoid converting the historical fatality count into a\nprecise modern casualty forecast. It should also avoid claiming modeled flood\ndepth, discharge, or inundation extent because those values are not established\nby the supplied record.\n\n# Scoring Rubric\n\nTotal: 20 points.\n\n- 4 points: Gives the exact structured core: mechanism label\n  `glacier_collapse_lake_outburst_downvalley_flood`, `critical` class, and\n  16.28 priority index. Partial credit for the right mechanism with an incorrect\n  or missing class/index.\n- 4 points: Extracts the required numerical anchors: 60,000 threatened people,\n  15-minute travel time, 7,000 historical fatalities, and 18.2 mm precipitation.\n  Partial credit for three correct metrics or minor rounding/format issues.\n- 3 points: Computes the index with the specified formula, including the\n  log10 population term, fatality component, and rapid-arrival component.\n  Partial credit for using the right variables but making one arithmetic or\n  threshold error.\n- 3 points: Explains the physical process as glacier collapse or icefall into\n  Lake Palcacocha followed by a lake outburst or overflow flood moving\n  down-valley to Huaraz. Partial credit for naming GLOF without the trigger or\n  downstream propagation.\n- 2 points: Integrates the weather context correctly by treating 18.2 mm of\n  precipitation as contextual, not as the primary cause. Partial credit for\n  mentioning precipitation without clearly rejecting rainfall-only causation.\n- 2 points: States the operational implication: very short warning time and a\n  large exposed city justify critical rapid-impact planning. Partial credit for\n  generic emergency concern without tying it to travel time and population.\n- 2 points: Rejects unsupported or incompatible alternatives, including\n  rainfall-only river flooding, coastal surge, slow seasonal snowmelt, precise\n  modern casualty estimates, and unprovided depth/discharge claims. Partial\n  credit for avoiding overclaims but not explicitly explaining why distractors\n  fail.\n",
+  "ground_truth": {
+    "schema_version": "crossscale_extreme_event_bench_v1",
+    "task_id": "CSX-317_Q1",
+    "event_id": "CSX-317",
+    "task_type": "short_answer",
+    "evaluation_mode": "hybrid",
+    "difficulty_level": "L2",
+    "primary_gt": {
+      "answer_type": "exact_structured_core_with_judged_explanation",
+      "answer": "glacier_collapse_lake_outburst_downvalley_flood",
+      "priority_class": "critical",
+      "priority_index": 16.28,
+      "priority_index_tolerance": 0.01,
+      "key_metrics": {
+        "threatened_city_population": 60000,
+        "flood_arrival_minutes": 15,
+        "historical_fatalities": 7000,
+        "event_precipitation_mm": 18.2
+      },
+      "impact_chain": [
+        "glacier_collapse_or_icefall",
+        "lake_outburst_flood",
+        "rapid_downvalley_city_impact"
+      ],
+      "canonical_stance": "Lake Palcacocha poses a glacier-collapse or icefall-driven glacial-lake outburst flood threat to Huaraz, giving a critical rapid-impact priority."
+    },
+    "key_values": {
+      "event_name": "Lake Palcacocha GLOF / Huaraz flood",
+      "hazard_family": "cryosphere_avalanche_glof_snowmelt",
+      "event_date": "1941-12-13",
+      "region": "South America",
+      "scale": "neighborhood_asset",
+      "priority_formula": "log10(population) + fatalities/1000 + max(0, 60 - arrival_minutes)/10",
+      "priority_components": {
+        "log10_population": 4.7782,
+        "fatality_component": 7.0,
+        "rapid_arrival_component": 4.5
+      },
+      "weather_context": {
+        "temperature_max_c": 29.8,
+        "precipitation_sum_mm": 18.2,
+        "wind_speed_max_kmh": 9.5
+      },
+      "amenity_counts_from_local_overpass_sample": {
+        "school": 8
+      },
+      "eonet_event_count": 0,
+      "wikipedia_search_hits": 2,
+      "aoi_bbox": {
+        "min_lon": -77.7628,
+        "min_lat": -9.6951,
+        "max_lon": -77.3128,
+        "max_lat": -9.2451
+      },
+      "file_category_counts": {
+        "event_catalogs": 4,
+        "event_reports": 5,
+        "exposure_impact": 1,
+        "geospatial_context": 3,
+        "other": 4,
+        "physical_hazard": 1,
+        "remote_sensing": 1
+      },
+      "mechanism_flags": {
+        "glacier_chunk_threatens_lake": true,
+        "fissure_in_glacier": true,
+        "rapid_downvalley_arrival": true,
+        "historical_overflow_fatalities": true,
+        "rainfall_present_but_not_primary": true
+      },
+      "judge_anchors": {
+        "required_claims": [
+          "Identifies glacier collapse, icefall, or a glacier chunk entering Lake Palcacocha as the trigger.",
+          "Describes the resulting lake outburst or overflow flood moving rapidly down-valley toward Huaraz.",
+          "Uses the 15-minute travel time as a low-warning-time emergency-planning anchor.",
+          "Treats precipitation as contextual rather than the dominant flood mechanism."
+        ],
+        "required_metrics": [
+          {
+            "name": "threatened_city_population",
+            "value": 60000,
+            "unit": "people"
+          },
+          {
+            "name": "flood_arrival_minutes",
+            "value": 15,
+            "unit": "minutes"
+          },
+          {
+            "name": "historical_fatalities",
+            "value": 7000,
+            "unit": "people"
+          },
+          {
+            "name": "event_precipitation_mm",
+            "value": 18.2,
+            "unit": "mm"
+          },
+          {
+            "name": "priority_index",
+            "value": 16.28,
+            "tolerance": 0.01
+          }
+        ],
+        "forbidden_claims": [
+          "Treats the event as primarily a rainfall-only river flood.",
+          "Attributes the impact mechanism to coastal surge or slow seasonal snowmelt.",
+          "Uses the historical fatality count as a precise modern casualty forecast.",
+          "Claims specific inundation depth, discharge, or modeled flood extent not established by the record.",
+          "Uses outside-source values to replace the supported population, travel-time, fatality, or precipitation values."
+        ],
+        "acceptable_variants": [
+          "The trigger may be phrased as glacier collapse, icefall, glacier chunk failure, or ice entering the lake.",
+          "The flood process may be phrased as GLOF, lake outburst, lake overflow, or displacement wave leading to down-valley flooding.",
+          "Priority index values from 16.27 to 16.29 are acceptable if the class remains critical."
+        ]
+      }
+    },
+    "text_claims": {
+      "mechanism_claim": ", 2003 NASA Earth Observatory Apr 04, 2003 Article View more Images of the Day: Apr 3, 2003 Apr 5, 2003 Instruments: Terra — ASTER Topics: Glaciers & Ice Sheets November 5, 2001 A chunk of glacier was threatening to fall into an Andean lake andcause major flooding in a Peruvian city of 60,000. A fissure hasappeared in the glacier that feeds the Lake Palcacocha near the city",
+      "arrival_claim": "ity of 60,000. A fissure hasappeared in the glacier that feeds the Lake Palcacocha near the city of Huaraz, 270 km north of Lima. If the piece breaks off, ensuing floodswould take 15 minutes to reach the city. In 1941, the lake overflowedand caused massive destruction, killing 7,000 people. The city can beseen in the left-center part of the image. Lake Palcacocha is i",
+      "historical_impact_claim": "e city of Huaraz, 270 km north of Lima. If the piece breaks off, ensuing floodswould take 15 minutes to reach the city. In 1941, the lake overflowedand caused massive destruction, killing 7,000 people. The city can beseen in the left-center part of the image. Lake Palcacocha is in theupper right corner of the image at the head of a valley, below the snowand glacier cap. The Adv"
+    },
+    "provenance": {
+      "computed_by": "compute_gt.py",
+      "source_files": [
+        "metadata/event.json",
+        "metadata/files.csv",
+        "data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "data/event_reports/event_reports_004_Locked_event_anchor_Lake_Palcacocha_GLOF_Huaraz_flood.json",
+        "data/physical_hazard/physical_hazard_001_Open-Meteo_archive_point_sample.json",
+        "data/exposure_impact/exposure_impact_001_Overpass_small_critical-amenity_sample.json",
+        "data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+        "data/event_catalogs/event_catalogs_003_NASA_EONET_events_API.xml",
+        "data/other/other_003_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json"
+      ]
+    },
+    "rubric": {
+      "total_points": 20,
+      "criteria": [
+        {
+          "name": "exact structured core",
+          "points": 4,
+          "description": "Gives the exact mechanism label glacier_collapse_lake_outburst_downvalley_flood, critical priority class, and 16.28 priority index.",
+          "partial_credit": "Award partial credit for the correct GLOF mechanism with an incorrect or missing class/index."
+        },
+        {
+          "name": "required metric extraction",
+          "points": 4,
+          "description": "Extracts 60000 threatened people, 15 minutes to Huaraz, 7000 historical fatalities, and 18.2 mm same-day precipitation context.",
+          "partial_credit": "Award partial credit for three correct metrics or minor rounding/format issues."
+        },
+        {
+          "name": "priority formula and threshold",
+          "points": 3,
+          "description": "Computes log10(population) + fatalities/1000 + max(0, 60 - arrival_minutes)/10 and applies the critical threshold correctly.",
+          "partial_credit": "Award partial credit for using the right variables with one arithmetic or threshold error."
+        },
+        {
+          "name": "GLOF physical process",
+          "points": 3,
+          "description": "Explains glacier collapse or icefall into Lake Palcacocha followed by lake outburst or overflow and rapid down-valley flooding toward Huaraz.",
+          "partial_credit": "Award partial credit for naming GLOF without the trigger or downstream propagation."
+        },
+        {
+          "name": "weather-context handling",
+          "points": 2,
+          "description": "Treats the 18.2 mm precipitation value as contextual rather than the primary cause.",
+          "partial_credit": "Award partial credit for mentioning precipitation without clearly rejecting rainfall-only causation."
+        },
+        {
+          "name": "operational rapid-impact interpretation",
+          "points": 2,
+          "description": "Connects the 15-minute travel time and large threatened population to critical rapid-impact emergency planning.",
+          "partial_credit": "Award partial credit for generic emergency concern without tying it to travel time and population."
+        },
+        {
+          "name": "rejection of alternatives and overclaims",
+          "points": 2,
+          "description": "Rejects rainfall-only flooding, coastal surge, slow seasonal snowmelt, precise modern casualty estimates, and unprovided depth/discharge claims.",
+          "partial_credit": "Award partial credit for avoiding overclaims without explicitly explaining why distractors fail."
+        }
+      ]
+    }
+  },
+  "compute_gt_py": "#!/usr/bin/env python3\n\"\"\"Compute ground truth for CSX-317_Q1 from the local CSX-317 package.\"\"\"\n\nfrom __future__ import annotations\n\nimport csv\nimport html\nimport json\nimport math\nimport re\nfrom pathlib import Path\nfrom typing import Any\n\n\nTASK_ID = \"CSX-317_Q1\"\nPACKAGE_ID = \"CSX-317\"\nDIFFICULTY_LEVEL = \"L2\"\n\nRUBRIC = [\n    {\n        \"name\": \"exact structured core\",\n        \"points\": 4,\n        \"description\": (\n            \"Gives the exact mechanism label glacier_collapse_lake_outburst_downvalley_flood, \"\n            \"critical priority class, and 16.28 priority index.\"\n        ),\n        \"partial_credit\": \"Award partial credit for the correct GLOF mechanism with an incorrect or missing class/index.\",\n    },\n    {\n        \"name\": \"required metric extraction\",\n        \"points\": 4,\n        \"description\": (\n            \"Extracts 60000 threatened people, 15 minutes to Huaraz, 7000 historical fatalities, \"\n            \"and 18.2 mm same-day precipitation context.\"\n        ),\n        \"partial_credit\": \"Award partial credit for three correct metrics or minor rounding/format issues.\",\n    },\n    {\n        \"name\": \"priority formula and threshold\",\n        \"points\": 3,\n        \"description\": (\n            \"Computes log10(population) + fatalities/1000 + max(0, 60 - arrival_minutes)/10 \"\n            \"and applies the critical threshold correctly.\"\n        ),\n        \"partial_credit\": \"Award partial credit for using the right variables with one arithmetic or threshold error.\",\n    },\n    {\n        \"name\": \"GLOF physical process\",\n        \"points\": 3,\n        \"description\": (\n            \"Explains glacier collapse or icefall into Lake Palcacocha followed by lake outburst \"\n            \"or overflow and rapid down-valley flooding toward Huaraz.\"\n        ),\n        \"partial_credit\": \"Award partial credit for naming GLOF without the trigger or downstream propagation.\",\n    },\n    {\n        \"name\": \"weather-context handling\",\n        \"points\": 2,\n        \"description\": \"Treats the 18.2 mm precipitation value as contextual rather than the primary cause.\",\n        \"partial_credit\": \"Award partial credit for mentioning precipitation without clearly rejecting rainfall-only causation.\",\n    },\n    {\n        \"name\": \"operational rapid-impact interpretation\",\n        \"points\": 2,\n        \"description\": (\n            \"Connects the 15-minute travel time and large threatened population to critical \"\n            \"rapid-impact emergency planning.\"\n        ),\n        \"partial_credit\": \"Award partial credit for generic emergency concern without tying it to travel time and population.\",\n    },\n    {\n        \"name\": \"rejection of alternatives and overclaims\",\n        \"points\": 2,\n        \"description\": (\n            \"Rejects rainfall-only flooding, coastal surge, slow seasonal snowmelt, precise modern \"\n            \"casualty estimates, and unprovided depth/discharge claims.\"\n        ),\n        \"partial_credit\": \"Award partial credit for avoiding overclaims without explicitly explaining why distractors fail.\",\n    },\n]\n\n\ndef repo_root() -> Path:\n    return Path(__file__).resolve().parents[3]\n\n\ndef package_root() -> Path:\n    return repo_root() / \"event_packages\" / \"standard_event_packages\" / \"packages\" / PACKAGE_ID\n\n\ndef read_json(root: Path, relative_path: str) -> Any:\n    return json.loads((root / relative_path).read_text(encoding=\"utf-8\", errors=\"replace\"))\n\n\ndef read_text(root: Path, relative_path: str) -> str:\n    return (root / relative_path).read_text(encoding=\"utf-8\", errors=\"replace\")\n\n\ndef strip_html(raw_html: str) -> str:\n    text = re.sub(r\"<script\\b.*?</script>\", \" \", raw_html, flags=re.IGNORECASE | re.DOTALL)\n    text = re.sub(r\"<style\\b.*?</style>\", \" \", text, flags=re.IGNORECASE | re.DOTALL)\n    text = re.sub(r\"<[^>]+>\", \" \", text)\n    text = html.unescape(text)\n    text = text.replace(\"\\u2019\", \"'\").replace(\"\\u201c\", '\"').replace(\"\\u201d\", '\"')\n    text = re.sub(r\"(?<=[a-z])(?=[A-Z])\", \" \", text)\n    text = re.sub(r\"\\s+\", \" \", text)\n    return text.strip()\n\n\ndef first_int(pattern: str, text: str) -> int:\n    match = re.search(pattern, text, flags=re.IGNORECASE)\n    if not match:\n        raise ValueError(f\"Pattern not found: {pattern}\")\n    return int(match.group(1).replace(\",\", \"\"))\n\n\ndef snippet(text: str, pattern: str, radius: int = 180) -> str:\n    match = re.search(pattern, text, flags=re.IGNORECASE)\n    if not match:\n        return \"\"\n    start = max(0, match.start() - radius)\n    end = min(len(text), match.end() + radius)\n    return text[start:end].strip()\n\n\ndef count_manifest_categories(package_dir: Path) -> dict[str, int]:\n    with (package_dir / \"metadata/files.csv\").open(newline=\"\", encoding=\"utf-8\") as handle:\n        rows = list(csv.DictReader(handle))\n    counts: dict[str, int] = {}\n    for row in rows:\n        category = row[\"data_category\"]\n        counts[category] = counts.get(category, 0) + 1\n    return dict(sorted(counts.items()))\n\n\ndef priority_class(index: float) -> str:\n    if index >= 15:\n        return \"critical\"\n    if index >= 10:\n        return \"high\"\n    if index >= 5:\n        return \"moderate\"\n    return \"low\"\n\n\ndef main() -> None:\n    task_dir = Path(__file__).resolve().parent\n    root = package_root()\n\n    event = read_json(root, \"metadata/event.json\")\n    anchor = read_json(root, \"data/event_reports/event_reports_004_Locked_event_anchor_Lake_Palcacocha_GLOF_Huaraz_flood.json\")\n    open_meteo = read_json(root, \"data/physical_hazard/physical_hazard_001_Open-Meteo_archive_point_sample.json\")\n    exposure = read_json(root, \"data/exposure_impact/exposure_impact_001_Overpass_small_critical-amenity_sample.json\")\n    aoi = read_json(root, \"data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json\")\n    eonet = read_json(root, \"data/event_catalogs/event_catalogs_003_NASA_EONET_events_API.xml\")\n    wiki_search = read_json(root, \"data/other/other_003_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json\")\n\n    nasa_path = \"data/event_reports/event_reports_001_Locked_package_evidence_report.html\"\n    nasa_text = strip_html(read_text(root, nasa_path))\n\n    threatened_city_population = first_int(r\"city of ([\\d,]+)\", nasa_text)\n    flood_arrival_minutes = first_int(r\"take ([\\d,]+) minutes to reach the city\", nasa_text)\n    historical_fatalities = first_int(r\"killing ([\\d,]+) people\", nasa_text)\n    event_precipitation_mm = float(open_meteo[\"daily\"][\"precipitation_sum\"][0])\n    wind_speed_kmh = float(open_meteo[\"daily\"][\"wind_speed_10m_max\"][0])\n    temperature_max_c = float(open_meteo[\"daily\"][\"temperature_2m_max\"][0])\n\n    mechanism_flags = {\n        \"glacier_chunk_threatens_lake\": bool(re.search(r\"chunk of glacier.*fall into an Andean lake\", nasa_text, re.IGNORECASE)),\n        \"fissure_in_glacier\": bool(re.search(r\"fissure.*glacier.*Lake Palcacocha\", nasa_text, re.IGNORECASE)),\n        \"rapid_downvalley_arrival\": flood_arrival_minutes <= 30,\n        \"historical_overflow_fatalities\": historical_fatalities >= 1000,\n        \"rainfall_present_but_not_primary\": event_precipitation_mm > 0,\n    }\n\n    index = (\n        math.log10(threatened_city_population)\n        + historical_fatalities / 1000.0\n        + max(0.0, 60.0 - flood_arrival_minutes) / 10.0\n    )\n\n    if (\n        event[\"hazard_family\"] == \"cryosphere_avalanche_glof_snowmelt\"\n        and mechanism_flags[\"glacier_chunk_threatens_lake\"]\n        and mechanism_flags[\"fissure_in_glacier\"]\n        and mechanism_flags[\"rapid_downvalley_arrival\"]\n    ):\n        answer = \"glacier_collapse_lake_outburst_downvalley_flood\"\n    else:\n        answer = \"mixed_or_uncertain_flood_mechanism\"\n\n    elements = exposure.get(\"elements\", [])\n    amenity_counts: dict[str, int] = {}\n    for item in elements:\n        amenity = (item.get(\"tags\") or {}).get(\"amenity\")\n        if amenity:\n            amenity_counts[amenity] = amenity_counts.get(amenity, 0) + 1\n\n    coords = aoi[\"geometry\"][\"coordinates\"][0]\n    lons = [point[0] for point in coords]\n    lats = [point[1] for point in coords]\n\n    result = {\n        \"schema_version\": \"crossscale_extreme_event_bench_v1\",\n        \"task_id\": TASK_ID,\n        \"event_id\": PACKAGE_ID,\n        \"task_type\": \"short_answer\",\n        \"evaluation_mode\": \"hybrid\",\n        \"difficulty_level\": DIFFICULTY_LEVEL,\n        \"primary_gt\": {\n            \"answer_type\": \"exact_structured_core_with_judged_explanation\",\n            \"answer\": answer,\n            \"priority_class\": priority_class(index),\n            \"priority_index\": round(index, 2),\n            \"priority_index_tolerance\": 0.01,\n            \"key_metrics\": {\n                \"threatened_city_population\": threatened_city_population,\n                \"flood_arrival_minutes\": flood_arrival_minutes,\n                \"historical_fatalities\": historical_fatalities,\n                \"event_precipitation_mm\": round(event_precipitation_mm, 1),\n            },\n            \"impact_chain\": [\"glacier_collapse_or_icefall\", \"lake_outburst_flood\", \"rapid_downvalley_city_impact\"],\n            \"canonical_stance\": (\n                \"Lake Palcacocha poses a glacier-collapse or icefall-driven glacial-lake outburst flood \"\n                \"threat to Huaraz, giving a critical rapid-impact priority.\"\n            ),\n        },\n        \"key_values\": {\n            \"event_name\": event[\"event_name\"],\n            \"hazard_family\": event[\"hazard_family\"],\n            \"event_date\": anchor[\"temporal_window\"][\"start_date\"],\n            \"region\": event[\"region\"],\n            \"scale\": event[\"scale\"],\n            \"priority_formula\": \"log10(population) + fatalities/1000 + max(0, 60 - arrival_minutes)/10\",\n            \"priority_components\": {\n                \"log10_population\": round(math.log10(threatened_city_population), 4),\n                \"fatality_component\": round(historical_fatalities / 1000.0, 4),\n                \"rapid_arrival_component\": round(max(0.0, 60.0 - flood_arrival_minutes) / 10.0, 4),\n            },\n            \"weather_context\": {\n                \"temperature_max_c\": round(temperature_max_c, 1),\n                \"precipitation_sum_mm\": round(event_precipitation_mm, 1),\n                \"wind_speed_max_kmh\": round(wind_speed_kmh, 1),\n            },\n            \"amenity_counts_from_local_overpass_sample\": dict(sorted(amenity_counts.items())),\n            \"eonet_event_count\": len(eonet.get(\"events\", [])),\n            \"wikipedia_search_hits\": wiki_search.get(\"query\", {}).get(\"searchinfo\", {}).get(\"totalhits\"),\n            \"aoi_bbox\": {\n                \"min_lon\": min(lons),\n                \"min_lat\": min(lats),\n                \"max_lon\": max(lons),\n                \"max_lat\": max(lats),\n            },\n            \"file_category_counts\": count_manifest_categories(root),\n            \"mechanism_flags\": mechanism_flags,\n            \"judge_anchors\": {\n                \"required_claims\": [\n                    \"Identifies glacier collapse, icefall, or a glacier chunk entering Lake Palcacocha as the trigger.\",\n                    \"Describes the resulting lake outburst or overflow flood moving rapidly down-valley toward Huaraz.\",\n                    \"Uses the 15-minute travel time as a low-warning-time emergency-planning anchor.\",\n                    \"Treats precipitation as contextual rather than the dominant flood mechanism.\",\n                ],\n                \"required_metrics\": [\n                    {\"name\": \"threatened_city_population\", \"value\": threatened_city_population, \"unit\": \"people\"},\n                    {\"name\": \"flood_arrival_minutes\", \"value\": flood_arrival_minutes, \"unit\": \"minutes\"},\n                    {\"name\": \"historical_fatalities\", \"value\": historical_fatalities, \"unit\": \"people\"},\n                    {\"name\": \"event_precipitation_mm\", \"value\": round(event_precipitation_mm, 1), \"unit\": \"mm\"},\n                    {\"name\": \"priority_index\", \"value\": round(index, 2), \"tolerance\": 0.01},\n                ],\n                \"forbidden_claims\": [\n                    \"Treats the event as primarily a rainfall-only river flood.\",\n                    \"Attributes the impact mechanism to coastal surge or slow seasonal snowmelt.\",\n                    \"Uses the historical fatality count as a precise modern casualty forecast.\",\n                    \"Claims specific inundation depth, discharge, or modeled flood extent not established by the record.\",\n                    \"Uses outside-source values to replace the supported population, travel-time, fatality, or precipitation values.\",\n                ],\n                \"acceptable_variants\": [\n                    \"The trigger may be phrased as glacier collapse, icefall, glacier chunk failure, or ice entering the lake.\",\n                    \"The flood process may be phrased as GLOF, lake outburst, lake overflow, or displacement wave leading to down-valley flooding.\",\n                    \"Priority index values from 16.27 to 16.29 are acceptable if the class remains critical.\",\n                ],\n            },\n        },\n        \"text_claims\": {\n            \"mechanism_claim\": snippet(nasa_text, r\"chunk of glacier\"),\n            \"arrival_claim\": snippet(nasa_text, r\"15 minutes\"),\n            \"historical_impact_claim\": snippet(nasa_text, r\"killing 7,000 people\"),\n        },\n        \"provenance\": {\n            \"computed_by\": \"compute_gt.py\",\n            \"source_files\": [\n                \"metadata/event.json\",\n                \"metadata/files.csv\",\n                nasa_path,\n                \"data/event_reports/event_reports_004_Locked_event_anchor_Lake_Palcacocha_GLOF_Huaraz_flood.json\",\n                \"data/physical_hazard/physical_hazard_001_Open-Meteo_archive_point_sample.json\",\n                \"data/exposure_impact/exposure_impact_001_Overpass_small_critical-amenity_sample.json\",\n                \"data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json\",\n                \"data/event_catalogs/event_catalogs_003_NASA_EONET_events_API.xml\",\n                \"data/other/other_003_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json\",\n            ],\n        },\n        \"rubric\": {\n            \"total_points\": 20,\n            \"criteria\": RUBRIC,\n        },\n    }\n\n    (task_dir / \"computed_gt.json\").write_text(json.dumps(result, indent=2, ensure_ascii=True) + \"\\n\", encoding=\"utf-8\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "event": {
+    "package_id": "CSX-317",
+    "event_name": "Lake Palcacocha GLOF / Huaraz flood",
+    "canonical_event_key": "lake palcacocha glof huaraz flood",
+    "hazard_family": "cryosphere_avalanche_glof_snowmelt",
+    "hazard_label": "Cryosphere, avalanche, GLOF, and snowmelt",
+    "scale": "neighborhood_asset",
+    "region": "South America",
+    "primary_evidence_url": "https://earthobservatory.nasa.gov/images/3343/glacial-collapse-threatens-huaraz-peru",
+    "existence_verdict": "confirmed",
+    "temporal_match": "match",
+    "spatial_match": "match",
+    "hazard_match": "match",
+    "source_reliability": "high_official_or_institutional",
+    "correspondence_score": "78",
+    "release_decision": "needs_stronger_source",
+    "benchmark_readiness": "needs_source_strengthening",
+    "benchmark_readiness_label": "needs source strengthening",
+    "data_integrity": {
+      "local_files_checked": "15",
+      "image_files_checked": "2",
+      "valid_images": "2",
+      "formal_slice_files_checked": "2",
+      "hard_error_count": "0",
+      "metadata_warning_count": "2",
+      "final_data_score": "93",
+      "final_data_decision": "ready_with_minor_warnings",
+      "replacement_file_count": "0"
+    },
+    "file_inventory": {
+      "total_files": 19,
+      "categories": {
+        "event_catalogs": 4,
+        "event_reports": 5,
+        "exposure_impact": 1,
+        "geospatial_context": 3,
+        "other": 4,
+        "physical_hazard": 1,
+        "remote_sensing": 1
+      }
+    }
+  },
+  "event_files": [
+    {
+      "file_id": "F0001",
+      "relative_path": "data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "category": "event_reports",
+      "layer_name": "event_anchor_report",
+      "source_id": "S001",
+      "source_name": "Locked package evidence report",
+      "source_type": "resource_registry",
+      "source_url": "https://earthobservatory.nasa.gov/images/3343/glacial-collapse-threatens-huaraz-peru",
+      "bytes": 287680,
+      "sha256_16": "7325e8e4a64517c8",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0002",
+      "relative_path": "data/event_reports/event_reports_002_ReliefWeb_public_updates_search.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/event_reports/event_reports_002_ReliefWeb_public_updates_search.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/event_reports/event_reports_002_ReliefWeb_public_updates_search.html",
+      "category": "event_reports",
+      "layer_name": "text_reports",
+      "source_id": "S002",
+      "source_name": "ReliefWeb public updates search",
+      "source_type": "resource_registry",
+      "source_url": "https://reliefweb.int/updates?search=Lake+Palcacocha+GLOF+%2F+Huaraz+flood+Peru",
+      "bytes": 109797,
+      "sha256_16": "b2bb12b6bbcf660c",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0003",
+      "relative_path": "data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S003",
+      "source_name": "GDACS event feeds and archive",
+      "source_type": "resource_registry",
+      "source_url": "https://www.gdacs.org/xml/rss.xml",
+      "bytes": 225166,
+      "sha256_16": "9326ca698a7adb8c",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "xml"
+    },
+    {
+      "file_id": "F0004",
+      "relative_path": "data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_and_Overpass_AOI.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_and_Overpass_AOI.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_and_Overpass_AOI.json",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S004",
+      "source_name": "OpenStreetMap Nominatim and Overpass AOI",
+      "source_type": "resource_registry",
+      "source_url": "https://nominatim.openstreetmap.org/search?q=Lake+Palcacocha+GLOF+%2F+Huaraz+flood+Cordillera+Blanca+%2F+Huaraz+Peru+South+America&format=jsonv2&limit=5&addressdetails=1",
+      "bytes": 2,
+      "sha256_16": "4f53cda18c2baa0c",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0005",
+      "relative_path": "data/event_catalogs/event_catalogs_002_GLIMS_glacier_database_and_RGI_outlines.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/event_catalogs/event_catalogs_002_GLIMS_glacier_database_and_RGI_outlines.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/event_catalogs/event_catalogs_002_GLIMS_glacier_database_and_RGI_outlines.html",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S005",
+      "source_name": "GLIMS glacier database and RGI outlines",
+      "source_type": "resource_registry",
+      "source_url": "https://www.glims.org/",
+      "bytes": 5148,
+      "sha256_16": "4430be6eafa92768",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0006",
+      "relative_path": "data/event_reports/event_reports_003_ICIMOD_NSIDC_national_glacier_hazard_reports.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/event_reports/event_reports_003_ICIMOD_NSIDC_national_glacier_hazard_reports.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/event_reports/event_reports_003_ICIMOD_NSIDC_national_glacier_hazard_reports.html",
+      "category": "event_reports",
+      "layer_name": "specialized_hazard_source",
+      "source_id": "S006",
+      "source_name": "ICIMOD / NSIDC / national glacier hazard reports",
+      "source_type": "resource_registry",
+      "source_url": "https://www.icimod.org/",
+      "bytes": 207725,
+      "sha256_16": "43e101f356f2fde7",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0007",
+      "relative_path": "data/event_catalogs/event_catalogs_003_NASA_EONET_events_API.xml",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/event_catalogs/event_catalogs_003_NASA_EONET_events_API.xml",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/event_catalogs/event_catalogs_003_NASA_EONET_events_API.xml",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S007",
+      "source_name": "NASA EONET events API",
+      "source_type": "resource_registry",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events?start=1941-12-13&end=1941-12-13&status=all&limit=20",
+      "bytes": 145,
+      "sha256_16": "12120ad325218b8c",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "xml"
+    },
+    {
+      "file_id": "F0008",
+      "relative_path": "data/physical_hazard/physical_hazard_001_Open-Meteo_archive_point_sample.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/physical_hazard/physical_hazard_001_Open-Meteo_archive_point_sample.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/physical_hazard/physical_hazard_001_Open-Meteo_archive_point_sample.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S008",
+      "source_name": "Open-Meteo archive point sample",
+      "source_type": "resource_registry",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=-9.1900&longitude=-75.0152&start_date=1941-12-13&end_date=1941-12-13&daily=temperature_2m_max%2Cprecipitation_sum%2Cwind_speed_10m_max&timezone=UTC",
+      "bytes": 396,
+      "sha256_16": "8f1f29aecafda023",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0009",
+      "relative_path": "data/exposure_impact/exposure_impact_001_Overpass_small_critical-amenity_sample.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/exposure_impact/exposure_impact_001_Overpass_small_critical-amenity_sample.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/exposure_impact/exposure_impact_001_Overpass_small_critical-amenity_sample.json",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S009",
+      "source_name": "Overpass small critical-amenity sample",
+      "source_type": "resource_registry",
+      "source_url": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A25%5D%3B%28node%5B%22amenity%22~%22hospital%7Cclinic%7Cschool%22%5D%28near%3A10000%2C-9.19000%2C-75.01520%29%3Bway%5B%22amenity%22~%22hospital%7Cclinic%7Cschool%22%5D%28near%3A10000%2C-9.19000%2C-75.01520%29%3B%29%3Bout+center+50%3B",
+      "bytes": 3998,
+      "sha256_16": "1da01f61021b78e8",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0010",
+      "relative_path": "data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/geospatial_context/geospatial_context_002_compact_per-event_AOI_derived_from_event_bbox.json",
+      "category": "geospatial_context",
+      "layer_name": "aoi",
+      "source_id": "S010",
+      "source_name": "compact per-event AOI derived from event bbox",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 454,
+      "sha256_16": "86dda27ba27cacdc",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0011",
+      "relative_path": "data/remote_sensing/remote_sensing_001_pre.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/remote_sensing/remote_sensing_001_pre.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/remote_sensing/remote_sensing_001_pre.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S011",
+      "source_name": "pre",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2000-02-24&BBOX=-9.9701%2C-78.0378%2C-8.9701%2C-77.0378&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 4892,
+      "sha256_16": "cf98fd3e0b74f627",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0012",
+      "relative_path": "data/event_reports/event_reports_004_Locked_event_anchor_Lake_Palcacocha_GLOF_Huaraz_flood.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/event_reports/event_reports_004_Locked_event_anchor_Lake_Palcacocha_GLOF_Huaraz_flood.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/event_reports/event_reports_004_Locked_event_anchor_Lake_Palcacocha_GLOF_Huaraz_flood.json",
+      "category": "event_reports",
+      "layer_name": "package_locked_event_anchor / NASA Earth Observatory",
+      "source_id": "S012",
+      "source_name": "Locked event anchor: Lake Palcacocha GLOF / Huaraz flood",
+      "source_type": "event_specific_sources",
+      "source_url": "https://earthobservatory.nasa.gov/images/3343/glacial-collapse-threatens-huaraz-peru",
+      "bytes": 2966,
+      "sha256_16": "152710027032ad32",
+      "status": "remote_verified",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0013",
+      "relative_path": "data/other/other_001_01_anchor.html.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/other/other_001_01_anchor.html.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/other/other_001_01_anchor.html.html",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S013",
+      "source_name": "01_anchor.html",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 287693,
+      "sha256_16": "d8c164b5b6eb4a99",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0014",
+      "relative_path": "data/event_reports/event_reports_005_02_reliefweb_reports.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/event_reports/event_reports_005_02_reliefweb_reports.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/event_reports/event_reports_005_02_reliefweb_reports.json.json",
+      "category": "event_reports",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S014",
+      "source_name": "02_reliefweb_reports.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 143,
+      "sha256_16": "16e210c3f8fefa1d",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0015",
+      "relative_path": "data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml",
+      "category": "event_catalogs",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S015",
+      "source_name": "03_gdacs_rss.xml",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 225163,
+      "sha256_16": "0ed9a0afdc4361a3",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "xml"
+    },
+    {
+      "file_id": "F0016",
+      "relative_path": "data/geospatial_context/geospatial_context_003_04_nominatim.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/geospatial_context/geospatial_context_003_04_nominatim.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/geospatial_context/geospatial_context_003_04_nominatim.json.json",
+      "category": "geospatial_context",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S016",
+      "source_name": "04_nominatim.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 2114,
+      "sha256_16": "d6d3cc0793761322",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0017",
+      "relative_path": "data/other/other_002_05_open_meteo_archive.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/other/other_002_05_open_meteo_archive.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/other/other_002_05_open_meteo_archive.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S017",
+      "source_name": "05_open_meteo_archive.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 439,
+      "sha256_16": "1c44f9cd4df5d507",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0018",
+      "relative_path": "data/other/other_003_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/other/other_003_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/other/other_003_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S018",
+      "source_name": "01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 983,
+      "sha256_16": "72863bd378279f40",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0019",
+      "relative_path": "data/other/other_004_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-317/data/other/other_004_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-317/data/other/other_004_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S019",
+      "source_name": "02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 87,
+      "sha256_16": "180655bedeba3a3a",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    }
+  ]
+}

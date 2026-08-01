@@ -1,0 +1,1234 @@
+{
+  "task_id": "CSX-075_Q2",
+  "event_id": "CSX-075",
+  "title": "Zhengzhou Cross-Scale Flood Transition Diagnosis",
+  "event_name": "July 2021 Henan Zhengzhou extreme rainfall and flood",
+  "hazard_family": "extreme_precip_pluvial_flood",
+  "hazard_label": "Extreme precipitation and pluvial flooding",
+  "region": "East Asia",
+  "scale": "regional_basin",
+  "difficulty": "L3_process_mechanism_reasoning",
+  "difficulty_rationale": "Manual review: \"Zhengzhou Cross-Scale Flood Transition Diagnosis\" requires using quantitative evidence to explain a physical process, phase/timing pattern, routing/transport pathway, or mechanism diagnosis beyond a simple numeric ledger.",
+  "primary_dimension": "causal_chain",
+  "dimensions": [
+    "causal_chain",
+    "spatiotemporal_process",
+    "quantitative_calculation"
+  ],
+  "dimension_rationale": "Cross-scale flood transition diagnosis linking peak rainfall partition to flood-process transition.",
+  "task_type": "structured_reasoning",
+  "target_family": "cross_scale_flood_transition_process_diagnosis",
+  "file_count": 40,
+  "category_counts": {
+    "air_quality": 1,
+    "event_catalogs": 2,
+    "event_reports": 4,
+    "exposure_impact": 7,
+    "geospatial_context": 3,
+    "other": 2,
+    "physical_hazard": 11,
+    "remote_sensing": 10
+  },
+  "question": "# Zhengzhou Cross-Scale Flood Transition Diagnosis\n\nYou are a urban flood hydrometeorology analyst preparing a final mechanism diagnosis for July 2021 Henan Zhengzhou extreme rainfall and flood. Use the local package as the only evidence source. The task is to reconstruct how rainfall concentration translates into pluvial or urban runoff pressure rather than a generic wet-period label.\n\nWork as an interactive tool-agent: inspect the package root, choose the files that contain the event anchor and quantitative evidence, read or search those files, run calculations when needed, and record the evidence that supports each intermediate value. Do not rely on web search or hidden answers.\n\nRequired reasoning:\n\n1. Establish the event window and the physical process being tested.\n2. Recompute the package-derived evidence fields needed for the final answer, including:\n- `transition_evidence_synthesis`\n- `rejected_alternatives`\n- `final_process_alignment_label`\n3. Organize the result as a causal mechanism, not as a pass/fail table. The chain must cover: rainfall burst or accumulation; duration/intensity or areal-load calculation; urban runoff or receptor context; single-number simplification rejection.\n4. Compare the dominant explanation with at least two simpler alternatives and reject the alternatives using computed values.\n5. State what the package evidence can and cannot prove.\n\nReturn exactly one JSON object with this top-level structure:\n\n```json\n{\n  \"answer\": \"<compact mechanism diagnosis>\",\n  \"task_mode\": \"deep_mechanism_diagnosis\",\n  \"mechanism_question\": \"<one sentence framing the physical question>\",\n  \"computed_evidence\": {},\n  \"mechanism_chain\": [\n    \"<ordered physical or impact step>\",\n    \"...\"\n  ],\n  \"decisive_evidence\": \"<which evidence carries the decision and why>\",\n  \"rejected_simplifications\": \"<which simpler explanation fails and why>\",\n  \"bounded_interpretation\": \"<what the evidence does not prove>\"\n}\n```\n",
+  "solution": "# Correct Answer\n\n```json\n{\n  \"answer\": \"cross_scale_flood_transition_supported\",\n  \"task_mode\": \"deep_mechanism_diagnosis\",\n  \"mechanism_question\": \"reconstruct how rainfall concentration translates into pluvial or urban runoff pressure rather than a generic wet-period label\",\n  \"computed_evidence\": {\n    \"transition_evidence_synthesis\": [\n      {\n        \"row_id\": \"regional_multiday_accumulation\",\n        \"formula\": [\n          \"event_hours = 7 * 24\",\n          \"regional_mean_average_mm = mean(426.100, 256.635, 214.341)\",\n          \"average_max_mean_ratio = mean(product_max_mm / product_mean_mm)\"\n        ],\n        \"computed_values\": {\n          \"event_hours\": 168,\n          \"regional_product_means_mm\": {\n            \"gpm_mm\": 426.1,\n            \"chirps_mm\": 256.635,\n            \"era5_land_mm\": 214.341\n          },\n          \"regional_mean_average_mm\": 299.025,\n          \"average_max_mean_ratio\": 1.185\n        },\n        \"diagnostic_diagnostic_test_result\": \"pass: all three regional means exceed 200 mm and the ensemble mean is about 299.025 mm\",\n        \"rejected_overread\": \"regional_accumulation_only\"\n      },\n      {\n        \"row_id\": \"zhengzhou_record_burst\",\n        \"formula\": [\n          \"201.9 - 198.5\",\n          \"201.9 / 198.5\",\n          \"201.9 / 23.3\"\n        ],\n        \"computed_values\": {\n          \"station_one_hour_mm\": 201.9,\n          \"previous_record_mm\": 198.5,\n          \"record_margin_mm\": 3.4,\n          \"record_ratio\": 1.017128,\n          \"station_to_point_peak_ratio\": 8.665\n        },\n        \"diagnostic_diagnostic_test_result\": \"pass: Zhengzhou exceeded the previous mainland one-hour record\",\n        \"rejected_overread\": \"point_series_downgrades_station_record\"\n      },\n      {\n        \"row_id\": \"point_persistence_and_concentration\",\n        \"formula\": [\n          \"wet_hours / 168\",\n          \"heavy_hours_ge_10mm / 168\",\n          \"max_24h / event_total\",\n          \"max_72h / event_total\"\n        ],\n        \"computed_values\": {\n          \"point_event_total_mm\": 332.2,\n          \"wet_hours\": 137,\n          \"wet_hour_fraction\": 0.815476,\n          \"heavy_hours_ge_10mm\": 3,\n          \"heavy_hour_fraction\": 0.017857,\n          \"rolling_24h_mm\": 172.5,\n          \"rolling_24h_fraction\": 0.519266,\n          \"rolling_72h_mm\": 283.9,\n          \"rolling_72h_fraction\": 0.854606\n        },\n        \"diagnostic_diagnostic_test_result\": \"pass: sustained wetness plus strong 24-hour and 72-hour concentration\",\n        \"rejected_overread\": \"city_burst_only\"\n      },\n      {\n        \"row_id\": \"northern_short_duration_context\",\n        \"formula\": [\n          \"260.0 / 2\"\n        ],\n        \"computed_values\": {\n          \"xinxiang_two_hour_total_mm\": 260.0,\n          \"xinxiang_rate_mm_per_hour\": 130.0\n        },\n        \"diagnostic_diagnostic_test_result\": \"pass: northern Henan also shows a short-duration extreme\",\n        \"rejected_overread\": \"meteorological_rarity_only\"\n      },\n      {\n        \"row_id\": \"urban_receptor_context\",\n        \"formula\": [\n          \"population_millions = population_sum / 1000000\",\n          \"feature_share = count / 1000\"\n        ],\n        \"computed_values\": {\n          \"population_millions\": 11.097,\n          \"highway_share\": 0.635,\n          \"bridge_share\": 0.16,\n          \"critical_amenity_share\": 0.055,\n          \"building_share\": 0.296\n        },\n        \"diagnostic_diagnostic_test_result\": \"pass: dense receptor context is present\",\n        \"rejected_overread\": \"receptor_density_as_loss_metric\"\n      },\n      {\n        \"row_id\": \"surface_change_context\",\n        \"formula\": [\n          \"mean Sentinel-1 VV post-minus-pre dB\",\n          \"mean AlphaEarth annual 1-minus-cosine change\"\n        ],\n        \"computed_values\": {\n          \"sentinel_vv_change_db\": 0.854,\n          \"alphaearth_annual_surface_change_mean\": 0.0446\n        },\n        \"diagnostic_diagnostic_test_result\": \"context: nonzero surface-change metrics are present\",\n        \"rejected_overread\": \"surface_signal_as_depth_or_loss_metric\"\n      }\n    ],\n    \"rejected_alternatives\": [\n      \"city_burst_only\",\n      \"regional_accumulation_only\",\n      \"point_series_downgrades_station_record\",\n      \"receptor_density_as_loss_metric\",\n      \"surface_signal_as_depth_or_loss_metric\",\n      \"meteorological_rarity_only\"\n    ],\n    \"final_process_alignment_label\": \"cross_scale_flood_transition_consistent\"\n  },\n  \"mechanism_chain\": [\n    \"rainfall burst or accumulation\",\n    \"duration/intensity or areal-load calculation\",\n    \"urban runoff or receptor context\",\n    \"single-number simplification rejection\"\n  ],\n  \"decisive_evidence\": \"Rainfall concentration and areal or urban-response evidence should dominate; exposure and image products are supporting context.\",\n  \"rejected_simplifications\": \"Reject a one-gauge, one-hour, exposure-only, or image-primary explanation if the computed rainfall-runoff chain is stronger.\",\n  \"bounded_interpretation\": \"The task diagnoses flood pressure and process, not exact inundation depth, building damage, or final loss totals.\"\n}\n```\n\n# Solving Path\n\n1. Inspect the local package root and identify the event metadata/report plus the quantitative products needed for the mechanism diagnosis.\n2. Recompute the required evidence fields rather than copying a table label. The most important fields to recover are: `transition_evidence_synthesis`, `rejected_alternatives`, `final_process_alignment_label`.\n3. Use the computed values to build the ordered mechanism chain: rainfall burst or accumulation -> duration/intensity or areal-load calculation -> urban runoff or receptor context -> single-number simplification rejection.\n4. Weight decisive evidence against alternatives: Rainfall concentration and areal or urban-response evidence should dominate; exposure and image products are supporting context.\n5. Reject simpler explanations: Reject a one-gauge, one-hour, exposure-only, or image-primary explanation if the computed rainfall-runoff chain is stronger.\n6. Keep the interpretation bounded: The task diagnoses flood pressure and process, not exact inundation depth, building damage, or final loss totals.\n\nKey computed anchors from the package:\n\n- `event_hours` = `168`\n- `station_one_hour_mm` = `201.9`\n- `previous_record_mm` = `198.5`\n- `record_margin_mm` = `3.4`\n- `record_ratio` = `1.017128`\n- `point_event_total_mm` = `332.2`\n- `point_max_hourly_mm` = `23.3`\n- `point_max_time` = `2021-07-20T02:00`\n\n# Source Paths\n\n- `metadata/event.json`\n- `data/event_reports/event_reports_001_Locked_package_evidence_report.html`\n- `data/event_reports/event_reports_003_Locked_event_anchor_July_2021_Henan_Zhengzhou_extreme_rainfall_and_flood.json`\n- `data/event_reports/event_reports_004_NASA_Earth_Observatory_-_Flooding_in_Central_China.html`\n- `data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json`\n- `data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json`\n- `data/physical_hazard/physical_hazard_007_GPM_IMERG_V07_event_accumulated_precipitation.json`\n- `data/physical_hazard/physical_hazard_009_CHIRPS_daily_event_accumulated_precipitation.json`\n- `data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json`\n- `data/exposure_impact/exposure_impact_006_OpenStreetMap_Overpass_bounded_AOI_slice.json`\n- `data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json`\n- `data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json`\n\n# Scoring Rubric\n\nTotal: 20 points.\n\n- 4 points: `mechanism_diagnosis` - Identifies the dominant physical process and gives the correct compact answer label or an equivalent diagnosis.\n- 5 points: `computed_evidence` - Recomputes the quantitative evidence inherited from the original task and preserves units, signs, ratios, and key values.\n- 4 points: `evidence_weighting` - Explains which evidence streams are decisive and which are contextual or weaker proxies.\n- 3 points: `counterfactual_rejection` - Rejects at least one tempting simplified explanation using the computed values rather than assertion.\n- 2 points: `bounded_interpretation` - States scale, timing, proxy, or uncertainty limits without adding unsupported losses or impacts.\n- 2 points: `json_contract` - Returns the requested structured mechanism-diagnosis JSON without reducing the answer to a row-only table or same-scale checklist.\n",
+  "ground_truth": {
+    "schema_version": "1.0",
+    "task_id": "CSX-075_Q2",
+    "event_id": "CSX-075",
+    "task_type": "structured_reasoning",
+    "target_family": "cross_scale_flood_transition_process_diagnosis",
+    "evaluation_mode": "hybrid",
+    "difficulty_level": "L3",
+    "primary_gt": {
+      "answer": "cross_scale_flood_transition_supported",
+      "task_mode": "deep_mechanism_diagnosis",
+      "mechanism_question": "reconstruct how rainfall concentration translates into pluvial or urban runoff pressure rather than a generic wet-period label",
+      "computed_evidence": {
+        "transition_evidence_synthesis": [
+          {
+            "row_id": "regional_multiday_accumulation",
+            "formula": [
+              "event_hours = 7 * 24",
+              "regional_mean_average_mm = mean(426.100, 256.635, 214.341)",
+              "average_max_mean_ratio = mean(product_max_mm / product_mean_mm)"
+            ],
+            "computed_values": {
+              "event_hours": 168,
+              "regional_product_means_mm": {
+                "gpm_mm": 426.1,
+                "chirps_mm": 256.635,
+                "era5_land_mm": 214.341
+              },
+              "regional_mean_average_mm": 299.025,
+              "average_max_mean_ratio": 1.185
+            },
+            "diagnostic_diagnostic_test_result": "pass: all three regional means exceed 200 mm and the ensemble mean is about 299.025 mm",
+            "rejected_overread": "regional_accumulation_only"
+          },
+          {
+            "row_id": "zhengzhou_record_burst",
+            "formula": [
+              "201.9 - 198.5",
+              "201.9 / 198.5",
+              "201.9 / 23.3"
+            ],
+            "computed_values": {
+              "station_one_hour_mm": 201.9,
+              "previous_record_mm": 198.5,
+              "record_margin_mm": 3.4,
+              "record_ratio": 1.017128,
+              "station_to_point_peak_ratio": 8.665
+            },
+            "diagnostic_diagnostic_test_result": "pass: Zhengzhou exceeded the previous mainland one-hour record",
+            "rejected_overread": "point_series_downgrades_station_record"
+          },
+          {
+            "row_id": "point_persistence_and_concentration",
+            "formula": [
+              "wet_hours / 168",
+              "heavy_hours_ge_10mm / 168",
+              "max_24h / event_total",
+              "max_72h / event_total"
+            ],
+            "computed_values": {
+              "point_event_total_mm": 332.2,
+              "wet_hours": 137,
+              "wet_hour_fraction": 0.815476,
+              "heavy_hours_ge_10mm": 3,
+              "heavy_hour_fraction": 0.017857,
+              "rolling_24h_mm": 172.5,
+              "rolling_24h_fraction": 0.519266,
+              "rolling_72h_mm": 283.9,
+              "rolling_72h_fraction": 0.854606
+            },
+            "diagnostic_diagnostic_test_result": "pass: sustained wetness plus strong 24-hour and 72-hour concentration",
+            "rejected_overread": "city_burst_only"
+          },
+          {
+            "row_id": "northern_short_duration_context",
+            "formula": [
+              "260.0 / 2"
+            ],
+            "computed_values": {
+              "xinxiang_two_hour_total_mm": 260.0,
+              "xinxiang_rate_mm_per_hour": 130.0
+            },
+            "diagnostic_diagnostic_test_result": "pass: northern Henan also shows a short-duration extreme",
+            "rejected_overread": "meteorological_rarity_only"
+          },
+          {
+            "row_id": "urban_receptor_context",
+            "formula": [
+              "population_millions = population_sum / 1000000",
+              "feature_share = count / 1000"
+            ],
+            "computed_values": {
+              "population_millions": 11.097,
+              "highway_share": 0.635,
+              "bridge_share": 0.16,
+              "critical_amenity_share": 0.055,
+              "building_share": 0.296
+            },
+            "diagnostic_diagnostic_test_result": "pass: dense receptor context is present",
+            "rejected_overread": "receptor_density_as_loss_metric"
+          },
+          {
+            "row_id": "surface_change_context",
+            "formula": [
+              "mean Sentinel-1 VV post-minus-pre dB",
+              "mean AlphaEarth annual 1-minus-cosine change"
+            ],
+            "computed_values": {
+              "sentinel_vv_change_db": 0.854,
+              "alphaearth_annual_surface_change_mean": 0.0446
+            },
+            "diagnostic_diagnostic_test_result": "context: nonzero surface-change metrics are present",
+            "rejected_overread": "surface_signal_as_depth_or_loss_metric"
+          }
+        ],
+        "rejected_alternatives": [
+          "city_burst_only",
+          "regional_accumulation_only",
+          "point_series_downgrades_station_record",
+          "receptor_density_as_loss_metric",
+          "surface_signal_as_depth_or_loss_metric",
+          "meteorological_rarity_only"
+        ],
+        "final_process_alignment_label": "cross_scale_flood_transition_consistent"
+      },
+      "mechanism_chain": [
+        "rainfall burst or accumulation",
+        "duration/intensity or areal-load calculation",
+        "urban runoff or receptor context",
+        "single-number simplification rejection"
+      ],
+      "decisive_evidence": "Rainfall concentration and areal or urban-response evidence should dominate; exposure and image products are supporting context.",
+      "rejected_simplifications": "Reject a one-gauge, one-hour, exposure-only, or image-primary explanation if the computed rainfall-runoff chain is stronger.",
+      "bounded_interpretation": "The task diagnoses flood pressure and process, not exact inundation depth, building damage, or final loss totals."
+    },
+    "key_values": {
+      "event_hours": 168,
+      "station_one_hour_mm": 201.9,
+      "previous_record_mm": 198.5,
+      "record_margin_mm": 3.4,
+      "record_ratio": 1.017128,
+      "point_event_total_mm": 332.2,
+      "point_max_hourly_mm": 23.3,
+      "point_max_time": "2021-07-20T02:00",
+      "wet_hours": 137,
+      "wet_hour_fraction": 0.815476,
+      "heavy_hours_ge_10mm": 3,
+      "heavy_hour_fraction": 0.017857,
+      "rolling_24h_mm": 172.5,
+      "rolling_24h_fraction": 0.519266,
+      "rolling_72h_mm": 283.9,
+      "rolling_72h_fraction": 0.854606,
+      "station_to_point_peak_ratio": 8.665,
+      "regional_product_means_mm": {
+        "gpm_mm": 426.1,
+        "chirps_mm": 256.635,
+        "era5_land_mm": 214.341
+      },
+      "regional_product_maxima_mm": {
+        "gpm_mm": 484.255,
+        "chirps_mm": 307.595,
+        "era5_land_mm": 261.561
+      },
+      "regional_mean_average_mm": 299.025,
+      "regional_average_max_mean_ratio": 1.185,
+      "xinxiang_two_hour_total_mm": 260.0,
+      "xinxiang_rate_mm_per_hour": 130.0,
+      "population_sum": 11097360.226,
+      "population_millions": 11.097,
+      "osm_counts": {
+        "elements": 1000,
+        "highway": 635,
+        "bridge": 160,
+        "tunnel": 2,
+        "waterway": 13,
+        "hospital": 9,
+        "school": 8,
+        "police_fire": 38,
+        "building": 296,
+        "critical_amenities": 55
+      },
+      "osm_shares": {
+        "highway": 0.635,
+        "bridge": 0.16,
+        "critical_amenities": 0.055,
+        "building": 0.296
+      },
+      "sentinel_vv_change_db": 0.854,
+      "alphaearth_annual_surface_change_mean": 0.0446
+    },
+    "rubric": {
+      "total_points": 20,
+      "criteria": [
+        {
+          "name": "mechanism_diagnosis",
+          "points": 4,
+          "description": "Identifies the dominant physical process and gives the correct compact answer label or an equivalent diagnosis."
+        },
+        {
+          "name": "computed_evidence",
+          "points": 5,
+          "description": "Recomputes the quantitative evidence inherited from the original task and preserves units, signs, ratios, and key values."
+        },
+        {
+          "name": "evidence_weighting",
+          "points": 4,
+          "description": "Explains which evidence streams are decisive and which are contextual or weaker proxies."
+        },
+        {
+          "name": "counterfactual_rejection",
+          "points": 3,
+          "description": "Rejects at least one tempting simplified explanation using the computed values rather than assertion."
+        },
+        {
+          "name": "bounded_interpretation",
+          "points": 2,
+          "description": "States scale, timing, proxy, or uncertainty limits without adding unsupported losses or impacts."
+        },
+        {
+          "name": "json_contract",
+          "points": 2,
+          "description": "Returns the requested structured mechanism-diagnosis JSON without reducing the answer to a row-only table or same-scale checklist."
+        }
+      ]
+    },
+    "provenance": {
+      "computed_by": "compute_gt.py",
+      "source_files": [
+        "metadata/event.json",
+        "data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "data/event_reports/event_reports_003_Locked_event_anchor_July_2021_Henan_Zhengzhou_extreme_rainfall_and_flood.json",
+        "data/event_reports/event_reports_004_NASA_Earth_Observatory_-_Flooding_in_Central_China.html",
+        "data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json",
+        "data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+        "data/physical_hazard/physical_hazard_007_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "data/physical_hazard/physical_hazard_009_CHIRPS_daily_event_accumulated_precipitation.json",
+        "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+        "data/exposure_impact/exposure_impact_006_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+        "data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+        "data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json"
+      ]
+    },
+    "subtype": "deep_mechanism_diagnosis",
+    "deepened_reframe": {
+      "group": "deepened_remaining_39",
+      "replaces_table_only_task": true,
+      "new_title": "Zhengzhou Cross-Scale Flood Transition Diagnosis"
+    },
+    "answer_guidance": {
+      "structured_answer": {
+        "answer": "cross_scale_flood_transition_supported",
+        "task_mode": "deep_mechanism_diagnosis",
+        "mechanism_question": "reconstruct how rainfall concentration translates into pluvial or urban runoff pressure rather than a generic wet-period label",
+        "computed_evidence": {
+          "transition_evidence_synthesis": [
+            {
+              "row_id": "regional_multiday_accumulation",
+              "formula": [
+                "event_hours = 7 * 24",
+                "regional_mean_average_mm = mean(426.100, 256.635, 214.341)",
+                "average_max_mean_ratio = mean(product_max_mm / product_mean_mm)"
+              ],
+              "computed_values": {
+                "event_hours": 168,
+                "regional_product_means_mm": {
+                  "gpm_mm": 426.1,
+                  "chirps_mm": 256.635,
+                  "era5_land_mm": 214.341
+                },
+                "regional_mean_average_mm": 299.025,
+                "average_max_mean_ratio": 1.185
+              },
+              "diagnostic_diagnostic_test_result": "pass: all three regional means exceed 200 mm and the ensemble mean is about 299.025 mm",
+              "rejected_overread": "regional_accumulation_only"
+            },
+            {
+              "row_id": "zhengzhou_record_burst",
+              "formula": [
+                "201.9 - 198.5",
+                "201.9 / 198.5",
+                "201.9 / 23.3"
+              ],
+              "computed_values": {
+                "station_one_hour_mm": 201.9,
+                "previous_record_mm": 198.5,
+                "record_margin_mm": 3.4,
+                "record_ratio": 1.017128,
+                "station_to_point_peak_ratio": 8.665
+              },
+              "diagnostic_diagnostic_test_result": "pass: Zhengzhou exceeded the previous mainland one-hour record",
+              "rejected_overread": "point_series_downgrades_station_record"
+            },
+            {
+              "row_id": "point_persistence_and_concentration",
+              "formula": [
+                "wet_hours / 168",
+                "heavy_hours_ge_10mm / 168",
+                "max_24h / event_total",
+                "max_72h / event_total"
+              ],
+              "computed_values": {
+                "point_event_total_mm": 332.2,
+                "wet_hours": 137,
+                "wet_hour_fraction": 0.815476,
+                "heavy_hours_ge_10mm": 3,
+                "heavy_hour_fraction": 0.017857,
+                "rolling_24h_mm": 172.5,
+                "rolling_24h_fraction": 0.519266,
+                "rolling_72h_mm": 283.9,
+                "rolling_72h_fraction": 0.854606
+              },
+              "diagnostic_diagnostic_test_result": "pass: sustained wetness plus strong 24-hour and 72-hour concentration",
+              "rejected_overread": "city_burst_only"
+            },
+            {
+              "row_id": "northern_short_duration_context",
+              "formula": [
+                "260.0 / 2"
+              ],
+              "computed_values": {
+                "xinxiang_two_hour_total_mm": 260.0,
+                "xinxiang_rate_mm_per_hour": 130.0
+              },
+              "diagnostic_diagnostic_test_result": "pass: northern Henan also shows a short-duration extreme",
+              "rejected_overread": "meteorological_rarity_only"
+            },
+            {
+              "row_id": "urban_receptor_context",
+              "formula": [
+                "population_millions = population_sum / 1000000",
+                "feature_share = count / 1000"
+              ],
+              "computed_values": {
+                "population_millions": 11.097,
+                "highway_share": 0.635,
+                "bridge_share": 0.16,
+                "critical_amenity_share": 0.055,
+                "building_share": 0.296
+              },
+              "diagnostic_diagnostic_test_result": "pass: dense receptor context is present",
+              "rejected_overread": "receptor_density_as_loss_metric"
+            },
+            {
+              "row_id": "surface_change_context",
+              "formula": [
+                "mean Sentinel-1 VV post-minus-pre dB",
+                "mean AlphaEarth annual 1-minus-cosine change"
+              ],
+              "computed_values": {
+                "sentinel_vv_change_db": 0.854,
+                "alphaearth_annual_surface_change_mean": 0.0446
+              },
+              "diagnostic_diagnostic_test_result": "context: nonzero surface-change metrics are present",
+              "rejected_overread": "surface_signal_as_depth_or_loss_metric"
+            }
+          ],
+          "rejected_alternatives": [
+            "city_burst_only",
+            "regional_accumulation_only",
+            "point_series_downgrades_station_record",
+            "receptor_density_as_loss_metric",
+            "surface_signal_as_depth_or_loss_metric",
+            "meteorological_rarity_only"
+          ],
+          "final_process_alignment_label": "cross_scale_flood_transition_consistent"
+        },
+        "mechanism_chain": [
+          "rainfall burst or accumulation",
+          "duration/intensity or areal-load calculation",
+          "urban runoff or receptor context",
+          "single-number simplification rejection"
+        ],
+        "decisive_evidence": "Rainfall concentration and areal or urban-response evidence should dominate; exposure and image products are supporting context.",
+        "rejected_simplifications": "Reject a one-gauge, one-hour, exposure-only, or image-primary explanation if the computed rainfall-runoff chain is stronger.",
+        "bounded_interpretation": "The task diagnoses flood pressure and process, not exact inundation depth, building damage, or final loss totals."
+      },
+      "answer": "cross_scale_flood_transition_supported"
+    }
+  },
+  "compute_gt_py": "#!/usr/bin/env python3\nfrom __future__ import annotations\n\nimport json\nimport re\nfrom datetime import date\nfrom html import unescape\nfrom pathlib import Path\n\n\nTASK_DIR = Path(__file__).resolve().parent\nPACKAGE_DIR = TASK_DIR.parents[2] / \"event_packages\" / \"standard_event_packages\" / \"packages\" / \"CSX-075\"\nOUT_PATH = TASK_DIR / \"computed_gt.json\"\n\nTARGET_FAMILY = \"zhengzhou_cross_scale_flood_transition_consistency_ledger\"\nFINAL_LABEL = \"cross_scale_flood_transition_consistent\"\n\n\n\nDEEPENED_TASK_FRAME = {'answer_override': 'cross_scale_flood_transition_supported',\n 'bounded_prompt': 'The task diagnoses flood pressure and process, not exact inundation depth, building damage, or '\n                   'final loss totals.',\n 'decisive_evidence_prompt': 'Rainfall concentration and areal or urban-response evidence should dominate; exposure '\n                             'and image products are supporting context.',\n 'group': 'deepened_remaining_39',\n 'mechanism_chain': ['rainfall burst or accumulation',\n                     'duration/intensity or areal-load calculation',\n                     'urban runoff or receptor context',\n                     'single-number simplification rejection'],\n 'mechanism_question': 'reconstruct how rainfall concentration translates into pluvial or urban runoff pressure rather '\n                       'than a generic wet-period label',\n 'new_title': 'Zhengzhou Cross-Scale Flood Transition Diagnosis',\n 'rejected_prompt': 'Reject a one-gauge, one-hour, exposure-only, or image-primary explanation if the computed '\n                    'rainfall-runoff chain is stronger.',\n 'target_family': 'cross_scale_flood_transition_process_diagnosis',\n 'task_mode': 'deep_mechanism_diagnosis'}\n\ndef _deep_rename_key(key):\n    replacements = [\n        (\"score_ledger\", \"evidence_rows\"),\n        (\"ledger_rows\", \"evidence_rows\"),\n        (\"ledger\", \"evidence_synthesis\"),\n        (\"Ledger\", \"EvidenceSynthesis\"),\n        (\"consistency\", \"process_alignment\"),\n        (\"Consistency\", \"ProcessAlignment\"),\n        (\"threshold\", \"diagnostic_gate\"),\n        (\"Threshold\", \"DiagnosticGate\"),\n        (\"gate\", \"diagnostic_test\"),\n        (\"Gate\", \"DiagnosticTest\"),\n        (\"score_breakdown\", \"evidence_score_breakdown\"),\n        (\"score\", \"evidence_score\"),\n        (\"Score\", \"EvidenceScore\"),\n    ]\n    out = str(key)\n    for old, new in replacements:\n        out = out.replace(old, new)\n    return out\n\n\ndef _deep_rename_obj(value, parent_key=None):\n    protected_value_keys = {\n        \"answer\",\n        \"final_label\",\n        \"classification\",\n        \"label\",\n        \"diagnosis\",\n        \"result\",\n        \"answer_type\",\n        \"task_family\",\n        \"target_family\",\n    }\n    if isinstance(value, dict):\n        return {_deep_rename_key(k): _deep_rename_obj(v, k) for k, v in value.items()}\n    if isinstance(value, list):\n        return [_deep_rename_obj(v, parent_key) for v in value]\n    if isinstance(value, str):\n        if parent_key in protected_value_keys:\n            return value\n        out = value\n        replacements = [\n            (\"ledger\", \"evidence synthesis\"),\n            (\"Ledger\", \"Evidence synthesis\"),\n            (\"consistency\", \"process alignment\"),\n            (\"Consistency\", \"Process alignment\"),\n            (\"threshold\", \"diagnostic gate\"),\n            (\"Threshold\", \"Diagnostic gate\"),\n        ]\n        for old, new in replacements:\n            out = out.replace(old, new)\n        return out\n    return value\n\ndef _deep_extract_answer(value):\n    if isinstance(value, dict):\n        for key in (\"final_label\", \"answer\", \"classification\", \"label\", \"final_interpretation\", \"diagnosis\"):\n            if key in value and isinstance(value[key], (str, int, float, bool)):\n                return str(value[key])\n        for key in (\"classification\", \"threshold_result\", \"result\"):\n            if key in value and isinstance(value[key], dict):\n                nested = _deep_extract_answer(value[key])\n                if nested:\n                    return nested\n    return \"deep_mechanism_diagnosis\"\n\n\ndef apply_deepened_task_frame(result):\n    frame = dict(DEEPENED_TASK_FRAME)\n    old_primary = result.get(\"primary_gt\")\n    if not isinstance(old_primary, dict):\n        old_primary = {\"value\": old_primary}\n    transformed = {\n        \"answer\": frame.get(\"answer_override\", _deep_extract_answer(old_primary)),\n        \"task_mode\": frame[\"task_mode\"],\n        \"mechanism_question\": frame[\"mechanism_question\"],\n        \"computed_evidence\": _deep_rename_obj(old_primary),\n        \"mechanism_chain\": list(frame[\"mechanism_chain\"]),\n        \"decisive_evidence\": frame[\"decisive_evidence_prompt\"],\n        \"rejected_simplifications\": frame[\"rejected_prompt\"],\n        \"bounded_interpretation\": frame[\"bounded_prompt\"],\n    }\n    if frame.get(\"formula_prompt\"):\n        transformed[\"formula_derivation\"] = frame[\"formula_prompt\"]\n    if isinstance(transformed.get(\"computed_evidence\"), dict):\n        for stale_key in (\"answer\", \"answer_type\", \"target_family\", \"task_family\"):\n            transformed[\"computed_evidence\"].pop(stale_key, None)\n    result[\"primary_gt\"] = transformed\n    result[\"task_type\"] = \"structured_reasoning\"\n    result[\"evaluation_mode\"] = \"hybrid\"\n    result[\"subtype\"] = frame[\"task_mode\"]\n    result[\"target_family\"] = frame.get(\"target_family\", frame[\"task_mode\"])\n    result[\"deepened_reframe\"] = {\n        \"group\": frame[\"group\"],\n        \"replaces_table_only_task\": True,\n        \"new_title\": frame[\"new_title\"],\n    }\n    guidance = result.get(\"answer_guidance\")\n    if isinstance(guidance, dict):\n        guidance[\"structured_answer\"] = transformed\n        guidance[\"answer\"] = transformed[\"answer\"]\n    else:\n        result[\"answer_guidance\"] = {\"structured_answer\": transformed, \"answer\": transformed[\"answer\"]}\n    result[\"rubric\"] = {\n        \"total_points\": 20,\n        \"criteria\": [\n            {\"name\": \"mechanism_diagnosis\", \"points\": 4, \"description\": \"Identifies the dominant physical process and gives the correct compact answer label or an equivalent diagnosis.\"},\n            {\"name\": \"computed_evidence\", \"points\": 5, \"description\": \"Recomputes the quantitative evidence inherited from the original task and preserves units, signs, ratios, and key values.\"},\n            {\"name\": \"evidence_weighting\", \"points\": 4, \"description\": \"Explains which evidence streams are decisive and which are contextual or weaker proxies.\"},\n            {\"name\": \"counterfactual_rejection\", \"points\": 3, \"description\": \"Rejects at least one tempting simplified explanation using the computed values rather than assertion.\"},\n            {\"name\": \"bounded_interpretation\", \"points\": 2, \"description\": \"States scale, timing, proxy, or uncertainty limits without adding unsupported losses or impacts.\"},\n            {\"name\": \"json_contract\", \"points\": 2, \"description\": \"Returns the requested structured mechanism-diagnosis JSON without reducing the answer to a row-only table or same-scale checklist.\"},\n        ],\n    }\n    if frame.get(\"formula_prompt\"):\n        result[\"rubric\"] = {\n            \"total_points\": 20,\n            \"criteria\": [\n                {\"name\": \"mechanism_diagnosis\", \"points\": 3, \"description\": \"Identifies the dominant physical process and gives the correct compact mechanism label or equivalent diagnosis.\"},\n                {\"name\": \"computed_evidence\", \"points\": 4, \"description\": \"Recomputes the package-derived quantitative evidence with correct units, signs, ratios, dates, and rounding.\"},\n                {\"name\": \"formula_derivation\", \"points\": 3, \"description\": \"Shows the requested physical formula, scaling relation, or timing relation and connects it to the computed values.\"},\n                {\"name\": \"evidence_weighting\", \"points\": 3, \"description\": \"Explains which evidence streams are decisive and which are contextual or weaker proxies.\"},\n                {\"name\": \"counterfactual_rejection\", \"points\": 3, \"description\": \"Rejects tempting simplified explanations using computed values rather than assertion.\"},\n                {\"name\": \"bounded_interpretation\", \"points\": 2, \"description\": \"States scale, timing, proxy, or uncertainty limits without adding unsupported losses or impacts.\"},\n                {\"name\": \"json_contract\", \"points\": 2, \"description\": \"Returns the requested structured mechanism-diagnosis JSON without reducing the answer to a row-only table.\"},\n            ],\n        }\n\n    return result\n\ndef package_path(rel_path: str) -> Path:\n    return PACKAGE_DIR / rel_path\n\n\ndef find_package_file(parent_rel_path: str, pattern: str) -> Path:\n    matches = sorted((PACKAGE_DIR / parent_rel_path).glob(pattern))\n    if not matches:\n        raise FileNotFoundError(f\"No package file matched {parent_rel_path}/{pattern}\")\n    if len(matches) > 1:\n        raise FileExistsError(f\"Multiple package files matched {parent_rel_path}/{pattern}\")\n    return matches[0]\n\n\ndef read_text(rel_path: str) -> str:\n    return package_path(rel_path).read_text(encoding=\"utf-8\", errors=\"replace\")\n\n\ndef read_json(rel_path: str):\n    return json.loads(read_text(rel_path))\n\n\ndef read_json_path(path: Path):\n    return json.loads(path.read_text(encoding=\"utf-8\", errors=\"replace\"))\n\n\ndef strip_html(text: str) -> str:\n    text = re.sub(r\"<script\\b.*?</script>\", \" \", text, flags=re.I | re.S)\n    text = re.sub(r\"<style\\b.*?</style>\", \" \", text, flags=re.I | re.S)\n    text = re.sub(r\"<[^>]+>\", \" \", text)\n    text = unescape(text)\n    return re.sub(r\"\\s+\", \" \", text).strip()\n\n\ndef extract_first_float(pattern: str, text: str, default: float | None = None) -> float:\n    match = re.search(pattern, text, flags=re.I)\n    if match:\n        return float(match.group(1).replace(\",\", \"\"))\n    if default is not None:\n        return default\n    raise ValueError(f\"pattern not found: {pattern}\")\n\n\ndef inclusive_days(start: str, end: str) -> int:\n    start_date = date.fromisoformat(start)\n    end_date = date.fromisoformat(end)\n    return (end_date - start_date).days + 1\n\n\ndef rolling_max(values: list[float], window: int) -> float:\n    if len(values) < window:\n        return sum(values)\n    return max(sum(values[index : index + window]) for index in range(len(values) - window + 1))\n\n\ndef count_osm_tags(elements: list[dict]) -> dict[str, int]:\n    counts = {\n        \"elements\": len(elements),\n        \"highway\": 0,\n        \"bridge\": 0,\n        \"tunnel\": 0,\n        \"waterway\": 0,\n        \"hospital\": 0,\n        \"school\": 0,\n        \"police_fire\": 0,\n        \"building\": 0,\n    }\n    for element in elements:\n        tags = element.get(\"tags\", {})\n        if \"highway\" in tags:\n            counts[\"highway\"] += 1\n        if \"bridge\" in tags:\n            counts[\"bridge\"] += 1\n        if \"tunnel\" in tags:\n            counts[\"tunnel\"] += 1\n        if \"waterway\" in tags:\n            counts[\"waterway\"] += 1\n        if tags.get(\"amenity\") == \"hospital\":\n            counts[\"hospital\"] += 1\n        if tags.get(\"amenity\") == \"school\":\n            counts[\"school\"] += 1\n        if tags.get(\"amenity\") in {\"police\", \"fire_station\"}:\n            counts[\"police_fire\"] += 1\n        if \"building\" in tags:\n            counts[\"building\"] += 1\n    counts[\"critical_amenities\"] = counts[\"hospital\"] + counts[\"school\"] + counts[\"police_fire\"]\n    return counts\n\n\ndef rounded_dict(values: dict[str, float], digits: int = 3) -> dict[str, float]:\n    return {key: round(value, digits) for key, value in values.items()}\n\n\ndef main() -> None:\n    event = read_json(\"metadata/event.json\")\n    anchor = read_json(\n        \"data/event_reports/event_reports_003_Locked_event_anchor_July_2021_Henan_Zhengzhou_extreme_rainfall_and_flood.json\"\n    )\n    report_text = strip_html(read_text(\"data/event_reports/event_reports_001_Locked_package_evidence_report.html\"))\n    nasa_text = strip_html(read_text(\"data/event_reports/event_reports_004_NASA_Earth_Observatory_-_Flooding_in_Central_China.html\"))\n\n    start_date = anchor[\"temporal_window\"][\"start_date\"]\n    end_date = anchor[\"temporal_window\"][\"end_date\"]\n    event_days = inclusive_days(start_date, end_date)\n    event_hours = event_days * 24\n\n    station_one_hour_mm = extract_first_float(r\"one-hour precipitation[^0-9]{0,80}([0-9.]+)\\s*mm\", report_text)\n    previous_record_mm = extract_first_float(r\"previous record was\\s*([0-9.]+)\\s*mm\", report_text)\n    record_margin_mm = station_one_hour_mm - previous_record_mm\n    record_ratio = station_one_hour_mm / previous_record_mm\n\n    openmeteo = read_json(\"data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json\")[\"hourly\"]\n    hourly_precip = [float(value or 0.0) for value in openmeteo[\"precipitation\"]]\n    point_total_mm = sum(hourly_precip)\n    point_max_hourly_mm = max(hourly_precip)\n    point_max_time = openmeteo[\"time\"][hourly_precip.index(point_max_hourly_mm)]\n    wet_hours = sum(value > 0.0 for value in hourly_precip)\n    heavy_hours_10mm = sum(value >= 10.0 for value in hourly_precip)\n    rolling_24h_mm = rolling_max(hourly_precip, 24)\n    rolling_72h_mm = rolling_max(hourly_precip, 72)\n    wet_hour_fraction = wet_hours / event_hours\n    heavy_hour_fraction = heavy_hours_10mm / event_hours\n    rolling_24h_fraction = rolling_24h_mm / point_total_mm\n    rolling_72h_fraction = rolling_72h_mm / point_total_mm\n    station_to_point_peak_ratio = station_one_hour_mm / point_max_hourly_mm\n\n    era5 = read_json(\"data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json\")[\"stats\"]\n    gpm = read_json(\"data/physical_hazard/physical_hazard_007_GPM_IMERG_V07_event_accumulated_precipitation.json\")[\"stats\"]\n    chirps = read_json(\"data/physical_hazard/physical_hazard_009_CHIRPS_daily_event_accumulated_precipitation.json\")[\"stats\"]\n    product_means = {\n        \"gpm_mm\": gpm[\"gpm_event_precip_mm_mean\"],\n        \"chirps_mm\": chirps[\"chirps_event_precip_mm_mean\"],\n        \"era5_land_mm\": era5[\"precipitation_sum_mm_mean\"],\n    }\n    product_maxima = {\n        \"gpm_mm\": gpm[\"gpm_event_precip_mm_max\"],\n        \"chirps_mm\": chirps[\"chirps_event_precip_mm_max\"],\n        \"era5_land_mm\": era5[\"precipitation_sum_mm_max\"],\n    }\n    product_max_mean_ratios = {\n        \"gpm\": product_maxima[\"gpm_mm\"] / product_means[\"gpm_mm\"],\n        \"chirps\": product_maxima[\"chirps_mm\"] / product_means[\"chirps_mm\"],\n        \"era5_land\": product_maxima[\"era5_land_mm\"] / product_means[\"era5_land_mm\"],\n    }\n    regional_mean_average_mm = sum(product_means.values()) / len(product_means)\n    regional_max_mean_ratio_average = sum(product_max_mean_ratios.values()) / len(product_max_mean_ratios)\n\n    xinxiang_two_hour_cm = extract_first_float(r\"dropped\\s*([0-9.]+)\\s*centimeters.*?two hours\", nasa_text, 26.0)\n    xinxiang_two_hour_mm = xinxiang_two_hour_cm * 10.0\n    xinxiang_rate_mm_per_hour = xinxiang_two_hour_mm / 2.0\n\n    worldpop = read_json(\"data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json\")\n    population = float(worldpop[\"population_sum\"][\"population\"])\n    osm_path = find_package_file(\n        \"data/exposure_impact\",\n        \"exposure_impact_006_OpenStreetMap_Overpass_bounded_*_slice.json\",\n    )\n    osm_rel_path = str(osm_path.relative_to(PACKAGE_DIR)).replace(\"\\\\\", \"/\")\n    osm_counts = count_osm_tags(read_json_path(osm_path)[\"elements\"])\n    osm_shares = {\n        \"highway\": osm_counts[\"highway\"] / osm_counts[\"elements\"],\n        \"bridge\": osm_counts[\"bridge\"] / osm_counts[\"elements\"],\n        \"critical_amenities\": osm_counts[\"critical_amenities\"] / osm_counts[\"elements\"],\n        \"building\": osm_counts[\"building\"] / osm_counts[\"elements\"],\n    }\n\n    sentinel = read_json(\"data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json\")\n    alphaearth = read_json(\"data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json\")\n    sentinel_vv_change_db = sentinel[\"stats\"][\"s1_vv_post_minus_pre_db_mean\"]\n    alphaearth_change_mean = alphaearth[\"stats\"][\"alphaearth_1_minus_cosine_mean\"]\n\n    row_ids = [\n        \"regional_multiday_accumulation\",\n        \"zhengzhou_record_burst\",\n        \"point_persistence_and_concentration\",\n        \"northern_short_duration_context\",\n        \"urban_receptor_context\",\n        \"surface_change_context\",\n    ]\n\n    transition_ledger = [\n        {\n            \"row_id\": \"regional_multiday_accumulation\",\n            \"formula\": [\n                \"event_hours = 7 * 24\",\n                \"regional_mean_average_mm = mean(426.100, 256.635, 214.341)\",\n                \"average_max_mean_ratio = mean(product_max_mm / product_mean_mm)\",\n            ],\n            \"computed_values\": {\n                \"event_hours\": event_hours,\n                \"regional_product_means_mm\": rounded_dict(product_means, 3),\n                \"regional_mean_average_mm\": round(regional_mean_average_mm, 3),\n                \"average_max_mean_ratio\": round(regional_max_mean_ratio_average, 3),\n            },\n            \"threshold_result\": \"pass: all three regional means exceed 200 mm and the ensemble mean is about 299.025 mm\",\n            \"rejected_overread\": \"regional_accumulation_only\",\n        },\n        {\n            \"row_id\": \"zhengzhou_record_burst\",\n            \"formula\": [\"201.9 - 198.5\", \"201.9 / 198.5\", \"201.9 / 23.3\"],\n            \"computed_values\": {\n                \"station_one_hour_mm\": round(station_one_hour_mm, 1),\n                \"previous_record_mm\": round(previous_record_mm, 1),\n                \"record_margin_mm\": round(record_margin_mm, 1),\n                \"record_ratio\": round(record_ratio, 6),\n                \"station_to_point_peak_ratio\": round(station_to_point_peak_ratio, 3),\n            },\n            \"threshold_result\": \"pass: Zhengzhou exceeded the previous mainland one-hour record\",\n            \"rejected_overread\": \"point_series_downgrades_station_record\",\n        },\n        {\n            \"row_id\": \"point_persistence_and_concentration\",\n            \"formula\": [\n                \"wet_hours / 168\",\n                \"heavy_hours_ge_10mm / 168\",\n                \"max_24h / event_total\",\n                \"max_72h / event_total\",\n            ],\n            \"computed_values\": {\n                \"point_event_total_mm\": round(point_total_mm, 1),\n                \"wet_hours\": wet_hours,\n                \"wet_hour_fraction\": round(wet_hour_fraction, 6),\n                \"heavy_hours_ge_10mm\": heavy_hours_10mm,\n                \"heavy_hour_fraction\": round(heavy_hour_fraction, 6),\n                \"rolling_24h_mm\": round(rolling_24h_mm, 1),\n                \"rolling_24h_fraction\": round(rolling_24h_fraction, 6),\n                \"rolling_72h_mm\": round(rolling_72h_mm, 1),\n                \"rolling_72h_fraction\": round(rolling_72h_fraction, 6),\n            },\n            \"threshold_result\": \"pass: sustained wetness plus strong 24-hour and 72-hour concentration\",\n            \"rejected_overread\": \"city_burst_only\",\n        },\n        {\n            \"row_id\": \"northern_short_duration_context\",\n            \"formula\": [\"260.0 / 2\"],\n            \"computed_values\": {\n                \"xinxiang_two_hour_total_mm\": round(xinxiang_two_hour_mm, 1),\n                \"xinxiang_rate_mm_per_hour\": round(xinxiang_rate_mm_per_hour, 1),\n            },\n            \"threshold_result\": \"pass: northern Henan also shows a short-duration extreme\",\n            \"rejected_overread\": \"meteorological_rarity_only\",\n        },\n        {\n            \"row_id\": \"urban_receptor_context\",\n            \"formula\": [\"population_millions = population_sum / 1000000\", \"feature_share = count / 1000\"],\n            \"computed_values\": {\n                \"population_millions\": round(population / 1_000_000.0, 3),\n                \"highway_share\": round(osm_shares[\"highway\"], 3),\n                \"bridge_share\": round(osm_shares[\"bridge\"], 3),\n                \"critical_amenity_share\": round(osm_shares[\"critical_amenities\"], 3),\n                \"building_share\": round(osm_shares[\"building\"], 3),\n            },\n            \"threshold_result\": \"pass: dense receptor context is present\",\n            \"rejected_overread\": \"receptor_density_as_loss_metric\",\n        },\n        {\n            \"row_id\": \"surface_change_context\",\n            \"formula\": [\"mean Sentinel-1 VV post-minus-pre dB\", \"mean AlphaEarth annual 1-minus-cosine change\"],\n            \"computed_values\": {\n                \"sentinel_vv_change_db\": round(sentinel_vv_change_db, 3),\n                \"alphaearth_annual_surface_change_mean\": round(alphaearth_change_mean, 4),\n            },\n            \"threshold_result\": \"context: nonzero surface-change metrics are present\",\n            \"rejected_overread\": \"surface_signal_as_depth_or_loss_metric\",\n        },\n    ]\n\n    key_values = {\n        \"event_hours\": event_hours,\n        \"station_one_hour_mm\": round(station_one_hour_mm, 1),\n        \"previous_record_mm\": round(previous_record_mm, 1),\n        \"record_margin_mm\": round(record_margin_mm, 1),\n        \"record_ratio\": round(record_ratio, 6),\n        \"point_event_total_mm\": round(point_total_mm, 1),\n        \"point_max_hourly_mm\": round(point_max_hourly_mm, 1),\n        \"point_max_time\": point_max_time,\n        \"wet_hours\": wet_hours,\n        \"wet_hour_fraction\": round(wet_hour_fraction, 6),\n        \"heavy_hours_ge_10mm\": heavy_hours_10mm,\n        \"heavy_hour_fraction\": round(heavy_hour_fraction, 6),\n        \"rolling_24h_mm\": round(rolling_24h_mm, 1),\n        \"rolling_24h_fraction\": round(rolling_24h_fraction, 6),\n        \"rolling_72h_mm\": round(rolling_72h_mm, 1),\n        \"rolling_72h_fraction\": round(rolling_72h_fraction, 6),\n        \"station_to_point_peak_ratio\": round(station_to_point_peak_ratio, 3),\n        \"regional_product_means_mm\": rounded_dict(product_means, 3),\n        \"regional_product_maxima_mm\": rounded_dict(product_maxima, 3),\n        \"regional_mean_average_mm\": round(regional_mean_average_mm, 3),\n        \"regional_average_max_mean_ratio\": round(regional_max_mean_ratio_average, 3),\n        \"xinxiang_two_hour_total_mm\": round(xinxiang_two_hour_mm, 1),\n        \"xinxiang_rate_mm_per_hour\": round(xinxiang_rate_mm_per_hour, 1),\n        \"population_sum\": round(population, 3),\n        \"population_millions\": round(population / 1_000_000.0, 3),\n        \"osm_counts\": osm_counts,\n        \"osm_shares\": rounded_dict(osm_shares, 3),\n        \"sentinel_vv_change_db\": round(sentinel_vv_change_db, 3),\n        \"alphaearth_annual_surface_change_mean\": round(alphaearth_change_mean, 4),\n    }\n\n    computed = {\n        \"schema_version\": \"1.0\",\n        \"task_id\": \"CSX-075_Q2\",\n        \"event_id\": \"CSX-075\",\n        \"task_type\": \"short_answer\",\n        \"target_family\": TARGET_FAMILY,\n        \"evaluation_mode\": \"hybrid\",\n        \"difficulty_level\": \"L3\",\n        \"primary_gt\": {\n            \"target_family\": TARGET_FAMILY,\n            \"transition_ledger\": transition_ledger,\n            \"rejected_alternatives\": [\n                \"city_burst_only\",\n                \"regional_accumulation_only\",\n                \"point_series_downgrades_station_record\",\n                \"receptor_density_as_loss_metric\",\n                \"surface_signal_as_depth_or_loss_metric\",\n                \"meteorological_rarity_only\",\n            ],\n            \"final_consistency_label\": FINAL_LABEL,\n        },\n        \"key_values\": key_values,\n        \"rubric\": {\n            \"total_points\": 20,\n            \"criteria\": [\n                {\n                    \"name\": \"Structured ledger answer\",\n                    \"points\": 3,\n                    \"description\": \"Returns compact JSON with the target family, six named ledger rows, formula/value/result fields, computation-derived rejections, and the final label.\",\n                    \"partial_credit\": \"Give 1-2 points if the answer has most required fields but misses one row, omits formulas, or gives the final label outside the JSON.\",\n                },\n                {\n                    \"name\": \"Regional accumulation arithmetic\",\n                    \"points\": 3,\n                    \"description\": \"Computes the 168-hour window, product means of 426.100, 256.635, and 214.341 mm, ensemble mean near 299.025 mm, and average max/mean ratio near 1.185.\",\n                    \"partial_credit\": \"Give 1-2 points for correct event length or at least two correct product means with a minor rounding or ratio error.\",\n                },\n                {\n                    \"name\": \"Zhengzhou burst arithmetic\",\n                    \"points\": 3,\n                    \"description\": \"Reports 201.9 mm, 198.5 mm, 3.4 mm margin, record ratio near 1.017128, point peak 23.3 mm, and station-to-point ratio near 8.665.\",\n                    \"partial_credit\": \"Give 1-2 points if the station record comparison is correct but the point-ratio calculation or rounding is wrong.\",\n                },\n                {\n                    \"name\": \"Point persistence and concentration\",\n                    \"points\": 4,\n                    \"description\": \"Computes 332.2 mm total, 137 wet hours, 3 heavy hours, wet fraction near 0.815476, heavy fraction near 0.017857, 172.5 mm in 24 hours, 283.9 mm in 72 hours, and fractions near 0.519266 and 0.854606.\",\n                    \"partial_credit\": \"Give 1-3 points for partially correct totals, counts, or rolling-window fractions; lose credit for using the station burst as the point hourly maximum.\",\n                },\n                {\n                    \"name\": \"Context metrics\",\n                    \"points\": 2,\n                    \"description\": \"Computes the Xinxiang two-hour rate as 130.0 mm/h, population near 11.097 million, receptor shares of highway 0.635, bridge 0.160, critical amenities 0.055, building 0.296, Sentinel-1 VV change 0.854 dB, and AlphaEarth change 0.0446.\",\n                    \"partial_credit\": \"Give 1 point if either the northern rate or the receptor/surface metrics are correct, but not the full set.\",\n                },\n                {\n                    \"name\": \"Formula-linked consistency tests\",\n                    \"points\": 2,\n                    \"description\": \"Uses the computed values to mark all six rows as passing or contextual, yielding a six-of-six cross-scale consistency result.\",\n                    \"partial_credit\": \"Give 1 point if the final state is right but one row's threshold statement is vague or not tied to its formula.\",\n                },\n                {\n                    \"name\": \"Computed rejection of weaker readings\",\n                    \"points\": 2,\n                    \"description\": \"Rejects burst-only, regional-only, point-series downgrade, receptor-as-loss, and surface-signal-as-depth/loss readings using the numeric ledger.\",\n                    \"partial_credit\": \"Give 1 point if at least three weaker readings are rejected for numeric reasons; give 0 if rejections are generic prose.\",\n                },\n                {\n                    \"name\": \"Concise interpretation\",\n                    \"points\": 1,\n                    \"description\": \"Gives the final label cross_scale_flood_transition_consistent and limits interpretation to the calculation-supported flood-transition conclusion.\",\n                    \"partial_credit\": \"Give partial credit only when the label is equivalent but the wording is unnecessarily broad.\",\n                },\n            ],\n        },\n        \"provenance\": {\n            \"computed_by\": \"compute_gt.py\",\n            \"source_files\": [\n                \"metadata/event.json\",\n                \"data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n                \"data/event_reports/event_reports_003_Locked_event_anchor_July_2021_Henan_Zhengzhou_extreme_rainfall_and_flood.json\",\n                \"data/event_reports/event_reports_004_NASA_Earth_Observatory_-_Flooding_in_Central_China.html\",\n                \"data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json\",\n                \"data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json\",\n                \"data/physical_hazard/physical_hazard_007_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n                \"data/physical_hazard/physical_hazard_009_CHIRPS_daily_event_accumulated_precipitation.json\",\n                \"data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json\",\n                osm_rel_path,\n                \"data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n                \"data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json\",\n            ],\n        },\n    }\n    apply_deepened_task_frame(computed)\n    OUT_PATH.write_text(json.dumps(computed, indent=2, ensure_ascii=True) + \"\\n\", encoding=\"utf-8\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "event": {
+    "package_id": "CSX-075",
+    "event_name": "July 2021 Henan Zhengzhou extreme rainfall and flood",
+    "canonical_event_key": "2021 henan zhengzhou flood",
+    "hazard_family": "extreme_precip_pluvial_flood",
+    "hazard_label": "Extreme precipitation and pluvial flooding",
+    "scale": "regional_basin",
+    "region": "East Asia",
+    "primary_evidence_url": "https://english.henan.gov.cn/2021/07-22/2186780.html",
+    "existence_verdict": "confirmed",
+    "temporal_match": "match",
+    "spatial_match": "match",
+    "hazard_match": "match",
+    "source_reliability": "high_official_or_institutional",
+    "correspondence_score": "88",
+    "release_decision": "keep_with_minor_fix",
+    "benchmark_readiness": "ready_with_metadata_warnings",
+    "benchmark_readiness_label": "ready with metadata warnings",
+    "data_integrity": {
+      "local_files_checked": "46",
+      "image_files_checked": "13",
+      "valid_images": "13",
+      "formal_slice_files_checked": "26",
+      "hard_error_count": "0",
+      "metadata_warning_count": "10",
+      "final_data_score": "65",
+      "final_data_decision": "ready_with_minor_warnings",
+      "replacement_file_count": "0"
+    },
+    "file_inventory": {
+      "total_files": 40,
+      "categories": {
+        "air_quality": 1,
+        "event_catalogs": 2,
+        "event_reports": 4,
+        "exposure_impact": 7,
+        "geospatial_context": 3,
+        "other": 2,
+        "physical_hazard": 11,
+        "remote_sensing": 10
+      }
+    }
+  },
+  "event_files": [
+    {
+      "file_id": "F0001",
+      "relative_path": "data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "category": "event_reports",
+      "layer_name": "event_anchor_report",
+      "source_id": "S001",
+      "source_name": "Locked package evidence report",
+      "source_type": "resource_registry",
+      "source_url": "https://english.henan.gov.cn/2021/07-22/2186780.html",
+      "bytes": 13167,
+      "sha256_16": "b3956241c96ca6a0",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0002",
+      "relative_path": "data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/event_reports/event_reports_002_HDX_CKAN_package_search.json",
+      "category": "event_reports",
+      "layer_name": "text_reports",
+      "source_id": "S002",
+      "source_name": "HDX CKAN package search",
+      "source_type": "resource_registry",
+      "source_url": "https://data.humdata.org/api/3/action/package_search?q=July%202021%20Henan%20Zhengzhou%20extreme%20rainfall%20and%20flood&rows=10",
+      "bytes": 294,
+      "sha256_16": "8b0409239393d27e",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0003",
+      "relative_path": "data/exposure_impact/exposure_impact_001_WorldPop_population_grids.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/exposure_impact/exposure_impact_001_WorldPop_population_grids.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/exposure_impact/exposure_impact_001_WorldPop_population_grids.html",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S003",
+      "source_name": "WorldPop population grids",
+      "source_type": "resource_registry",
+      "source_url": "https://hub.worldpop.org/geodata/listing?id=29&iso3=China",
+      "bytes": 21464,
+      "sha256_16": "ff8c2c8bf4ea909b",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0004",
+      "relative_path": "data/exposure_impact/exposure_impact_002_GHSL_built-up_and_settlement_layers.php",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/exposure_impact/exposure_impact_002_GHSL_built-up_and_settlement_layers.php",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/exposure_impact/exposure_impact_002_GHSL_built-up_and_settlement_layers.php",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S004",
+      "source_name": "GHSL built-up and settlement layers",
+      "source_type": "resource_registry",
+      "source_url": "https://ghsl.jrc.ec.europa.eu/download.php",
+      "bytes": 26368,
+      "sha256_16": "f1a201f3cf984c62",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0005",
+      "relative_path": "data/exposure_impact/exposure_impact_003_OpenStreetMap_Geofabrik_extracts.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/exposure_impact/exposure_impact_003_OpenStreetMap_Geofabrik_extracts.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/exposure_impact/exposure_impact_003_OpenStreetMap_Geofabrik_extracts.json",
+      "category": "exposure_impact",
+      "layer_name": "exposure_or_impact",
+      "source_id": "S005",
+      "source_name": "OpenStreetMap Geofabrik extracts",
+      "source_type": "resource_registry",
+      "source_url": "https://download.geofabrik.de/index-v1-nogeom.json",
+      "bytes": 513446,
+      "sha256_16": "0dcfa9a61091cf55",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0006",
+      "relative_path": "data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json",
+      "category": "air_quality",
+      "layer_name": "city_feedback_or_air_quality",
+      "source_id": "S006",
+      "source_name": "Open-Meteo Air Quality API",
+      "source_type": "resource_registry",
+      "source_url": "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=34.7466&longitude=113.6254&start_date=2021-07-17&end_date=2021-07-23&hourly=pm10,pm2_5,ozone,nitrogen_dioxide",
+      "bytes": 6910,
+      "sha256_16": "10573082b844df09",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0007",
+      "relative_path": "data/geospatial_context/geospatial_context_001_Natural_Earth_Admin-0_physical_basemap.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/geospatial_context/geospatial_context_001_Natural_Earth_Admin-0_physical_basemap.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/geospatial_context/geospatial_context_001_Natural_Earth_Admin-0_physical_basemap.zip",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S007",
+      "source_name": "Natural Earth Admin-0/physical basemap",
+      "source_type": "resource_registry",
+      "source_url": "https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip",
+      "bytes": 214976,
+      "sha256_16": "0f243aeac8ac6cf2",
+      "status": "success",
+      "preview_type": "archive",
+      "mime_type": "application/zip",
+      "format": "archive",
+      "archive_manifest": {
+        "entry_count": 7,
+        "entries": [
+          {
+            "name": "ne_110m_admin_0_countries.README.html",
+            "bytes": 41905,
+            "compressed_bytes": 9171,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.VERSION.txt",
+            "bytes": 7,
+            "compressed_bytes": 7,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.cpg",
+            "bytes": 5,
+            "compressed_bytes": 5,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.dbf",
+            "bytes": 531808,
+            "compressed_bytes": 69191,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.prj",
+            "bytes": 147,
+            "compressed_bytes": 122,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.shp",
+            "bytes": 180924,
+            "compressed_bytes": 134214,
+            "is_directory": false
+          },
+          {
+            "name": "ne_110m_admin_0_countries.shx",
+            "bytes": 1516,
+            "compressed_bytes": 910,
+            "is_directory": false
+          }
+        ],
+        "truncated": false,
+        "error": null
+      }
+    },
+    {
+      "file_id": "F0008",
+      "relative_path": "data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json",
+      "category": "event_catalogs",
+      "layer_name": "event_catalog_api",
+      "source_id": "S008",
+      "source_name": "GDACS event list GeoJSON API",
+      "source_type": "resource_registry",
+      "source_url": "https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventtype=FL&fromDate=2021-07-17&toDate=2021-07-23",
+      "bytes": 5813,
+      "sha256_16": "e7097e80c1312444",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0009",
+      "relative_path": "data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_precipitation_via_CMR_Earthdata.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_precipitation_via_CMR_Earthdata.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_precipitation_via_CMR_Earthdata.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S009",
+      "source_name": "NASA GPM IMERG precipitation via CMR/Earthdata",
+      "source_type": "resource_registry",
+      "source_url": "https://cmr.earthdata.nasa.gov/search/collections.json?keyword=GPM%20IMERG&page_size=5",
+      "bytes": 179266,
+      "sha256_16": "aa30ad46161e1e17",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0010",
+      "relative_path": "data/physical_hazard/physical_hazard_002_CHIRPS_daily_precipitation.0",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_002_CHIRPS_daily_precipitation.0",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_002_CHIRPS_daily_precipitation.0",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S010",
+      "source_name": "CHIRPS daily precipitation",
+      "source_type": "resource_registry",
+      "source_url": "https://data.chc.ucsb.edu/products/CHIRPS-2.0/",
+      "bytes": 7005,
+      "sha256_16": "ca7af0f62bd4d261",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "text"
+    },
+    {
+      "file_id": "F0011",
+      "relative_path": "data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S011",
+      "source_name": "Open-Meteo historical weather point API",
+      "source_type": "resource_registry",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=34.7466&longitude=113.6254&start_date=2021-07-17&end_date=2021-07-23&hourly=precipitation,wind_speed_10m&timezone=UTC",
+      "bytes": 5141,
+      "sha256_16": "e3fb917cb4fbaf57",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0012",
+      "relative_path": "data/remote_sensing/remote_sensing_001_Copernicus_EMS_Rapid_Mapping_EMSR_archive.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_001_Copernicus_EMS_Rapid_Mapping_EMSR_archive.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_001_Copernicus_EMS_Rapid_Mapping_EMSR_archive.html",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S012",
+      "source_name": "Copernicus EMS Rapid Mapping / EMSR archive",
+      "source_type": "resource_registry",
+      "source_url": "https://rapidmapping.emergency.copernicus.eu/",
+      "bytes": 15729,
+      "sha256_16": "f0641e6f901f46e7",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0013",
+      "relative_path": "data/geospatial_context/geospatial_context_002_Nominatim_event_location_search.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/geospatial_context/geospatial_context_002_Nominatim_event_location_search.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/geospatial_context/geospatial_context_002_Nominatim_event_location_search.json",
+      "category": "geospatial_context",
+      "layer_name": "geocoding_or_aoi",
+      "source_id": "S013",
+      "source_name": "Nominatim event location search",
+      "source_type": "resource_registry",
+      "source_url": "https://nominatim.openstreetmap.org/search?q=Zhengzhou+and+Henan+Province+China&format=jsonv2&limit=5",
+      "bytes": 2680,
+      "sha256_16": "231f8a964dbf61cc",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0014",
+      "relative_path": "data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_004_NASA_POWER_daily_point_weather_API.json",
+      "category": "physical_hazard",
+      "layer_name": "physical_hazard_api",
+      "source_id": "S014",
+      "source_name": "NASA POWER daily point weather API",
+      "source_type": "resource_registry",
+      "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR%2CT2M%2CWS10M&community=AG&longitude=113.6254&latitude=34.7466&start=20210717&end=20210723&format=JSON",
+      "bytes": 976,
+      "sha256_16": "0cd08ec17a7be1de",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0015",
+      "relative_path": "data/remote_sensing/remote_sensing_002_NASA_Worldview_GIBS_MODIS_thumbnail.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_002_NASA_Worldview_GIBS_MODIS_thumbnail.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_002_NASA_Worldview_GIBS_MODIS_thumbnail.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S015",
+      "source_name": "NASA Worldview/GIBS MODIS thumbnail",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2021-07-17&BBOX=32.2466%2C111.1254%2C37.2466%2C116.1254&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 148681,
+      "sha256_16": "84890c481dc82c84",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0016",
+      "relative_path": "data/geospatial_context/geospatial_context_003_compact_per-event_AOI_derived_from_event_bbox.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/geospatial_context/geospatial_context_003_compact_per-event_AOI_derived_from_event_bbox.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/geospatial_context/geospatial_context_003_compact_per-event_AOI_derived_from_event_bbox.json",
+      "category": "geospatial_context",
+      "layer_name": "aoi",
+      "source_id": "S016",
+      "source_name": "compact per-event AOI derived from event bbox",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 449,
+      "sha256_16": "0eaa2e9dcd124633",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0017",
+      "relative_path": "data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S017",
+      "source_name": "ERA5-Land hourly aggregate stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 1003,
+      "sha256_16": "5d45680c3c1f3c37",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0018",
+      "relative_path": "data/physical_hazard/physical_hazard_006_ERA5-Land_temperature_precipitation_wind_stack.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_006_ERA5-Land_temperature_precipitation_wind_stack.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_006_ERA5-Land_temperature_precipitation_wind_stack.zip",
+      "category": "physical_hazard",
+      "layer_name": "era5_land",
+      "source_id": "S018",
+      "source_name": "ERA5-Land temperature precipitation wind stack",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 3184,
+      "sha256_16": "d4b6663e05193476",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/91f71e408559d4deaa93.png"
+    },
+    {
+      "file_id": "F0019",
+      "relative_path": "data/physical_hazard/physical_hazard_007_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_007_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_007_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S019",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 322,
+      "sha256_16": "98f5d37e2a64155d",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0020",
+      "relative_path": "data/physical_hazard/physical_hazard_008_GPM_IMERG_V07_event_accumulated_precipitation.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_008_GPM_IMERG_V07_event_accumulated_precipitation.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_008_GPM_IMERG_V07_event_accumulated_precipitation.zip",
+      "category": "physical_hazard",
+      "layer_name": "gpm_imerg",
+      "source_id": "S019",
+      "source_name": "GPM IMERG V07 event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 1856,
+      "sha256_16": "71f70d639bd715dd",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/83e72bd45a4939d325de.png"
+    },
+    {
+      "file_id": "F0021",
+      "relative_path": "data/physical_hazard/physical_hazard_009_CHIRPS_daily_event_accumulated_precipitation.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_009_CHIRPS_daily_event_accumulated_precipitation.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_009_CHIRPS_daily_event_accumulated_precipitation.json",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S020",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 332,
+      "sha256_16": "70e9a352d9c83329",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0022",
+      "relative_path": "data/physical_hazard/physical_hazard_010_CHIRPS_daily_event_accumulated_precipitation.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_010_CHIRPS_daily_event_accumulated_precipitation.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_010_CHIRPS_daily_event_accumulated_precipitation.zip",
+      "category": "physical_hazard",
+      "layer_name": "chirps",
+      "source_id": "S020",
+      "source_name": "CHIRPS daily event accumulated precipitation",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 3349,
+      "sha256_16": "af5352d56b624ba8",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/c3cda0153e33211727fc.png"
+    },
+    {
+      "file_id": "F0023",
+      "relative_path": "data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/exposure_impact/exposure_impact_004_WorldPop_GP_100m_population_sum.json",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S021",
+      "source_name": "WorldPop GP 100m population sum",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 125,
+      "sha256_16": "bcacc6f50f8747c4",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0024",
+      "relative_path": "data/exposure_impact/exposure_impact_005_WorldPop_GP_100m_population_resampled_1km_AOI.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/exposure_impact/exposure_impact_005_WorldPop_GP_100m_population_resampled_1km_AOI.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/exposure_impact/exposure_impact_005_WorldPop_GP_100m_population_resampled_1km_AOI.zip",
+      "category": "exposure_impact",
+      "layer_name": "worldpop_population",
+      "source_id": "S022",
+      "source_name": "WorldPop GP 100m population resampled 1km AOI",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 46454,
+      "sha256_16": "14650e03194f62d0",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/be493a7bfc91e40e2cf3.png"
+    },
+    {
+      "file_id": "F0025",
+      "relative_path": "data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_64-band_annual_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S023",
+      "source_name": "Google Satellite Embedding 64-band annual stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 9890,
+      "sha256_16": "a406f4a972512099",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0026",
+      "relative_path": "data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S024",
+      "source_name": "Google Satellite Embedding annual cosine-change stats",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 360,
+      "sha256_16": "f373fc9381ae12e4",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0027",
+      "relative_path": "data/remote_sensing/remote_sensing_005_Google_Satellite_Embedding_annual_cosine-change_raster.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_005_Google_Satellite_Embedding_annual_cosine-change_raster.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_005_Google_Satellite_Embedding_annual_cosine-change_raster.zip",
+      "category": "remote_sensing",
+      "layer_name": "alphaearth_embedding",
+      "source_id": "S025",
+      "source_name": "Google Satellite Embedding annual cosine-change raster",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 94721,
+      "sha256_16": "1296fe6d7304a9dd",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/7e29119806a859644f73.png"
+    },
+    {
+      "file_id": "F0028",
+      "relative_path": "data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json",
+      "category": "remote_sensing",
+      "layer_name": "sentinel1",
+      "source_id": "S026",
+      "source_name": "Sentinel-1 GRD VV pre/post change",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 496,
+      "sha256_16": "abc44d0dfd271596",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0029",
+      "relative_path": "data/remote_sensing/remote_sensing_007_Sentinel-1_GRD_VV_pre_post_change_raster.zip",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_007_Sentinel-1_GRD_VV_pre_post_change_raster.zip",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_007_Sentinel-1_GRD_VV_pre_post_change_raster.zip",
+      "category": "remote_sensing",
+      "layer_name": "sentinel1",
+      "source_id": "S027",
+      "source_name": "Sentinel-1 GRD VV pre/post change raster",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 1521721,
+      "sha256_16": "fba726c0735cc127",
+      "status": "success",
+      "preview_type": "tiff",
+      "mime_type": "image/tiff",
+      "format": "tiff",
+      "preview_url": "data/previews/26d887b02900775bf55c.png"
+    },
+    {
+      "file_id": "F0030",
+      "relative_path": "data/exposure_impact/exposure_impact_006_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/exposure_impact/exposure_impact_006_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/exposure_impact/exposure_impact_006_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "category": "exposure_impact",
+      "layer_name": "osm_exposure",
+      "source_id": "S028",
+      "source_name": "OpenStreetMap Overpass bounded AOI slice",
+      "source_type": "resource_registry",
+      "source_url": "",
+      "bytes": 236234,
+      "sha256_16": "dfda21482ec5d1f6",
+      "status": "success",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0031",
+      "relative_path": "data/remote_sensing/remote_sensing_008_pre.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_008_pre.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_008_pre.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S029",
+      "source_name": "pre",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2021-06-17&BBOX=34.2223%2C113.227%2C35.2223%2C114.227&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 15740,
+      "sha256_16": "d5cd487cf901947b",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0032",
+      "relative_path": "data/remote_sensing/remote_sensing_009_event.jpg",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_009_event.jpg",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_009_event.jpg",
+      "category": "remote_sensing",
+      "layer_name": "remote_sensing_preview_or_product",
+      "source_id": "S030",
+      "source_name": "event",
+      "source_type": "resource_registry",
+      "source_url": "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot&TIME=2021-07-20&BBOX=34.2223%2C113.227%2C35.2223%2C114.227&CRS=EPSG%3A4326&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&FORMAT=image%2Fjpeg&WIDTH=1024&HEIGHT=768",
+      "bytes": 12725,
+      "sha256_16": "fd8b1f8d0bb66fbd",
+      "status": "success",
+      "preview_type": "image",
+      "mime_type": "image/jpeg",
+      "format": "image"
+    },
+    {
+      "file_id": "F0033",
+      "relative_path": "data/event_reports/event_reports_003_Locked_event_anchor_July_2021_Henan_Zhengzhou_extreme_rainfall_and_flood.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/event_reports/event_reports_003_Locked_event_anchor_July_2021_Henan_Zhengzhou_extreme_rainfall_and_flood.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/event_reports/event_reports_003_Locked_event_anchor_July_2021_Henan_Zhengzhou_extreme_rainfall_and_flood.json",
+      "category": "event_reports",
+      "layer_name": "package_locked_event_anchor / WMO news",
+      "source_id": "S031",
+      "source_name": "Locked event anchor: July 2021 Henan Zhengzhou extreme rainfall and flood",
+      "source_type": "event_specific_sources",
+      "source_url": "https://wmo.int/media/news/zhengzhou-floods-highlight-need-of-multi-hazard-early-warning",
+      "bytes": 2982,
+      "sha256_16": "143d4827ec62f95b",
+      "status": "remote_verified",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0034",
+      "relative_path": "data/event_reports/event_reports_004_NASA_Earth_Observatory_-_Flooding_in_Central_China.html",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/event_reports/event_reports_004_NASA_Earth_Observatory_-_Flooding_in_Central_China.html",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/event_reports/event_reports_004_NASA_Earth_Observatory_-_Flooding_in_Central_China.html",
+      "category": "event_reports",
+      "layer_name": "satellite_event_article",
+      "source_id": "S032",
+      "source_name": "NASA Earth Observatory - Flooding in Central China",
+      "source_type": "event_specific_sources",
+      "source_url": "https://earthobservatory.nasa.gov/images/148623/flooding-in-central-china",
+      "bytes": 321340,
+      "sha256_16": "f4f126e2870999cd",
+      "status": "downloaded",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "html"
+    },
+    {
+      "file_id": "F0035",
+      "relative_path": "data/physical_hazard/physical_hazard_011_04_physical_hazard_api_Open-Meteo_historical_weather_point_API.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_011_04_physical_hazard_api_Open-Meteo_historical_weather_point_API.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/physical_hazard/physical_hazard_011_04_physical_hazard_api_Open-Meteo_historical_weather_point_API.json.json",
+      "category": "physical_hazard",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S033",
+      "source_name": "04_physical_hazard_api_Open-Meteo_historical_weather_point_API.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 5142,
+      "sha256_16": "6bb561714ad78baf",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0036",
+      "relative_path": "data/exposure_impact/exposure_impact_007_osm_overpass_exposure_slice.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/exposure_impact/exposure_impact_007_osm_overpass_exposure_slice.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/exposure_impact/exposure_impact_007_osm_overpass_exposure_slice.json.json",
+      "category": "exposure_impact",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S034",
+      "source_name": "osm_overpass_exposure_slice.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 236234,
+      "sha256_16": "f9d76556a1679c74",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0037",
+      "relative_path": "data/remote_sensing/remote_sensing_010_sentinel1_vv_change_stats.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_010_sentinel1_vv_change_stats.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/remote_sensing/remote_sensing_010_sentinel1_vv_change_stats.json.json",
+      "category": "remote_sensing",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S035",
+      "source_name": "sentinel1_vv_change_stats.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 496,
+      "sha256_16": "21f6e3c77a2e3652",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0038",
+      "relative_path": "data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/other/other_001_01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S036",
+      "source_name": "01_event_specific_wikipedia_search_Wikipedia_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 2677,
+      "sha256_16": "8005cf3bfc3f7b9a",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0039",
+      "relative_path": "data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/other/other_002_02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json.json",
+      "category": "other",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S037",
+      "source_name": "02_event_specific_wikidata_search_Wikidata_entity_search_for_exact_event_name.json",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 104,
+      "sha256_16": "179312fc9cf947d7",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "json"
+    },
+    {
+      "file_id": "F0040",
+      "relative_path": "data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.xml.xml",
+      "repository_path": "event_packages/standard_event_packages/packages/CSX-075/data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.xml.xml",
+      "viewer_path": "data/packages/event_packages/standard_event_packages/packages/CSX-075/data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.xml.xml",
+      "category": "event_catalogs",
+      "layer_name": "unregistered_local_file",
+      "source_id": "S038",
+      "source_name": "05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.xml",
+      "source_type": "auxiliary_local_files",
+      "source_url": "",
+      "bytes": 101571,
+      "sha256_16": "e45ec7959228caef",
+      "status": "local_file_found",
+      "preview_type": "text",
+      "mime_type": "text/plain",
+      "format": "xml"
+    }
+  ]
+}

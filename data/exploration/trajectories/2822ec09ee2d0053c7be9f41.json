@@ -1,0 +1,1026 @@
+{
+  "task_id": "CSX-198_Q1",
+  "model_id": "deepseek-v4-flash",
+  "model_name": "DeepSeek V4 Flash",
+  "scores": {
+    "overall": 92.95,
+    "answer": 90.91,
+    "rubric": 95.0,
+    "unit_accuracy": 90.91,
+    "answer_units_correct": 10,
+    "answer_units_total": 11,
+    "rubric_points_earned": 19.0,
+    "rubric_points_total": 20.0,
+    "verdict": "correct"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 286.524,
+    "tool_calls": 25,
+    "model_rounds": 26,
+    "file_reads": 12,
+    "unique_evidence_files": 16,
+    "python_calls": 2,
+    "tool_errors": 0,
+    "prompt_tokens": 326369,
+    "completion_tokens": 11113,
+    "total_tokens": 337482
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "Discover the files in the CSX-198 event package to find incident data, spread records, precipitation, dNBR, and embedding change data.",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 36,\n  \"file_count_total\": 36,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json\",\n      \"bytes\": 36902,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json\",\n      \"bytes\": 75265,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_catalogs/event_catalogs_003_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"bytes\": 10741,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html\",\n      \"package_relative_path\": \"data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html\",\n      \"bytes\": 75260,\n      \"suffix\": \".html\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_002_HDX_CKAN_package_search.json\",\n      \"package_relative_path\": \"data/event_reports/event_reports_00\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read event metadata to get event_span_days and other basic properties.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-198/metadata/event.json",
+        "max_chars": 5000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-198/metadata/event.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-198\\\",\\n  \\\"event_name\\\": \\\"2021 Caldor Fire near South Lake Tahoe\\\",\\n  \\\"canonical_event_key\\\": \\\"2021 caldor fire near south lake tahoe\\\",\\n  \\\"hazard_family\\\": \\\"wildfire_burn_smoke\\\",\\n  \\\"hazard_label\\\": \\\"Wildfire, burn scar, and smoke\\\",\\n  \\\"scale\\\": \\\"metro_urban\\\",\\n  \\\"region\\\": \\\"Mountain regions\\\",\\n  \\\"primary_evidence_url\\\": \\\"https://www.fire.ca.gov/incidents/2021/8/14/caldor-fire/\\\",\\n  \\\"existence_verdict\\\": \\\"confirmed\\\",\\n  \\\"temporal_match\\\": \\\"yes\\\",\\n  \\\"spatial_match\\\": \\\"yes\\\",\\n  \\\"hazard_match\\\": \\\"yes\\\",\\n  \\\"source_reliability\\\": \\\"high_official_or_institutional\\\",\\n  \\\"correspondence_score\\\": \\\"78\\\",\\n  \\\"release_decision\\\": \\\"needs_stronger_source\\\",\\n  \\\"benchmark_readiness\\\": \\\"needs_source_strengthening\\\",\\n  \\\"benchmark_readiness_label\\\": \\\"needs source strengthening\\\",\\n  \\\"data_integrity\\\": {\\n    \\\"local_files_checked\\\": \\\"31\\\",\\n    \\\"image_files_checked\\\": \\\"4\\\",\\n    \\\"valid_images\\\": \\\"4\\\",\\n    \\\"formal_slice_files_checked\\\": \\\"15\\\",\\n    \\\"hard_error_count\\\": \\\"0\\\",\\n    \\\"metadata_warning_count\\\": \\\"7\\\",\\n    \\\"final_data_score\\\": \\\"70\\\",\\n    \\\"final_data_decision\\\": \\\"ready_with_minor_warnings\\\",\\n    \\\"replacement_file_count\\\": \\\"0\\\"\\n  },\\n  \\\"file_inventory\\\": {\\n    \\\"total_files\\\": 32,\\n    \\\"categories\\\": {\\n      \\\"event_catalogs\\\": 3,\\n      \\\"event_reports\\\": 7,\\n      \\\"exposure_impact\\\": 4,\\n      \\\"geospatial_context\\\": 2,\\n      \\\"physical_hazard\\\": 11,\\n      \\\"remote_sensing\\\": 5\\n    }\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1612
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/metadata/event.json"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the locked event anchor JSON to find incident details like start/end dates, acres, structures destroyed.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_005_Locked_event_anchor_2021_Caldor_Fire_near_South_Lake_Tahoe.json",
+        "max_chars": 5000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_005_Locked_event_anchor_2021_Caldor_Fire_near_South_Lake_Tahoe.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-198\\\",\\n  \\\"event_name\\\": \\\"2021 Caldor Fire near South Lake Tahoe\\\",\\n  \\\"hazard_family\\\": \\\"wildfire_burn_smoke\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2021-08-14\\\",\\n    \\\"end_date\\\": \\\"2021-10-21\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Sierra Nevada and South Lake Tahoe area\\\",\\n    \\\"country_or_region\\\": \\\"United States\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"2021 Caldor Fire near South Lake Tahoe\\\",\\n    \\\"event_start_date\\\": \\\"2021-08-14\\\",\\n    \\\"event_end_date\\\": \\\"2021-10-21\\\",\\n    \\\"event_location\\\": \\\"Sierra Nevada and South Lake Tahoe area\\\",\\n    \\\"event_country_or_region\\\": \\\"United States\\\",\\n    \\\"event_scope\\\": \\\"repaired_anchor\\\",\\n    \\\"evidence_type\\\": \\\"NASA Scientific Visualization Studio\\\",\\n    \\\"evidence_url\\\": \\\"https://svs.gsfc.nasa.gov/4992\\\",\\n    \\\"evidence_final_url\\\": \\\"https://svs.gsfc.nasa.gov/4992\\\",\\n    \\\"http_status\\\": \\\"\\\",\\n    \\\"lock_status\\\": \\\"event_locked_repaired_anchor_needs_url_probe\\\",\\n    \\\"lock_confidence\\\": \\\"high\\\",\\n    \\\"match_rule\\\": \\\"subagent_repair_replace_event\\\",\\n    \\\"web_search_query_used\\\": \\\"\\\",\\n    \\\"event_lock_notes\\\": \\\"Neighborhood/asset-scale mountain wildfire case replacing repeated Nepal anchor.\\\",\\n    \\\"verification_error\\\": \\\"\\\",\\n    \\\"dual_anchor_if_applicable\\\": \\\"\\\",\\n    \\\"source_table\\\": \\\"package_event_lock_targe\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_005_Locked_event_anchor_2021_Caldor_Fire_near_South_Lake_Tahoe.json"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for acres burned and other incident metrics needed for large_long_fire scoring.",
+      "args": {
+        "query": "acres",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"acres\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html\",\n      \"snippet\": \"<li>221,835 Acres</li>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_004_event_package.json_source_plan.event_existence_review.evidence_url.html\",\n      \"snippet\": \"<li>221,835 Acres</li>\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 526
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html",
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_004_event_package.json_source_plan.event_existence_review.evidence_url.html"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for structures destroyed count to evaluate large_long_fire criteria.",
+      "args": {
+        "query": "structures destroyed",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"structures destroyed\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html\",\n      \"snippet\": \"<div class=\\\"factoid__label\\\">Structures Damaged</div>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_004_event_package.json_source_plan.event_existence_review.evidence_url.html\",\n      \"snippet\": \"<div class=\\\"factoid__label\\\">Structures Damaged</div>\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 605
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html",
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_004_event_package.json_source_plan.event_existence_review.evidence_url.html"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the NASA report HTML to find structures destroyed, active days, and other fire metrics.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html\",\n  \"text\": \"\\n\\n<!doctype html>\\n<!--[if IE]>    <html class=\\\"not-sitecore-rich-text-editor oldie\\\" lang=\\\"en\\\"> <![endif]-->\\n<!--[if (gt IE 9)]><!-->\\n<html class=\\\"not-sitecore-rich-text-editor\\\" lang=\\\"en\\\">\\n<!--<![endif]-->\\n<head>\\n    <meta charset=\\\"utf-8\\\">\\n    <title>Caldor Fire | CAL FIRE</title>\\n    <meta name=\\\"Author\\\" content=\\\"Author\\\">\\n    <meta name=\\\"Description\\\" content=\\\"\\\">\\n\\n\\n    <meta name=\\\"Keywords\\\" content=\\\"Keywords\\\">\\n    \\n\\n\\n\\n<meta property=\\\"og:site_name\\\" content=\\\"CAL FIRE\\\">\\n<meta property=\\\"og:type\\\" content=\\\"website\\\">\\n<meta property=\\\"og:image\\\" content=\\\"https://www.fire.ca.gov/assets/img/CalFIRE/apple-touch-icon-57x57.png\\\">\\n\\n<script type=\\\"application/ld+json\\\">\\n    [\\n      {\\n        \\\"@context\\\": \\\"https://schema.org\\\",\\n        \\\"@type\\\": \\\"WebSite\\\",\\n        \\\"name\\\": \\\"CAL FIRE\\\",\\n        \\\"url\\\": \\\"https://www.fire.ca.gov\\\"\\n      },\\n      {\\n        \\\"@context\\\": \\\"https://schema.org\\\",\\n        \\\"@type\\\": \\\"GovernmentOrganization\\\",\\n        \\\"name\\\": \\\"CAL FIRE\\\",\\n        \\\"url\\\": \\\"https://www.fire.ca.gov\\\",\\n        \\\"logo\\\": \\\"https://www.fire.ca.gov/assets/img/CalFIRE/apple-touch-icon-57x57.png\\\"\\n      }\\n    ]\\n</script>\\n\\n    <!-- For iPad 3-->\\n    <link rel=\\\"apple-touch-icon\\\" sizes=\\\"144x144\\\" href=\\\"/assets/img/CalFIRE/apple-touch-icon-144x144.png\\\">\\n    <!-- For iPhone 4 -->\\n    <link rel=\\\"apple-touch-icon\\\" sizes=\\\"114x114\\\" href=\\\"/assets/img/CalFIRE/apple-touch-icon-114x114.png\\\">\\n    <!-- For iPad 1-->\\n    <link rel=\\\"apple-touch-\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for the 221,835 acres number to confirm burned acres and find surrounding context with more metrics.",
+      "args": {
+        "query": "221,835",
+        "glob": "**/*",
+        "max_matches": 10
+      },
+      "output": {
+        "text": "{\n  \"query\": \"221,835\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html\",\n      \"snippet\": \"<li>221,835 Acres</li>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_004_event_package.json_source_plan.event_existence_review.evidence_url.html\",\n      \"snippet\": \"<li>221,835 Acres</li>\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 528
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html",
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_004_event_package.json_source_plan.event_existence_review.evidence_url.html"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for structures count in the HTML reports.",
+      "args": {
+        "query": "structures",
+        "glob": "**/*.html",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"structures\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html\",\n      \"snippet\": \"<div class=\\\"factoid__label\\\">Structures Damaged</div>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_004_event_package.json_source_plan.event_existence_review.evidence_url.html\",\n      \"snippet\": \"<div class=\\\"factoid__label\\\">Structures Damaged</div>\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 595
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html",
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_004_event_package.json_source_plan.event_existence_review.evidence_url.html"
+      ]
+    },
+    {
+      "step": 9,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Look for 'Structures Destroyed' phrase more precisely.",
+      "args": {
+        "query": "Structures Destroyed",
+        "glob": "**/*",
+        "max_matches": 10
+      },
+      "output": {
+        "text": "{\n  \"query\": \"Structures Destroyed\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html\",\n      \"snippet\": \"<div class=\\\"factoid__label\\\">Structures Damaged</div>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_004_event_package.json_source_plan.event_existence_review.evidence_url.html\",\n      \"snippet\": \"<div class=\\\"factoid__label\\\">Structures Damaged</div>\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 605
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html",
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_004_event_package.json_source_plan.event_existence_review.evidence_url.html"
+      ]
+    },
+    {
+      "step": 10,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for 'destroyed' across all files to find structure destruction numbers.",
+      "args": {
+        "query": "destroyed",
+        "glob": "**/*",
+        "max_matches": 20
+      },
+      "output": {
+        "text": "{\n  \"query\": \"destroyed\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html\",\n      \"snippet\": \"<div class=\\\"factoid__label\\\">Structures Destroyed</div>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_004_event_package.json_source_plan.event_existence_review.evidence_url.html\",\n      \"snippet\": \"<div class=\\\"factoid__label\\\">Structures Destroyed</div>\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 598
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html",
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_004_event_package.json_source_plan.event_existence_review.evidence_url.html"
+      ]
+    },
+    {
+      "step": 11,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read more of the HTML file to find factoid values for structures destroyed and other metrics.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html",
+        "max_chars": 15000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html\",\n  \"text\": \"\\n\\n<!doctype html>\\n<!--[if IE]>    <html class=\\\"not-sitecore-rich-text-editor oldie\\\" lang=\\\"en\\\"> <![endif]-->\\n<!--[if (gt IE 9)]><!-->\\n<html class=\\\"not-sitecore-rich-text-editor\\\" lang=\\\"en\\\">\\n<!--<![endif]-->\\n<head>\\n    <meta charset=\\\"utf-8\\\">\\n    <title>Caldor Fire | CAL FIRE</title>\\n    <meta name=\\\"Author\\\" content=\\\"Author\\\">\\n    <meta name=\\\"Description\\\" content=\\\"\\\">\\n\\n\\n    <meta name=\\\"Keywords\\\" content=\\\"Keywords\\\">\\n    \\n\\n\\n\\n<meta property=\\\"og:site_name\\\" content=\\\"CAL FIRE\\\">\\n<meta property=\\\"og:type\\\" content=\\\"website\\\">\\n<meta property=\\\"og:image\\\" content=\\\"https://www.fire.ca.gov/assets/img/CalFIRE/apple-touch-icon-57x57.png\\\">\\n\\n<script type=\\\"application/ld+json\\\">\\n    [\\n      {\\n        \\\"@context\\\": \\\"https://schema.org\\\",\\n        \\\"@type\\\": \\\"WebSite\\\",\\n        \\\"name\\\": \\\"CAL FIRE\\\",\\n        \\\"url\\\": \\\"https://www.fire.ca.gov\\\"\\n      },\\n      {\\n        \\\"@context\\\": \\\"https://schema.org\\\",\\n        \\\"@type\\\": \\\"GovernmentOrganization\\\",\\n        \\\"name\\\": \\\"CAL FIRE\\\",\\n        \\\"url\\\": \\\"https://www.fire.ca.gov\\\",\\n        \\\"logo\\\": \\\"https://www.fire.ca.gov/assets/img/CalFIRE/apple-touch-icon-57x57.png\\\"\\n      }\\n    ]\\n</script>\\n\\n    <!-- For iPad 3-->\\n    <link rel=\\\"apple-touch-icon\\\" sizes=\\\"144x144\\\" href=\\\"/assets/img/CalFIRE/apple-touch-icon-144x144.png\\\">\\n    <!-- For iPhone 4 -->\\n    <link rel=\\\"apple-touch-icon\\\" sizes=\\\"114x114\\\" href=\\\"/assets/img/CalFIRE/apple-touch-icon-114x114.png\\\">\\n    <!-- For iPad 1-->\\n    <link rel=\\\"apple-touch-\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html"
+      ]
+    },
+    {
+      "step": 12,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for any occurrence of 'Structures' in HTML files to find numeric values.",
+      "args": {
+        "query": "Structures",
+        "glob": "**/*.html",
+        "max_matches": 30
+      },
+      "output": {
+        "text": "{\n  \"query\": \"Structures\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html\",\n      \"snippet\": \"<div class=\\\"factoid__label\\\">Structures Damaged</div>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_004_event_package.json_source_plan.event_existence_review.evidence_url.html\",\n      \"snippet\": \"<div class=\\\"factoid__label\\\">Structures Damaged</div>\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 595
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html",
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_004_event_package.json_source_plan.event_existence_review.evidence_url.html"
+      ]
+    },
+    {
+      "step": 13,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Parse the HTML file to extract factoid values for structures, acres, active days, etc.",
+      "args": {
+        "code_chars": 1154,
+        "code_sha1": "956b8efb93fb",
+        "code_preview": "with open('event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html', 'r', encoding='utf-8') as f:\n    content = f.read()\n# Find all factoid-like patterns\nimport re\n# Look for patterns like <div class=\"factoid__value\">...</div>\n# or <li>...</li> with numbers\n# Also look for numbers like 221,835\n# Let's search for structures destroyed\nidx = content.find('Structures Destroyed')\nprint('Structures Destroyed idx:', idx)\nif\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-198_Q1/python_snippets/step_13_956b8efb93fb.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-198_Q1/python_snippets/step_13_956b8efb93fb.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.147,\n  \"stdout\": \"Structures Destroyed idx: 45263\\nlex-fill\\\">\\n                                                    <div class=\\\"factoid__data fw-bold display-5\\\">1,005</div>\\n                                                    <div class=\\\"factoid__label\\\">Structures Destroyed</div>\\n                                                    <div class=\\\"factoid__label\\\">Residential, Commercial and Other</div>\\n                                                </li>\\nStructures Damaged idx: 44740\\n4 flex-fill\\\">\\n                                                    <div class=\\\"factoid__data fw-bold display-5\\\">81</div>\\n                                                    <div class=\\\"factoid__label\\\">Structures Damaged</div>\\n                                                    <div class=\\\"factoid__label\\\">Residential, Commercial and Other</div>\\n                                                </li>\\n \\n<li>221,835 Acres</li>\\n<li>\\n                            3 Counties:\\nEl Dorado, Alpine, Amador\\n                        </li>\\n<div class=\\\"factoid factoid--dynamic\\\">\\n                                        <div class=\\\"factoid__inner row\\\">\\n\\n                                                <div class=\\\"factoid__item-wrapper col-s\\n<div class=\\\"factoid__item-wrapper col-sm-6 col-md-4\\\">\\n                                                    <div class=\\\"factoid__label\\\"><strong class=\\\"fs-5\\\">Last Updated</strong><br>  02/16/2023 11:40 A\\n<div class=\\\"factoid__item-wrapper col-sm-6 col-md-4\\\">\\n                \n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "with open('event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html', 'r', encoding='utf-8') as f:\n    content = f.read()\n# Find all factoid-like patterns\nimport re\n# Look for patterns like <div class=\"factoid__value\">...</div>\n# or <li>...</li> with numbers\n# Also look for numbers like 221,835\n# Let's search for structures destroyed\nidx = content.find('Structures Destroyed')\nprint('Structures Destroyed idx:', idx)\nif\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-198_Q1/python_snippets/step_13_956b8efb93fb.py"
+      ]
+    },
+    {
+      "step": 14,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "List all files in the data directory to find spread, precipitation, dNBR, embedding change files.",
+      "args": {
+        "subdir": "data",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 32,\n  \"file_count_total\": 32,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json\",\n      \"bytes\": 36902,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json\",\n      \"bytes\": 75265,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_catalogs/event_catalogs_003_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_04_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"bytes\": 10741,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html\",\n      \"package_relative_path\": \"data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html\",\n      \"bytes\": 75260,\n      \"suffix\": \".html\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_002_HDX_CKAN_package_search.json\",\n      \"package_relative_path\": \"data/event_reports/event_reports_00\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 15,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read dNBR file to get mean and max dNBR values.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_009_Sentinel-2_SR_Harmonized_dNBR.json",
+        "max_chars": 5000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_009_Sentinel-2_SR_Harmonized_dNBR.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"COPERNICUS/S2_SR_HARMONIZED\\\",\\n  \\\"windows\\\": {\\n    \\\"pre\\\": [\\n      \\\"2021-06-15\\\",\\n      \\\"2021-08-07\\\"\\n    ],\\n    \\\"post\\\": [\\n      \\\"2021-08-14\\\",\\n      \\\"2021-11-12\\\"\\n    ]\\n  },\\n  \\\"counts\\\": {\\n    \\\"pre_count\\\": 86,\\n    \\\"post_count\\\": 150\\n  },\\n  \\\"stats\\\": {\\n    \\\"sentinel2_dnbr_max\\\": 0.6969265741251627,\\n    \\\"sentinel2_dnbr_mean\\\": -0.07497279315800966,\\n    \\\"sentinel2_dnbr_min\\\": -0.8177551862550174,\\n    \\\"sentinel2_dnbr_stdDev\\\": 0.1626457506643144\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 671
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_009_Sentinel-2_SR_Harmonized_dNBR.json"
+      ]
+    },
+    {
+      "step": 16,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read precipitation summary file for GPM IMERG.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"NASA/GPM_L3/IMERG_V07\\\",\\n  \\\"start\\\": \\\"2021-08-14\\\",\\n  \\\"end\\\": \\\"2021-09-28\\\",\\n  \\\"stats\\\": {\\n    \\\"gpm_event_precip_mm_max\\\": 415.67848996724933,\\n    \\\"gpm_event_precip_mm_mean\\\": 344.71983144707474,\\n    \\\"gpm_event_precip_mm_min\\\": 287.15449345018715,\\n    \\\"gpm_event_precip_mm_stdDev\\\": 25.338818013744852\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 522
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 17,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read CHIRPS precipitation summary.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"UCSB-CHG/CHIRPS/DAILY\\\",\\n  \\\"start\\\": \\\"2021-08-14\\\",\\n  \\\"end\\\": \\\"2021-09-28\\\",\\n  \\\"stats\\\": {\\n    \\\"chirps_event_precip_mm_max\\\": 688.3767518997192,\\n    \\\"chirps_event_precip_mm_mean\\\": 465.05417385445264,\\n    \\\"chirps_event_precip_mm_min\\\": 366.29883098602295,\\n    \\\"chirps_event_precip_mm_stdDev\\\": 43.609917580248464\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 532
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 18,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read Open-Meteo weather file to extract precipitation mean.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json",
+        "max_chars": 5000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json\",\n  \"text\": \"{\\\"latitude\\\":7.4868193,\\\"longitude\\\":0.0,\\\"generationtime_ms\\\":28.15556526184082,\\\"utc_offset_seconds\\\":0,\\\"timezone\\\":\\\"GMT\\\",\\\"timezone_abbreviation\\\":\\\"GMT\\\",\\\"elevation\\\":113.0,\\\"daily_units\\\":{\\\"time\\\":\\\"iso8601\\\",\\\"temperature_2m_max\\\":\\\"°C\\\",\\\"temperature_2m_min\\\":\\\"°C\\\",\\\"precipitation_sum\\\":\\\"mm\\\",\\\"wind_speed_10m_max\\\":\\\"km/h\\\"},\\\"daily\\\":{\\\"time\\\":[\\\"2021-07-31\\\",\\\"2021-08-01\\\",\\\"2021-08-02\\\",\\\"2021-08-03\\\",\\\"2021-08-04\\\",\\\"2021-08-05\\\",\\\"2021-08-06\\\",\\\"2021-08-07\\\",\\\"2021-08-08\\\",\\\"2021-08-09\\\",\\\"2021-08-10\\\",\\\"2021-08-11\\\",\\\"2021-08-12\\\",\\\"2021-08-13\\\",\\\"2021-08-14\\\",\\\"2021-08-15\\\",\\\"2021-08-16\\\",\\\"2021-08-17\\\",\\\"2021-08-18\\\",\\\"2021-08-19\\\",\\\"2021-08-20\\\",\\\"2021-08-21\\\",\\\"2021-08-22\\\",\\\"2021-08-23\\\",\\\"2021-08-24\\\",\\\"2021-08-25\\\",\\\"2021-08-26\\\",\\\"2021-08-27\\\",\\\"2021-08-28\\\",\\\"2021-08-29\\\",\\\"2021-08-30\\\",\\\"2021-08-31\\\",\\\"2021-09-01\\\",\\\"2021-09-02\\\",\\\"2021-09-03\\\",\\\"2021-09-04\\\",\\\"2021-09-05\\\",\\\"2021-09-06\\\",\\\"2021-09-07\\\",\\\"2021-09-08\\\",\\\"2021-09-09\\\",\\\"2021-09-10\\\",\\\"2021-09-11\\\",\\\"2021-09-12\\\",\\\"2021-09-13\\\",\\\"2021-09-14\\\",\\\"2021-09-15\\\",\\\"2021-09-16\\\",\\\"2021-09-17\\\",\\\"2021-09-18\\\",\\\"2021-09-19\\\",\\\"2021-09-20\\\",\\\"2021-09-21\\\",\\\"2021-09-22\\\",\\\"2021-09-23\\\",\\\"2021-09-24\\\",\\\"2021-09-25\\\",\\\"2021-09-26\\\",\\\"2021-09-27\\\",\\\"2021-09-28\\\"],\\\"temperature_2m_max\\\":[28.5,28.1,29.5,29.9,28.9,26.6,29.0,28.6,29.1,29.0,27.8,28.3,28.6,27.9,28.7,28.9,28.0,27.9,28.3,27.6,28.0,26.8,27.0,28.9,29.2,29.4,27.9,28.7,28.8,28.9,27.1,27.5,29.5,25.0,27.4,28.5,27.6,28.0,29.2,29.2,30.5,29.0,27.0,30.1,28.9,28.3,28.5,28.8,29.8,29.0,29.8,28.9,28.1,26.7,28.8\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json"
+      ]
+    },
+    {
+      "step": 19,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read NASA POWER weather data for precipitation values specific to the Caldor Fire area.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json",
+        "max_chars": 10000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json\",\n  \"text\": \"{\\\"type\\\":\\\"Feature\\\",\\\"geometry\\\":{\\\"type\\\":\\\"Point\\\",\\\"coordinates\\\":[0.0,7.5,134.53]},\\\"properties\\\":{\\\"parameter\\\":{\\\"T2M\\\":{\\\"20210731\\\":25.93,\\\"20210801\\\":26.48,\\\"20210802\\\":26.19,\\\"20210803\\\":26.85,\\\"20210804\\\":26.23,\\\"20210805\\\":24.93,\\\"20210806\\\":25.34,\\\"20210807\\\":25.93,\\\"20210808\\\":25.29,\\\"20210809\\\":25.85,\\\"20210810\\\":26.03,\\\"20210811\\\":25.85,\\\"20210812\\\":25.65,\\\"20210813\\\":25.15,\\\"20210814\\\":25.62,\\\"20210815\\\":26.04,\\\"20210816\\\":26.27,\\\"20210817\\\":26.38,\\\"20210818\\\":26.05,\\\"20210819\\\":27.03,\\\"20210820\\\":26.81,\\\"20210821\\\":25.02,\\\"20210822\\\":25.23,\\\"20210823\\\":26.76,\\\"20210824\\\":27.0,\\\"20210825\\\":26.26,\\\"20210826\\\":26.23,\\\"20210827\\\":25.29,\\\"20210828\\\":25.98,\\\"20210829\\\":26.48,\\\"20210830\\\":24.89,\\\"20210831\\\":26.48,\\\"20210901\\\":26.68,\\\"20210902\\\":25.24,\\\"20210903\\\":25.63,\\\"20210904\\\":25.91,\\\"20210905\\\":26.31,\\\"20210906\\\":26.19,\\\"20210907\\\":27.02,\\\"20210908\\\":26.37,\\\"20210909\\\":26.33,\\\"20210910\\\":26.83,\\\"20210911\\\":25.96,\\\"20210912\\\":26.11,\\\"20210913\\\":25.8,\\\"20210914\\\":25.51,\\\"20210915\\\":25.33,\\\"20210916\\\":25.88,\\\"20210917\\\":25.64,\\\"20210918\\\":26.1,\\\"20210919\\\":26.72,\\\"20210920\\\":26.63,\\\"20210921\\\":26.44,\\\"20210922\\\":25.95,\\\"20210923\\\":26.89,\\\"20210924\\\":26.8,\\\"20210925\\\":26.18,\\\"20210926\\\":26.02,\\\"20210927\\\":27.11,\\\"20210928\\\":26.66},\\\"T2M_MAX\\\":{\\\"20210731\\\":29.0,\\\"20210801\\\":29.65,\\\"20210802\\\":28.78,\\\"20210803\\\":29.65,\\\"20210804\\\":29.08,\\\"20210805\\\":27.18,\\\"20210806\\\":28.46,\\\"20210807\\\":29.14,\\\"20210808\\\":27.93,\\\"20210809\\\":28.95,\\\"20210810\\\":29.23,\\\"20210811\\\":28.74,\\\"20210812\\\":28.45,\\\"20210813\\\":28.06,\\\"20210814\\\":28.91\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json"
+      ]
+    },
+    {
+      "step": 20,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read ERA5-Land file to get precipitation mean as the third precipitation source.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+        "max_chars": 5000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"ECMWF/ERA5_LAND/HOURLY\\\",\\n  \\\"start\\\": \\\"2021-08-14\\\",\\n  \\\"end\\\": \\\"2021-09-28\\\",\\n  \\\"stats\\\": {\\n    \\\"precipitation_sum_mm_max\\\": 613.2151399075348,\\n    \\\"precipitation_sum_mm_mean\\\": 499.5787691854525,\\n    \\\"precipitation_sum_mm_min\\\": 284.76076464050595,\\n    \\\"precipitation_sum_mm_stdDev\\\": 65.32302623829956,\\n    \\\"temperature_2m_max_c_max\\\": 33.627297973632835,\\n    \\\"temperature_2m_max_c_mean\\\": 31.2057972240905,\\n    \\\"temperature_2m_max_c_min\\\": 29.86487731933596,\\n    \\\"temperature_2m_max_c_stdDev\\\": 0.9580485689702958,\\n    \\\"u_component_of_wind_10m_max\\\": 0.6123499723448269,\\n    \\\"u_component_of_wind_10m_mean\\\": 0.3573277156278972,\\n    \\\"u_component_of_wind_10m_min\\\": 0.15551686546076898,\\n    \\\"u_component_of_wind_10m_stdDev\\\": 0.08051000064715998,\\n    \\\"v_component_of_wind_10m_max\\\": 1.9746310564054959,\\n    \\\"v_component_of_wind_10m_mean\\\": 1.0785189377278808,\\n    \\\"v_component_of_wind_10m_min\\\": 0.5544699059016462,\\n    \\\"v_component_of_wind_10m_stdDev\\\": 0.3089431152568901\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1206
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json"
+      ]
+    },
+    {
+      "step": 21,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read embedding change stats file for mean and max values.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-198/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+        "max_chars": 5000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL\\\",\\n  \\\"pre_year\\\": 2020,\\n  \\\"post_year\\\": 2021,\\n  \\\"stats\\\": {\\n    \\\"alphaearth_1_minus_cosine_max\\\": 0.5024026996980576,\\n    \\\"alphaearth_1_minus_cosine_mean\\\": 0.01930946231650317,\\n    \\\"alphaearth_1_minus_cosine_min\\\": -0.003880901217864663,\\n    \\\"alphaearth_1_minus_cosine_stdDev\\\": 0.011254301832894723\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 562
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_annual_cosine-change_stats.json"
+      ]
+    },
+    {
+      "step": 22,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for spread or progression record data.",
+      "args": {
+        "query": "spread",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"spread\",\n  \"match_count\": 2,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json\",\n      \"snippet\": \"\\\"description\\\": \\\"Wildland fires includes all nature of fire, in forest and plains, as well as those that spread to become urban and industrial fire events. Fires may be naturally caused or manmade.\\\",\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_003_event_package.json_source_plan.locked_event_anchor.evidence_url.html\",\n      \"snippet\": \"content=\\\"This visualization shows the spread of the Caldor fire between August 15 and October 6, 2021, updated every 12 hours based on new satellite active fire detections. The yellow outlines track the position of the active fire lines for the last 60 hours, with the latest location of the fire front in the brightest shade of yellow. The red points show the location of active fire detections, while the grey region s\\n...[TRUNCATED]...\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1105
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.json",
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_003_event_package.json_source_plan.locked_event_anchor.evidence_url.html"
+      ]
+    },
+    {
+      "step": 23,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for progression record data files.",
+      "args": {
+        "query": "progression",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"progression\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 65
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 24,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Compute all metrics and scoring in Python for precision.",
+      "args": {
+        "code_chars": 2705,
+        "code_sha1": "6ba0927c80c5",
+        "code_preview": "from datetime import date, datetime\n\nstart = date(2021, 8, 14)\nend = date(2021, 10, 21)\nevent_span_days = (end - start).days + 1  # inclusive\nprint(f\"event_span_days: {event_span_days}\")\n\n# Precipitation window: 2021-08-14 to 2021-09-28\nprecip_start = date(2021, 8, 14)\nprecip_end = date(2021, 9, 28)\nprecip_window_days = (precip_end - precip_start).days + 1\nprint(f\"precip_window_days: {precip_window_days}\")\nprint(f\"precip_window_share: {precip_window_days / event_span_days}\")\n\n# Spread record: Aug 15 to Oct 6\nspread\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-198_Q1/python_snippets/step_24_6ba0927c80c5.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-198_Q1/python_snippets/step_24_6ba0927c80c5.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.146,\n  \"stdout\": \"event_span_days: 69\\nprecip_window_days: 46\\nprecip_window_share: 0.6666666666666666\\nprogression_days: 53\\nprogression_share: 0.7681159420289855\\nprecip_mean_mm: 436.45092482899327\\nprecip_range_mm: 154.85893773837773\\ndnbr mean: -0.07497279315800966, dnbr max: 0.6969265741251627\\nareawide_high: False\\nembedding mean: 0.01930946231650317, max: 0.5024026996980576, ratio: 26.01847174525778\\nlocalized_change: True\\nlarge_long_fire: 1\\nprogression: 1\\nprecip: 1\\nareawide: 1\\nlocalized: 1\\nfinal_score: 5/5\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 734
+      },
+      "code": {
+        "text": "from datetime import date, datetime\n\nstart = date(2021, 8, 14)\nend = date(2021, 10, 21)\nevent_span_days = (end - start).days + 1  # inclusive\nprint(f\"event_span_days: {event_span_days}\")\n\n# Precipitation window: 2021-08-14 to 2021-09-28\nprecip_start = date(2021, 8, 14)\nprecip_end = date(2021, 9, 28)\nprecip_window_days = (precip_end - precip_start).days + 1\nprint(f\"precip_window_days: {precip_window_days}\")\nprint(f\"precip_window_share: {precip_window_days / event_span_days}\")\n\n# Spread record: Aug 15 to Oct 6\nspread\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-198_Q1/python_snippets/step_24_6ba0927c80c5.py"
+      ]
+    },
+    {
+      "step": 25,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the progression report HTML to confirm 12-hour steps and spread dates.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_003_event_package.json_source_plan.locked_event_anchor.evidence_url.html",
+        "max_chars": 3000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_003_event_package.json_source_plan.locked_event_anchor.evidence_url.html\",\n  \"text\": \"\\n\\n\\n\\n\\n\\n<!DOCTYPE html>\\n<html lang=\\\"en\\\">\\n\\t<head>\\n\\t\\t<!-- Meta info -->\\n\\t\\t<meta charset=\\\"UTF-8\\\">\\n\\t\\t<meta name=\\\"language\\\" content=\\\"english\\\">\\n\\t\\t<meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0, shrink-to-fit=no\\\">\\n\\t\\t<meta name=\\\"author\\\" content=\\\"\\n\\t\\n\\t\\tDoug C. Morton\\n\\t\\n\\t\\t and Cindy Starr\\n\\t\\n\\\">\\n\\t\\t<meta\\n\\t\\t\\tname=\\\"description\\\"\\n\\t\\t\\tcontent=\\\"This visualization shows the spread of the Caldor fire between August 15 and October 6, 2021, updated every 12 hours based on new satellite active fire detections. The yellow outlines track the position of the active fire lines for the last 60 hours, with the latest location of the fire front in the brightest shade of yellow. The red points show the location of active fire detections, while the grey region shows the estimated total area burned. The graph shows the cumulative burned area in square kilometers.Coming soon to our YouTube channel. || Caldor_fire_2021.6540_print2.jpg (1024x576) [371.6 KB] || Caldor_fire_2021_p30_1080p30.mp4 (1920x1080) [107.8 MB] || Caldor_fire_2021_1080p60.mp4 (1920x1080) [123.2 MB] || 3840x2160_16x9_60p (3840x2160) [0 Item(s)] || captions_silent.32783.en_US.srt [43 bytes] || Caldor_fire_2021_p30_2160p30.mp4 (3840x2160) [356.4 MB] || Caldor_fire_2021_2160p60.mp4 (3840x2160) [383.8 MB] || firespread02.hwshow || Caldor_fire_2021_p30_1080p30.mp4.hwshow || \\\"\\n\\t\\t>\\n\\t\\t<meta\\n\\t\\t\\tname=\\\"keywords\\\"\\n\\t\\t\\tcontent=\\\"NASA, SVS, Scientific Visualization Studio, Scientific Visua\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_003_event_package.json_source_plan.locked_event_anchor.evidence_url.html"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Event span is 69 days (2021-08-14 to 2021-10-21 inclusive)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_005_Locked_event_anchor_2021_Caldor_Fire_near_South_Lake_Tahoe.json",
+      "support_type": "metadata"
+    },
+    {
+      "claim": "Acres burned = 221,835 (≥200,000)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "Structures destroyed = 1,005 (≥1,000)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Scientific_Visualization_Studio.html",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "Progression record spans Aug 15 to Oct 6 (53 days), 12-hour steps, 76.8% coverage",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-198/data/event_reports/event_reports_003_event_package.json_source_plan.locked_event_anchor.evidence_url.html",
+      "support_type": "report_claim"
+    },
+    {
+      "claim": "GPM IMERG precipitation mean = 344.72 mm",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "support_type": "table_metric"
+    },
+    {
+      "claim": "CHIRPS precipitation mean = 465.05 mm",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+      "support_type": "table_metric"
+    },
+    {
+      "claim": "ERA5-Land precipitation mean = 499.58 mm",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "support_type": "table_metric"
+    },
+    {
+      "claim": "Precipitation window is 2021-08-14 to 2021-09-28 (46 days, 66.7% of event span)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "support_type": "metadata"
+    },
+    {
+      "claim": "dNBR mean = -0.075, max = 0.697, both below thresholds for areawide_high",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-198/data/physical_hazard/physical_hazard_009_Sentinel-2_SR_Harmonized_dNBR.json",
+      "support_type": "table_metric"
+    },
+    {
+      "claim": "Embedding change mean = 0.0193, max = 0.5024, concentration ratio = 26.02, all meet localized_change thresholds",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-198/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "support_type": "table_metric"
+    }
+  ],
+  "reasoning_summary": [
+    "Event span computed from locked anchor as 69 days (2021-08-14 to 2021-10-21 inclusive).",
+    "Large long fire: 221,835 acres ≥ 200k, 69 days ≥ 60, 1,005 structures destroyed ≥ 1,000, so 1 point.",
+    "Progression: 53 days (Aug 15 to Oct 6 inclusive) with 12-hour steps and 76.8% coverage ≥ 75%, so 1 point.",
+    "Precipitation: mean of three means = 436.45 mm, range = 154.86 mm, window 46 days / 69 = 66.7% < 75%, so 1 point.",
+    "dNBR: mean -0.075 ≤ 0.2 and max 0.697 < 0.7, so areawide_high is false, 1 point.",
+    "Embedding change: mean 0.0193 < 0.05, max 0.5024 ≥ 0.5, ratio 26.02 ≥ 20, so localized_change is true, 1 point.",
+    "All 5 conditions met, final score = 5/5."
+  ],
+  "unsupported_or_unresolved": [],
+  "final_answer": {
+    "event_span_days": 69,
+    "progression_days": 53,
+    "progression_share": 0.7681159420289855,
+    "precip_mean_mm": 436.45092482899327,
+    "precip_range_mm": 154.85893773837773,
+    "precip_window_share": 0.6666666666666666,
+    "dnbr": {
+      "mean": -0.07497279315800966,
+      "max": 0.6969265741251627,
+      "areawide_high": false
+    },
+    "embedding_change": {
+      "mean": 0.01930946231650317,
+      "max": 0.5024026996980576,
+      "concentration_ratio": 26.01847174525778,
+      "localized_change": true
+    },
+    "final_score": "5/5"
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "The model returned all required fields correctly with booleans and numeric fields close to ground truth. Minor discrepancies in day count and ratio calculations caused slight numeric differences, but these did not materially affect final boolean or scoring logic.",
+      "llm_rubric": "Nearly all rubric criteria fully met with correct structure, logic, and final scoring. Minor deductions for small numeric inaccuracies on event_span_days, progression_share, and precip_window_share."
+    },
+    "one_sentence_rationale": "Model answer is nearly correct with perfect logic and final score but minor numeric rounding and day count differences reduce full credit.",
+    "critical_errors": [],
+    "missing_answer_elements": []
+  },
+  "provenance": {
+    "task_id": "CSX-198_Q1",
+    "model_id": "deepseek-v4-flash",
+    "model_name": "DeepSeek V4 Flash",
+    "trajectory_path": "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/CSX-198_Q1/trajectory.json",
+    "judge_path": "benchmark_build/model_runs/openrouter_selected_full405/deepseek__deepseek-v4-flash/judge_gpt41mini_final/per_task_judge_scores.jsonl"
+  }
+}

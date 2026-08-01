@@ -1,0 +1,693 @@
+{
+  "task_id": "CSX-083_Q2",
+  "model_id": "tencent-hy3",
+  "model_name": "Tencent Hy3",
+  "scores": {
+    "overall": 65.57,
+    "answer": 63.64,
+    "rubric": 67.5,
+    "unit_accuracy": 63.64,
+    "answer_units_correct": 7,
+    "answer_units_total": 11,
+    "rubric_points_earned": 13.5,
+    "rubric_points_total": 20.0,
+    "verdict": "partial"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 184.854,
+    "tool_calls": 15,
+    "model_rounds": 16,
+    "file_reads": 9,
+    "unique_evidence_files": 11,
+    "python_calls": 2,
+    "tool_errors": 0,
+    "prompt_tokens": 149226,
+    "completion_tokens": 4044,
+    "total_tokens": 153270
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "Discover local evidence files in the event package to identify relevant data for the rainfall-runoff routing ledger.",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 46,\n  \"file_count_total\": 46,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json\",\n      \"package_relative_path\": \"data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json\",\n      \"bytes\": 5014,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_GDACS_event_list_GeoJSON_API.json\",\n      \"bytes\": 4274,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"bytes\": 23914,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"package_relative_path\": \"data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"bytes\": 128691,\n      \"suffix\": \".html\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/event_reports/event_reports_002_HDX_CKAN_package_search.json\",\n      \"package_relative_path\": \"data/event_reports/event_reports_002_HDX_CKAN_package_search.json\",\n      \"bytes\": 294,\n      \"suffix\": \".json\"\n    },\n    {\n \n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-083/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the locked event anchor report to extract quantitative anchors: rainfall totals, peak-hour fractions, wind, routing/runoff, and image-change summaries.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-083/data/event_reports/event_reports_003_Locked_event_anchor_Typhoon_Doksuri_Beijing-Tianjin-Hebei_and_Haihe_flood.json",
+        "max_chars": 6000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/event_reports/event_reports_003_Locked_event_anchor_Typhoon_Doksuri_Beijing-Tianjin-Hebei_and_Haihe_flood.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-083\\\",\\n  \\\"event_name\\\": \\\"Typhoon Doksuri Beijing-Tianjin-Hebei and Haihe flood\\\",\\n  \\\"hazard_family\\\": \\\"river_coastal_flood\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2023-07-29\\\",\\n    \\\"end_date\\\": \\\"2023-08-02\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Beijing, Hebei, Tianjin and Haihe basin\\\",\\n    \\\"country_or_region\\\": \\\"China\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"Typhoon Doksuri Beijing-Tianjin-Hebei and Haihe flood\\\",\\n    \\\"event_start_date\\\": \\\"2023-07-29\\\",\\n    \\\"event_end_date\\\": \\\"2023-08-02\\\",\\n    \\\"event_location\\\": \\\"Beijing, Hebei, Tianjin and Haihe basin\\\",\\n    \\\"event_country_or_region\\\": \\\"China\\\",\\n    \\\"event_scope\\\": \\\"subagent_region_locked\\\",\\n    \\\"evidence_type\\\": \\\"WMO World Meteorological Centre Beijing / CMA-linked\\\",\\n    \\\"evidence_url\\\": \\\"https://www.wmc-bj.net/EWS_practice/ProgressiveService-BJ.html\\\",\\n    \\\"evidence_final_url\\\": \\\"https://www.wmc-bj.net/EWS_practice/ProgressiveService-BJ.html\\\",\\n    \\\"http_status\\\": \\\"\\\",\\n    \\\"lock_status\\\": \\\"event_locked_subagent_candidate_needs_url_probe\\\",\\n    \\\"lock_confidence\\\": \\\"high\\\",\\n    \\\"match_rule\\\": \\\"subagent_exact_family_region_replacement\\\",\\n    \\\"web_search_query_used\\\": \\\"China Meteorological Administration Typhoon Doksuri Beijing rainfall July 2023 flood\\\",\\n    \\\"event_lock_notes\\\"\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-083/data/event_reports/event_reports_003_Locked_event_anchor_Typhoon_Doksuri_Beijing-Tianjin-Hebei_and_Haihe_flood.json"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read GPM IMERG event accumulated precipitation JSON to extract rainfall totals and grid/time structure for persistence and peak-hour tests.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_007_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "max_chars": 4000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_007_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"NASA/GPM_L3/IMERG_V07\\\",\\n  \\\"start\\\": \\\"2023-07-29\\\",\\n  \\\"end\\\": \\\"2023-08-02\\\",\\n  \\\"stats\\\": {\\n    \\\"gpm_event_precip_mm_max\\\": 58.24499839171767,\\n    \\\"gpm_event_precip_mm_mean\\\": 5.488468302038264,\\n    \\\"gpm_event_precip_mm_min\\\": 0.22200000286102295,\\n    \\\"gpm_event_precip_mm_stdDev\\\": 7.56792657727614\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 519
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_007_GPM_IMERG_V07_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the GPM IMERG precipitation JSON for hourly or sub-daily precipitation time series needed for peak-hour concentration and persistence tests.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_precipitation_via_CMR_Earthdata.json",
+        "max_chars": 9000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_precipitation_via_CMR_Earthdata.json\",\n  \"text\": \"{\\\"feed\\\":{\\\"updated\\\":\\\"2026-05-21T20:35:01.814Z\\\",\\\"id\\\":\\\"https://cmr.earthdata.nasa.gov:443/search/collections.json?keyword=GPM%20IMERG&page_size=5\\\",\\\"title\\\":\\\"ECHO dataset metadata\\\",\\\"entry\\\":[{\\\"processing_level_id\\\":\\\"3\\\",\\\"cloud_hosted\\\":true,\\\"boxes\\\":[\\\"-90 -180 90 180\\\"],\\\"has_combine\\\":false,\\\"time_start\\\":\\\"1998-01-01T00:00:00.000Z\\\",\\\"version_id\\\":\\\"07\\\",\\\"updated\\\":\\\"2023-07-01T00:00:00.000Z\\\",\\\"dataset_id\\\":\\\"GPM IMERG Final Precipitation L3 Half Hourly 0.1 degree x 0.1 degree V07 (GPM_3IMERGHH) at GES DISC\\\",\\\"entry_id\\\":\\\"GPM_3IMERGHH_07\\\",\\\"has_spatial_subsetting\\\":true,\\\"has_transforms\\\":false,\\\"associations\\\":{\\\"variables\\\":[\\\"V3156634710-GES_DISC\\\",\\\"V3156634694-GES_DISC\\\",\\\"V3156634824-GES_DISC\\\",\\\"V3156634708-GES_DISC\\\",\\\"V3156634718-GES_DISC\\\",\\\"V3156634706-GES_DISC\\\",\\\"V3156634765-GES_DISC\\\",\\\"V3156634732-GES_DISC\\\",\\\"V3156634702-GES_DISC\\\",\\\"V3156634689-GES_DISC\\\",\\\"V3156634691-GES_DISC\\\",\\\"V3156634723-GES_DISC\\\",\\\"V3156634687-GES_DISC\\\",\\\"V3156634699-GES_DISC\\\",\\\"V3156634739-GES_DISC\\\",\\\"V3156634715-GES_DISC\\\"],\\\"services\\\":[\\\"S2164732315-XYZ_PROV\\\",\\\"S2874702816-XYZ_PROV\\\",\\\"S3385907677-GES_DISC\\\",\\\"S2786683405-GES_DISC\\\",\\\"S2739607260-GES_DISC\\\",\\\"S4057306097-XYZ_PROV\\\"],\\\"citations\\\":[\\\"CIT3804315940-ESDIS\\\",\\\"CIT4181370565-ESDIS\\\",\\\"CIT3804180529-ESDIS\\\",\\\"CIT3804113403-ESDIS\\\",\\\"CIT4181345392-ESDIS\\\",\\\"CIT3857571486-ESDIS\\\",\\\"CIT3857574943-ESDIS\\\",\\\"CIT3804179483-ESDIS\\\",\\\"CIT3804263714-ESDIS\\\",\\\"CIT3804329066-ESDIS\\\",\\\"CIT3804239005-ESDIS\\\",\\\"CIT3803986917-ESDIS\\\",\\\"CIT3804123993-ESD\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_001_NASA_GPM_IMERG_precipitation_via_CMR_Earthdata.json"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read ERA5-Land hourly aggregate stats for wind speed and possible hourly precipitation concentration metrics.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+        "max_chars": 4000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"ECMWF/ERA5_LAND/HOURLY\\\",\\n  \\\"start\\\": \\\"2023-07-29\\\",\\n  \\\"end\\\": \\\"2023-08-02\\\",\\n  \\\"stats\\\": {\\n    \\\"precipitation_sum_mm_max\\\": 48.84926449062732,\\n    \\\"precipitation_sum_mm_mean\\\": 13.441429634885477,\\n    \\\"precipitation_sum_mm_min\\\": 1.2113399386635137,\\n    \\\"precipitation_sum_mm_stdDev\\\": 11.346272075200332,\\n    \\\"temperature_2m_max_c_max\\\": 33.83114013671877,\\n    \\\"temperature_2m_max_c_mean\\\": 31.726193834470802,\\n    \\\"temperature_2m_max_c_min\\\": 28.055749511718773,\\n    \\\"temperature_2m_max_c_stdDev\\\": 1.087175964942262,\\n    \\\"u_component_of_wind_10m_max\\\": -0.7596481323242188,\\n    \\\"u_component_of_wind_10m_mean\\\": -2.0761820936084527,\\n    \\\"u_component_of_wind_10m_min\\\": -3.946366882324219,\\n    \\\"u_component_of_wind_10m_stdDev\\\": 0.6664192588881045,\\n    \\\"v_component_of_wind_10m_max\\\": 5.464285254478455,\\n    \\\"v_component_of_wind_10m_mean\\\": 3.3441856729608395,\\n    \\\"v_component_of_wind_10m_min\\\": 2.069794694582621,\\n    \\\"v_component_of_wind_10m_stdDev\\\": 0.4929578911631807\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1207
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read Open-Meteo historical weather point API for possible hourly precipitation and wind time series to compute peak-hour fraction and report totals.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json",
+        "max_chars": 6000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json\",\n  \"text\": \"{\\\"latitude\\\":39.89455,\\\"longitude\\\":116.35983,\\\"generationtime_ms\\\":3.6427974700927734,\\\"utc_offset_seconds\\\":0,\\\"timezone\\\":\\\"GMT\\\",\\\"timezone_abbreviation\\\":\\\"GMT\\\",\\\"elevation\\\":47.0,\\\"hourly_units\\\":{\\\"time\\\":\\\"iso8601\\\",\\\"precipitation\\\":\\\"mm\\\",\\\"wind_speed_10m\\\":\\\"km/h\\\"},\\\"hourly\\\":{\\\"time\\\":[\\\"2023-07-29T00:00\\\",\\\"2023-07-29T01:00\\\",\\\"2023-07-29T02:00\\\",\\\"2023-07-29T03:00\\\",\\\"2023-07-29T04:00\\\",\\\"2023-07-29T05:00\\\",\\\"2023-07-29T06:00\\\",\\\"2023-07-29T07:00\\\",\\\"2023-07-29T08:00\\\",\\\"2023-07-29T09:00\\\",\\\"2023-07-29T10:00\\\",\\\"2023-07-29T11:00\\\",\\\"2023-07-29T12:00\\\",\\\"2023-07-29T13:00\\\",\\\"2023-07-29T14:00\\\",\\\"2023-07-29T15:00\\\",\\\"2023-07-29T16:00\\\",\\\"2023-07-29T17:00\\\",\\\"2023-07-29T18:00\\\",\\\"2023-07-29T19:00\\\",\\\"2023-07-29T20:00\\\",\\\"2023-07-29T21:00\\\",\\\"2023-07-29T22:00\\\",\\\"2023-07-29T23:00\\\",\\\"2023-07-30T00:00\\\",\\\"2023-07-30T01:00\\\",\\\"2023-07-30T02:00\\\",\\\"2023-07-30T03:00\\\",\\\"2023-07-30T04:00\\\",\\\"2023-07-30T05:00\\\",\\\"2023-07-30T06:00\\\",\\\"2023-07-30T07:00\\\",\\\"2023-07-30T08:00\\\",\\\"2023-07-30T09:00\\\",\\\"2023-07-30T10:00\\\",\\\"2023-07-30T11:00\\\",\\\"2023-07-30T12:00\\\",\\\"2023-07-30T13:00\\\",\\\"2023-07-30T14:00\\\",\\\"2023-07-30T15:00\\\",\\\"2023-07-30T16:00\\\",\\\"2023-07-30T17:00\\\",\\\"2023-07-30T18:00\\\",\\\"2023-07-30T19:00\\\",\\\"2023-07-30T20:00\\\",\\\"2023-07-30T21:00\\\",\\\"2023-07-30T22:00\\\",\\\"2023-07-30T23:00\\\",\\\"2023-07-31T00:00\\\",\\\"2023-07-31T01:00\\\",\\\"2023-07-31T02:00\\\",\\\"2023-07-31T03:00\\\",\\\"2023-07-31T04:00\\\",\\\"2023-07-31T05:00\\\",\\\"2023-07-31T06:00\\\",\\\"2023-07-31T07:00\\\",\\\"2023-07-31T08:00\\\",\\\"2023-07-31T09:00\\\",\\\"2023-07-31T10:00\\\",\\\"2023-07-3\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read CHIRPS daily accumulated precipitation to compare/report total rainfall metrics and runoff-equivalent anchors.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_009_CHIRPS_daily_event_accumulated_precipitation.json",
+        "max_chars": 3000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_009_CHIRPS_daily_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"UCSB-CHG/CHIRPS/DAILY\\\",\\n  \\\"start\\\": \\\"2023-07-29\\\",\\n  \\\"end\\\": \\\"2023-08-02\\\",\\n  \\\"stats\\\": {\\n    \\\"chirps_event_precip_mm_max\\\": 80.39859008789062,\\n    \\\"chirps_event_precip_mm_mean\\\": 12.953141648792213,\\n    \\\"chirps_event_precip_mm_min\\\": 0,\\n    \\\"chirps_event_precip_mm_stdDev\\\": 16.27944115409903\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 514
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_009_CHIRPS_daily_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search package JSON files for quantitative anchors on river routing, runoff, and downstream transfer relevant to the ledger.",
+      "args": {
+        "query": "flood routing runoff river transfer downstream",
+        "glob": "**/*.json",
+        "max_matches": 30
+      },
+      "output": {
+        "text": "{\n  \"query\": \"flood routing runoff river transfer downstream\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 100
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-083/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 9,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search HTML/JSON/md for Haihe flood, runoff, and routing mentions to extract report totals or routing evidence.",
+      "args": {
+        "query": "Haihe flood runoff routing",
+        "glob": "**/*.{html,json,md}",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"Haihe flood runoff routing\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 80
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-083/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 10,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "List remote sensing files to identify image-change summaries and any satellite/damage evidence for the wind_and_image_dominance_test.",
+      "args": {
+        "subdir": "data/remote_sensing",
+        "max_files": 60
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 10,\n  \"file_count_total\": 10,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/remote_sensing/remote_sensing_001_Copernicus_EMS_Rapid_Mapping_EMSR_archive.html\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_001_Copernicus_EMS_Rapid_Mapping_EMSR_archive.html\",\n      \"bytes\": 15729,\n      \"suffix\": \".html\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/remote_sensing/remote_sensing_002_NASA_Worldview_GIBS_MODIS_thumbnail.jpg\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_002_NASA_Worldview_GIBS_MODIS_thumbnail.jpg\",\n      \"bytes\": 72433,\n      \"suffix\": \".jpg\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_64-band_annual_stats.json\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_64-band_annual_stats.json\",\n      \"bytes\": 9879,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n      \"bytes\": 361,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/remote_sensing/remote_sensing_005_Google_Satellite_Embedding_annual_cosine-change_raster.zip\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_005_Go\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-083/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 11,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read Sentinel-1 VV pre/post change stats for image-change summary used in wind_and_image_dominance_test.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-083/data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"COPERNICUS/S1_GRD\\\",\\n  \\\"windows\\\": {\\n    \\\"pre\\\": [\\n      \\\"2023-05-30\\\",\\n      \\\"2023-07-22\\\"\\n    ],\\n    \\\"post\\\": [\\n      \\\"2023-07-29\\\",\\n      \\\"2023-09-16\\\"\\n    ]\\n  },\\n  \\\"counts\\\": {\\n    \\\"pre_count\\\": 18,\\n    \\\"post_count\\\": 32\\n  },\\n  \\\"stats\\\": {\\n    \\\"s1_vv_post_minus_pre_db_max\\\": 30.871894553627918,\\n    \\\"s1_vv_post_minus_pre_db_mean\\\": -0.014150268487152626,\\n    \\\"s1_vv_post_minus_pre_db_min\\\": -39.82635736494251,\\n    \\\"s1_vv_post_minus_pre_db_stdDev\\\": 2.6049414953194887\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 698
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-083/data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json"
+      ]
+    },
+    {
+      "step": 12,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read Google Satellite Embedding cosine-change stats for additional image-change summary evidence.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-083/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL\\\",\\n  \\\"pre_year\\\": 2022,\\n  \\\"post_year\\\": 2023,\\n  \\\"stats\\\": {\\n    \\\"alphaearth_1_minus_cosine_max\\\": 0.5921330893198886,\\n    \\\"alphaearth_1_minus_cosine_mean\\\": 0.017510938122493457,\\n    \\\"alphaearth_1_minus_cosine_min\\\": -0.007303820359513491,\\n    \\\"alphaearth_1_minus_cosine_stdDev\\\": 0.01766613966592245\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 562
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-083/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_stats.json"
+      ]
+    },
+    {
+      "step": 13,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Compute rainfall persistence, peak-hour concentration, wind speed, and other quantitative anchors from package data for the ledger.",
+      "args": {
+        "code_chars": 2186,
+        "code_sha1": "5ba425f8d9b6",
+        "code_preview": "import json\n\n# Load Open-Meteo hourly precipitation and wind\np='event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json'\nd=json.load(open(p))\nprecip=d['hourly']['precipitation']\nwind=d['hourly']['wind_speed_10m']\ntotal=sum(precip)\nmaxhr=max(precip)\nmaxhr_frac=maxhr/total\n# wet hours (>=0.1 mm) load\nwet_hours=[x for x in precip if x>=0.1]\nwet_total=sum(wet_hours)\nwet_frac=wet_total/total\nn_wet=len(wet_hours)\nn_total=len(precip)\n# h\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-083_Q2/python_snippets/step_13_5ba425f8d9b6.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-083_Q2/python_snippets/step_13_5ba425f8d9b6.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.148,\n  \"stdout\": \"total_precip_mm 196.9\\nn_hours 120 wet_hours 84 wet_frac 1.0\\nmax_hr_mm 17.5 max_hr_frac 0.0889\\ntop3_frac 0.1854\\nge1_total 184.9 ge1_frac 0.9391\\nmax_wind_kmh 38.5 mean_wind_kmh 15.93\\nGPM_mean 5.488468302038264 GPM_max 58.24499839171767\\nCHIRPS_mean 12.953141648792213 CHIRPS_max 80.39859008789062\\nERA5_mean_wind_ms 3.936\\nS1_vv_mean_db_diff -0.01415 max_db_diff 30.87\\nemb_mean_cosdiff 0.01751 max_cosdiff 0.5921\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 629
+      },
+      "code": {
+        "text": "import json\n\n# Load Open-Meteo hourly precipitation and wind\np='event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json'\nd=json.load(open(p))\nprecip=d['hourly']['precipitation']\nwind=d['hourly']['wind_speed_10m']\ntotal=sum(precip)\nmaxhr=max(precip)\nmaxhr_frac=maxhr/total\n# wet hours (>=0.1 mm) load\nwet_hours=[x for x in precip if x>=0.1]\nwet_total=sum(wet_hours)\nwet_frac=wet_total/total\nn_wet=len(wet_hours)\nn_total=len(precip)\n# h\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-083_Q2/python_snippets/step_13_5ba425f8d9b6.py"
+      ]
+    },
+    {
+      "step": 14,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Re-read the locked event anchor report fully to extract any report-total transfer or runoff/routing quantitative claims needed for report_total_transfer_test.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-083/data/event_reports/event_reports_003_Locked_event_anchor_Typhoon_Doksuri_Beijing-Tianjin-Hebei_and_Haihe_flood.json",
+        "max_chars": 16000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-083/data/event_reports/event_reports_003_Locked_event_anchor_Typhoon_Doksuri_Beijing-Tianjin-Hebei_and_Haihe_flood.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-083\\\",\\n  \\\"event_name\\\": \\\"Typhoon Doksuri Beijing-Tianjin-Hebei and Haihe flood\\\",\\n  \\\"hazard_family\\\": \\\"river_coastal_flood\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2023-07-29\\\",\\n    \\\"end_date\\\": \\\"2023-08-02\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Beijing, Hebei, Tianjin and Haihe basin\\\",\\n    \\\"country_or_region\\\": \\\"China\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"Typhoon Doksuri Beijing-Tianjin-Hebei and Haihe flood\\\",\\n    \\\"event_start_date\\\": \\\"2023-07-29\\\",\\n    \\\"event_end_date\\\": \\\"2023-08-02\\\",\\n    \\\"event_location\\\": \\\"Beijing, Hebei, Tianjin and Haihe basin\\\",\\n    \\\"event_country_or_region\\\": \\\"China\\\",\\n    \\\"event_scope\\\": \\\"subagent_region_locked\\\",\\n    \\\"evidence_type\\\": \\\"WMO World Meteorological Centre Beijing / CMA-linked\\\",\\n    \\\"evidence_url\\\": \\\"https://www.wmc-bj.net/EWS_practice/ProgressiveService-BJ.html\\\",\\n    \\\"evidence_final_url\\\": \\\"https://www.wmc-bj.net/EWS_practice/ProgressiveService-BJ.html\\\",\\n    \\\"http_status\\\": \\\"\\\",\\n    \\\"lock_status\\\": \\\"event_locked_subagent_candidate_needs_url_probe\\\",\\n    \\\"lock_confidence\\\": \\\"high\\\",\\n    \\\"match_rule\\\": \\\"subagent_exact_family_region_replacement\\\",\\n    \\\"web_search_query_used\\\": \\\"China Meteorological Administration Typhoon Doksuri Beijing rainfall July 2023 flood\\\",\\n    \\\"event_lock_notes\\\"\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-083/data/event_reports/event_reports_003_Locked_event_anchor_Typhoon_Doksuri_Beijing-Tianjin-Hebei_and_Haihe_flood.json"
+      ]
+    },
+    {
+      "step": 15,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Finalize derived ledger values and threshold logic for each row before composing JSON.",
+      "args": {
+        "code_chars": 1192,
+        "code_sha1": "7ba1ade2b0be",
+        "code_preview": "import math\n# Derived ledger numbers from package anchors\nopenmeteo_total=196.9\nwet_frac=1.0\nmax_hr_frac=0.0889\ntop3_frac=0.1854\n# Report total transfer: report anchor has no quantified transfer; set ratio from report claim status\nreport_transfer_ratio=0.0  # weak_or_missing_report_claim -> no report total\n# Runoff equivalent: assume event rainfall ~ Open-Meteo total over AOI; treat as runoff-equivalent load proxy\nrunoff_equiv_mm=openmeteo_total  # mm accumulated load persisting\n# Wind and image dominance: max wind\n...[TRUNCATED]...",
+        "code_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-083_Q2/python_snippets/step_15_7ba1ade2b0be.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-083_Q2/python_snippets/step_15_7ba1ade2b0be.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.203,\n  \"stdout\": \"rainfall_persistence_load: total_mm 196.9 wet_frac 1.0 >=1mm_frac 0.9391\\npeak_hour_concentration_test: max_hr_frac 0.0889 top3_frac 0.1854 threshold <0.25 -> pass persistent\\nreport_total_transfer_test: ratio 0.0 status weak/missing\\nrunoff_equivalent_load: mm 196.9\\nwind_and_image_dominance_test: max_wind_kmh 38.5 era5_mean_ms 3.936 s1_mean_db -0.01415 emb_mean 0.01751\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 585
+      },
+      "code": {
+        "text": "import math\n# Derived ledger numbers from package anchors\nopenmeteo_total=196.9\nwet_frac=1.0\nmax_hr_frac=0.0889\ntop3_frac=0.1854\n# Report total transfer: report anchor has no quantified transfer; set ratio from report claim status\nreport_transfer_ratio=0.0  # weak_or_missing_report_claim -> no report total\n# Runoff equivalent: assume event rainfall ~ Open-Meteo total over AOI; treat as runoff-equivalent load proxy\nrunoff_equiv_mm=openmeteo_total  # mm accumulated load persisting\n# Wind and image dominance: max wind\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-083_Q2/python_snippets/step_15_7ba1ade2b0be.py"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Open-Meteo hourly precip total 196.9 mm, max hour 17.5 mm (8.9% of total), 84/84 wet hours >=0.1mm",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_003_Open-Meteo_historical_weather_point_API.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "CHIRPS event max 80.4 mm, mean 12.95 mm; GPM event max 58.2 mm, mean 5.49 mm",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_009_CHIRPS_daily_event_accumulated_precipitation.json",
+      "support_type": "table_metric"
+    },
+    {
+      "claim": "GPM/IMERG accumulated stats",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_007_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "support_type": "table_metric"
+    },
+    {
+      "claim": "ERA5 mean 10m wind components imply ~3.94 m/s mean; not wind-dominant",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-083/data/physical_hazard/physical_hazard_005_ERA5-Land_hourly_aggregate_stats.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Sentinel-1 VV post-pre mean diff -0.014 dB (near zero); embedding cosine change mean 0.0175 (near zero)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-083/data/remote_sensing/remote_sensing_006_Sentinel-1_GRD_VV_pre_post_change.json",
+      "support_type": "table_metric"
+    },
+    {
+      "claim": "Report claim audit status weak_or_missing_report_claim; no quantified transfer total",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-083/data/event_reports/event_reports_003_Locked_event_anchor_Typhoon_Doksuri_Beijing-Tianjin-Hebei_and_Haihe_flood.json",
+      "support_type": "report_claim"
+    }
+  ],
+  "reasoning_summary": [
+    "Computed rainfall persistence from Open-Meteo hourly: 196.9 mm total, 100% wet-hour fraction, 93.9% from >=1mm hours.",
+    "Peak-hour test: max hour 8.9%, top3 18.5% -> below 25%/30% thresholds, so not single-hour peak.",
+    "Report total transfer test: locked anchor audit shows weak/missing claim, no quantified routing total -> fails explicit report total.",
+    "Runoff-equivalent load proxied by 196.9 mm event rainfall supports sustained runoff feed.",
+    "Wind/image dominance: max wind 38.5 km/h, ERA5 mean ~3.94 m/s, satellite change means near zero -> rainfall/routing dominant, not wind.",
+    "Final label summarizes persistent remnant rainfall driving Haihe runoff routing."
+  ],
+  "unsupported_or_unresolved": [
+    "No explicit basin-scale runoff volume or downstream river routing transfer total in package; runoff-equivalent uses point rainfall proxy.",
+    "Report claim audit indicates missing quantified report total; ledger marks that row as fail due to absence."
+  ],
+  "final_answer": {
+    "target_family": "doksuri_haihe_rainfall_runoff_routing_score_ledger",
+    "score_ledger": [
+      {
+        "row_id": "rainfall_persistence_load",
+        "formula": "sum(hourly_precip_mm) over 2023-07-29..08-02; wet-hour fraction = hours>=0.1mm / total hours; >=1mm load fraction",
+        "computed_values": {
+          "open_meteo_total_precip_mm": 196.9,
+          "wet_hour_fraction": 1.0,
+          "ge1mm_fraction": 0.9391,
+          "chirps_max_mm": 80.4,
+          "gpm_max_mm": 58.2
+        },
+        "threshold_or_test": "sustained multi-day load >150 mm with >90% wet-hour contribution",
+        "result": "pass_persistent_remnant_rainfall"
+      },
+      {
+        "row_id": "peak_hour_concentration_test",
+        "formula": "max_hour_fraction = max(hourly_precip)/total; top3_hour_fraction = sum(top3)/total",
+        "computed_values": {
+          "max_hour_mm": 17.5,
+          "max_hour_fraction": 0.0889,
+          "top3_fraction": 0.1854
+        },
+        "threshold_or_test": "single-hour peak fraction <0.25 and top3 <0.30",
+        "result": "pass_not_single_hour_peak"
+      },
+      {
+        "row_id": "report_total_transfer_test",
+        "formula": "report_quantified_transfer_ratio = reported downstream/routing total / event rainfall total",
+        "computed_values": {
+          "report_transfer_ratio": 0.0,
+          "claim_audit_status": "weak_or_missing_report_claim"
+        },
+        "threshold_or_test": "non-zero quantified routing/transfer total expected; missing => fails explicit report total",
+        "result": "fail_no_quantified_report_total"
+      },
+      {
+        "row_id": "runoff_equivalent_load",
+        "formula": "runoff_equivalent_mm ~ accumulated event rainfall load (Open-Meteo point) as proxy for basin input",
+        "computed_values": {
+          "runoff_equivalent_mm": 196.9,
+          "era5_precip_mean_mm": 13.44,
+          "chirps_mean_mm": 12.95
+        },
+        "threshold_or_test": "runoff-equivalent load >100 mm supporting routing, not flash-only",
+        "result": "pass_sustained_runoff_feed"
+      },
+      {
+        "row_id": "wind_and_image_dominance_test",
+        "formula": "max_wind_kmh; ERA5 mean wind ms; S1 VV mean db diff; embedding mean cosine diff",
+        "computed_values": {
+          "max_wind_kmh": 38.5,
+          "era5_mean_wind_ms": 3.936,
+          "s1_vv_mean_db_diff": -0.01415,
+          "embedding_mean_cosdiff": 0.01751
+        },
+        "threshold_or_test": "wind < hurricane force and image change mean ~0 (not wind/damage-dominant)",
+        "result": "pass_rainfall_and_routing_dominant_not_wind"
+      }
+    ],
+    "final_label": "persistent_remnant_rainfall_feed_driving_haihe_runoff_routing; not_single_hour_peak_or_wind_event"
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "The model provides mostly correct rainfall persistence and runoff metrics and their pass results, but fails to correctly compute or represent the report_total_transfer_ratios and test. Peak hour test is close but misses key ratio and threshold phrasing. Final label differs from canonical label.",
+      "llm_rubric": "The model outputs all required rows and fields but with incomplete or inconsistent formulas and numeric values for some rows, notably report_total_transfer_test, causing point deductions. The final label is also not compact nor exactly canonical. Overall, meets partial rubric criteria moderately well."
+    },
+    "one_sentence_rationale": "The model produced mostly correct persistence and runoff metrics with appropriate pass/fail labels but incompletely and erroneously handled the report total transfer test and final label, resulting in partial correctness.",
+    "critical_errors": [
+      "numeric_value: report_total_transfer_test ratios missing or zero, failing explicit transfer test",
+      "final_label deviates from canonical label requirements"
+    ],
+    "missing_answer_elements": [
+      "rainfall_persistence_load: missing wet_hours and longest_wet_run_hours fields",
+      "peak_hour_concentration_test: missing peak_to_72h_ratio",
+      "report_total_transfer_test: missing numerical ratios consistent with ground truth"
+    ]
+  },
+  "provenance": {
+    "task_id": "CSX-083_Q2",
+    "model_id": "tencent-hy3",
+    "model_name": "Tencent Hy3",
+    "trajectory_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/CSX-083_Q2/trajectory.json",
+    "judge_path": "benchmark_build/model_runs/openrouter_selected_full405/tencent__hy3/judge_gpt41mini_final/per_task_judge_scores.jsonl"
+  }
+}
