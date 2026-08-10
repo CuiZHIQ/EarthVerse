@@ -266,7 +266,7 @@ function sortedModels() {
 
 function renderModelChart() {
   const metric = state.chartMetric;
-  const chartModels = [...state.models].sort((a, b) => (b.metrics[metric] ?? -1) - (a.metrics[metric] ?? -1));
+  const chartModels = sortedModels();
   elements.chartTitle.textContent = `${metricLabels[metric]} by model`;
   elements.barChart.innerHTML = chartModels
     .map((model) => {
@@ -800,6 +800,7 @@ function bindEvents() {
   });
   elements.modelSort.addEventListener("change", () => {
     state.modelSort = elements.modelSort.value;
+    renderModelChart();
     renderLeaderboard();
   });
   elements.barChart.addEventListener("click", (event) => selectModel(event.target.closest("[data-model-id]")?.dataset.modelId));
