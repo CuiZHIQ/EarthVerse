@@ -890,7 +890,7 @@ async function initialize() {
       fetch("data/metadata.json"),
     ]);
     if (![modelResponse, taskResponse, metadataResponse].every((response) => response.ok)) {
-      throw new Error("One or more benchmark data indexes could not be loaded.");
+      throw new Error("One or more EarthVerse data indexes could not be loaded.");
     }
     const [modelData, taskData, metadata] = await Promise.all([
       modelResponse.json(),
@@ -941,7 +941,7 @@ async function initialize() {
     });
     setupMotion();
   } catch (error) {
-    document.querySelector("main").insertAdjacentHTML("afterbegin", `<div class="error-banner">Benchmark data failed to load: ${escapeHtml(error.message)}</div>`);
+    document.querySelector("main").insertAdjacentHTML("afterbegin", `<div class="error-banner">EarthVerse data failed to load: ${escapeHtml(error.message)}</div>`);
   } finally {
     elements.loading.classList.add("is-hidden");
   }

@@ -77,9 +77,9 @@
           <h2>${escapeHtml(model.name)}</h2>
           <p>Published scores with ten directly inspectable task trajectories.</p>
         </div>
-        <div class="model-result-core"><span>Mean core</span><strong>${formatNumber(model.metrics.mean_core, 2)}</strong><small>Published benchmark score</small></div>
+        <div class="model-result-core"><span>Mean core</span><strong>${formatNumber(model.metrics.mean_core, 2)}</strong><small>Published EarthVerse score</small></div>
       </section>
-      <section class="model-result-scoreband" aria-label="Core benchmark scores">
+      <section class="model-result-scoreband" aria-label="Core EarthVerse scores">
         ${metricCell("Answer correctness", model.metrics.answer_correctness)}
         ${metricCell("LLM rubric", model.metrics.llm_rubric, "", 2)}
         ${metricCell("Mean core", model.metrics.mean_core)}
