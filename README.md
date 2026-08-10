@@ -1,6 +1,6 @@
-# EarthVerse Benchmark Viewer
+# EarthVerse
 
-Public companion site for the EarthVerse benchmark: 405 evidence-grounded investigations across 199 real Earth-system and natural-hazard event packages.
+Public companion site for EarthVerse: 405 evidence-grounded investigations across 199 real Earth-system and natural-hazard event packages.
 
 Live site: <https://cuizhiq.github.io/EarthVerse/>
 
