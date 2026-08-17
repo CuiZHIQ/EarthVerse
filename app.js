@@ -227,7 +227,8 @@ function renderOverviewTopModels() {
   const modelsById = new Map(state.models.map((model) => [model.id, model]));
   const leaders = overviewFeaturedModelIds
     .map((modelId) => modelsById.get(modelId))
-    .filter(Boolean);
+    .filter(Boolean)
+    .sort((a, b) => (b.metrics.strict_at_95 ?? -1) - (a.metrics.strict_at_95 ?? -1));
   elements.overviewTopModels.innerHTML = leaders.map((model, index) => `
     <div class="overview-model-row">
       <span class="rank">${String(index + 1).padStart(2, "0")}</span>
