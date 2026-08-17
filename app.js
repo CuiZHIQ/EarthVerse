@@ -555,7 +555,7 @@ function renderEvidenceOverview(task) {
       <div>
         <span class="package-id">${escapeHtml(task.event.package_id || task.event_id || task.task_id.split("_")[0])}</span>
         <h3>${escapeHtml(task.event_name)}</h3>
-        <p>Complete local event package with source-level previews and provenance.</p>
+        <p>Complete local event package with source-level previews and evidence references.</p>
       </div>
       <span class="tag">${escapeHtml(task.hazard_label)}</span>
     </div>
@@ -732,7 +732,7 @@ async function openFilePreview(file) {
     file.format || file.preview_type,
     formatBytes(file.bytes),
     file.status,
-    file.source_url ? `<a href="${escapeHtml(file.source_url)}" target="_blank" rel="noreferrer">Source provenance</a>` : null,
+    file.source_url ? `<a href="${escapeHtml(file.source_url)}" target="_blank" rel="noreferrer">Source reference</a>` : null,
     `<a href="${rawUrl}" target="_blank" rel="noreferrer">${file.preview_url ? "Open browser preview" : "Open original"}</a>`,
   ].filter(Boolean);
   elements.previewMeta.innerHTML = metadata.map((value) => `<span>${value}</span>`).join("");

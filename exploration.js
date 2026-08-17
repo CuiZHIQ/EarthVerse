@@ -279,8 +279,7 @@
       <section class="trajectory-process"><div class="trajectory-section-heading"><div><p class="section-kicker">Tool-by-tool record</p><h3>Exploration timeline</h3></div><span>${escapeHtml(payload.diagnostics?.termination_reason || payload.diagnostics?.run_status || "unknown")}</span></div>${renderTrajectoryTimeline(payload)}</section>
       ${renderEvidenceClaims(payload)}
       ${renderReasoningSummary(payload)}
-      ${renderFinalAnswer(payload)}
-      <footer class="trajectory-provenance"><span>Trajectory provenance</span><code>${escapeHtml(payload.provenance?.trajectory_path || "")}</code><span>Judge provenance</span><code>${escapeHtml(payload.provenance?.judge_path || "")}</code></footer>`;
+      ${renderFinalAnswer(payload)}`;
   }
 
   async function loadExample(modelId, container = null) {
