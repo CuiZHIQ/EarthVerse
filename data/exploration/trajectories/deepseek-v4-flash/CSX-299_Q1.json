@@ -1,0 +1,601 @@
+{
+  "task_id": "CSX-299_Q1",
+  "model_id": "deepseek-v4-flash",
+  "model_name": "DeepSeek V4 Flash",
+  "scores": {
+    "overall": 87.85,
+    "answer": 85.71,
+    "rubric": 90.0,
+    "unit_accuracy": 85.71,
+    "answer_units_correct": 6,
+    "answer_units_total": 7,
+    "rubric_points_earned": 18.0,
+    "rubric_points_total": 20.0,
+    "verdict": "correct"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 119.204,
+    "tool_calls": 13,
+    "model_rounds": 14,
+    "file_reads": 7,
+    "unique_evidence_files": 16,
+    "python_calls": 1,
+    "tool_errors": 0,
+    "prompt_tokens": 138160,
+    "completion_tokens": 5609,
+    "total_tokens": 143769
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "Discover all files in the event package to locate evidence for precipitation, wind, transport, and PM data.",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 41,\n  \"file_count_total\": 41,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/air_quality/air_quality_001_05_open_meteo_air_quality.json.json\",\n      \"package_relative_path\": \"data/air_quality/air_quality_001_05_open_meteo_air_quality.json.json\",\n      \"bytes\": 1119,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml\",\n      \"bytes\": 225166,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_catalogs/event_catalogs_002_NASA_EONET_events_API.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_NASA_EONET_events_API.xml\",\n      \"bytes\": 5059,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.json\",\n      \"bytes\": 145,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml\",\n      \"bytes\": 225163,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_catalogs/event_catalogs_005_04_event_\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-299/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the anchor event JSON to get the event window and basic context.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_003_Locked_event_anchor_Patagonian_dust_streamers.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_003_Locked_event_anchor_Patagonian_dust_streamers.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-299\\\",\\n  \\\"event_name\\\": \\\"Patagonian dust streamers\\\",\\n  \\\"hazard_family\\\": \\\"dust_sandstorm_extreme\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2020-02-06\\\",\\n    \\\"end_date\\\": \\\"2020-02-06\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Comodoro Rivadavia, Patagonia\\\",\\n    \\\"country_or_region\\\": \\\"Argentina\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"Patagonian dust streamers\\\",\\n    \\\"event_start_date\\\": \\\"2020-02-06\\\",\\n    \\\"event_end_date\\\": \\\"2020-02-06\\\",\\n    \\\"event_location\\\": \\\"Comodoro Rivadavia, Patagonia\\\",\\n    \\\"event_country_or_region\\\": \\\"Argentina\\\",\\n    \\\"event_scope\\\": \\\"subagent_region_locked\\\",\\n    \\\"evidence_type\\\": \\\"NASA Earth Observatory\\\",\\n    \\\"evidence_url\\\": \\\"https://earthobservatory.nasa.gov/images/146681/patagonian-dust-streamers\\\",\\n    \\\"evidence_final_url\\\": \\\"https://earthobservatory.nasa.gov/images/146681/patagonian-dust-streamers\\\",\\n    \\\"http_status\\\": \\\"\\\",\\n    \\\"lock_status\\\": \\\"event_locked_subagent_candidate_needs_url_probe\\\",\\n    \\\"lock_confidence\\\": \\\"medium\\\",\\n    \\\"match_rule\\\": \\\"subagent_exact_family_region_replacement\\\",\\n    \\\"web_search_query_used\\\": \\\"NASA Earth Observatory Patagonian Dust Streamers 2020\\\",\\n    \\\"event_lock_notes\\\": \\\"Patagonian arid dust streamed into the South Atlantic.\\\",\\n    \\\"verification_error\\\": \\\"\\\",\\n    \\\"dual_anchor_if_applicable\\\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_003_Locked_event_anchor_Patagonian_dust_streamers.json"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read ERA5-Land hourly aggregate stats to get precipitation mean and wind component means.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-299/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"ECMWF/ERA5_LAND/HOURLY\\\",\\n  \\\"start\\\": \\\"2020-02-06\\\",\\n  \\\"end\\\": \\\"2020-02-06\\\",\\n  \\\"stats\\\": {\\n    \\\"precipitation_sum_mm_max\\\": 3.2950411620049636,\\n    \\\"precipitation_sum_mm_mean\\\": 0.602039325999626,\\n    \\\"precipitation_sum_mm_min\\\": 0.0012735905556837679,\\n    \\\"precipitation_sum_mm_stdDev\\\": 1.1361354932791425,\\n    \\\"temperature_2m_max_c_max\\\": 32.84832153320315,\\n    \\\"temperature_2m_max_c_mean\\\": 30.420817927489892,\\n    \\\"temperature_2m_max_c_min\\\": 26.338800048828148,\\n    \\\"temperature_2m_max_c_stdDev\\\": 1.9371501162707017,\\n    \\\"u_component_of_wind_10m_max\\\": 1.3945802450180054,\\n    \\\"u_component_of_wind_10m_mean\\\": 1.0989165525796456,\\n    \\\"u_component_of_wind_10m_min\\\": 0.45321468512217206,\\n    \\\"u_component_of_wind_10m_stdDev\\\": 0.24707548599422105,\\n    \\\"v_component_of_wind_10m_max\\\": 1.6258473793665569,\\n    \\\"v_component_of_wind_10m_mean\\\": 1.37268061591687,\\n    \\\"v_component_of_wind_10m_min\\\": 1.1354298988978069,\\n    \\\"v_component_of_wind_10m_stdDev\\\": 0.14071829620908421\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1212
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-299/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read GPM precipitation data to get mean event precipitation.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-299/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"NASA/GPM_L3/IMERG_V07\\\",\\n  \\\"start\\\": \\\"2020-02-06\\\",\\n  \\\"end\\\": \\\"2020-02-06\\\",\\n  \\\"stats\\\": {\\n    \\\"gpm_event_precip_mm_max\\\": 1.2999999485909939,\\n    \\\"gpm_event_precip_mm_mean\\\": 0.03194741516660765,\\n    \\\"gpm_event_precip_mm_min\\\": 0,\\n    \\\"gpm_event_precip_mm_stdDev\\\": 0.22406784719998332\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 507
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-299/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read CHIRPS precipitation data to get mean event precipitation.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-299/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"UCSB-CHG/CHIRPS/DAILY\\\",\\n  \\\"start\\\": \\\"2020-02-06\\\",\\n  \\\"end\\\": \\\"2020-02-06\\\",\\n  \\\"stats\\\": {\\n    \\\"chirps_event_precip_mm_max\\\": 0,\\n    \\\"chirps_event_precip_mm_mean\\\": 0,\\n    \\\"chirps_event_precip_mm_min\\\": 0,\\n    \\\"chirps_event_precip_mm_stdDev\\\": 0\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 465
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-299/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read air quality JSON to get PM10, PM2.5, dust time series entries.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-299/data/air_quality/air_quality_001_05_open_meteo_air_quality.json.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/air_quality/air_quality_001_05_open_meteo_air_quality.json.json\",\n  \"text\": \"{\\\"latitude\\\":-45.899998,\\\"longitude\\\":-67.5,\\\"generationtime_ms\\\":0.07557868957519531,\\\"utc_offset_seconds\\\":0,\\\"timezone\\\":\\\"GMT\\\",\\\"timezone_abbreviation\\\":\\\"GMT\\\",\\\"elevation\\\":133.0,\\\"hourly_units\\\":{\\\"time\\\":\\\"iso8601\\\",\\\"pm10\\\":\\\"μg/m³\\\",\\\"pm2_5\\\":\\\"μg/m³\\\",\\\"dust\\\":\\\"μg/m³\\\"},\\\"hourly\\\":{\\\"time\\\":[\\\"2020-02-06T00:00\\\",\\\"2020-02-06T01:00\\\",\\\"2020-02-06T02:00\\\",\\\"2020-02-06T03:00\\\",\\\"2020-02-06T04:00\\\",\\\"2020-02-06T05:00\\\",\\\"2020-02-06T06:00\\\",\\\"2020-02-06T07:00\\\",\\\"2020-02-06T08:00\\\",\\\"2020-02-06T09:00\\\",\\\"2020-02-06T10:00\\\",\\\"2020-02-06T11:00\\\",\\\"2020-02-06T12:00\\\",\\\"2020-02-06T13:00\\\",\\\"2020-02-06T14:00\\\",\\\"2020-02-06T15:00\\\",\\\"2020-02-06T16:00\\\",\\\"2020-02-06T17:00\\\",\\\"2020-02-06T18:00\\\",\\\"2020-02-06T19:00\\\",\\\"2020-02-06T20:00\\\",\\\"2020-02-06T21:00\\\",\\\"2020-02-06T22:00\\\",\\\"2020-02-06T23:00\\\"],\\\"pm10\\\":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],\\\"pm2_5\\\":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],\\\"dust\\\":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]}}\"\n}",
+        "truncated": false,
+        "original_chars": 1361
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-299/data/air_quality/air_quality_001_05_open_meteo_air_quality.json.json"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the NASA Earth Observatory report to extract transport-distance statement and lower bound.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_004_NASA_EO_Patagonian_Dust_Streamers.html",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_004_NASA_EO_Patagonian_Dust_Streamers.html\",\n  \"text\": \"<!doctype html>\\n<html lang=\\\"en-US\\\" prefix=\\\"og: https://ogp.me/ns#\\\">\\n<head>\\n\\t<meta charset=\\\"UTF-8\\\">\\n<script>\\nvar gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){return!(!gform.domLoaded||!gform.scriptsLoaded||!gform.themeScriptsLoaded&&!gform.isFormEditor()||(gform.isFormEditor()&&console.warn(\\\"The use of gform.initializeOnLoaded() is deprecated in the form editor context and will be removed in Gravity Forms 3.1.\\\"),o(),0))},initializeOnLoaded:function(o){gform.callIfLoaded(o)||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",()=>{gform.scriptsLoaded=!0,gform.callIfLoaded(o)}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",()=>{gform.themeScriptsLoaded=!0,gform.callIfLoaded(o)}),window.addEventListener(\\\"DOMContentLoaded\\\",()=>{gform.domLoaded=!0,gform.callIfLoaded(o)}))},hooks:{action:{},filter:{}},addAction:function(o,r,e,t){gform.addHook(\\\"action\\\",o,r,e,t)},addFilter:function(o,r,e,t){gform.addHook(\\\"filter\\\",o,r,e,t)},doAction:function(o){gform.doHook(\\\"action\\\",o,arguments)},applyFilters:function(o){return gform.doHook(\\\"filter\\\",o,arguments)},removeAction:function(o,r){gform.removeHook(\\\"action\\\",o,r)},removeFilter:function(o,r,e){gfor\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_004_NASA_EO_Patagonian_Dust_Streamers.html"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search all package files for transport-related statements.",
+      "args": {
+        "query": "transport",
+        "glob": "**/*",
+        "max_matches": 30
+      },
+      "output": {
+        "text": "{\n  \"query\": \"transport\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 63
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-299/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 9,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for 'km' in the package to find transport distance in the NASA report.",
+      "args": {
+        "query": "km",
+        "glob": "**/*",
+        "max_matches": 30
+      },
+      "output": {
+        "text": "{\n  \"query\": \"km\",\n  \"match_count\": 12,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml\",\n      \"snippet\": \"<title>Green earthquake (Magnitude 5.7M, Depth:137.015km) in South Sandwich Islands Region 20/05/2026 23:00 UTC, [unknown].</title>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml\",\n      \"snippet\": \"<title>Green earthquake (Magnitude 5.7M, Depth:137.015km) in South Sandwich Islands Region 20/05/2026 23:00 UTC, [unknown].</title>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_catalogs/event_catalogs_005_04_event_specific_disaster_catalog_GDACS_event_list_for_package_time_window.json.json\",\n      \"snippet\": \"{\\\"type\\\":\\\"FeatureCollection\\\",\\\"features\\\":[{\\\"type\\\":\\\"Feature\\\",\\\"bbox\\\":[-63.669,-30.702,-63.669,-30.702],\\\"geometry\\\":{\\\"type\\\":\\\"Point\\\",\\\"coordinates\\\":[-63.669,-30.702]},\\\"properties\\\":{\\\"eventtype\\\":\\\"DR\\\",\\\"eventid\\\":1013282,\\\"episodeid\\\":51,\\\"eventname\\\":\\\" North Argentina-2019\\\",\\\"glide\\\":\\\"DR-2020-000031-ARG\\\",\\\"name\\\":\\\"Drought in Argentina\\\",\\\"description\\\":\\\"Drought in Argentina\\\",\\\"htmldescription\\\":\\\"Orange Drought in Argentina from: 21 Jun 2019 \\n...[TRUNCATED]...\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"snippet\": \"<!-- Search Engine Optimization by Rank Math PRO - https://rankmath.com/ -->\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/ev\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml",
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml",
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_catalogs/event_catalogs_005_04_event_specific_disaster_catalog_GDACS_event_list_for_package_time_window.json.json",
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_002_ReliefWeb_public_updates_search.html",
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_004_NASA_EO_Patagonian_Dust_Streamers.html",
+        "event_packages/standard_event_packages/packages/CSX-299/data/exposure_impact/exposure_impact_001_Overpass_small_roads_and_critical_amenities.json",
+        "event_packages/standard_event_packages/packages/CSX-299/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json"
+      ]
+    },
+    {
+      "step": 10,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for 'dust' in the NASA HTML or other reports to find transport distance context.",
+      "args": {
+        "query": "dust",
+        "glob": "**/*",
+        "max_matches": 30
+      },
+      "output": {
+        "text": "{\n  \"query\": \"dust\",\n  \"match_count\": 15,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/air_quality/air_quality_001_05_open_meteo_air_quality.json.json\",\n      \"snippet\": \"{\\\"latitude\\\":-45.899998,\\\"longitude\\\":-67.5,\\\"generationtime_ms\\\":0.07557868957519531,\\\"utc_offset_seconds\\\":0,\\\"timezone\\\":\\\"GMT\\\",\\\"timezone_abbreviation\\\":\\\"GMT\\\",\\\"elevation\\\":133.0,\\\"hourly_units\\\":{\\\"time\\\":\\\"iso8601\\\",\\\"pm10\\\":\\\"μg/m³\\\",\\\"pm2_5\\\":\\\"μg/m³\\\",\\\"dust\\\":\\\"μg/m³\\\"},\\\"hourly\\\":{\\\"time\\\":[\\\"2020-02-06T00:00\\\",\\\"2020-02-06T01:00\\\",\\\"2020-02-06T02:00\\\",\\\"2020-02-06T03:00\\\",\\\"2020-02-06T04:00\\\",\\\"2020-02-06T05:00\\\",\\\"2020-02-06T06:00\\\",\\\"2020-02-06T07:00\\\",\\\"\\n...[TRUNCATED]...\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"snippet\": \"<title>Patagonian Dust Streamers - NASA Science</title>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_002_ReliefWeb_public_updates_search.html\",\n      \"snippet\": \"<meta name=\\\"description\\\" content=\\\"Updates containing Patagonian dust streamers Argentina\\\" />\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_003_Locked_event_anchor_Patagonian_dust_streamers.json\",\n      \"snippet\": \"\\\"event_name\\\": \\\"Patagonian dust streamers\\\",\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_004_NASA_EO_Patagonian_Dust_Streamers.html\",\n      \"snippet\": \"<title>Patagonian Dust Streamers - NASA Science</title>\"\n    },\n    {\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-299/data/air_quality/air_quality_001_05_open_meteo_air_quality.json.json",
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_002_ReliefWeb_public_updates_search.html",
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_003_Locked_event_anchor_Patagonian_dust_streamers.json",
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_004_NASA_EO_Patagonian_Dust_Streamers.html",
+        "event_packages/standard_event_packages/packages/CSX-299/data/exposure_impact/exposure_impact_001_Overpass_small_roads_and_critical_amenities.json",
+        "event_packages/standard_event_packages/packages/CSX-299/data/exposure_impact/exposure_impact_004_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+        "event_packages/standard_event_packages/packages/CSX-299/data/other/other_001_01_anchor.html.html"
+      ]
+    },
+    {
+      "step": 11,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the NASA HTML file with a larger chunk to find the article content about transport distance.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_004_NASA_EO_Patagonian_Dust_Streamers.html",
+        "max_chars": 30000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_004_NASA_EO_Patagonian_Dust_Streamers.html\",\n  \"text\": \"<!doctype html>\\n<html lang=\\\"en-US\\\" prefix=\\\"og: https://ogp.me/ns#\\\">\\n<head>\\n\\t<meta charset=\\\"UTF-8\\\">\\n<script>\\nvar gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){return!(!gform.domLoaded||!gform.scriptsLoaded||!gform.themeScriptsLoaded&&!gform.isFormEditor()||(gform.isFormEditor()&&console.warn(\\\"The use of gform.initializeOnLoaded() is deprecated in the form editor context and will be removed in Gravity Forms 3.1.\\\"),o(),0))},initializeOnLoaded:function(o){gform.callIfLoaded(o)||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",()=>{gform.scriptsLoaded=!0,gform.callIfLoaded(o)}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",()=>{gform.themeScriptsLoaded=!0,gform.callIfLoaded(o)}),window.addEventListener(\\\"DOMContentLoaded\\\",()=>{gform.domLoaded=!0,gform.callIfLoaded(o)}))},hooks:{action:{},filter:{}},addAction:function(o,r,e,t){gform.addHook(\\\"action\\\",o,r,e,t)},addFilter:function(o,r,e,t){gform.addHook(\\\"filter\\\",o,r,e,t)},doAction:function(o){gform.doHook(\\\"action\\\",o,arguments)},applyFilters:function(o){return gform.doHook(\\\"filter\\\",o,arguments)},removeAction:function(o,r){gform.removeHook(\\\"action\\\",o,r)},removeFilter:function(o,r,e){gfor\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_004_NASA_EO_Patagonian_Dust_Streamers.html"
+      ]
+    },
+    {
+      "step": 12,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search for 'kilometer' to find transport distance in the NASA report.",
+      "args": {
+        "query": "kilometer",
+        "glob": "**/*",
+        "max_matches": 30
+      },
+      "output": {
+        "text": "{\n  \"query\": \"kilometer\",\n  \"match_count\": 3,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"snippet\": \"<p>This striking weather event carried dust more than 120 kilometers (80 miles) east over land and eventually out over Golfo de San Jorge and the Atlantic Ocean. Many studies have shown that such dust activity is a major <a href=\\\"https://tos.org/oceanography/article/patagonian-dust-as-a-source-of-macronutrients-in-the-southwest-atlantic-oce\\\">source of nutrients</a> in the South Atlantic.</p>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_004_NASA_EO_Patagonian_Dust_Streamers.html\",\n      \"snippet\": \"<p>This striking weather event carried dust more than 120 kilometers (80 miles) east over land and eventually out over Golfo de San Jorge and the Atlantic Ocean. Many studies have shown that such dust activity is a major <a href=\\\"https://tos.org/oceanography/article/patagonian-dust-as-a-source-of-macronutrients-in-the-southwest-atlantic-oce\\\">source of nutrients</a> in the South Atlantic.</p>\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-299/data/other/other_001_01_anchor.html.html\",\n      \"snippet\": \"<p>This striking weather event carried dust more than 120 kilometers (80 miles) east over land and eventually out over Golfo de San Jorge and the Atlantic Ocean. Many studies have shown that such dust activity is a major <a href=\\\"https://tos.org/oceanography/article/patagonian-dust-as-a-source-of-macronutrients-in-the-southwest-atlantic-oce\\\">source of nutrients</a> in the South Atlantic.</p>\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 1761
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_004_NASA_EO_Patagonian_Dust_Streamers.html",
+        "event_packages/standard_event_packages/packages/CSX-299/data/other/other_001_01_anchor.html.html"
+      ]
+    },
+    {
+      "step": 13,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Compute wind speed and verify numeric values.",
+      "args": {
+        "code_chars": 273,
+        "code_sha1": "608a713d0e23",
+        "code_preview": "import math\nu = 1.0989165525796456\nv = 1.37268061591687\nwind = math.sqrt(u**2 + v**2)\nprint(f\"wind_m_s = {wind:.3f}\")\nprint(f\"pmax = {max(0.602039325999626, 0.03194741516660765, 0.0):.3f}\")\nprint(f\"dry_count = 3\")\nprint(f\"transport_km_lb = 120\")\nprint(f\"pm_obs_frac = 0.0\")",
+        "code_path": "EarthVerse/runs/deepseek-v4-flash/CSX-299_Q1/python_snippets/step_13_608a713d0e23.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"EarthVerse/runs/deepseek-v4-flash/CSX-299_Q1/python_snippets/step_13_608a713d0e23.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.158,\n  \"stdout\": \"wind_m_s = 1.758\\npmax = 0.602\\ndry_count = 3\\ntransport_km_lb = 120\\npm_obs_frac = 0.0\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 314
+      },
+      "code": {
+        "text": "import math\nu = 1.0989165525796456\nv = 1.37268061591687\nwind = math.sqrt(u**2 + v**2)\nprint(f\"wind_m_s = {wind:.3f}\")\nprint(f\"pmax = {max(0.602039325999626, 0.03194741516660765, 0.0):.3f}\")\nprint(f\"dry_count = 3\")\nprint(f\"transport_km_lb = 120\")\nprint(f\"pm_obs_frac = 0.0\")",
+        "truncated": false,
+        "original_chars": 273
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "EarthVerse/runs/deepseek-v4-flash/CSX-299_Q1/python_snippets/step_13_608a713d0e23.py"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "ERA5-Land mean event precipitation = 0.602039 mm",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-299/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "GPM mean event precipitation = 0.031947 mm",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-299/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "CHIRPS mean event precipitation = 0.0 mm",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-299/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "All 24 hourly entries for PM10, PM2.5, and dust are null, so pm_obs_frac = 0.0",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-299/data/air_quality/air_quality_001_05_open_meteo_air_quality.json.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "ERA5-Land mean u component = 1.098917 m/s, v component = 1.372681 m/s; computed wind_m_s = sqrt(1.098917^2 + 1.372681^2) = 1.758 m/s",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-299/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "NASA report states dust carried 'more than 120 kilometers' east, giving lower bound of 120 km",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_004_NASA_EO_Patagonian_Dust_Streamers.html",
+      "support_type": "report_claim"
+    },
+    {
+      "claim": "Event temporal window is 2020-02-06 to 2020-02-06",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-299/data/event_reports/event_reports_003_Locked_event_anchor_Patagonian_dust_streamers.json",
+      "support_type": "metadata"
+    },
+    {
+      "claim": "All three precipitation means < 1.0 mm (dry_count = 3), wind >= 1.5 m/s, pm_obs_frac = 0 with positive transport bound → conclusion satisfied",
+      "source_file": "",
+      "support_type": "derived_metric"
+    }
+  ],
+  "reasoning_summary": [
+    "Read event anchor to confirm window: 2020-02-06 single day",
+    "Read ERA5-Land stats: precipitation_mean=0.602039, u_mean=1.098917, v_mean=1.372681",
+    "Read GPM IMERG stats: precipitation_mean=0.031947",
+    "Read CHIRPS stats: precipitation_mean=0.0",
+    "pmax_mm = max(0.602039, 0.031947, 0.0) = 0.602",
+    "All three means below 1.0 mm → dry_count = 3",
+    "wind_m_s = sqrt(1.098917^2 + 1.372681^2) = 1.758 m/s, which is ≥ 1.5 m/s",
+    "NASA report says 'more than 120 kilometers' → transport_km_lb = 120",
+    "Air quality data shows all 72 hourly entries (PM10, PM2.5, dust) are null → pm_obs_frac = 0.0",
+    "All conditions satisfied → conclusion dry_wind_conditions_with_report_context_transport_not_measured_pm"
+  ],
+  "unsupported_or_unresolved": [],
+  "final_answer": {
+    "evidence_windows": {
+      "event_window": {
+        "start": "2020-02-06",
+        "end": "2020-02-06"
+      },
+      "precip_wind_window": {
+        "start": "2020-02-06",
+        "end": "2020-02-06"
+      },
+      "transport_report_context_date": "2020-05-10_or_report_context"
+    },
+    "pmax_mm": 0.602,
+    "dry_count": 3,
+    "wind_m_s": 1.758,
+    "transport_km_lb": 120,
+    "pm_obs_frac": 0.0,
+    "conclusion": "dry_wind_conditions_with_report_context_transport_not_measured_pm"
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "All numeric values, counts, and the final conclusion label are correct and match ground truth except for one evidence window date (transport_report_context_date), which is an incorrect date, reducing overall correctness to about 90%.",
+      "llm_rubric": "The model fulfilled almost all rubric criteria with precise calculations, reasoning, and final label, except for a small factual error on the transport report date, yielding 18/20 points (90%)."
+    },
+    "one_sentence_rationale": "The answer is nearly perfect with accurate numeric calculations and conclusion, but the incorrect transport report context date causes a minor deduction in correctness and rubric score.",
+    "critical_errors": [
+      "evidence_windows.transport_report_context_date incorrect (2020-05-10_or_report_context vs 2020-03-07)"
+    ],
+    "missing_answer_elements": []
+  },
+  "provenance": {
+    "task_id": "CSX-299_Q1",
+    "model_id": "deepseek-v4-flash",
+    "model_name": "DeepSeek V4 Flash",
+    "trajectory_path": "data/exploration/trajectories/deepseek-v4-flash/CSX-299_Q1.json",
+    "judge_path": "EarthVerse Judge"
+  }
+}

@@ -1,0 +1,406 @@
+{
+  "task_id": "CSX-301_Q2",
+  "model_id": "claude-fable-5",
+  "model_name": "Claude Fable 5",
+  "scores": {
+    "overall": 32.5,
+    "answer": 30.0,
+    "rubric": 35.0,
+    "unit_accuracy": 33.33,
+    "answer_units_correct": 2,
+    "answer_units_total": 6,
+    "rubric_points_earned": 7.0,
+    "rubric_points_total": 20.0,
+    "verdict": "incorrect"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 82.05,
+    "tool_calls": 9,
+    "model_rounds": 10,
+    "file_reads": 5,
+    "unique_evidence_files": 8,
+    "python_calls": 2,
+    "tool_errors": 0,
+    "prompt_tokens": 62429,
+    "completion_tokens": 2259,
+    "total_tokens": 64688
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "Inspect the event package inventory to find weather and precipitation diagnostics needed for the index.",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 38,\n  \"file_count_total\": 38,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-301/data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml\",\n      \"bytes\": 225166,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-301/data/event_catalogs/event_catalogs_002_NASA_EONET_events_API.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_NASA_EONET_events_API.xml\",\n      \"bytes\": 9660,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-301/data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.json\",\n      \"bytes\": 145,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-301/data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml\",\n      \"bytes\": 225163,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-301/data/event_catalogs/event_catalogs_005_04_event_specific_disaster_catalog_GDACS_event_list_for_package_time_window.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_005_04_event_specific_disaster_catalog_GDACS_event_list_for_package_time_window.json.json\",\n      \"bytes\": 2723,\n      \"suffix\": \".json\"\n    },\n    {\n      \"\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-301/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Find the specific diagnostics files and fields that contain daily wind and precipitation values for the event window.",
+      "args": {
+        "query": "10 m wind precipitation daily wind precip",
+        "glob": "event_packages/standard_event_packages/packages/CSX-301/data/**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"10 m wind precipitation daily wind precip\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 95
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-301/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read daily point weather diagnostics likely containing event-window wind and precipitation time series.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json\",\n  \"text\": \"{\\\"type\\\":\\\"Feature\\\",\\\"geometry\\\":{\\\"type\\\":\\\"Point\\\",\\\"coordinates\\\":[113.625,34.747,129.36]},\\\"properties\\\":{\\\"parameter\\\":{\\\"T2M\\\":{\\\"20210314\\\":12.36,\\\"20210315\\\":15.46,\\\"20210316\\\":9.42},\\\"PRECTOTCORR\\\":{\\\"20210314\\\":0.25,\\\"20210315\\\":1.87,\\\"20210316\\\":0.0},\\\"WS10M\\\":{\\\"20210314\\\":3.85,\\\"20210315\\\":4.17,\\\"20210316\\\":4.84}}},\\\"header\\\":{\\\"title\\\":\\\"NASA/POWER Source Native Resolution Daily Data\\\",\\\"api\\\":{\\\"version\\\":\\\"v2.9.2\\\",\\\"name\\\":\\\"POWER Daily API\\\"},\\\"sources\\\":[\\\"MERRA2\\\",\\\"POWER\\\"],\\\"fill_value\\\":-999.0,\\\"time_standard\\\":\\\"LST\\\",\\\"start\\\":\\\"20210314\\\",\\\"end\\\":\\\"20210316\\\"},\\\"messages\\\":[],\\\"parameters\\\":{\\\"T2M\\\":{\\\"units\\\":\\\"C\\\",\\\"longname\\\":\\\"Temperature at 2 Meters\\\"},\\\"PRECTOTCORR\\\":{\\\"units\\\":\\\"mm/day\\\",\\\"longname\\\":\\\"Precipitation Corrected\\\"},\\\"WS10M\\\":{\\\"units\\\":\\\"m/s\\\",\\\"longname\\\":\\\"Wind Speed at 10 Meters\\\"}},\\\"times\\\":{\\\"data\\\":0.259,\\\"process\\\":0.01}}\"\n}",
+        "truncated": false,
+        "original_chars": 1051
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read alternate daily weather diagnostic to confirm strongest 10 m wind and daily precipitation values.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json\",\n  \"text\": \"{\\\"latitude\\\":34.76274,\\\"longitude\\\":113.582275,\\\"generationtime_ms\\\":73.37379455566406,\\\"utc_offset_seconds\\\":0,\\\"timezone\\\":\\\"GMT\\\",\\\"timezone_abbreviation\\\":\\\"GMT\\\",\\\"elevation\\\":109.0,\\\"daily_units\\\":{\\\"time\\\":\\\"iso8601\\\",\\\"temperature_2m_max\\\":\\\"°C\\\",\\\"precipitation_sum\\\":\\\"mm\\\",\\\"wind_speed_10m_max\\\":\\\"km/h\\\"},\\\"daily\\\":{\\\"time\\\":[\\\"2021-03-14\\\",\\\"2021-03-15\\\",\\\"2021-03-16\\\"],\\\"temperature_2m_max\\\":[17.5,21.2,15.4],\\\"precipitation_sum\\\":[2.40,0.00,0.00],\\\"wind_speed_10m_max\\\":[15.9,22.1,18.7]}}\"\n}",
+        "truncated": false,
+        "original_chars": 668
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Inspect ERA5-Land aggregate diagnostics for event-window wind/precip summary metrics that may include peak wind or precipitation values.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"ECMWF/ERA5_LAND/HOURLY\\\",\\n  \\\"start\\\": \\\"2021-03-14\\\",\\n  \\\"end\\\": \\\"2021-03-16\\\",\\n  \\\"stats\\\": {\\n    \\\"precipitation_sum_mm_max\\\": 3.749974888194174,\\n    \\\"precipitation_sum_mm_mean\\\": 1.6594301959949391,\\n    \\\"precipitation_sum_mm_min\\\": 0.381314080584616,\\n    \\\"precipitation_sum_mm_stdDev\\\": 0.7104109706624382,\\n    \\\"temperature_2m_max_c_max\\\": 18.143395996093773,\\n    \\\"temperature_2m_max_c_mean\\\": 15.255790063397045,\\n    \\\"temperature_2m_max_c_min\\\": 9.549661254882835,\\n    \\\"temperature_2m_max_c_stdDev\\\": 1.986193186104779,\\n    \\\"u_component_of_wind_10m_max\\\": 0.2125603093041314,\\n    \\\"u_component_of_wind_10m_mean\\\": -0.5052266553895141,\\n    \\\"u_component_of_wind_10m_min\\\": -1.1766066286298964,\\n    \\\"u_component_of_wind_10m_stdDev\\\": 0.24835984577462938,\\n    \\\"v_component_of_wind_10m_max\\\": 1.349292344517178,\\n    \\\"v_component_of_wind_10m_mean\\\": 0.2837282645417122,\\n    \\\"v_component_of_wind_10m_min\\\": -0.2470753855175442,\\n    \\\"v_component_of_wind_10m_stdDev\\\": 0.3158758298120311\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1209
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Compute the requested index exactly from the extracted event-window peak wind and wettest precipitation values.",
+      "args": {
+        "code_chars": 81,
+        "code_sha1": "242b9ee0e9e0",
+        "code_preview": "peak_wind=22.1\nwettest=3.749974888194174\nindex=peak_wind/(1+wettest)\nprint(index)",
+        "code_path": "EarthVerse/runs/claude-fable-5/CSX-301_Q2/python_snippets/step_06_242b9ee0e9e0.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"EarthVerse/runs/claude-fable-5/CSX-301_Q2/python_snippets/step_06_242b9ee0e9e0.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.159,\n  \"stdout\": \"4.652656176125994\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 221
+      },
+      "code": {
+        "text": "peak_wind=22.1\nwettest=3.749974888194174\nindex=peak_wind/(1+wettest)\nprint(index)",
+        "truncated": false,
+        "original_chars": 81
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "EarthVerse/runs/claude-fable-5/CSX-301_Q2/python_snippets/step_06_242b9ee0e9e0.py"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Check precipitation diagnostics for the largest event-window mean or point-total precipitation value.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"NASA/GPM_L3/IMERG_V07\\\",\\n  \\\"start\\\": \\\"2021-03-14\\\",\\n  \\\"end\\\": \\\"2021-03-16\\\",\\n  \\\"stats\\\": {\\n    \\\"gpm_event_precip_mm_max\\\": 5.064999990165234,\\n    \\\"gpm_event_precip_mm_mean\\\": 1.2740708151311968,\\n    \\\"gpm_event_precip_mm_min\\\": 0,\\n    \\\"gpm_event_precip_mm_stdDev\\\": 0.9189380515815159\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 504
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Check remaining precipitation diagnostic to ensure the wettest event precipitation value is selected.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"UCSB-CHG/CHIRPS/DAILY\\\",\\n  \\\"start\\\": \\\"2021-03-14\\\",\\n  \\\"end\\\": \\\"2021-03-16\\\",\\n  \\\"stats\\\": {\\n    \\\"chirps_event_precip_mm_max\\\": 8.09725284576416,\\n    \\\"chirps_event_precip_mm_mean\\\": 0.7853183681370707,\\n    \\\"chirps_event_precip_mm_min\\\": 0,\\n    \\\"chirps_event_precip_mm_stdDev\\\": 1.0241416114235413\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 514
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 9,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Compute the final one-decimal index, rounded inputs, and dry-windy-day count using the maximum precipitation diagnostic value.",
+      "args": {
+        "code_chars": 247,
+        "code_sha1": "2fd78e79c9d4",
+        "code_preview": "peak_wind=22.1\nwettest=8.09725284576416\nindex=peak_wind/(1+wettest)\nwind=[15.9,22.1,18.7]\nprecip=[2.40,0.00,0.00]\ndry_windy=sum(1 for w,p in zip(wind,precip) if w>=18 and p<=1)\nprint(f'{index:.1f}', f'{peak_wind:.1f}', f'{wettest:.1f}', dry_windy)",
+        "code_path": "EarthVerse/runs/claude-fable-5/CSX-301_Q2/python_snippets/step_09_2fd78e79c9d4.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"EarthVerse/runs/claude-fable-5/CSX-301_Q2/python_snippets/step_09_2fd78e79c9d4.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.174,\n  \"stdout\": \"2.4 22.1 8.1 2\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 218
+      },
+      "code": {
+        "text": "peak_wind=22.1\nwettest=8.09725284576416\nindex=peak_wind/(1+wettest)\nwind=[15.9,22.1,18.7]\nprecip=[2.40,0.00,0.00]\ndry_windy=sum(1 for w,p in zip(wind,precip) if w>=18 and p<=1)\nprint(f'{index:.1f}', f'{peak_wind:.1f}', f'{wettest:.1f}', dry_windy)",
+        "truncated": false,
+        "original_chars": 247
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "EarthVerse/runs/claude-fable-5/CSX-301_Q2/python_snippets/step_09_2fd78e79c9d4.py"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Open-Meteo daily diagnostics list 10 m wind maxima of 15.9, 22.1, and 18.7 km/h with precipitation sums of 2.40, 0.00, and 0.00 mm for 2021-03-14 to 2021-03-16.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "CHIRPS event accumulated precipitation statistics include a maximum precipitation value of 8.09725284576416 mm, the largest precipitation diagnostic inspected.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-301/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "The dust mobility wetness index was computed as 22.1 / (1 + 8.09725284576416) = 2.4, and dry-windy days were counted as two days with wind at least 18 km/h and precipitation at most 1 mm.",
+      "source_file": "EarthVerse/runs/claude-fable-5/CSX-301_Q2/python_snippets/step_09_2fd78e79c9d4.py",
+      "support_type": "derived_metric"
+    }
+  ],
+  "reasoning_summary": [
+    "Used Open-Meteo daily event-window diagnostics because it directly reports wind_speed_10m_max in km/h and daily precipitation_sum in mm.",
+    "Selected the strongest daily 10 m wind as 22.1 km/h and counted 2021-03-15 and 2021-03-16 as dry-windy days.",
+    "Compared precipitation diagnostics and used the largest event-window precipitation value found, CHIRPS maximum 8.09725284576416 mm, to compute the requested index."
+  ],
+  "unsupported_or_unresolved": [
+    "The question wording says largest event-window mean or point-total precipitation value; using the CHIRPS spatial maximum favors the wettest point-total diagnostic rather than the event mean."
+  ],
+  "final_answer": {
+    "answer": "wet-removal constrained dust mobility",
+    "index": "2.4",
+    "peak_wind_kmh": "22.1",
+    "wettest_mean_precip_mm": "8.1",
+    "dry_windy_days": "2",
+    "diagnosis": "Peak daily 10 m wind reached 22.1 km/h, but the wettest precipitation diagnostic reached 8.1 mm, yielding a low index of 2.4 while two event days were dry and windy."
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "The peak wind and dry windy day counts are correct, but the wettest precipitation and dust mobility wetness index are numerically and conceptually wrong, leading to an incorrect event interpretation label and diagnosis.",
+      "llm_rubric": "The model earns credit for reporting correct wind and dry days, and avoiding unsupported claims. It fails to compute or interpret the index properly, misreports wettest precipitation, provides a wrong interpretation label, and thus fails most key rubric criteria."
+    },
+    "one_sentence_rationale": "The model correctly identifies peak wind and counts dry windy days but fails to select the correct wettest precipitation, miscomputes the index, and returns an incorrect interpretation label and diagnosis, warranting partial credit.",
+    "critical_errors": [
+      "critical_label: incorrect final interpretation label",
+      "numeric_value: wrong wettest_mean_precip_mm (8.1 mm vs 2.4 mm expected)",
+      "numeric_value: wrong index value (2.4 vs 6.5 expected)",
+      "reasoning: diagnosis inconsistent with reported values and ground truth"
+    ],
+    "missing_answer_elements": []
+  },
+  "provenance": {
+    "task_id": "CSX-301_Q2",
+    "model_id": "claude-fable-5",
+    "model_name": "Claude Fable 5",
+    "trajectory_path": "data/exploration/trajectories/claude-fable-5/CSX-301_Q2.json",
+    "judge_path": "EarthVerse Judge"
+  }
+}

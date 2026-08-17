@@ -1,0 +1,363 @@
+{
+  "task_id": "CSX-304_Q2",
+  "model_id": "qwen-3-7-plus",
+  "model_name": "Qwen 3.7 Plus",
+  "scores": {
+    "overall": 91.25,
+    "answer": 87.5,
+    "rubric": 95.0,
+    "unit_accuracy": 87.5,
+    "answer_units_correct": 7,
+    "answer_units_total": 8,
+    "rubric_points_earned": 19.0,
+    "rubric_points_total": 20.0,
+    "verdict": "correct"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 373.528,
+    "tool_calls": 7,
+    "model_rounds": 9,
+    "file_reads": 5,
+    "unique_evidence_files": 7,
+    "python_calls": 1,
+    "tool_errors": 0,
+    "prompt_tokens": 55355,
+    "completion_tokens": 7837,
+    "total_tokens": 63192
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "First, discover what files are available in the CSX-304 event package to find daily point meteorology and regional precipitation summaries.",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 37,\n  \"file_count_total\": 37,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-304/data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml\",\n      \"bytes\": 225166,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-304/data/event_catalogs/event_catalogs_002_NASA_EONET_events_API.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_NASA_EONET_events_API.xml\",\n      \"bytes\": 160016,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-304/data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.json\",\n      \"bytes\": 145,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-304/data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml\",\n      \"bytes\": 225163,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-304/data/event_catalogs/event_catalogs_005_04_event_specific_disaster_catalog_GDACS_event_list_for_package_time_window.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_005_04_event_specific_disaster_catalog_GDACS_event_list_for_package_time_window.json.json\",\n      \"bytes\": 2756,\n      \"suffix\": \".json\"\n    },\n    {\n     \n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-304/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read NASA POWER daily point sample to get wind and precipitation data.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json\",\n  \"text\": \"{\\\"type\\\":\\\"Feature\\\",\\\"geometry\\\":{\\\"type\\\":\\\"Point\\\",\\\"coordinates\\\":[0.0,0.0,0.0]},\\\"properties\\\":{\\\"parameter\\\":{\\\"T2M\\\":{\\\"20220407\\\":28.42,\\\"20220408\\\":28.13,\\\"20220409\\\":27.69,\\\"20220410\\\":28.17},\\\"PRECTOTCORR\\\":{\\\"20220407\\\":8.98,\\\"20220408\\\":37.6,\\\"20220409\\\":5.03,\\\"20220410\\\":2.28},\\\"WS10M\\\":{\\\"20220407\\\":4.6,\\\"20220408\\\":4.1,\\\"20220409\\\":2.96,\\\"20220410\\\":4.67}}},\\\"header\\\":{\\\"title\\\":\\\"NASA/POWER Source Native Resolution Daily Data\\\",\\\"api\\\":{\\\"version\\\":\\\"v2.9.2\\\",\\\"name\\\":\\\"POWER Daily API\\\"},\\\"sources\\\":[\\\"MERRA2\\\",\\\"POWER\\\"],\\\"fill_value\\\":-999.0,\\\"time_standard\\\":\\\"LST\\\",\\\"start\\\":\\\"20220407\\\",\\\"end\\\":\\\"20220410\\\"},\\\"messages\\\":[],\\\"parameters\\\":{\\\"T2M\\\":{\\\"units\\\":\\\"C\\\",\\\"longname\\\":\\\"Temperature at 2 Meters\\\"},\\\"PRECTOTCORR\\\":{\\\"units\\\":\\\"mm/day\\\",\\\"longname\\\":\\\"Precipitation Corrected\\\"},\\\"WS10M\\\":{\\\"units\\\":\\\"m/s\\\",\\\"longname\\\":\\\"Wind Speed at 10 Meters\\\"}},\\\"times\\\":{\\\"data\\\":0.213,\\\"process\\\":0.01}}\"\n}",
+        "truncated": false,
+        "original_chars": 1096
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read Open-Meteo archive point sample to get companion wind and precipitation data.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json\",\n  \"text\": \"{\\\"latitude\\\":-0.035149384,\\\"longitude\\\":0.0,\\\"generationtime_ms\\\":0.15032291412353516,\\\"utc_offset_seconds\\\":0,\\\"timezone\\\":\\\"GMT\\\",\\\"timezone_abbreviation\\\":\\\"GMT\\\",\\\"elevation\\\":0.0,\\\"daily_units\\\":{\\\"time\\\":\\\"iso8601\\\",\\\"temperature_2m_max\\\":\\\"°C\\\",\\\"precipitation_sum\\\":\\\"mm\\\",\\\"wind_speed_10m_max\\\":\\\"km/h\\\"},\\\"daily\\\":{\\\"time\\\":[\\\"2022-04-07\\\",\\\"2022-04-08\\\",\\\"2022-04-09\\\",\\\"2022-04-10\\\"],\\\"temperature_2m_max\\\":[28.6,28.2,28.8,28.5],\\\"precipitation_sum\\\":[14.40,14.60,2.70,8.90],\\\"wind_speed_10m_max\\\":[25.0,23.1,19.3,14.6]}}\"\n}",
+        "truncated": false,
+        "original_chars": 697
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read GPM IMERG accumulated precipitation for regional precipitation summary.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"NASA/GPM_L3/IMERG_V07\\\",\\n  \\\"start\\\": \\\"2022-04-07\\\",\\n  \\\"end\\\": \\\"2022-04-10\\\",\\n  \\\"stats\\\": {\\n    \\\"gpm_event_precip_mm_max\\\": 12.51999986730516,\\n    \\\"gpm_event_precip_mm_mean\\\": 5.321299016385099,\\n    \\\"gpm_event_precip_mm_min\\\": 0.05999999865889549,\\n    \\\"gpm_event_precip_mm_stdDev\\\": 3.4330092758692587\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 521
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read CHIRPS accumulated precipitation for another regional mean value.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"UCSB-CHG/CHIRPS/DAILY\\\",\\n  \\\"start\\\": \\\"2022-04-07\\\",\\n  \\\"end\\\": \\\"2022-04-10\\\",\\n  \\\"stats\\\": {\\n    \\\"chirps_event_precip_mm_max\\\": 14.159205436706543,\\n    \\\"chirps_event_precip_mm_mean\\\": 6.3150980530174925,\\n    \\\"chirps_event_precip_mm_min\\\": 0,\\n    \\\"chirps_event_precip_mm_stdDev\\\": 4.007399921588335\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 515
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read ERA5-Land hourly aggregate stats to get the third regional precipitation mean value.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"ECMWF/ERA5_LAND/HOURLY\\\",\\n  \\\"start\\\": \\\"2022-04-07\\\",\\n  \\\"end\\\": \\\"2022-04-10\\\",\\n  \\\"stats\\\": {\\n    \\\"precipitation_sum_mm_max\\\": 22.62238775923109,\\n    \\\"precipitation_sum_mm_mean\\\": 14.404295150044168,\\n    \\\"precipitation_sum_mm_min\\\": 6.47979592516279,\\n    \\\"precipitation_sum_mm_stdDev\\\": 5.157104640295209,\\n    \\\"temperature_2m_max_c_max\\\": 34.5902038574219,\\n    \\\"temperature_2m_max_c_mean\\\": 32.70646926137692,\\n    \\\"temperature_2m_max_c_min\\\": 31.900796508789085,\\n    \\\"temperature_2m_max_c_stdDev\\\": 0.6664701983336561,\\n    \\\"u_component_of_wind_10m_max\\\": 0.946174144744873,\\n    \\\"u_component_of_wind_10m_mean\\\": 0.8859292274079651,\\n    \\\"u_component_of_wind_10m_min\\\": 0.7223378817240397,\\n    \\\"u_component_of_wind_10m_stdDev\\\": 0.062234825440007184,\\n    \\\"v_component_of_wind_10m_max\\\": 0.9791822830835978,\\n    \\\"v_component_of_wind_10m_mean\\\": 0.827439306264147,\\n    \\\"v_component_of_wind_10m_min\\\": 0.6737827062606812,\\n    \\\"v_component_of_wind_10m_stdDev\\\": 0.10349249183934077\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1204
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "",
+      "args": {
+        "code_chars": 3163,
+        "code_sha1": "8fb7e829eec6",
+        "code_preview": "import json\n\n# NASA POWER data\npower = {\n    \"2022-04-07\": {\"WS10M\": 4.6, \"PRECTOTCORR\": 8.98},\n    \"2022-04-08\": {\"WS10M\": 4.1, \"PRECTOTCORR\": 37.6},\n    \"2022-04-09\": {\"WS10M\": 2.96, \"PRECTOTCORR\": 5.03},\n    \"2022-04-10\": {\"WS10M\": 4.67, \"PRECTOTCORR\": 2.28},\n}\n\n# Open-Meteo data\nom = {\n    \"2022-04-07\": {\"wind_km_h\": 25.0, \"precip_mm\": 14.40},\n    \"2022-04-08\": {\"wind_km_h\": 23.1, \"precip_mm\": 14.60},\n    \"2022-04-09\": {\"wind_km_h\": 19.3, \"precip_mm\": 2.70},\n    \"2022-04-10\": {\"wind_km_h\": 14.6, \"precip_mm\": 8.\n...[TRUNCATED]...",
+        "code_path": "EarthVerse/runs/qwen-3-7-plus/CSX-304_Q2/python_snippets/step_08_8fb7e829eec6.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"EarthVerse/runs/qwen-3-7-plus/CSX-304_Q2/python_snippets/step_08_8fb7e829eec6.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.182,\n  \"stdout\": \"Date       | wind_ratio | rain_ratio\\n---------------------------------------------\\n2022-04-07 | 1.022222  | 0.898000\\n2022-04-08 | 0.911111  | 1.460000\\n2022-04-09 | 0.657778  | 0.270000\\n2022-04-10 | 0.663636  | 0.228000\\n\\nwind_pair_days: 1\\nwind_peak: ('2022-04-07', 1.0222222222222221)\\nrain_pair_days: 1\\nrain_peak: ('2022-04-08', 1.46)\\nlag_days: 1\\nlate_pair (2022-04-10 wind_ratio=0.663636): False\\nregional_mean_mm: 8.680230739815586\\n\\nwind_onset: True\\nrain_later: True\\ncond1: True, cond2: True, cond3: True, cond4: True\\n\\nanswer: onset_wind_supported_then_wet_moderated\\n{\\n  \\\"answer\\\": \\\"onset_wind_supported_then_wet_moderated\\\",\\n  \\\"wind_pair_days\\\": 1,\\n  \\\"wind_peak\\\": {\\n    \\\"date\\\": \\\"2022-04-07\\\",\\n    \\\"ratio\\\": 1.0222\\n  },\\n  \\\"rain_pair_days\\\": 1,\\n  \\\"rain_peak\\\": {\\n    \\\"date\\\": \\\"2022-04-08\\\",\\n    \\\"ratio\\\": 1.46\\n  },\\n  \\\"lag_days\\\": 1,\\n  \\\"late_pair\\\": false,\\n  \\\"regional_mean_mm\\\": 8.6802\\n}\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 1156
+      },
+      "code": {
+        "text": "import json\n\n# NASA POWER data\npower = {\n    \"2022-04-07\": {\"WS10M\": 4.6, \"PRECTOTCORR\": 8.98},\n    \"2022-04-08\": {\"WS10M\": 4.1, \"PRECTOTCORR\": 37.6},\n    \"2022-04-09\": {\"WS10M\": 2.96, \"PRECTOTCORR\": 5.03},\n    \"2022-04-10\": {\"WS10M\": 4.67, \"PRECTOTCORR\": 2.28},\n}\n\n# Open-Meteo data\nom = {\n    \"2022-04-07\": {\"wind_km_h\": 25.0, \"precip_mm\": 14.40},\n    \"2022-04-08\": {\"wind_km_h\": 23.1, \"precip_mm\": 14.60},\n    \"2022-04-09\": {\"wind_km_h\": 19.3, \"precip_mm\": 2.70},\n    \"2022-04-10\": {\"wind_km_h\": 14.6, \"precip_mm\": 8.\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "EarthVerse/runs/qwen-3-7-plus/CSX-304_Q2/python_snippets/step_08_8fb7e829eec6.py"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "NASA POWER WS10M (m/s): 2022-04-07=4.6, 2022-04-08=4.1, 2022-04-09=2.96, 2022-04-10=4.67",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "NASA POWER PRECTOTCORR (mm/day): 2022-04-07=8.98, 2022-04-08=37.6, 2022-04-09=5.03, 2022-04-10=2.28",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "Open-Meteo wind_speed_10m_max (km/h): 2022-04-07=25.0, 2022-04-08=23.1, 2022-04-09=19.3, 2022-04-10=14.6",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "Open-Meteo precipitation_sum (mm): 2022-04-07=14.40, 2022-04-08=14.60, 2022-04-09=2.70, 2022-04-10=8.90",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "GPM event_precip_mm_mean = 5.321299016385099",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "CHIRPS event_precip_mm_mean = 6.3150980530174925",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_007_CHIRPS_daily_event_accumulated_precipitation.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "ERA5-Land precipitation_sum_mm_mean = 14.404295150044168",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "wind_ratio and rain_ratio computed per the defined min-formulas; only 2022-04-07 meets wind_ratio≥1.0; only 2022-04-08 meets rain_ratio≥1.0; lag=1 day; 2022-04-10 wind_ratio=0.6636 so late_pair=false; all conditions met => onset_wind_supported_then_wet_moderated",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-304/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json",
+      "support_type": "derived_metric"
+    }
+  ],
+  "reasoning_summary": [
+    "Extracted NASA POWER point daily WS10M (m/s) and PRECTOTCORR (mm/day) for 2022-04-07 to 2022-04-10.",
+    "Extracted Open-Meteo daily wind_speed_10m_max (km/h) and precipitation_sum (mm) for the same dates.",
+    "Computed wind_ratio = min(point_wind_m_s/4.5, companion_wind_km_h/22.0) and rain_ratio = min(point_precip_mm/10.0, companion_precip_mm/10.0) for each date.",
+    "Identified exactly one wind-support day (2022-04-07, ratio=1.0222) and one rain-moderation day (2022-04-08, ratio=1.46).",
+    "Computed lag = 1 day (rain peak follows wind peak). Late-window wind revival on 2022-04-10 is false (0.6636 < 1.0).",
+    "Averaged the three regional event-precipitation means (GPM, CHIRPS, ERA5) to get regional_mean_mm ≈ 8.6802.",
+    "All four conditions satisfied, so answer = onset_wind_supported_then_wet_moderated."
+  ],
+  "unsupported_or_unresolved": [],
+  "final_answer": {
+    "answer": "onset_wind_supported_then_wet_moderated",
+    "wind_pair_days": 1,
+    "wind_peak": {
+      "date": "2022-04-07",
+      "ratio": 1.0222
+    },
+    "rain_pair_days": 1,
+    "rain_peak": {
+      "date": "2022-04-08",
+      "ratio": 1.46
+    },
+    "lag_days": 1,
+    "late_pair": false,
+    "regional_mean_mm": 8.6802
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "The final answer JSON matches ground truth with all fields present and correct dates and counts. The only difference is a trivial numeric rounding difference on wind_peak ratio (1.0222 vs 1.022), which does not materially impact correctness.",
+      "llm_rubric": "The model fully satisfies all rubric criteria with the exception of a minimal rounding difference in wind_peak ratio. The reasoning and evidence for the answer are thorough and traceable, with perfect formula usage, correct counts, lag, late-pair, regional mean, and final label. The difference costs about 1 point from a perfect 20-point score."
+    },
+    "one_sentence_rationale": "The model provides a fully correct and well-supported JSON answer with only a negligible rounding difference in one numeric ratio, satisfying nearly all rubric criteria at a near-perfect level.",
+    "critical_errors": [],
+    "missing_answer_elements": []
+  },
+  "provenance": {
+    "task_id": "CSX-304_Q2",
+    "model_id": "qwen-3-7-plus",
+    "model_name": "Qwen 3.7 Plus",
+    "trajectory_path": "data/exploration/trajectories/qwen-3-7-plus/CSX-304_Q2.json",
+    "judge_path": "EarthVerse Judge"
+  }
+}

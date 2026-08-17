@@ -1,0 +1,681 @@
+{
+  "task_id": "CSX-303_Q1",
+  "model_id": "tencent-hy3",
+  "model_name": "Tencent Hy3",
+  "scores": {
+    "overall": 100.0,
+    "answer": 100.0,
+    "rubric": 100.0,
+    "unit_accuracy": 100.0,
+    "answer_units_correct": 6,
+    "answer_units_total": 6,
+    "rubric_points_earned": 20.0,
+    "rubric_points_total": 20.0,
+    "verdict": "correct"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 369.554,
+    "tool_calls": 16,
+    "model_rounds": 17,
+    "file_reads": 8,
+    "unique_evidence_files": 10,
+    "python_calls": 2,
+    "tool_errors": 0,
+    "prompt_tokens": 160814,
+    "completion_tokens": 3148,
+    "total_tokens": 163962
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "Discover local evidence files in the event package to locate data needed for the dust pathway index calculation.",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 36,\n  \"file_count_total\": 36,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_GDACS_event_feeds_and_archive.xml\",\n      \"bytes\": 225166,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/event_catalogs/event_catalogs_002_NASA_EONET_events_API.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_NASA_EONET_events_API.xml\",\n      \"bytes\": 76456,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_NASA_EONET_event_search.json\",\n      \"bytes\": 145,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_004_03_gdacs_rss.xml.xml\",\n      \"bytes\": 225163,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/event_catalogs/event_catalogs_005_04_event_specific_disaster_catalog_GDACS_event_list_for_package_time_window.bin.bin\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_005_04_event_specific_disaster_catalog_GDACS_event_list_for_package_time_window.bin.bin\",\n      \"bytes\": 0,\n      \"suffix\": \".bin\"\n    },\n    {\n      \"path\": \n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-303/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read event metadata to find locked start/end dates, peak window, receptor countries, hazard family, and other anchors.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-303/metadata/event.json",
+        "max_chars": 4000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-303/metadata/event.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-303\\\",\\n  \\\"event_name\\\": \\\"Saharan dust over Western Europe\\\",\\n  \\\"canonical_event_key\\\": \\\"saharan dust over western europe\\\",\\n  \\\"hazard_family\\\": \\\"dust_sandstorm_extreme\\\",\\n  \\\"hazard_label\\\": \\\"Extreme dust or sandstorm\\\",\\n  \\\"scale\\\": \\\"metro_urban\\\",\\n  \\\"region\\\": \\\"Europe\\\",\\n  \\\"primary_evidence_url\\\": \\\"https://www.copernicus.eu/pt-pt/node/11501\\\",\\n  \\\"existence_verdict\\\": \\\"confirmed\\\",\\n  \\\"temporal_match\\\": \\\"match\\\",\\n  \\\"spatial_match\\\": \\\"match\\\",\\n  \\\"hazard_match\\\": \\\"match\\\",\\n  \\\"source_reliability\\\": \\\"high_official_or_institutional\\\",\\n  \\\"correspondence_score\\\": \\\"95\\\",\\n  \\\"release_decision\\\": \\\"keep\\\",\\n  \\\"benchmark_readiness\\\": \\\"ready_with_metadata_warnings\\\",\\n  \\\"benchmark_readiness_label\\\": \\\"ready with metadata warnings\\\",\\n  \\\"data_integrity\\\": {\\n    \\\"local_files_checked\\\": \\\"27\\\",\\n    \\\"image_files_checked\\\": \\\"3\\\",\\n    \\\"valid_images\\\": \\\"3\\\",\\n    \\\"formal_slice_files_checked\\\": \\\"13\\\",\\n    \\\"hard_error_count\\\": \\\"0\\\",\\n    \\\"metadata_warning_count\\\": \\\"17\\\",\\n    \\\"final_data_score\\\": \\\"65\\\",\\n    \\\"final_data_decision\\\": \\\"ready_with_minor_warnings\\\",\\n    \\\"replacement_file_count\\\": \\\"0\\\"\\n  },\\n  \\\"file_inventory\\\": {\\n    \\\"total_files\\\": 32,\\n    \\\"categories\\\": {\\n      \\\"event_catalogs\\\": 6,\\n      \\\"event_reports\\\": 4,\\n      \\\"exposure_impact\\\": 4,\\n      \\\"geospatial_context\\\": 2,\\n      \\\"other\\\": 2,\\n      \\\"physical_hazard\\\": 8,\\n      \\\"remote_sensing\\\": 6\\n    }\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1588
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-303/metadata/event.json"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read locked event anchor report for start/end dates, peak window, Celia/North African air mass, Sahara passage, receptor countries, and impacts.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_003_Locked_event_anchor_Saharan_dust_over_Western_Europe.json",
+        "max_chars": 6000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_003_Locked_event_anchor_Saharan_dust_over_Western_Europe.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-303\\\",\\n  \\\"event_name\\\": \\\"Saharan dust over Western Europe\\\",\\n  \\\"hazard_family\\\": \\\"dust_sandstorm_extreme\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2022-03-15\\\",\\n    \\\"end_date\\\": \\\"2022-03-18\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Spain, Portugal and France\\\",\\n    \\\"country_or_region\\\": \\\"Europe\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"Saharan dust over Western Europe\\\",\\n    \\\"event_start_date\\\": \\\"2022-03-15\\\",\\n    \\\"event_end_date\\\": \\\"2022-03-18\\\",\\n    \\\"event_location\\\": \\\"Spain, Portugal and France\\\",\\n    \\\"event_country_or_region\\\": \\\"Europe\\\",\\n    \\\"event_scope\\\": \\\"subagent_region_locked\\\",\\n    \\\"evidence_type\\\": \\\"Copernicus Atmosphere\\\",\\n    \\\"evidence_url\\\": \\\"https://www.copernicus.eu/pt-pt/node/11501\\\",\\n    \\\"evidence_final_url\\\": \\\"https://www.copernicus.eu/pt-pt/node/11501\\\",\\n    \\\"http_status\\\": \\\"\\\",\\n    \\\"lock_status\\\": \\\"event_locked_subagent_candidate_needs_url_probe\\\",\\n    \\\"lock_confidence\\\": \\\"high\\\",\\n    \\\"match_rule\\\": \\\"subagent_exact_family_region_replacement\\\",\\n    \\\"web_search_query_used\\\": \\\"Copernicus massive Saharan dust storm western Europe March 2022\\\",\\n    \\\"event_lock_notes\\\": \\\"Massive Saharan dust cloud covered western Europe.\\\",\\n    \\\"verification_error\\\": \\\"\\\",\\n    \\\"dual_anchor_if_applicable\\\": \\\"\\\",\\n    \\\"source_table\\\": \\\"package_event_lo\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_003_Locked_event_anchor_Saharan_dust_over_Western_Europe.json"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Search the locked evidence report for Storm Celia, North African air mass, Sahara passage, peak window, and air-quality/visibility impacts.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n  \"text\": \"<!DOCTYPE html>\\n<html lang=\\\"pt-pt\\\" dir=\\\"ltr\\\">\\n<head>\\n<script src=\\\"https://eu-copernicus.github.io/copernicus-component-library-v2/ccl-assets/js/jquery.min.js\\\"></script>\\n<script src=\\\"https://eu-copernicus.github.io/copernicus-component-library-v2/ccl-assets/js/slick.min.js\\\"></script>\\n<script src=\\\"https://eu-copernicus.github.io/copernicus-component-library-v2/ccl-assets/js/ccl-functions.js\\\"></script>\\t\\n\\n\\n    <meta charset=\\\"utf-8\\\" />\\n<noscript><style>form.antibot * :not(.antibot-message) { display: none !important; }</style>\\n</noscript><script>var _paq = _paq || [];(function(){var u=((\\\"https:\\\" == document.location.protocol) ? \\\"https://analytics.copernicus.eu/\\\" : \\\"https://analytics.copernicus.eu/\\\");_paq.push([\\\"setSiteId\\\", \\\"3\\\"]);_paq.push([\\\"setTrackerUrl\\\", u+\\\"matomo.php\\\"]);_paq.push([\\\"setDoNotTrack\\\", 1]);if (!window.matomo_search_results_active) {_paq.push([\\\"trackPageView\\\"]);}_paq.push([\\\"setIgnoreClasses\\\", [\\\"no-tracking\\\",\\\"colorbox\\\"]]);_paq.push([\\\"enableLinkTracking\\\"]);var d=document,g=d.createElement(\\\"script\\\"),s=d.getElementsByTagName(\\\"script\\\")[0];g.type=\\\"text/javascript\\\";g.defer=true;g.async=true;g.src=u+\\\"matomo.js\\\";s.parentNode.insertBefore(g,s);})();</script>\\n<meta name=\\\"Generator\\\" content=\\\"Drupal 10 (https://www.drupal.org)\\\" />\\n<meta name=\\\"MobileOptimized\\\" content=\\\"width\\\" />\\n<meta name=\\\"HandheldFriendly\\\" content=\\\"true\\\" />\\n<meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\" />\\n<style>div#sliding-popup, div#sliding-popup .eu-cookie-withdraw-banner,\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search JSON files for Storm Celia, North African air mass, Sahara passage, peak window, and air-quality/visibility impacts to compute transport anchors.",
+      "args": {
+        "query": "Celia North African air mass Sahara passage peak visibility air quality",
+        "glob": "**/*.json",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"Celia North African air mass Sahara passage peak visibility air quality\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 125
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-303/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search all package files for Storm Celia mention to assess transport anchor.",
+      "args": {
+        "query": "Celia",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"Celia\",\n  \"match_count\": 1,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"snippet\": \"<p><a href=\\\"https://meteofrance.com/actualites-et-dossiers/actualites/des-temperatures-dignes-dun-mois-de-mai-cette-semaine\\\">The dust was brought to Europe by storm Celia</a>, which has caused a warm air mass from North Africa to reach Europe. The passage of the air mass through the Sahara Desert explains the visible presence of dust in the air. <a href=\\\"https://elpais.com/espana/2022-03-15/el-manto-de-polvo-saharian\\n...[TRUNCATED]...\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 682
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search HTML report for air-quality and visibility impact mentions and peak window details.",
+      "args": {
+        "query": "visibility air quality peak",
+        "glob": "**/*.html",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"visibility air quality peak\",\n  \"match_count\": 1,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"snippet\": \"<a href=\\\"/media/image-day?field_image_day_tags_target_id%5B%5D=1289\\\">Air Pollution</a>\"\n    }\n  ]\n}",
+        "truncated": false,
+        "original_chars": 350
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read further into the HTML report to extract text about dust impacts (air quality, visibility), peak dates, and receptor countries.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+        "max_chars": 4000,
+        "offset_chars": 11000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n  \"text\": \"<!DOCTYPE html>\\n<html lang=\\\"pt-pt\\\" dir=\\\"ltr\\\">\\n<head>\\n<script src=\\\"https://eu-copernicus.github.io/copernicus-component-library-v2/ccl-assets/js/jquery.min.js\\\"></script>\\n<script src=\\\"https://eu-copernicus.github.io/copernicus-component-library-v2/ccl-assets/js/slick.min.js\\\"></script>\\n<script src=\\\"https://eu-copernicus.github.io/copernicus-component-library-v2/ccl-assets/js/ccl-functions.js\\\"></script>\\t\\n\\n\\n    <meta charset=\\\"utf-8\\\" />\\n<noscript><style>form.antibot * :not(.antibot-message) { display: none !important; }</style>\\n</noscript><script>var _paq = _paq || [];(function(){var u=((\\\"https:\\\" == document.location.protocol) ? \\\"https://analytics.copernicus.eu/\\\" : \\\"https://analytics.copernicus.eu/\\\");_paq.push([\\\"setSiteId\\\", \\\"3\\\"]);_paq.push([\\\"setTrackerUrl\\\", u+\\\"matomo.php\\\"]);_paq.push([\\\"setDoNotTrack\\\", 1]);if (!window.matomo_search_results_active) {_paq.push([\\\"trackPageView\\\"]);}_paq.push([\\\"setIgnoreClasses\\\", [\\\"no-tracking\\\",\\\"colorbox\\\"]]);_paq.push([\\\"enableLinkTracking\\\"]);var d=document,g=d.createElement(\\\"script\\\"),s=d.getElementsByTagName(\\\"script\\\")[0];g.type=\\\"text/javascript\\\";g.defer=true;g.async=true;g.src=u+\\\"matomo.js\\\";s.parentNode.insertBefore(g,s);})();</script>\\n<meta name=\\\"Generator\\\" content=\\\"Drupal 10 (https://www.drupal.org)\\\" />\\n<meta name=\\\"MobileOptimized\\\" content=\\\"width\\\" />\\n<meta name=\\\"HandheldFriendly\\\" content=\\\"true\\\" />\\n<meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\" />\\n<style>div#sliding-popup, div#sliding-popup .eu-cookie-withdraw-banner,\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html"
+      ]
+    },
+    {
+      "step": 9,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Extract relevant text snippets from HTML report to confirm anchors: Celia, North Africa, Sahara, visibility, air quality, peak, receptor countries.",
+      "args": {
+        "code_chars": 589,
+        "code_sha1": "9b75fadd8a7a",
+        "code_preview": "import re,html\np='event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html'\nt=open(p,encoding='utf-8',errors='ignore').read()\n# strip tags\ntext=re.sub(r'<[^>]+>',' ',t)\ntext=html.unescape(text)\ntext=re.sub(r'\\s+',' ',text)\nfor kw in ['Celia','North Africa','Sahara','visibility','air quality','air pollution','peak','March 15','March 16','Spain','Portugal','France']:\n    idx=text.lower().find(kw.lower())\n    print('KW:',kw,'IDX:',idx)\n    if idx!=-1:\n        print(text[max(0,idx-200):idx+300])\n        print('---')",
+        "code_path": "EarthVerse/runs/tencent-hy3/CSX-303_Q1/python_snippets/step_09_9b75fadd8a7a.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"EarthVerse/runs/tencent-hy3/CSX-303_Q1/python_snippets/step_09_9b75fadd8a7a.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.176,\n  \"stdout\": \"KW: Celia IDX: 3541\\nge, acquired by one of the Copernicus Sentinel-3 satellites on 15 March 2022, shows the Saharan dust cloud engulfing the skies over France, Spain and Portugal. The dust was brought to Europe by storm Celia , which has caused a warm air mass from North Africa to reach Europe. The passage of the air mass through the Sahara Desert explains the visible presence of dust in the air. Spain was especially affected by the dust cloud : the storm, which reached its peak between 15 March and 16 March 2022, \\n---\\nKW: North Africa IDX: 3587\\n-3 satellites on 15 March 2022, shows the Saharan dust cloud engulfing the skies over France, Spain and Portugal. The dust was brought to Europe by storm Celia , which has caused a warm air mass from North Africa to reach Europe. The passage of the air mass through the Sahara Desert explains the visible presence of dust in the air. Spain was especially affected by the dust cloud : the storm, which reached its peak between 15 March and 16 March 2022, has been described by the Spanish State Meteor\\n---\\nKW: Sahara IDX: 1167\\nel, #sliding-popup div, .eu-cookie-compliance-more-button, .eu-cookie-compliance-secondary-button, .eu-cookie-withdraw-tab { color: #FFFFFF;} .eu-cookie-withdraw-tab { border-color: #FFFFFF;} Massive Saharan Dust storm affecting western Europe | Copernicus Skip to main content .st0{clip-path:url(#SVGID_2_)}.st1{fill:#fff}.st2{fill:#ffcb2b}.st3{clip-path:url(#SVGID_4_)}.st4{clip-path:url(#SVGID_6_)}.st5{clip-path:url(#SVGID_8_)}.st6{clip-p\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "import re,html\np='event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html'\nt=open(p,encoding='utf-8',errors='ignore').read()\n# strip tags\ntext=re.sub(r'<[^>]+>',' ',t)\ntext=html.unescape(text)\ntext=re.sub(r'\\s+',' ',text)\nfor kw in ['Celia','North Africa','Sahara','visibility','air quality','air pollution','peak','March 15','March 16','Spain','Portugal','France']:\n    idx=text.lower().find(kw.lower())\n    print('KW:',kw,'IDX:',idx)\n    if idx!=-1:\n        print(text[max(0,idx-200):idx+300])\n        print('---')",
+        "truncated": false,
+        "original_chars": 589
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "EarthVerse/runs/tencent-hy3/CSX-303_Q1/python_snippets/step_09_9b75fadd8a7a.py"
+      ]
+    },
+    {
+      "step": 10,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "List physical hazard files to find precipitation, temperature, wind, and surface-change data for countermetrics.",
+      "args": {
+        "subdir": "data/physical_hazard",
+        "max_files": 60
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 8,\n  \"file_count_total\": 8,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json\",\n      \"package_relative_path\": \"data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json\",\n      \"bytes\": 814,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json\",\n      \"package_relative_path\": \"data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json\",\n      \"bytes\": 477,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n      \"package_relative_path\": \"data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n      \"bytes\": 1007,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_004_ERA5-Land_temperature_precipitation_wind_stack.zip\",\n      \"package_relative_path\": \"data/physical_hazard/physical_hazard_004_ERA5-Land_temperature_precipitation_wind_stack.zip\",\n      \"bytes\": 3270,\n      \"suffix\": \".zip\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n      \"package_relative_path\": \"data/physical_hazard/physical_hazard_005_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n      \"bytes\": 309\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-303/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 11,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read NASA POWER point sample for point precipitation, temperature, wind.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json",
+        "max_chars": 4000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json\",\n  \"text\": \"{\\\"type\\\":\\\"Feature\\\",\\\"geometry\\\":{\\\"type\\\":\\\"Point\\\",\\\"coordinates\\\":[0.0,0.0,0.0]},\\\"properties\\\":{\\\"parameter\\\":{\\\"T2M\\\":{\\\"20220315\\\":27.48,\\\"20220316\\\":27.8,\\\"20220317\\\":27.87,\\\"20220318\\\":27.84},\\\"PRECTOTCORR\\\":{\\\"20220315\\\":13.86,\\\"20220316\\\":0.7,\\\"20220317\\\":1.99,\\\"20220318\\\":2.78},\\\"WS10M\\\":{\\\"20220315\\\":4.42,\\\"20220316\\\":3.65,\\\"20220317\\\":2.78,\\\"20220318\\\":2.58}}},\\\"header\\\":{\\\"title\\\":\\\"NASA/POWER Source Native Resolution Daily Data\\\",\\\"api\\\":{\\\"version\\\":\\\"v2.9.2\\\",\\\"name\\\":\\\"POWER Daily API\\\"},\\\"sources\\\":[\\\"MERRA2\\\",\\\"POWER\\\"],\\\"fill_value\\\":-999.0,\\\"time_standard\\\":\\\"LST\\\",\\\"start\\\":\\\"20220315\\\",\\\"end\\\":\\\"20220318\\\"},\\\"messages\\\":[],\\\"parameters\\\":{\\\"T2M\\\":{\\\"units\\\":\\\"C\\\",\\\"longname\\\":\\\"Temperature at 2 Meters\\\"},\\\"PRECTOTCORR\\\":{\\\"units\\\":\\\"mm/day\\\",\\\"longname\\\":\\\"Precipitation Corrected\\\"},\\\"WS10M\\\":{\\\"units\\\":\\\"m/s\\\",\\\"longname\\\":\\\"Wind Speed at 10 Meters\\\"}},\\\"times\\\":{\\\"data\\\":0.333,\\\"process\\\":0.01}}\"\n}",
+        "truncated": false,
+        "original_chars": 1097
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json"
+      ]
+    },
+    {
+      "step": 12,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read Open-Meteo point sample for point precipitation, temperature, wind.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json",
+        "max_chars": 4000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json\",\n  \"text\": \"{\\\"latitude\\\":-0.035149384,\\\"longitude\\\":0.0,\\\"generationtime_ms\\\":4.044055938720703,\\\"utc_offset_seconds\\\":0,\\\"timezone\\\":\\\"GMT\\\",\\\"timezone_abbreviation\\\":\\\"GMT\\\",\\\"elevation\\\":0.0,\\\"daily_units\\\":{\\\"time\\\":\\\"iso8601\\\",\\\"temperature_2m_max\\\":\\\"°C\\\",\\\"precipitation_sum\\\":\\\"mm\\\",\\\"wind_speed_10m_max\\\":\\\"km/h\\\"},\\\"daily\\\":{\\\"time\\\":[\\\"2022-03-15\\\",\\\"2022-03-16\\\",\\\"2022-03-17\\\",\\\"2022-03-18\\\"],\\\"temperature_2m_max\\\":[28.8,29.1,29.0,28.5],\\\"precipitation_sum\\\":[2.20,0.00,0.00,0.20],\\\"wind_speed_10m_max\\\":[21.2,19.2,15.0,21.9]}}\"\n}",
+        "truncated": false,
+        "original_chars": 693
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json"
+      ]
+    },
+    {
+      "step": 13,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read ERA5-Land aggregate stats for regional mean precipitation, max temperature, wind.",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+        "max_chars": 4000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"ECMWF/ERA5_LAND/HOURLY\\\",\\n  \\\"start\\\": \\\"2022-03-15\\\",\\n  \\\"end\\\": \\\"2022-03-18\\\",\\n  \\\"stats\\\": {\\n    \\\"precipitation_sum_mm_max\\\": 0.9442269800388203,\\n    \\\"precipitation_sum_mm_mean\\\": 0.4401866867433623,\\n    \\\"precipitation_sum_mm_min\\\": 0.2537816761218892,\\n    \\\"precipitation_sum_mm_stdDev\\\": 0.13377259756000048,\\n    \\\"temperature_2m_max_c_max\\\": 12.533135986328148,\\n    \\\"temperature_2m_max_c_mean\\\": 11.842420995090576,\\n    \\\"temperature_2m_max_c_min\\\": 10.691339111328148,\\n    \\\"temperature_2m_max_c_stdDev\\\": 0.39439302044842517,\\n    \\\"u_component_of_wind_10m_max\\\": -0.7586030960083008,\\n    \\\"u_component_of_wind_10m_mean\\\": -1.131637279746595,\\n    \\\"u_component_of_wind_10m_min\\\": -1.528215726216634,\\n    \\\"u_component_of_wind_10m_stdDev\\\": 0.19855953213116528,\\n    \\\"v_component_of_wind_10m_max\\\": 0.5203206539154053,\\n    \\\"v_component_of_wind_10m_mean\\\": 0.27799424965532565,\\n    \\\"v_component_of_wind_10m_min\\\": 0.05896608034769694,\\n    \\\"v_component_of_wind_10m_stdDev\\\": 0.12487296559304051\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1217
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json"
+      ]
+    },
+    {
+      "step": 14,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "List remote sensing files to find annual embedding-change (surface) data for surface_ratio.",
+      "args": {
+        "subdir": "data/remote_sensing",
+        "max_files": 60
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 6,\n  \"file_count_total\": 6,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/remote_sensing/remote_sensing_001_NASA_GIBS_512px_true-color_thumbnail.jpg\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_001_NASA_GIBS_512px_true-color_thumbnail.jpg\",\n      \"bytes\": 48535,\n      \"suffix\": \".jpg\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_002_Google_Satellite_Embedding_64-band_annual_stats.json\",\n      \"bytes\": 9877,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n      \"bytes\": 361,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_raster.zip\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_004_Google_Satellite_Embedding_annual_cosine-change_raster.zip\",\n      \"bytes\": 131050,\n      \"suffix\": \".zip\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/remote_sensing/remote_sensing_005_pre.jpg\",\n      \"package_relative_path\": \"data/remote_sensing/remote_sensing_005_pre.jpg\",\n      \"bytes\": 1980\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-303/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 15,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read annual cosine-change stats for mean and max embedding change (surface countermetric).",
+      "args": {
+        "path": "event_packages/standard_event_packages/packages/CSX-303/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+        "max_chars": 2000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-303/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL\\\",\\n  \\\"pre_year\\\": 2021,\\n  \\\"post_year\\\": 2022,\\n  \\\"stats\\\": {\\n    \\\"alphaearth_1_minus_cosine_max\\\": 0.5082352811099036,\\n    \\\"alphaearth_1_minus_cosine_mean\\\": 0.07524102103333044,\\n    \\\"alphaearth_1_minus_cosine_min\\\": -0.001616884051190759,\\n    \\\"alphaearth_1_minus_cosine_stdDev\\\": 0.054158320866101804\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 562
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-303/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json"
+      ]
+    },
+    {
+      "step": 16,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Compute all required metrics deterministically from extracted package evidence.",
+      "args": {
+        "code_chars": 2011,
+        "code_sha1": "0becf872a5d1",
+        "code_preview": "import json,math\n# locked dates from event_reports_003\nstart='2022-03-15'; end='2022-03-18'\nfrom datetime import date\nd0=date(2022,3,15); d1=date(2022,3,18)\nevent_days=(d1-d0).days+1\npeak_days=2 # Mar15-16\npeak_fraction=peak_days/event_days\n# anchors\nanchor1=1 # dust_sandstorm_extreme family from event.json\nanchor2=1 # Celia+North African air mass from HTML\nanchor3=1 # passage through Sahara from HTML\nanchor4=1 # France Spain Portugal named from HTML\nanchor5=1 # peak window Mar15-16 inside locked window\nanchor6=1 #\n...[TRUNCATED]...",
+        "code_path": "EarthVerse/runs/tencent-hy3/CSX-303_Q1/python_snippets/step_16_0becf872a5d1.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"EarthVerse/runs/tencent-hy3/CSX-303_Q1/python_snippets/step_16_0becf872a5d1.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.173,\n  \"stdout\": \"event_days 4\\npeak_fraction 0.5\\ntransport_anchor_count 6\\nrain_ratio 0.554 heat 0.831 wind 0.608 surf 0.847\\nmax_counter 0.847\\ndpi 6.653\\nconcl celia_saharan_dust_pathway_pass\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 389
+      },
+      "code": {
+        "text": "import json,math\n# locked dates from event_reports_003\nstart='2022-03-15'; end='2022-03-18'\nfrom datetime import date\nd0=date(2022,3,15); d1=date(2022,3,18)\nevent_days=(d1-d0).days+1\npeak_days=2 # Mar15-16\npeak_fraction=peak_days/event_days\n# anchors\nanchor1=1 # dust_sandstorm_extreme family from event.json\nanchor2=1 # Celia+North African air mass from HTML\nanchor3=1 # passage through Sahara from HTML\nanchor4=1 # France Spain Portugal named from HTML\nanchor5=1 # peak window Mar15-16 inside locked window\nanchor6=1 #\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "EarthVerse/runs/tencent-hy3/CSX-303_Q1/python_snippets/step_16_0becf872a5d1.py"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Locked event window 2022-03-15 to 2022-03-18 (4 inclusive days)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_003_Locked_event_anchor_Saharan_dust_over_Western_Europe.json",
+      "support_type": "metadata"
+    },
+    {
+      "claim": "Peak window Mar 15-16 inside locked window (2 days, fraction 0.5)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "support_type": "report_claim"
+    },
+    {
+      "claim": "Hazard family dust_sandstorm_extreme",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-303/metadata/event.json",
+      "support_type": "metadata"
+    },
+    {
+      "claim": "Storm Celia + North African air mass + passage through Sahara",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "support_type": "report_claim"
+    },
+    {
+      "claim": "France, Spain, Portugal named receptors; air quality and visibility impacts present",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-303/data/event_reports/event_reports_001_Locked_package_evidence_report.html",
+      "support_type": "report_claim"
+    },
+    {
+      "claim": "Point precip max 13.86 mm/day (NASA POWER), regional mean precip 0.440 mm/day (ERA5)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_001_NASA_POWER_daily_point_sample.json",
+      "support_type": "table_metric"
+    },
+    {
+      "claim": "Temperature max 29.1 C (Open-Meteo point)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json",
+      "support_type": "table_metric"
+    },
+    {
+      "claim": "Wind max 21.9 km/h = 6.083 m/s (Open-Meteo)",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-303/data/physical_hazard/physical_hazard_002_Open-Meteo_archive_point_sample.json",
+      "support_type": "table_metric"
+    },
+    {
+      "claim": "Annual embedding change mean 0.07524, max 0.50824",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-303/data/remote_sensing/remote_sensing_003_Google_Satellite_Embedding_annual_cosine-change_stats.json",
+      "support_type": "table_metric"
+    }
+  ],
+  "reasoning_summary": [
+    "Extracted locked dates (4 days) and peak window (Mar15-16) from package reports.",
+    "Confirmed 6 transport anchors from event metadata and HTML evidence (hazard family, Celia+NAfrica+Sahara, 3 receptor countries, peak inside window, air quality+visibility).",
+    "Computed countermetrics: rain_ratio=0.554, heat_ratio=0.831, wind_ratio=0.608, surface_ratio=0.847; max=0.847.",
+    "Calculated dust_pathway_index = 6 + 0.5 + (1-0.847) = 6.653.",
+    "All pass conditions met: anchors=6, peak_fraction>=0.5, max_counter<1, index>=6.5 => celia_saharan_dust_pathway_pass."
+  ],
+  "unsupported_or_unresolved": [
+    "Point physical data coordinates are (0,0) generic samples, used only as countermetric diagnostics per task definition, not geolocation."
+  ],
+  "final_answer": {
+    "event_days": 4,
+    "peak_fraction": 0.5,
+    "transport_anchor_count": 6,
+    "max_countermetric_ratio": 0.847,
+    "dust_pathway_index": 6.653,
+    "conclusion": "celia_saharan_dust_pathway_pass"
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "The model's final answer exactly matches the ground truth in all six numeric fields and the conclusion label, showing no discrepancies.",
+      "llm_rubric": "The model fully satisfies all rubric criteria, providing complete computations, accurate formula application, correct transport anchor count, and concise conclusion without extraneous information."
+    },
+    "one_sentence_rationale": "The model’s answer is fully correct and complete, meeting every numeric and categorical requirement with appropriate evidence and rationale.",
+    "critical_errors": [],
+    "missing_answer_elements": []
+  },
+  "provenance": {
+    "task_id": "CSX-303_Q1",
+    "model_id": "tencent-hy3",
+    "model_name": "Tencent Hy3",
+    "trajectory_path": "data/exploration/trajectories/tencent-hy3/CSX-303_Q1.json",
+    "judge_path": "EarthVerse Judge"
+  }
+}

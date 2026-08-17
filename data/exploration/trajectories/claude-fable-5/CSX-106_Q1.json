@@ -1,0 +1,211 @@
+{
+  "task_id": "CSX-106_Q1",
+  "model_id": "claude-fable-5",
+  "model_name": "Claude Fable 5",
+  "scores": {
+    "overall": 100.0,
+    "answer": 100.0,
+    "rubric": 100.0,
+    "unit_accuracy": 100.0,
+    "answer_units_correct": 6,
+    "answer_units_total": 6,
+    "rubric_points_earned": 20.0,
+    "rubric_points_total": 20.0,
+    "verdict": "correct"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 67.666,
+    "tool_calls": 3,
+    "model_rounds": 4,
+    "file_reads": 1,
+    "unique_evidence_files": 3,
+    "python_calls": 1,
+    "tool_errors": 0,
+    "prompt_tokens": 25330,
+    "completion_tokens": 2985,
+    "total_tokens": 28315
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "Inspect the event package inventory to locate the hourly point-weather record and any supporting metadata needed for the timing ledger.",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 36,\n  \"file_count_total\": 36,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-106/data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json\",\n      \"package_relative_path\": \"data/air_quality/air_quality_001_Open-Meteo_Air_Quality_API.json\",\n      \"bytes\": 7390,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-106/data/event_catalogs/event_catalogs_001_GDACS_tropical_cyclone_event_API.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_GDACS_tropical_cyclone_event_API.json\",\n      \"bytes\": 2843,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-106/data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_05_event_specific_eonet_search_NASA_EONET_keyworddate_event_search.json.json\",\n      \"bytes\": 126022,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-106/data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"package_relative_path\": \"data/event_reports/event_reports_001_Locked_package_evidence_report.html\",\n      \"bytes\": 297215,\n      \"suffix\": \".html\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-106/data/event_reports/event_reports_002_HDX_CKAN_package_search.json\",\n      \"package_relative_path\": \"data/event_reports/event_reports_002_HDX_CKAN_package_search.json\",\n      \"bytes\": 60958,\n      \"suffix\": \".json\"\n   \n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-106/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "summarize_table_or_json",
+      "ok": true,
+      "reason": "Inspect the Open-Meteo hourly point-weather JSON schema and numeric fields before computing peak wind, gust, pressure, and rainfall timing metrics.",
+      "args": {
+        "path": "data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json"
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-106/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json\",\n  \"type\": \"json\",\n  \"shape\": {\n    \"latitude\": \"float\",\n    \"longitude\": \"float\",\n    \"generationtime_ms\": \"float\",\n    \"utc_offset_seconds\": \"int\",\n    \"timezone\": \"str\",\n    \"timezone_abbreviation\": \"str\",\n    \"elevation\": \"float\",\n    \"hourly_units\": {\n      \"time\": \"str\",\n      \"wind_speed_10m\": \"str\",\n      \"wind_gusts_10m\": \"str\",\n      \"precipitation\": \"str\",\n      \"pressure_msl\": \"str\"\n    },\n    \"hourly\": {\n      \"time\": {\n        \"type\": \"list\",\n        \"length\": 192,\n        \"sample\": \"str\"\n      },\n      \"wind_speed_10m\": {\n        \"type\": \"list\",\n        \"length\": 192,\n        \"sample\": \"float\"\n      },\n      \"wind_gusts_10m\": {\n        \"type\": \"list\",\n        \"length\": 192,\n        \"sample\": \"float\"\n      },\n      \"precipitation\": {\n        \"type\": \"list\",\n        \"length\": 192,\n        \"sample\": \"float\"\n      },\n      \"pressure_msl\": {\n        \"type\": \"list\",\n        \"length\": 192,\n        \"sample\": \"float\"\n      }\n    }\n  },\n  \"numeric_list_summaries\": {\n    \"hourly.wind_speed_10m\": {\n      \"count\": 192,\n      \"min\": 1.5,\n      \"max\": 61.4,\n      \"mean\": 20.153125,\n      \"p95\": 44.1\n    },\n    \"hourly.wind_gusts_10m\": {\n      \"count\": 192,\n      \"min\": 4.3,\n      \"max\": 111.6,\n      \"mean\": 38.333333333333336,\n      \"p95\": 79.2\n    },\n    \"hourly.precipitation\": {\n      \"count\": 192,\n      \"min\": 0.0,\n      \"max\": 0.9,\n      \"mean\": 0.06822916666666666,\n      \"p95\": 0.5\n    },\n    \"hourly.pressure_msl\": {\n      \"count\": 192,\n      \"min\": 989.6,\n      \"max\": 1019.8,\n      \"mean\": 1010.1374999999999,\n      \"p95\": 1018.0\n \n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-106/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Compute deterministic extrema, tied peak times, hour offsets relative to gust peak, rainfall total, and +/-3 hour rainfall from the hourly series.",
+      "args": {
+        "code_chars": 1949,
+        "code_sha1": "3ac8daf94e51",
+        "code_preview": "import json\nfrom pathlib import Path\nfrom datetime import datetime\np=Path('event_packages/standard_event_packages/packages/CSX-106/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json')\ndata=json.loads(p.read_text())\nh=data['hourly']\ntimes=[datetime.fromisoformat(t) for t in h['time']]\nwind=h['wind_speed_10m']; gust=h['wind_gusts_10m']; rain=h['precipitation']; press=h['pressure_msl']\nmax_g=max(gust); max_w=max(wind); min_p=min(press); max_r=max(rain); total_r=sum(rain)\ngidx=[i fo\n...[TRUNCATED]...",
+        "code_path": "EarthVerse/runs/claude-fable-5/CSX-106_Q1/python_snippets/step_03_3ac8daf94e51.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"EarthVerse/runs/claude-fable-5/CSX-106_Q1/python_snippets/step_03_3ac8daf94e51.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.195,\n  \"stdout\": \"{\\n  \\\"units\\\": {\\n    \\\"time\\\": \\\"iso8601\\\",\\n    \\\"wind_speed_10m\\\": \\\"km/h\\\",\\n    \\\"wind_gusts_10m\\\": \\\"km/h\\\",\\n    \\\"precipitation\\\": \\\"mm\\\",\\n    \\\"pressure_msl\\\": \\\"hPa\\\"\\n  },\\n  \\\"location\\\": {\\n    \\\"latitude\\\": 53.391914,\\n    \\\"longitude\\\": -6.171417,\\n    \\\"timezone\\\": \\\"GMT\\\"\\n  },\\n  \\\"peak_values\\\": {\\n    \\\"peak_gust_kmh\\\": 111.6,\\n    \\\"peak_wind_speed_kmh\\\": 61.4,\\n    \\\"minimum_pressure_hpa\\\": 989.6,\\n    \\\"point_rainfall_total_mm\\\": 13.1,\\n    \\\"hourly_rainfall_peak_mm\\\": 0.9\\n  },\\n  \\\"peak_times\\\": {\\n    \\\"gust\\\": [\\n      \\\"2017-10-16T14:00\\\"\\n    ],\\n    \\\"wind\\\": [\\n      \\\"2017-10-16T14:00\\\"\\n    ],\\n    \\\"pressure\\\": [\\n      \\\"2017-10-16T15:00\\\"\\n    ],\\n    \\\"rain_peak_times\\\": [\\n      \\\"2017-10-11T07:00\\\",\\n      \\\"2017-10-15T16:00\\\"\\n    ]\\n  },\\n  \\\"timing_tests\\\": {\\n    \\\"wind_gust_same_hour\\\": true,\\n    \\\"pressure_lag_hours_after_gust\\\": 1.0,\\n    \\\"nearest_rain_peak_lag_hours_before_gust\\\": -22.0,\\n    \\\"earliest_rain_peak_lag_hours_before_gust\\\": -127.0,\\n    \\\"rain_mm_within_3h_of_gust\\\": 0.4\\n  },\\n  \\\"indices\\\": {\\n    \\\"gust\\\": [\\n      182\\n    ],\\n    \\\"wind\\\": [\\n      182\\n    ],\\n    \\\"pressure\\\": [\\n      183\\n    ],\\n    \\\"rain\\\": [\\n      55,\\n      160\\n    ]\\n  }\\n}\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 1444
+      },
+      "code": {
+        "text": "import json\nfrom pathlib import Path\nfrom datetime import datetime\np=Path('event_packages/standard_event_packages/packages/CSX-106/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json')\ndata=json.loads(p.read_text())\nh=data['hourly']\ntimes=[datetime.fromisoformat(t) for t in h['time']]\nwind=h['wind_speed_10m']; gust=h['wind_gusts_10m']; rain=h['precipitation']; press=h['pressure_msl']\nmax_g=max(gust); max_w=max(wind); min_p=min(press); max_r=max(rain); total_r=sum(rain)\ngidx=[i fo\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "EarthVerse/runs/claude-fable-5/CSX-106_Q1/python_snippets/step_03_3ac8daf94e51.py"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Peak gust and peak 10 m wind speed both occur at 2017-10-16T14:00, with values 111.6 km/h and 61.4 km/h.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-106/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Minimum sea-level pressure is 989.6 hPa at 2017-10-16T15:00, one hour after the gust peak.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-106/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Point rainfall total is 13.1 mm and the hourly rainfall maximum is tied at 0.9 mm on 2017-10-11T07:00 and 2017-10-15T16:00.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-106/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Rainfall accumulated within 3 hours on either side of the gust peak is 0.4 mm.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-106/data/physical_hazard/physical_hazard_002_Open-Meteo_historical_wind_rain_point_API.json",
+      "support_type": "derived_metric"
+    }
+  ],
+  "reasoning_summary": [
+    "Loaded the hourly Open-Meteo point-weather series for the Dublin-coast site.",
+    "Computed extrema across wind speed, gust, pressure, and precipitation over the 192 hourly samples.",
+    "Matched extrema times to the gust peak hour and measured offsets for pressure and tied rain peaks.",
+    "Summed precipitation within the +/-3 hour window around the gust peak to test synchronization."
+  ],
+  "unsupported_or_unresolved": [],
+  "final_answer": {
+    "target_family": "temporal_peak_consistency_ledger",
+    "answer": "Proof: the wind and gust maxima are synchronized at 2017-10-16T14:00 GMT, while the pressure minimum follows 1 hour later at 2017-10-16T15:00. Rainfall does not share that pulse: the hourly rain maximum is tied at 0.9 mm on 2017-10-11T07:00 and 2017-10-15T16:00, i.e. 127 h and 22 h before the gust peak, and only 0.4 mm falls within +/-3 h of the gust peak.",
+    "peak_values": {
+      "peak_gust_kmh": 111.6,
+      "peak_wind_speed_kmh": 61.4,
+      "minimum_pressure_hpa": 989.6,
+      "point_rainfall_total_mm": 13.1,
+      "hourly_rainfall_peak_mm": 0.9
+    },
+    "peak_times": {
+      "gust": "2017-10-16T14:00",
+      "wind": "2017-10-16T14:00",
+      "pressure": "2017-10-16T15:00",
+      "rain_peak_times": [
+        "2017-10-11T07:00",
+        "2017-10-15T16:00"
+      ]
+    },
+    "timing_tests": {
+      "wind_gust_same_hour": true,
+      "pressure_lag_hours_after_gust": 1,
+      "nearest_rain_peak_lag_hours_before_gust": 22,
+      "earliest_rain_peak_lag_hours_before_gust": 127,
+      "rain_mm_within_3h_of_gust": 0.4
+    },
+    "computed_interpretation": "This is a split peak: a late wind-pressure pulse is synchronized in wind/gust and nearly synchronized in pressure, but rainfall peaks occur well before the storm core arrival and are not co-located with the gust maximum."
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "The model returned all required fields with values and labels matching the ground truth exactly, including tied rainfall peaks and timing arithmetic derived from the event data.",
+      "llm_rubric": "The model demonstrated clear evidence of stepwise derivation from the event data, producing the expected final answer and all intermediate values, times, and interpretations required by the rubric."
+    },
+    "one_sentence_rationale": "The model's answer is fully aligned with the ground truth in all numeric, temporal, and interpretive aspects, meeting all rubric criteria completely.",
+    "critical_errors": [],
+    "missing_answer_elements": []
+  },
+  "provenance": {
+    "task_id": "CSX-106_Q1",
+    "model_id": "claude-fable-5",
+    "model_name": "Claude Fable 5",
+    "trajectory_path": "data/exploration/trajectories/claude-fable-5/CSX-106_Q1.json",
+    "judge_path": "EarthVerse Judge"
+  }
+}

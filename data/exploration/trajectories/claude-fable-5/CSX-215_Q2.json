@@ -1,0 +1,842 @@
+{
+  "task_id": "CSX-215_Q2",
+  "model_id": "claude-fable-5",
+  "model_name": "Claude Fable 5",
+  "scores": {
+    "overall": 69.32,
+    "answer": 63.64,
+    "rubric": 75.0,
+    "unit_accuracy": 63.64,
+    "answer_units_correct": 7,
+    "answer_units_total": 11,
+    "rubric_points_earned": 15.0,
+    "rubric_points_total": 20.0,
+    "verdict": "partial"
+  },
+  "diagnostics": {
+    "run_status": "ok",
+    "termination_reason": "model_final",
+    "latency_s": 150.357,
+    "tool_calls": 19,
+    "model_rounds": 20,
+    "file_reads": 14,
+    "unique_evidence_files": 15,
+    "python_calls": 1,
+    "tool_errors": 0,
+    "prompt_tokens": 199427,
+    "completion_tokens": 5337,
+    "total_tokens": 204764
+  },
+  "tool_calls": [
+    {
+      "step": 1,
+      "tool": "list_package_files",
+      "ok": true,
+      "reason": "Discover the event package inventory and identify candidate files containing the event anchor, metrics, reports, and exposure evidence.",
+      "args": {
+        "subdir": ".",
+        "max_files": 120
+      },
+      "output": {
+        "text": "{\n  \"file_count_returned\": 34,\n  \"file_count_total\": 34,\n  \"truncated_extra_files\": 0,\n  \"files\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.xml\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.xml\",\n      \"bytes\": 48217,\n      \"suffix\": \".xml\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json\",\n      \"bytes\": 75265,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/event_catalogs/event_catalogs_003_NASA_EONET_wildfire_events.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_003_NASA_EONET_wildfire_events.json\",\n      \"bytes\": 145,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/event_catalogs/event_catalogs_004_115_CSX-215_004_NASA_EONET_v3_events_categories_search.json.json\",\n      \"package_relative_path\": \"data/event_catalogs/event_catalogs_004_115_CSX-215_004_NASA_EONET_v3_events_categories_search.json.json\",\n      \"bytes\": 96,\n      \"suffix\": \".json\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\",\n      \"package_relative_path\": \"data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\",\n      \"bytes\": 32\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 2,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read event metadata to establish the event window, AOI, and declared hazard/process context.",
+      "args": {
+        "path": "metadata/event.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-215/metadata/event.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-215\\\",\\n  \\\"event_name\\\": \\\"January 2013 Beijing-Tianjin-Hebei severe haze episode\\\",\\n  \\\"canonical_event_key\\\": \\\"january 2013 beijing tianjin hebei severe haze episode\\\",\\n  \\\"hazard_family\\\": \\\"air_pollution_smoke_heat\\\",\\n  \\\"hazard_label\\\": \\\"Air pollution, smoke, and heat exposure\\\",\\n  \\\"scale\\\": \\\"neighborhood_asset\\\",\\n  \\\"region\\\": \\\"East Asia\\\",\\n  \\\"primary_evidence_url\\\": \\\"https://science.nasa.gov/earth/earth-observatory/air-quality-suffering-in-china-80152/\\\",\\n  \\\"existence_verdict\\\": \\\"confirmed\\\",\\n  \\\"temporal_match\\\": \\\"yes\\\",\\n  \\\"spatial_match\\\": \\\"yes\\\",\\n  \\\"hazard_match\\\": \\\"yes\\\",\\n  \\\"source_reliability\\\": \\\"high_official_or_institutional\\\",\\n  \\\"correspondence_score\\\": \\\"86\\\",\\n  \\\"release_decision\\\": \\\"keep_with_minor_fix\\\",\\n  \\\"benchmark_readiness\\\": \\\"ready_with_metadata_warnings\\\",\\n  \\\"benchmark_readiness_label\\\": \\\"ready with metadata warnings\\\",\\n  \\\"data_integrity\\\": {\\n    \\\"local_files_checked\\\": \\\"23\\\",\\n    \\\"image_files_checked\\\": \\\"4\\\",\\n    \\\"valid_images\\\": \\\"4\\\",\\n    \\\"formal_slice_files_checked\\\": \\\"7\\\",\\n    \\\"hard_error_count\\\": \\\"0\\\",\\n    \\\"metadata_warning_count\\\": \\\"2\\\",\\n    \\\"final_data_score\\\": \\\"94\\\",\\n    \\\"final_data_decision\\\": \\\"ready_with_minor_warnings\\\",\\n    \\\"replacement_file_count\\\": \\\"0\\\"\\n  },\\n  \\\"file_inventory\\\": {\\n    \\\"total_files\\\": 30,\\n    \\\"categories\\\": {\\n      \\\"event_catalogs\\\": 4,\\n      \\\"event_reports\\\": 6,\\n      \\\"exposure_impact\\\": 5,\\n      \\\"geospatial_context\\\": 2,\\n      \\\"physical_hazard\\\": 10,\\n      \\\"remote_sensing\\\": 3\\n    }\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1689
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/metadata/event.json"
+      ]
+    },
+    {
+      "step": 3,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the locked event anchor for exact dates, location, report percent, consequence text, and source-backed event claims.",
+      "args": {
+        "path": "data/event_reports/event_reports_003_Locked_event_anchor_January_2013_Beijing-Tianjin-Hebei_severe_haze_episode.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/event_reports/event_reports_003_Locked_event_anchor_January_2013_Beijing-Tianjin-Hebei_severe_haze_episode.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-215\\\",\\n  \\\"event_name\\\": \\\"January 2013 Beijing-Tianjin-Hebei severe haze episode\\\",\\n  \\\"hazard_family\\\": \\\"air_pollution_smoke_heat\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2013-01-10\\\",\\n    \\\"end_date\\\": \\\"2013-01-14\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Beijing-Tianjin-Hebei urban corridor\\\",\\n    \\\"country_or_region\\\": \\\"China\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"January 2013 Beijing-Tianjin-Hebei severe haze episode\\\",\\n    \\\"event_start_date\\\": \\\"2013-01-10\\\",\\n    \\\"event_end_date\\\": \\\"2013-01-14\\\",\\n    \\\"event_location\\\": \\\"Beijing-Tianjin-Hebei urban corridor\\\",\\n    \\\"event_country_or_region\\\": \\\"China\\\",\\n    \\\"event_scope\\\": \\\"repaired_anchor\\\",\\n    \\\"evidence_type\\\": \\\"NASA Earth Observatory\\\",\\n    \\\"evidence_url\\\": \\\"https://science.nasa.gov/earth/earth-observatory/air-quality-suffering-in-china-80152/\\\",\\n    \\\"evidence_final_url\\\": \\\"https://science.nasa.gov/earth/earth-observatory/air-quality-suffering-in-china-80152/\\\",\\n    \\\"http_status\\\": \\\"\\\",\\n    \\\"lock_status\\\": \\\"event_locked_repaired_anchor_needs_url_probe\\\",\\n    \\\"lock_confidence\\\": \\\"high\\\",\\n    \\\"match_rule\\\": \\\"subagent_repair_replace_event\\\",\\n    \\\"web_search_query_used\\\": \\\"\\\",\\n    \\\"event_lock_notes\\\": \\\"Neighborhood East Asia air-pollution slot gets a city-corridor haze case with sat\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/data/event_reports/event_reports_003_Locked_event_anchor_January_2013_Beijing-Tianjin-Hebei_severe_haze_episode.json"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "summarize_table_or_json",
+      "ok": true,
+      "reason": "Inspect the package file inventory schema to identify the exact evidence files and likely computed fields needed for the diagnostic metrics.",
+      "args": {
+        "path": "metadata/files.csv"
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-215/metadata/files.csv\",\n  \"type\": \"csv\",\n  \"rows\": 30,\n  \"columns\": [\n    \"file_id\",\n    \"package_id\",\n    \"relative_path\",\n    \"data_category\",\n    \"layer_name\",\n    \"source_id\",\n    \"source_name\",\n    \"source_type\",\n    \"url\",\n    \"bytes\",\n    \"sha256_16\",\n    \"file_status\"\n  ],\n  \"sample_rows\": [\n    {\n      \"file_id\": \"F0001\",\n      \"package_id\": \"CSX-215\",\n      \"relative_path\": \"data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\",\n      \"data_category\": \"event_reports\",\n      \"layer_name\": \"event_anchor_report\",\n      \"source_id\": \"S001\",\n      \"source_name\": \"Locked anchor report (NASA Earth Observatory)\",\n      \"source_type\": \"resource_registry\",\n      \"url\": \"https://science.nasa.gov/earth/earth-observatory/air-quality-suffering-in-china-80152/\",\n      \"bytes\": \"323915\",\n      \"sha256_16\": \"5c0da4d445237b85\",\n      \"file_status\": \"success\"\n    },\n    {\n      \"file_id\": \"F0002\",\n      \"package_id\": \"CSX-215\",\n      \"relative_path\": \"data/event_reports/event_reports_002_HDX_CKAN_package_search.json\",\n      \"data_category\": \"event_reports\",\n      \"layer_name\": \"text_reports\",\n      \"source_id\": \"S002\",\n      \"source_name\": \"HDX CKAN package_search\",\n      \"source_type\": \"resource_registry\",\n      \"url\": \"https://data.humdata.org/api/3/action/package_search?q=January%202013%20Beijing-Tianjin-Hebei%20severe%20haze%20episode%20China%202013-01-10&rows=10\",\n      \"bytes\": \"294\",\n      \"sha256_16\": \"8b0409239393d27e\",\n      \"file_status\": \"success\"\n    },\n    {\n      \"file_id\": \"F0003\",\n      \"package_id\": \"CSX-215\",\n      \"relative_path\": \"data/event_catalogs/event_catalogs_001_NASA_EONET_v3\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 5,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search package text for the named diagnostic fields to locate any precomputed or source values without using forbidden answer files.",
+      "args": {
+        "query": "computed_consequence OR dry_guardrail OR exposure_slice_diagnostic_test OR report_pct_diagnostic_test OR people_per_amenity OR low_precip_products",
+        "glob": "**/*",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"computed_consequence OR dry_guardrail OR exposure_slice_diagnostic_test OR report_pct_diagnostic_test OR people_per_amenity OR low_precip_products\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 200
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Check README for package notes, metric definitions, or warnings relevant to recomputing required evidence fields.",
+      "args": {
+        "path": "README.md",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-215/README.md\",\n  \"text\": \"# CSX-215 - January 2013 Beijing-Tianjin-Hebei severe haze episode\\n\\n- Hazard: Air pollution, smoke, and heat exposure\\n- Region: East Asia\\n- Scale: neighborhood_asset\\n- Benchmark readiness: ready with metadata warnings\\n- Primary evidence URL: https://science.nasa.gov/earth/earth-observatory/air-quality-suffering-in-china-80152/\\n\\n## Package Layout\\n\\n- `metadata/event.json`: event-level metadata.\\n- `metadata/files.csv`: file-level manifest with paths relative to this package.\\n- `metadata/sources.csv`: source-level manifest.\\n- `data/`: downloaded evidence and data files grouped by data category.\\n\\n## Data Categories\\n- `physical_hazard`: 10 files\\n- `event_reports`: 6 files\\n- `exposure_impact`: 5 files\\n- `event_catalogs`: 4 files\\n- `remote_sensing`: 3 files\\n- `geospatial_context`: 2 files\\n\"\n}",
+        "truncated": false,
+        "original_chars": 909
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/README.md"
+      ]
+    },
+    {
+      "step": 7,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read daily weather evidence for precipitation, wind/ventilation, and event-day meteorological modifiers used in dry guardrail and stagnation diagnosis.",
+      "args": {
+        "path": "data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json\",\n  \"text\": \"{\\\"latitude\\\":35.95782,\\\"longitude\\\":120.504524,\\\"generationtime_ms\\\":10.503530502319336,\\\"utc_offset_seconds\\\":0,\\\"timezone\\\":\\\"GMT\\\",\\\"timezone_abbreviation\\\":\\\"GMT\\\",\\\"elevation\\\":0.0,\\\"daily_units\\\":{\\\"time\\\":\\\"iso8601\\\",\\\"temperature_2m_max\\\":\\\"°C\\\",\\\"temperature_2m_min\\\":\\\"°C\\\",\\\"precipitation_sum\\\":\\\"mm\\\",\\\"wind_speed_10m_max\\\":\\\"km/h\\\"},\\\"daily\\\":{\\\"time\\\":[\\\"2012-12-27\\\",\\\"2012-12-28\\\",\\\"2012-12-29\\\",\\\"2012-12-30\\\",\\\"2012-12-31\\\",\\\"2013-01-01\\\",\\\"2013-01-02\\\",\\\"2013-01-03\\\",\\\"2013-01-04\\\",\\\"2013-01-05\\\",\\\"2013-01-06\\\",\\\"2013-01-07\\\",\\\"2013-01-08\\\",\\\"2013-01-09\\\",\\\"2013-01-10\\\",\\\"2013-01-11\\\",\\\"2013-01-12\\\",\\\"2013-01-13\\\",\\\"2013-01-14\\\"],\\\"temperature_2m_max\\\":[3.9,6.3,3.5,-0.5,3.1,4.5,-4.1,-3.4,-3.1,-0.8,-0.1,2.5,2.3,-0.7,2.2,3.8,3.2,5.4,4.2],\\\"temperature_2m_min\\\":[1.4,3.3,-4.5,-4.5,-1.2,-4.7,-7.6,-7.5,-6.3,-4.9,-3.5,-2.2,-3.6,-4.6,-3.3,-1.5,-1.4,-0.5,-0.1],\\\"precipitation_sum\\\":[0.00,1.60,5.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00],\\\"wind_speed_10m_max\\\":[17.5,14.8,38.3,28.9,27.2,27.0,28.8,23.4,14.2,15.0,9.0,10.1,19.8,23.3,21.8,27.2,13.9,18.1,21.1]}}\"\n}",
+        "truncated": false,
+        "original_chars": 1280
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read independent daily weather evidence to cross-check precipitation and wind/ventilation modifiers for the event window.",
+      "args": {
+        "path": "data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json\",\n  \"text\": \"{\\\"type\\\":\\\"Feature\\\",\\\"geometry\\\":{\\\"type\\\":\\\"Point\\\",\\\"coordinates\\\":[120.5,36.0,29.96]},\\\"properties\\\":{\\\"parameter\\\":{\\\"T2M\\\":{\\\"20121227\\\":1.78,\\\"20121228\\\":3.46,\\\"20121229\\\":1.42,\\\"20121230\\\":-2.04,\\\"20121231\\\":0.41,\\\"20130101\\\":0.17,\\\"20130102\\\":-4.3,\\\"20130103\\\":-4.72,\\\"20130104\\\":-4.54,\\\"20130105\\\":-3.13,\\\"20130106\\\":-1.48,\\\"20130107\\\":0.47,\\\"20130108\\\":0.7,\\\"20130109\\\":-2.61,\\\"20130110\\\":-1.76,\\\"20130111\\\":1.86,\\\"20130112\\\":0.36,\\\"20130113\\\":3.45,\\\"20130114\\\":1.08},\\\"T2M_MAX\\\":{\\\"20121227\\\":3.08,\\\"20121228\\\":4.49,\\\"20121229\\\":5.22,\\\"20121230\\\":0.46,\\\"20121231\\\":3.29,\\\"20130101\\\":4.58,\\\"20130102\\\":-2.97,\\\"20130103\\\":-2.3,\\\"20130104\\\":-3.05,\\\"20130105\\\":-0.95,\\\"20130106\\\":-0.01,\\\"20130107\\\":1.79,\\\"20130108\\\":2.38,\\\"20130109\\\":-0.68,\\\"20130110\\\":0.39,\\\"20130111\\\":4.06,\\\"20130112\\\":3.09,\\\"20130113\\\":5.24,\\\"20130114\\\":3.25},\\\"T2M_MIN\\\":{\\\"20121227\\\":-0.17,\\\"20121228\\\":2.56,\\\"20121229\\\":-2.52,\\\"20121230\\\":-4.51,\\\"20121231\\\":-3.01,\\\"20130101\\\":-2.69,\\\"20130102\\\":-5.9,\\\"20130103\\\":-6.84,\\\"20130104\\\":-6.23,\\\"20130105\\\":-4.86,\\\"20130106\\\":-2.95,\\\"20130107\\\":-1.09,\\\"20130108\\\":-1.14,\\\"20130109\\\":-4.43,\\\"20130110\\\":-4.39,\\\"20130111\\\":-0.29,\\\"20130112\\\":-2.97,\\\"20130113\\\":1.75,\\\"20130114\\\":-0.41},\\\"PRECTOTCORR\\\":{\\\"20121227\\\":1.63,\\\"20121228\\\":0.28,\\\"20121229\\\":7.77,\\\"20121230\\\":0.0,\\\"20121231\\\":0.0,\\\"20130101\\\":0.06,\\\"20130102\\\":0.09,\\\"20130103\\\":0.18,\\\"20130104\\\":0.06,\\\"20130105\\\":0.23,\\\"20130106\\\":0.21,\\\"20130107\\\":0.0,\\\"20130108\\\":0.0,\\\"20130109\\\":0.0,\\\"20130110\\\":0.0,\\\"20130111\\\":0.0,\\\"20130112\\\":0.0,\\\"20130113\\\":0.0,\\\"20130114\\\":0.0}\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json"
+      ]
+    },
+    {
+      "step": 9,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read ERA5-Land aggregate stats for additional meteorological context and possible wind/precipitation/stagnation indicators.",
+      "args": {
+        "path": "data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"ECMWF/ERA5_LAND/HOURLY\\\",\\n  \\\"start\\\": \\\"2013-01-10\\\",\\n  \\\"end\\\": \\\"2013-01-14\\\",\\n  \\\"stats\\\": {\\n    \\\"precipitation_sum_mm_max\\\": 0.0062120552115629835,\\n    \\\"precipitation_sum_mm_mean\\\": 0.006039702181714346,\\n    \\\"precipitation_sum_mm_min\\\": 0.005839526181716792,\\n    \\\"precipitation_sum_mm_stdDev\\\": 0.00011725298200163122,\\n    \\\"temperature_2m_max_c_max\\\": 5.17743835449221,\\n    \\\"temperature_2m_max_c_mean\\\": 4.945452597864312,\\n    \\\"temperature_2m_max_c_min\\\": 4.66181335449221,\\n    \\\"temperature_2m_max_c_stdDev\\\": 0.1652200493247802,\\n    \\\"u_component_of_wind_10m_max\\\": 0.11739945411682129,\\n    \\\"u_component_of_wind_10m_mean\\\": 0.059910312969682626,\\n    \\\"u_component_of_wind_10m_min\\\": 0.008813842137654623,\\n    \\\"u_component_of_wind_10m_stdDev\\\": 0.0365960610377108,\\n    \\\"v_component_of_wind_10m_max\\\": 1.5358784437179565,\\n    \\\"v_component_of_wind_10m_mean\\\": 1.3764205644005225,\\n    \\\"v_component_of_wind_10m_min\\\": 1.1517679293950398,\\n    \\\"v_component_of_wind_10m_stdDev\\\": 0.13176453295867088\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1222
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json"
+      ]
+    },
+    {
+      "step": 10,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Locate pollutant/aerosol burden, exposure, amenity, and receptor-context files needed to compute consequence, exposure slice test, and amenity metrics.",
+      "args": {
+        "query": "PM2.5 OR AOD OR aerosol OR haze OR pollutant OR amenity OR population OR exposure",
+        "glob": "data/**/*",
+        "max_matches": 80
+      },
+      "output": {
+        "text": "{\n  \"query\": \"PM2.5 OR AOD OR aerosol OR haze OR pollutant OR amenity OR population OR exposure\",\n  \"match_count\": 0,\n  \"matches\": []\n}",
+        "truncated": false,
+        "original_chars": 135
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 11,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the full manifest to select the quantitative exposure, physical hazard, remote sensing, and receptor files by path.",
+      "args": {
+        "path": "metadata/files.csv",
+        "max_chars": 20000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-215/metadata/files.csv\",\n  \"text\": \"file_id,package_id,relative_path,data_category,layer_name,source_id,source_name,source_type,url,bytes,sha256_16,file_status\\nF0001,CSX-215,data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html,event_reports,event_anchor_report,S001,Locked anchor report (NASA Earth Observatory),resource_registry,https://science.nasa.gov/earth/earth-observatory/air-quality-suffering-in-china-80152/,323915,5c0da4d445237b85,success\\nF0002,CSX-215,data/event_reports/event_reports_002_HDX_CKAN_package_search.json,event_reports,text_reports,S002,HDX CKAN package_search,resource_registry,https://data.humdata.org/api/3/action/package_search?q=January%202013%20Beijing-Tianjin-Hebei%20severe%20haze%20episode%20China%202013-01-10&rows=10,294,8b0409239393d27e,success\\nF0003,CSX-215,data/event_catalogs/event_catalogs_001_NASA_EONET_v3_events_categories_search.xml,event_catalogs,event_catalog_api,S003,NASA EONET v3 events/categories search,resource_registry,https://eonet.gsfc.nasa.gov/api/v3/events?start=2013-01-10&end=2013-01-14&status=all,48217,24923fb34d83418e,success\\nF0004,CSX-215,data/event_catalogs/event_catalogs_002_GDACS_event_list_feed_search.json,event_catalogs,event_catalog_api,S004,GDACS event list / feed search,resource_registry,\\\"https://www.gdacs.org/gdacsapi/api/events/geteventlist/MAP?fromDate=2013-01-10&toDate=2013-01-14&alertlevel=Green,Orange,Red\\\",75265,aa048ce2df085b1d,success\\nF0005,CSX-215,data/geospatial_context/geospatial_context_001_OpenStreetMap_Nominatim_geocoding.json,geospatial_context,geocoding_or_aoi,S005,OpenStreetMap Nominatim geocoding,resource_registry,ht\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/metadata/files.csv"
+      ]
+    },
+    {
+      "step": 12,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read event accumulated precipitation product to count low-precipitation products and assess rain-removal modifier.",
+      "args": {
+        "path": "data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"NASA/GPM_L3/IMERG_V07\\\",\\n  \\\"start\\\": \\\"2013-01-10\\\",\\n  \\\"end\\\": \\\"2013-01-14\\\",\\n  \\\"stats\\\": {\\n    \\\"gpm_event_precip_mm_max\\\": 1.184999953955412,\\n    \\\"gpm_event_precip_mm_mean\\\": 0.3354664185488331,\\n    \\\"gpm_event_precip_mm_min\\\": 0,\\n    \\\"gpm_event_precip_mm_stdDev\\\": 0.34002779067149\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 502
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 13,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read second precipitation product for low-precipitation product count and dry guardrail.",
+      "args": {
+        "path": "data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"UCSB-CHG/CHIRPS/DAILY\\\",\\n  \\\"start\\\": \\\"2013-01-10\\\",\\n  \\\"end\\\": \\\"2013-01-14\\\",\\n  \\\"stats\\\": {\\n    \\\"chirps_event_precip_mm_max\\\": 0,\\n    \\\"chirps_event_precip_mm_mean\\\": 0,\\n    \\\"chirps_event_precip_mm_min\\\": 0,\\n    \\\"chirps_event_precip_mm_stdDev\\\": 0\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 465
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json"
+      ]
+    },
+    {
+      "step": 14,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read population exposure summary for receptor-context metrics and people-per-amenity calculation.",
+      "args": {
+        "path": "data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+        "max_chars": 12000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json\",\n  \"text\": \"{\\n  \\\"dataset\\\": \\\"WorldPop/GP/100m/pop\\\",\\n  \\\"year\\\": 2013,\\n  \\\"population_sum\\\": {\\n    \\\"population\\\": 2239925.7750344574\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 298
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json"
+      ]
+    },
+    {
+      "step": 15,
+      "tool": "summarize_table_or_json",
+      "ok": true,
+      "reason": "Summarize OSM exposure slice schema and counts to compute amenity total and exposure slice diagnostic test.",
+      "args": {
+        "path": "data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json"
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json\",\n  \"type\": \"json\",\n  \"shape\": {\n    \"version\": \"float\",\n    \"generator\": \"str\",\n    \"osm3s\": {\n      \"timestamp_osm_base\": \"str\",\n      \"copyright\": \"str\"\n    },\n    \"elements\": {\n      \"type\": \"list\",\n      \"length\": 1000,\n      \"sample\": {\n        \"type\": \"str\",\n        \"id\": \"int\",\n        \"lat\": \"float\",\n        \"lon\": \"float\",\n        \"tags\": {\n          \"amenity\": \"str\",\n          \"emergency\": \"str\",\n          \"healthcare\": \"str\",\n          \"name\": \"str\",\n          \"name:zh\": \"str\",\n          \"name:zh-Hans\": \"str\",\n          \"name:zh-Hant\": \"str\",\n          \"operator\": \"str\",\n          \"operator:type\": \"str\",\n          \"wheelchair\": \"str\"\n        }\n      }\n    }\n  },\n  \"numeric_list_summaries\": {},\n  \"text_preview\": \"{\\n  \\\"version\\\": 0.6,\\n  \\\"generator\\\": \\\"Overpass API 0.7.62.11 87bfad18\\\",\\n  \\\"osm3s\\\": {\\n    \\\"timestamp_osm_base\\\": \\\"2026-05-22T08:12:53Z\\\",\\n    \\\"copyright\\\": \\\"The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.\\\"\\n  },\\n  \\\"elements\\\": [\\n    {\\n      \\\"type\\\": \\\"node\\\",\\n      \\\"id\\\": 2024738707,\\n      \\\"lat\\\": 36.1665598,\\n      \\\"lon\\\": 120.4977705,\\n      \\\"tags\\\": {\\n        \\\"amenity\\\": \\\"hospital\\\",\\n        \\\"emergency\\\": \\\"yes\\\",\\n        \\\"healthcare\\\": \\\"hospital\\\",\\n        \\\"name\\\": \\\"校医院\\\",\\n        \\\"name:zh\\\": \\\"校医院\\\",\\n        \\\"name:zh-Hans\\\": \\\"校医院\\\",\\n        \\\"name:zh-Hant\\\": \\\"校醫院\\\",\\n        \\\"operator\\\": \\\"中国海洋大学\\\",\\n        \\\"operator:type\\\": \\\"government\\\",\\n        \\\"wheelchair\\\": \\\"yes\\\"\\n      }\\n    },\\n    {\\n      \\\"type\\\"\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json"
+      ]
+    },
+    {
+      "step": 16,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read event anchor claims to establish event window, haze process, and report-derived burden/exposure evidence.",
+      "args": {
+        "path": "data/event_reports/event_reports_003_Locked_event_anchor_January_2013_Beijing-Tianjin-Hebei_severe_haze_episode.json",
+        "max_chars": 20000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/event_reports/event_reports_003_Locked_event_anchor_January_2013_Beijing-Tianjin-Hebei_severe_haze_episode.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-215\\\",\\n  \\\"event_name\\\": \\\"January 2013 Beijing-Tianjin-Hebei severe haze episode\\\",\\n  \\\"hazard_family\\\": \\\"air_pollution_smoke_heat\\\",\\n  \\\"temporal_window\\\": {\\n    \\\"start_date\\\": \\\"2013-01-10\\\",\\n    \\\"end_date\\\": \\\"2013-01-14\\\",\\n    \\\"source\\\": \\\"package_event_lock_targeted_refined_v4_repaired\\\"\\n  },\\n  \\\"spatial_window\\\": {\\n    \\\"location_text\\\": \\\"Beijing-Tianjin-Hebei urban corridor\\\",\\n    \\\"country_or_region\\\": \\\"China\\\",\\n    \\\"aoi_geometry_status\\\": \\\"not_defined_until_data_preparation\\\"\\n  },\\n  \\\"locked_event_anchor\\\": {\\n    \\\"event_name\\\": \\\"January 2013 Beijing-Tianjin-Hebei severe haze episode\\\",\\n    \\\"event_start_date\\\": \\\"2013-01-10\\\",\\n    \\\"event_end_date\\\": \\\"2013-01-14\\\",\\n    \\\"event_location\\\": \\\"Beijing-Tianjin-Hebei urban corridor\\\",\\n    \\\"event_country_or_region\\\": \\\"China\\\",\\n    \\\"event_scope\\\": \\\"repaired_anchor\\\",\\n    \\\"evidence_type\\\": \\\"NASA Earth Observatory\\\",\\n    \\\"evidence_url\\\": \\\"https://science.nasa.gov/earth/earth-observatory/air-quality-suffering-in-china-80152/\\\",\\n    \\\"evidence_final_url\\\": \\\"https://science.nasa.gov/earth/earth-observatory/air-quality-suffering-in-china-80152/\\\",\\n    \\\"http_status\\\": \\\"\\\",\\n    \\\"lock_status\\\": \\\"event_locked_repaired_anchor_needs_url_probe\\\",\\n    \\\"lock_confidence\\\": \\\"high\\\",\\n    \\\"match_rule\\\": \\\"subagent_repair_replace_event\\\",\\n    \\\"web_search_query_used\\\": \\\"\\\",\\n    \\\"event_lock_notes\\\": \\\"Neighborhood East Asia air-pollution slot gets a city-corridor haze case with sat\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/data/event_reports/event_reports_003_Locked_event_anchor_January_2013_Beijing-Tianjin-Hebei_severe_haze_episode.json"
+      ]
+    },
+    {
+      "step": 17,
+      "tool": "search_package_files",
+      "ok": true,
+      "reason": "Search downloaded NASA anchor HTML for report claims about haze/aerosol burden and timing to support the mechanism diagnosis.",
+      "args": {
+        "query": "Beijing OR haze OR smog OR air quality OR satellite OR particles OR aerosol",
+        "glob": "data/event_reports/*.html",
+        "max_matches": 40
+      },
+      "output": {
+        "text": "{\n  \"query\": \"Beijing OR haze OR smog OR air quality OR satellite OR particles OR aerosol\",\n  \"match_count\": 3,\n  \"matches\": [\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html\",\n      \"snippet\": \"var gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){retu\\n...[TRUNCATED]...\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html\",\n      \"snippet\": \"var gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),document.addEventListener(\\\"gform/theme/scripts_loaded\\\",function(){gform.themeScriptsLoaded=!0}),window.addEventListener(\\\"DOMContentLoaded\\\",function(){gform.domLoaded=!0}),gform={domLoaded:!1,scriptsLoaded:!1,themeScriptsLoaded:!1,isFormEditor:()=>\\\"function\\\"==typeof InitializeEditor,callIfLoaded:function(o){retu\\n...[TRUNCATED]...\"\n    },\n    {\n      \"path\": \"event_packages/standard_event_packages/packages/CSX-215/data/event_reports/event_reports_005_115_CSX-215_01_Locked_anchor_report_NASA_Earth_Observatory.html.html\",\n      \"snippet\": \"var gform;gform||(document.addEventListener(\\\"gform_main_scripts_loaded\\\",function(){gform.scriptsLoaded=!0}),do\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 1738
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/data/event_reports/event_reports_001_Locked_anchor_report_NASA_Earth_Observatory.html",
+        "event_packages/standard_event_packages/packages/CSX-215/data/event_reports/event_reports_004_Locked_anchor_report_NASA_Earth_Observatory.html",
+        "event_packages/standard_event_packages/packages/CSX-215/data/event_reports/event_reports_005_115_CSX-215_01_Locked_anchor_report_NASA_Earth_Observatory.html.html"
+      ]
+    },
+    {
+      "step": 18,
+      "tool": "read_text_file",
+      "ok": true,
+      "reason": "Read the full event metadata to recover any precomputed diagnostic field definitions or package-level numeric targets.",
+      "args": {
+        "path": "metadata/event.json",
+        "max_chars": 20000
+      },
+      "output": {
+        "text": "{\n  \"path\": \"event_packages/standard_event_packages/packages/CSX-215/metadata/event.json\",\n  \"text\": \"{\\n  \\\"package_id\\\": \\\"CSX-215\\\",\\n  \\\"event_name\\\": \\\"January 2013 Beijing-Tianjin-Hebei severe haze episode\\\",\\n  \\\"canonical_event_key\\\": \\\"january 2013 beijing tianjin hebei severe haze episode\\\",\\n  \\\"hazard_family\\\": \\\"air_pollution_smoke_heat\\\",\\n  \\\"hazard_label\\\": \\\"Air pollution, smoke, and heat exposure\\\",\\n  \\\"scale\\\": \\\"neighborhood_asset\\\",\\n  \\\"region\\\": \\\"East Asia\\\",\\n  \\\"primary_evidence_url\\\": \\\"https://science.nasa.gov/earth/earth-observatory/air-quality-suffering-in-china-80152/\\\",\\n  \\\"existence_verdict\\\": \\\"confirmed\\\",\\n  \\\"temporal_match\\\": \\\"yes\\\",\\n  \\\"spatial_match\\\": \\\"yes\\\",\\n  \\\"hazard_match\\\": \\\"yes\\\",\\n  \\\"source_reliability\\\": \\\"high_official_or_institutional\\\",\\n  \\\"correspondence_score\\\": \\\"86\\\",\\n  \\\"release_decision\\\": \\\"keep_with_minor_fix\\\",\\n  \\\"benchmark_readiness\\\": \\\"ready_with_metadata_warnings\\\",\\n  \\\"benchmark_readiness_label\\\": \\\"ready with metadata warnings\\\",\\n  \\\"data_integrity\\\": {\\n    \\\"local_files_checked\\\": \\\"23\\\",\\n    \\\"image_files_checked\\\": \\\"4\\\",\\n    \\\"valid_images\\\": \\\"4\\\",\\n    \\\"formal_slice_files_checked\\\": \\\"7\\\",\\n    \\\"hard_error_count\\\": \\\"0\\\",\\n    \\\"metadata_warning_count\\\": \\\"2\\\",\\n    \\\"final_data_score\\\": \\\"94\\\",\\n    \\\"final_data_decision\\\": \\\"ready_with_minor_warnings\\\",\\n    \\\"replacement_file_count\\\": \\\"0\\\"\\n  },\\n  \\\"file_inventory\\\": {\\n    \\\"total_files\\\": 30,\\n    \\\"categories\\\": {\\n      \\\"event_catalogs\\\": 4,\\n      \\\"event_reports\\\": 6,\\n      \\\"exposure_impact\\\": 5,\\n      \\\"geospatial_context\\\": 2,\\n      \\\"physical_hazard\\\": 10,\\n      \\\"remote_sensing\\\": 3\\n    }\\n  }\\n}\"\n}",
+        "truncated": false,
+        "original_chars": 1689
+      },
+      "code": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "event_packages/standard_event_packages/packages/CSX-215/metadata/event.json"
+      ]
+    },
+    {
+      "step": 19,
+      "tool": "python_exec",
+      "ok": true,
+      "reason": "Run deterministic package-only calculations for required metrics, diagnostic booleans, and supporting meteorology/exposure fields.",
+      "args": {
+        "code_chars": 4667,
+        "code_sha1": "efafdb3a945f",
+        "code_preview": "import json, math, os, re\nbase='event_packages/standard_event_packages/packages/CSX-215'\n\ndef load(rel):\n    with open(os.path.join(base, rel), 'r', encoding='utf-8') as f:\n        return json.load(f)\nanchor=load('data/event_reports/event_reports_003_Locked_event_anchor_January_2013_Beijing-Tianjin-Hebei_severe_haze_episode.json')\nom=load('data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json')\npower=load('data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json')\nera=load('\n...[TRUNCATED]...",
+        "code_path": "EarthVerse/runs/claude-fable-5/CSX-215_Q2/python_snippets/step_19_efafdb3a945f.py"
+      },
+      "output": {
+        "text": "{\n  \"code_path\": \"EarthVerse/runs/claude-fable-5/CSX-215_Q2/python_snippets/step_19_efafdb3a945f.py\",\n  \"returncode\": 0,\n  \"latency_s\": 0.172,\n  \"stdout\": \"{\\n  \\\"computed_consequence\\\": false,\\n  \\\"diagnostic_tests\\\": {\\n    \\\"dry_guardrail\\\": true,\\n    \\\"exposure_slice_diagnostic_test\\\": false,\\n    \\\"report_pct_diagnostic_test\\\": 1.0,\\n    \\\"window_match\\\": true\\n  },\\n  \\\"evidence_score\\\": 0.8,\\n  \\\"metrics\\\": {\\n    \\\"amenity_total\\\": 84,\\n    \\\"event_days\\\": 5,\\n    \\\"low_precip_products\\\": 5,\\n    \\\"people_per_amenity\\\": 26665.783036124492,\\n    \\\"population_sum\\\": 2239925.7750344574,\\n    \\\"precip_products\\\": {\\n      \\\"Open-Meteo_event_total_mm\\\": 0.0,\\n      \\\"NASA_POWER_event_total_mm\\\": 0.0,\\n      \\\"ERA5_Land_event_mean_mm\\\": 0.006039702181714346,\\n      \\\"GPM_IMERG_event_mean_mm\\\": 0.3354664185488331,\\n      \\\"CHIRPS_event_mean_mm\\\": 0\\n    },\\n    \\\"open_meteo_event_precip_daily_mm\\\": [\\n      0.0,\\n      0.0,\\n      0.0,\\n      0.0,\\n      0.0\\n    ],\\n    \\\"open_meteo_event_wind_max_kmh\\\": [\\n      21.8,\\n      27.2,\\n      13.9,\\n      18.1,\\n      21.1\\n    ],\\n    \\\"nasa_power_event_precip_daily_mm\\\": [\\n      0.0,\\n      0.0,\\n      0.0,\\n      0.0,\\n      0.0\\n    ],\\n    \\\"nasa_power_event_wind_ms\\\": [\\n      2.77,\\n      6.6,\\n      2.8,\\n      2.49,\\n      4.82\\n    ],\\n    \\\"era5_wind_components_event_mean_ms\\\": {\\n      \\\"u\\\": 0.059910312969682626,\\n      \\\"v\\\": 1.3764205644005225\\n    }\\n  }\\n}\",\n  \"stderr\": \"\"\n}",
+        "truncated": false,
+        "original_chars": 1494
+      },
+      "code": {
+        "text": "import json, math, os, re\nbase='event_packages/standard_event_packages/packages/CSX-215'\n\ndef load(rel):\n    with open(os.path.join(base, rel), 'r', encoding='utf-8') as f:\n        return json.load(f)\nanchor=load('data/event_reports/event_reports_003_Locked_event_anchor_January_2013_Beijing-Tianjin-Hebei_severe_haze_episode.json')\nom=load('data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json')\npower=load('data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json')\nera=load('\n...[TRUNCATED]...",
+        "truncated": false,
+        "original_chars": 538
+      },
+      "stdout": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "stderr": {
+        "text": "",
+        "truncated": false,
+        "original_chars": 0
+      },
+      "returncode": null,
+      "warnings": [],
+      "evidence_files": [
+        "EarthVerse/runs/claude-fable-5/CSX-215_Q2/python_snippets/step_19_efafdb3a945f.py"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Event window is 2013-01-10 to 2013-01-14 and the anchor is high-confidence NASA Earth Observatory evidence for the Beijing-Tianjin-Hebei severe haze episode.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-215/data/event_reports/event_reports_003_Locked_event_anchor_January_2013_Beijing-Tianjin-Hebei_severe_haze_episode.json",
+      "support_type": "metadata"
+    },
+    {
+      "claim": "Open-Meteo and NASA POWER daily event-window precipitation totals are 0.0 mm, supporting low rain removal.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_001_Open-Meteo_daily_weather_fill.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "NASA POWER daily event-window precipitation totals are 0.0 mm and wind values are available for the event days.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_002_NASA_POWER_daily_weather_fill.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "ERA5-Land event precipitation mean is about 0.006 mm and mean wind components are small, supporting dry/stagnation interpretation with meteorological caveats.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_003_ERA5-Land_hourly_aggregate_stats.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "GPM IMERG event mean precipitation is about 0.335 mm, contributing to low_precip_products count.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_004_GPM_IMERG_V07_event_accumulated_precipitation.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "CHIRPS event precipitation mean is 0 mm, contributing to low_precip_products count.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-215/data/physical_hazard/physical_hazard_005_CHIRPS_daily_event_accumulated_precipitation.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "WorldPop population sum is 2239925.7750344574 people for the receptor context.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-215/data/exposure_impact/exposure_impact_002_WorldPop_GP_100m_population_sum.json",
+      "support_type": "direct_metric"
+    },
+    {
+      "claim": "OSM exposure slice supports amenity counting; computed amenity_total is 84 and people_per_amenity is about 26665.78.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-215/data/exposure_impact/exposure_impact_003_OpenStreetMap_Overpass_bounded_AOI_slice.json",
+      "support_type": "derived_metric"
+    },
+    {
+      "claim": "Package metadata confirms hazard family, institutional source reliability, readiness, and file inventory context.",
+      "source_file": "event_packages/standard_event_packages/packages/CSX-215/metadata/event.json",
+      "support_type": "metadata"
+    }
+  ],
+  "reasoning_summary": [
+    "Established a five-day locked haze event window from the package anchor.",
+    "Computed event-day meteorology and found five independent low-precipitation products, so rain removal is not a good explanation for ending the haze burden.",
+    "Computed receptor metrics from WorldPop and OSM: positive population but only 84 qualifying amenity/emergency/healthcare features.",
+    "Combined diagnostics: dry_guardrail true, report_pct_diagnostic_test 1.0, window_match true, exposure_slice_diagnostic_test false, evidence_score 0.8, computed_consequence false."
+  ],
+  "unsupported_or_unresolved": [
+    "No local file used here provides direct PM2.5 concentration time series or measured aerosol optical depth persistence over each event day.",
+    "OSM exposure data are a bounded slice and do not prove complete critical-infrastructure coverage for the whole Beijing-Tianjin-Hebei corridor.",
+    "The meteorology supports dry persistence but does not by itself identify emissions sources or chemical composition of the haze."
+  ],
+  "final_answer": {
+    "answer": "The package supports a dry, multi-day haze-stagnation mechanism for 2013-01-10 to 2013-01-14, but the final computed consequence is false because the receptor exposure slice is too weak: the event anchor and report audit match the window, all five precipitation products indicate little or no rain removal, and the event lasts five days, yet only 84 critical/social amenity records are counted against a diagnostic threshold of 100. The strongest defensible conclusion is therefore meteorologically favored persistence of haze/aerosol burden over a populated receptor context, not a fully proven package-derived exposure consequence.",
+    "task_mode": "deep_mechanism_diagnosis",
+    "mechanism_question": "Did the January 2013 Beijing-Tianjin-Hebei haze episode show persistent pollutant or aerosol burden over the receptor window after accounting for rain removal, ventilation/stagnation, and local exposure context?",
+    "computed_evidence": {
+      "computed_consequence": false,
+      "diagnostic_tests": {
+        "dry_guardrail": true,
+        "exposure_slice_diagnostic_test": false,
+        "report_pct_diagnostic_test": 1.0,
+        "window_match": true
+      },
+      "evidence_score": 0.8,
+      "metrics": {
+        "amenity_total": 84,
+        "event_days": 5,
+        "low_precip_products": 5,
+        "people_per_amenity": 26665.783036124492,
+        "population_sum": 2239925.7750344574,
+        "precip_products": {
+          "Open-Meteo_event_total_mm": 0.0,
+          "NASA_POWER_event_total_mm": 0.0,
+          "ERA5_Land_event_mean_mm": 0.006039702181714346,
+          "GPM_IMERG_event_mean_mm": 0.3354664185488331,
+          "CHIRPS_event_mean_mm": 0
+        },
+        "open_meteo_event_wind_max_kmh": [
+          21.8,
+          27.2,
+          13.9,
+          18.1,
+          21.1
+        ],
+        "nasa_power_event_wind_ms": [
+          2.77,
+          6.6,
+          2.8,
+          2.49,
+          4.82
+        ],
+        "era5_wind_components_event_mean_ms": {
+          "u": 0.059910312969682626,
+          "v": 1.3764205644005225
+        }
+      }
+    },
+    "mechanism_chain": [
+      "A high-confidence institutional anchor identifies a Beijing-Tianjin-Hebei severe haze episode from 2013-01-10 through 2013-01-14, defining a five-day pollutant/aerosol persistence test window.",
+      "The physical process being tested is whether haze or aerosol burden persisted across that receptor window rather than being rapidly removed by rain or displaced by strong ventilation.",
+      "Rain-removal evidence favors persistence: Open-Meteo and NASA POWER both give 0.0 mm event precipitation, ERA5-Land mean event precipitation is about 0.006 mm, GPM IMERG mean event precipitation is about 0.335 mm, and CHIRPS is 0 mm, so all five precipitation products satisfy the low-precipitation guardrail.",
+      "Ventilation evidence is mixed but not a strong rejection of persistence: Open-Meteo daily maximum winds range from 13.9 to 27.2 km/h, NASA POWER daily wind values range from 2.49 to 6.6 m/s, and ERA5-Land mean wind components are small, especially the u component at about 0.060 m/s.",
+      "The receptor context is present but under-threshold for the package diagnostic: WorldPop estimates about 2,239,926 people in the AOI and the OSM slice contains 84 counted amenity/emergency/healthcare records, yielding about 26,666 people per counted amenity.",
+      "Because the dry guardrail, report audit, event duration, and window match pass but the exposure-slice diagnostic fails, the computed consequence is false even though the dominant causal interpretation remains a dry multi-day haze persistence episode over a populated setting."
+    ],
+    "decisive_evidence": "The decision is carried by the combination of the five-product precipitation calculation and the exposure-slice count. The dry guardrail is decisive for the physical persistence mechanism because all five products show <=1 mm low-precipitation evidence, making wet scavenging an unlikely dominant removal pathway. The final consequence is decided against because the counted receptor amenity total is 84, below the 100-record diagnostic threshold, despite a positive population estimate and a five-day matched event window.",
+    "rejected_simplifications": "A rain-cleared-event explanation fails because low_precip_products equals 5 and the event-window precipitation values are 0.0 mm in Open-Meteo, 0.0 mm in NASA POWER, about 0.006 mm in ERA5-Land, about 0.335 mm in GPM IMERG, and 0 mm in CHIRPS. A one-day transient-smog explanation fails because the locked event window spans five inclusive days and window_match is true. A pure exposure-impact claim also fails because the amenity_total is only 84 and exposure_slice_diagnostic_test is false, so the package does not meet its own receptor-slice sufficiency test.",
+    "bounded_interpretation": "The package can prove a matched institutional haze event window, very low precipitation during that window, a populated receptor context, and a limited OSM amenity slice. It cannot prove measured PM2.5 concentration persistence, health outcomes, individual exposure, pollutant chemistry, causality from emissions, or a complete Beijing-Tianjin-Hebei-wide receptor inventory from the local files used here."
+  },
+  "judge_rationale": {
+    "rationale": {
+      "answer_correctness": "The final answer and several critical computed values differ significantly from ground truth, notably the answer label and diagnostic test flags, leading to only partial credit.",
+      "llm_rubric": "The model demonstrates strong reasoning, evidence integration, and alternative rejection, but incorrect formatted answers and critical field errors reduce the full rubric score."
+    },
+    "one_sentence_rationale": "Model shows sound evidence and reasoning but critical discrepancies in key computed evidence values and the final answer label lead to partial correctness and rubric deductions.",
+    "critical_errors": [
+      "critical_label: answer field is a descriptive phrase instead of expected compact label 'haze_window_exposure_supported'",
+      "numeric_value: computed_consequence is false instead of true",
+      "numeric_value: exposure_slice_diagnostic_test is false instead of true",
+      "numeric_value: report_pct_diagnostic_test is 1.0 instead of boolean true",
+      "numeric_value: evidence_score is 0.8 instead of 4",
+      "numeric_value: amenity_total is 84 instead of 69",
+      "numeric_value: people_per_amenity is 26665.78 instead of 32462.7"
+    ],
+    "missing_answer_elements": []
+  },
+  "provenance": {
+    "task_id": "CSX-215_Q2",
+    "model_id": "claude-fable-5",
+    "model_name": "Claude Fable 5",
+    "trajectory_path": "data/exploration/trajectories/claude-fable-5/CSX-215_Q2.json",
+    "judge_path": "EarthVerse Judge"
+  }
+}
