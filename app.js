@@ -19,6 +19,14 @@ const state = {
   previewObjectUrl: null,
 };
 
+const overviewFeaturedModelIds = [
+  "claude-fable-5",
+  "gpt-5-6-sol",
+  "gpt-5-6-terra",
+  "glm-5-2",
+  "gpt-5-5",
+];
+
 const capabilityLabels = {
   physical_mechanism: "Physical mechanism",
   spatiotemporal_process: "Spatiotemporal process",
@@ -216,15 +224,16 @@ function renderModelSummary() {
 }
 
 function renderOverviewTopModels() {
-  const leaders = [...state.models]
-    .sort((a, b) => b.metrics.mean_core - a.metrics.mean_core)
-    .slice(0, 5);
+  const modelsById = new Map(state.models.map((model) => [model.id, model]));
+  const leaders = overviewFeaturedModelIds
+    .map((modelId) => modelsById.get(modelId))
+    .filter(Boolean);
   elements.overviewTopModels.innerHTML = leaders.map((model, index) => `
     <div class="overview-model-row">
       <span class="rank">${String(index + 1).padStart(2, "0")}</span>
       <strong>${escapeHtml(model.name)}</strong>
-      <span class="overview-model-track"><span style="width:${Math.max(0, Math.min(100, model.metrics.mean_core))}%"></span></span>
-      <span class="overview-model-score">${formatNumber(model.metrics.mean_core)}</span>
+      <span class="overview-model-track"><span style="width:${Math.max(0, Math.min(100, model.metrics.strict_at_95))}%"></span></span>
+      <span class="overview-model-score"><small>Strict score</small><span>${formatScore(model.metrics.strict_at_95)}<em>%</em></span></span>
     </div>`).join("");
 }
 
